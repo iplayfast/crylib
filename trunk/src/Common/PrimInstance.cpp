@@ -237,7 +237,10 @@ CryPropertyList *PrimInstance::PropertyNames() const
 {
 	CryPropertyList *Names = CodeFactory::PropertyNames();
 	Names->AddPropertyByName("Type",this);
-	Names->AddPropertyByName("Default",this);
+	{	// Don't add "Default" by name since it confuses the children classes (which may not have default values)
+	   CryString *v = new CryString(DefaultValue);
+		Names->AddProperty("Default",v);
+	}
 	Names->AddPropertyByName("Count",this);
 	Names->AddPropertyByName("ArrayPointer",this);
 	return Names;

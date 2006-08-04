@@ -40,7 +40,8 @@ void CryXMLNode::SaveTo(CryStream &ToStream) const
 		{
 		CryString a;
 //		const CryProperty *p = (const CryProperty *) li->Get();
-		CryString Value = li->GetValue();
+		CryString Value;
+			li->GetValue(Value);
 		Value.Replace("&","&amp;");
 		Value.Replace("<","&lt;");
 		Value.Replace(">","&gt;");
@@ -113,7 +114,11 @@ void CryXMLNode::SaveTo(CryObject &ToObject) const
 #endif
 //        if (ToObject.HasProperty(p->GetName()))
 		if (ToObject.CanHaveProperty(pi->GetName()->AsPChar()))
-			ToObject.SetProperty(pi->GetName()->AsPChar(),pi->GetValue()->AsPChar());
+		{
+		CryString Result;
+			ToObject.SetProperty(pi->GetName()->AsPChar(),pi->GetValue(Result));
+
+		}
 		} while(pi->GotoNext());
 	}
 	_Attributes->DeleteIterator(pi);
@@ -355,8 +360,8 @@ void CryXMLNode::LoadFrom(const CryObject &FromObject)
 	Type = FromObject.ChildClassName();
 	CryPropertyList *pn = FromObject.PropertyNames(); // creates a list of the property names
 
-//	if (pn->Sortable())       /* TODO : Need to reimplment this for CryPropertyList */
-//	  pn->Sort(0);
+	if (pn->Sortable())       /* TODO : Need to reimplment this for CryPropertyList */
+	  pn->Sort(0);
 	CryPropertyList::PropertyIterator *i = pn->CreateIterator();
 	try
 	{
@@ -366,7 +371,7 @@ void CryXMLNode::LoadFrom(const CryObject &FromObject)
 		{
 			do
 			{
-				CryString *item =  i->GetName();
+				const CryString *item =  i->GetName();
 				const char *c = *item;
 				Result.Clear();
 				//        Result.SeekFromStart(0);

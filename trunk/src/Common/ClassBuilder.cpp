@@ -770,7 +770,6 @@ void ClassBuilder::AddPrimInstance(const char *PrimType,
 		do
 		{
 			CryFactory *o = (CryFactory *)a.Get();
-const char *Type = o->ChildClassName();
 			if (o->IsA(TClassHeaderFactory))
             {
                 ClassHeaderFactory *chf = (ClassHeaderFactory *)o;
@@ -900,9 +899,10 @@ CryPropertyList *Properties = p->PropertyNames();
 	if (pi->GotoFirst())
 		do
 		{
-			CryString *name = pi->GetName();
-			CryString *value = pi->GetValue();
-			this->AddFactory(new PropertyFactory(this,name,value));
+			const CryString *name = pi->GetName();
+			CryString r;
+			const char *value = pi->GetValue(r);
+			this->AddFactory(new PropertyFactory(this,name,&r));
 		}
 		while(pi->GotoNext());
 	Properties->DeleteIterator(pi);
@@ -1008,7 +1008,7 @@ ContainerFactory::ContainerFactory(CodeFactory *Parent,CryContainer *c) : CodeFa
 /*===========================================================================
 // PropertyFactory
 ============================================================================*/
-PropertyFactory::PropertyFactory(CodeFactory *Parent,CryString *n,CryString *v) : CodeFactory(Parent,TPropertyFactory)
+PropertyFactory::PropertyFactory(CodeFactory *Parent,const CryString *n,const CryString *v) : CodeFactory(Parent,TPropertyFactory)
 {
     SetSortValue(9);
     SetName(*n);
@@ -1211,46 +1211,46 @@ CryObject *IncludesFactory::Create(const CryPropertyParser &PropertyName,CodeFac
         CryString s;
         Clear(PropertyName);
         s.printf("#ifndef T%s\n#define T%s\t\"%s\"\n",Parent->GetName(),Parent->GetName(),Parent->GetName());
-        s.printf("//standard files\n#include\t<string.h>\n#include\t<stdlib.h>\n");
-        s.printf("//Crystal files\n");
+		s.printf("//standard files\n#include\t<string.h>\n#include\t<stdlib.h>\n");
+		s.printf("//Crystal files\n");
 
 	Create(p,"CryIncludes",s);
 
-        Parent->AppendHeadImp("\n//Class Instance Includes\n");
+		Parent->AppendHeadImp("\n//Class Instance Includes");
 
-        Parent->Create("CryIncludes",Parent);
-        CompositeIterator a(Parent);
-        if (a.GotoFirst())
-            do
-            {
-                CryFactory *f = (CryFactory *)a.Get();
-                if (f->IsA(TClassInstance))
-                {
-                    ClassInstance *c = (ClassInstance *)f;
-                    Create(c->Getp(),"CryIncludes",s);
-                }
-            }
-            while(a.GotoNext());
-        SetHead(PropertyName,s);
-        s.Clear();
-        CryString FileName;
-        FileName =cbParent->GetFilename();
-        if (FileName=="")
-            FileName.printf("?%s?",Parent->GetName());
-        else
-        {
+		Parent->Create("CryIncludes",Parent);
+		CompositeIterator a(Parent);
+		if (a.GotoFirst())
+			do
+			{
+				CryFactory *f = (CryFactory *)a.Get();
+				if (f->IsA(TClassInstance))
+				{
+					ClassInstance *c = (ClassInstance *)f;
+					Create(c->Getp(),"CryIncludes",s);
+				}
+			}
+			while(a.GotoNext());
+		SetHead(PropertyName,s);
+		s.Clear();
+		CryString FileName;
+		FileName =cbParent->GetFilename();
+		if (FileName=="")
+			FileName.printf("?%s?",Parent->GetName());
+		else
+		{
 
-            FileName.Rev();
-            FileName.Delete(FileName.Pos(FILEDEL),FileName.Length());
-            FileName.Rev();
-        }
-        s.printf("#include \"%s.h\"\n#include \"ClassProperty.h\"\n#include \"CryXML.h\"\t//Needed for SetDefaultValues\n\nusing namespace Crystal;\n\n",FileName.AsPChar());
-        SetImp(PropertyName,s);
-        Parent->AppendHead(*GetHead(PropertyName));
-        Parent->AppendImp(*GetImp(PropertyName));
-        return this;
-    }
-    return CodeFactory::Create(PropertyName,Parent);
+			FileName.Rev();
+			FileName.Delete(FileName.Pos(FILEDEL),FileName.Length());
+			FileName.Rev();
+		}
+		s.printf("#include \"%s.h\"\n#include \"ClassProperty.h\"\n#include \"CryXML.h\"\t//Needed for SetDefaultValues\n\nusing namespace Crystal;\n",FileName.AsPChar());
+		SetImp(PropertyName,s);
+		Parent->AppendHead(*GetHead(PropertyName));
+		Parent->AppendImp(*GetImp(PropertyName));
+		return this;
+	}
+	return CodeFactory::Create(PropertyName,Parent);
 }
 
 /*===========================================================================
@@ -1558,7 +1558,8 @@ else
 		{
 			do
 			{
-				Implementation.printf("\n//\tNames->AddProperty(\"%s\",\"%s\");",i->GetName(),i->GetValue());
+			CryString r;
+				Implementation.printf("\n//\tNames->AddProperty(\"%s\",\"%s\");",i->GetName(),i->GetValue(r));
 			} while(i->GotoNext());
 		}
 		Names->DeleteIterator(i);

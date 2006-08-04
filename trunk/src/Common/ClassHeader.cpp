@@ -80,81 +80,81 @@ CryObject *ClassHeaderFactory::Create(const CryPropertyParser &PropertyName,Code
                          cbParent->GetName(),cbParent->GetInheritType());
                 SetHead(PropertyName,s);
                 Parent->AppendHead(*GetHead(PropertyName));
-                Parent->AppendHeadImp("\n\n//Array Length defines\n");
-                Create(TCountDefine,Parent);
-                Parent->AppendHeadImp("\n\n//Local Variables Declaration\n");
-                Create(TDeclaration,Parent);
+				Parent->AppendHeadImp("\n\n//Array Length defines");
+				Create(TCountDefine,Parent);
+				Parent->AppendHeadImp("\n\n//Local Variables Declaration");
+				Create(TDeclaration,Parent);
 		Parent->AppendHead("\n\npublic:");
-                Parent->AppendHeadImp("\n\n//Constructor/Destructor Functions \n");
-                Create(TConstructorStart,Parent);
-                Create(TConstructor,Parent);
-                Create(TConstructorEnd,Parent);
-                Create(TDestructorStart,Parent);
-                Create(TDestructor,Parent);
-                Create(TDestructorEnd,Parent);
-                Parent->AppendHeadImp("\n\n//Inherited Functions\n");
-                Create(TInheritedFactory,Parent);
+				Parent->AppendHeadImp("\n\n//Constructor/Destructor Functions");
+				Create(TConstructorStart,Parent);
+				Create(TConstructor,Parent);
+				Create(TConstructorEnd,Parent);
+				Create(TDestructorStart,Parent);
+				Create(TDestructor,Parent);
+				Create(TDestructorEnd,Parent);
+				Parent->AppendHeadImp("\n\n//Inherited Functions");
+				Create(TInheritedFactory,Parent);
 		s = "";
 		s.printf("\n\n//Common functions Macro\n//Creates Dup, ClassName,ChildClassName,IsAbstract and IsA() Functions\n\tStdFunctions(%s,%s);", cbParent->GetName(), cbParent->GetInheritType());
 		Parent->AppendHead(s.AsPChar());
-                Parent->AppendHeadImp("\n\n//Property Access Functions\n");
-                Create(TSetProperty,Parent);
-                Create(TGetProperty,Parent);
-                Parent->AppendHeadImp("\n\n//Class Footer\n");
-                Create(TClassFooterFactory,Parent);
-            }
-            return this;
-        }
-        if (strcmp(PropertyName,TConstructorStart)==0)
-        {
-            CryString s;
-            s.printf("\t%s();\n",Parent->GetName());
-            SetHead(PropertyName,s);
-            Parent->AppendHead(*GetHead(PropertyName));
-            s.Clear();
-            s.printf("\n%s::%s()\n{",Parent->GetName(),Parent->GetName());
-            SetImp(PropertyName,s);
-            Parent->AppendImp(*GetImp(PropertyName));
-            return this;
-        }
-        if (strcmp(PropertyName,TConstructorEnd)==0)
-        {
-            CryString s;
-            s = "\n}\n\n";
-            SetImp(PropertyName,s);
-            Parent->AppendImp(*GetImp(PropertyName));
-            return this;
-        }
+				Parent->AppendHeadImp("\n\n//Property Access Functions");
+				Create(TSetProperty,Parent);
+				Create(TGetProperty,Parent);
+				Parent->AppendHeadImp("\n\n//Class Footer");
+				Create(TClassFooterFactory,Parent);
+			}
+			return this;
+		}
+		if (strcmp(PropertyName,TConstructorStart)==0)
+		{
+			CryString s;
+			s.printf("\t%s();",Parent->GetName());
+			SetHead(PropertyName,s);
+			Parent->AppendHead(*GetHead(PropertyName));
+			s.Clear();
+			s.printf("\n%s::%s()\n{",Parent->GetName(),Parent->GetName());
+			SetImp(PropertyName,s);
+			Parent->AppendImp(*GetImp(PropertyName));
+			return this;
+		}
+		if (strcmp(PropertyName,TConstructorEnd)==0)
+		{
+			CryString s;
+			s = "\n}\n\n";
+			SetImp(PropertyName,s);
+			Parent->AppendImp(*GetImp(PropertyName));
+			return this;
+		}
 
-        if (strcmp(PropertyName,TDestructorStart)==0)
-        {
-            CryString s;
-            s.printf("\t~%s();\n",Parent->GetName());
-            SetHead(PropertyName,s);
-            Parent->AppendHead(*GetHead(PropertyName));
-            s.Clear();
-            s.printf("\n%s::~%s()\n{",Parent->GetName(),Parent->GetName());
-            SetImp(PropertyName,s);
-            Parent->AppendImp(*GetImp(PropertyName));
-            return this;
-        }
-        if (strcmp(PropertyName,TDestructorEnd)==0)
-        {
-            CryString s;
-            s = "\n}\n\n";
-            SetImp(PropertyName,s);
-            Parent->AppendImp(*GetImp(PropertyName));
-            return this;
-        }
-    }
-    return CodeFactory::Create(PropertyName,Parent);
+		if (strcmp(PropertyName,TDestructorStart)==0)
+		{
+			CryString s;
+			s.printf("\t~%s();",Parent->GetName());
+			SetHead(PropertyName,s);
+			Parent->AppendHead(*GetHead(PropertyName));
+			s.Clear();
+			s.printf("\n%s::~%s()\n{",Parent->GetName(),Parent->GetName());
+			SetImp(PropertyName,s);
+			Parent->AppendImp(*GetImp(PropertyName));
+			return this;
+		}
+		if (strcmp(PropertyName,TDestructorEnd)==0)
+		{
+			CryString s;
+			s = "\n}\n";
+			SetImp(PropertyName,s);
+			Parent->AppendImp(*GetImp(PropertyName));
+			return this;
+		}
+	}
+	return CodeFactory::Create(PropertyName,Parent);
 }
 CryObject *ClassHeaderFactory::Create(const CryPropertyParser &PropertyName,CryObject *Parent)
 {
 	if (PropertyName=="ClassInstance")
 	{
 	ClassInstance *ci = new ClassInstance(this);
-    	AddFactory(ci);
+		AddFactory(ci);
 		return ci;
 	}
   return CodeFactory::Create(PropertyName,Parent);
@@ -162,46 +162,46 @@ CryObject *ClassHeaderFactory::Create(const CryPropertyParser &PropertyName,CryO
 
 bool ClassHeaderFactory::Present(const CryObject *Name)// can be either a function def or variable name
 {
-    CryList::Iterator *i = _CreateIterator();
-    CryString *sName = 0;
-    CryString Def;
-    CryFunctionDef *fdName = 0;
-    if (Name->IsA(TCryFunctionDef))
-    {
-        fdName = (CryFunctionDef *)Name;
-        fdName->GetNPDeclaration(Def);
-    }
-    else
-        if (Name->IsA(TCryString))
-            sName = (CryString *)Name;
-        else
-            return false;
-    if (i->GotoFirst())
-    {
-        do
-        {
-            CodeFactory *cf = (CodeFactory *)i->Get();
-            if (fdName && (cf->IsA(TInheritedFactory)))
-            {
-                CryString lDec;
-                InheritedFactory *If = (InheritedFactory *)cf;
-                If->GetFunc()->GetNPDeclaration(lDec);
-                if (lDec==Def)
-                {
-                    DeleteIterator(i);
-                    return true;
-                }
-            }
-            else
-                if (sName)
-                {
-                    PrimInstance *pi = (PrimInstance *) cf;
-                    if (*sName == pi->GetName())
-                    {
-                        DeleteIterator(i);
-                        return true;
-                    }
-                }
+	CryList::Iterator *i = _CreateIterator();
+	CryString *sName = 0;
+	CryString Def;
+	CryFunctionDef *fdName = 0;
+	if (Name->IsA(TCryFunctionDef))
+	{
+		fdName = (CryFunctionDef *)Name;
+		fdName->GetNPDeclaration(Def);
+	}
+	else
+		if (Name->IsA(TCryString))
+			sName = (CryString *)Name;
+		else
+			return false;
+	if (i->GotoFirst())
+	{
+		do
+		{
+			CodeFactory *cf = (CodeFactory *)i->Get();
+			if (fdName && (cf->IsA(TInheritedFactory)))
+			{
+				CryString lDec;
+				InheritedFactory *If = (InheritedFactory *)cf;
+				If->GetFunc()->GetNPDeclaration(lDec);
+				if (lDec==Def)
+				{
+					DeleteIterator(i);
+					return true;
+				}
+			}
+			else
+				if (sName)
+				{
+					PrimInstance *pi = (PrimInstance *) cf;
+					if (*sName == pi->GetName())
+					{
+						DeleteIterator(i);
+						return true;
+					}
+				}
         }
         while(i->GotoNext());
     }

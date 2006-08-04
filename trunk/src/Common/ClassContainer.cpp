@@ -263,6 +263,20 @@ CryContainer::CryContainer()
 	_IsContainer = true;
 }
 
+bool CryContainer::GotoN(Iterator *Iterator,int n) const // returns true if success
+{
+	if (Iterator->GotoFirst())
+	{
+		while(n)
+		{
+			if (!Iterator->GotoNext())
+				return false;
+			n--;
+		}
+		return true;
+	}
+	return false;
+}
 bool CryContainer::IteratedFunction(EmptyObject *Control,EmptyObject *Item)
 {
     return true;
@@ -357,7 +371,10 @@ EmptyObject *CryContainer::Iterator::Get() const
 //{
 //	OrigContainer->SetAtIterator(this,Item,IsCryObject,IsOwned,Size );
 //}
-
+bool CryContainer::Iterator::GotoN(int n) // returns true if success
+{
+    return OrigContainer->GotoN(this,n);
+}
 bool CryContainer::Iterator::GotoFirst()
 {
     return OrigContainer->GotoFirst(this);

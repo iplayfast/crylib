@@ -201,6 +201,7 @@ void CodeFactory::AppendHead(const char *Value)
 		CryString s;
 		s = *hp->GetHead();
 		s += Value;
+		s+="\n";
 		hp->SetHead(s);
 	}
 }
@@ -211,7 +212,8 @@ void CodeFactory::AppendImp(const char *Value)
 		CryString s;
 		s = *hp->GetImp();
 		s += Value;
-        hp->SetImp(s);
+		s+="\n";
+		hp->SetImp(s);
     }
 }
 
