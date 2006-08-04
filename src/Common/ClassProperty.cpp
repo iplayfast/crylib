@@ -17,7 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-
+#include <stdlib.h>
 #include "ClassProperty.h"
 #include "ClassException.h"
 #include "ClassFunction.h"
@@ -69,19 +69,36 @@ CryProperty::~CryProperty()
 
 void CryProperty::SetValue(const char *_Value)
 {
-    *Value = _Value;
+	delete Value;
+	Value = new CryString(_Value);
 }
-
+void CryProperty::SetValue(const CryObject *_Value)
+{
+	delete Value;
+	Value = _Value->Dup();
+}
 void CryProperty::SetName(const char *_Name)
 {
     *Name = _Name;
 }
 
-const CryString &CryProperty::GetValue() const
+const CryObject *CryProperty::GetValue() const
 {
-    return *Value;
+	return Value;
 }
-
+const char *CryProperty::GetValue(CryString &Result) const	// return string value or Object name if not CryString
+{
+	if (Value->IsA(TCryString)) {
+		Result = *(CryString *) Value;
+	}
+	else
+		Result = Value->ChildClassName();
+	return Result.AsPChar();
+}
+CryObject *CryProperty::_GetValue() const
+{
+    return Value;
+}
 const cbyte* CryProperty::GetRaw() const
 {
     return Value->GetRaw();
@@ -89,7 +106,7 @@ const cbyte* CryProperty::GetRaw() const
 
 bool CryProperty::HasProperty(const CryPropertyParser &PropertyName) const
 {
-    return (PropertyName==GetName()) || CryObject::HasProperty(PropertyName);
+    return (PropertyName==*GetName()) || CryObject::HasProperty(PropertyName);
 }
 
 CryFunctionDefList *CryProperty::GetFunctions(const char *Type) const
@@ -111,71 +128,89 @@ CryFunctionDefList *CryProperty::GetFunctions(const char *Type) const
     s += "virtual bool HasProperty(const char *PropertyName) const;";
     s += "bool SetProperty(const char*PropertyName,const char *PropertyValue);";
     s += "virtual CryList *PropertyNames() const;";
-    s += "virtual void CopyTo(CryObject &Dest) const;";
-    s += "virtual CryObject *Dup() const;";
-    s += "virtual size_t Size() const;";
-    l->LoadFromString(s,";");
-    return l;
+	s += "virtual void CopyTo(CryObject &Dest) const;";
+	s += "virtual CryObject *Dup() const;";
+	s += "virtual size_t Size() const;";
+	l->LoadFromString(s,";");
+	return l;
+}
+
+const char *CryProperty::GetProperty(CryString &Result) const
+{
+	if (Value->IsA(TCryString))
+	{
+		Result = (CryString *)Value;
+		return Result.AsPChar();
+	}
+	Result = Value->ChildClassName();
+	return Result.AsPChar();
 }
 
 const char *CryProperty::GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const
 {
-    if (PropertyName==GetName())	// if PropertyName is not the stored one, see if this classes property is what is being requested
-    {
-        Result = Value;
-        return Result.AsPChar();
-    }
-    else
-    {
-        return CryObject::GetProperty(PropertyName,Result);
-    }
+	if (PropertyName==*GetName())	// if PropertyName is not the stored one, see if this classes property is what is being requested
+	{
+		return GetProperty(Result);
+	}
+	else
+	{
+		return CryObject::GetProperty(PropertyName,Result);
+	}
 }
 
 
-bool CryProperty::SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue)
+bool CryProperty::SetProperty(const CryPropertyParser &PropertyName,const CryObject* PropertyValue)
 {
-    if (PropertyName==GetName())
-    {
-        *Value = PropertyValue;
-        return true;
-    }
-    else
-    {
-        if (CryObject::HasProperty(PropertyName))
-            return CryObject::SetProperty(PropertyName,PropertyValue);
-        else
-            throw CryException(this,ExceptionUnknownProperty,"Unknown Property ",PropertyName.AsPChar());
-    }
+	if (PropertyName==*GetName())
+	{
+		delete Value;
+		Value = PropertyValue->Dup();
+		return true;
+	}
+	else
+	{
+		if (CryObject::HasProperty(PropertyName) && PropertyValue->IsA(TCryString))
+			return CryObject::SetProperty(PropertyName,*((CryString *)PropertyValue));
+		else
+			throw CryException(this,ExceptionUnknownProperty,"Unknown Property ",PropertyName.AsPChar());
+	}
 
 }
 
 CryPropertyList *CryProperty::PropertyNames() const
 {
 	CryPropertyList *n = CryObject::PropertyNames();
-    n->AddProperty(new CryString(GetName()),new CryString(GetValue()));
-    return n;
+	n->AddProperty(GetName()->AsPChar(),GetValue()->Dup());
+	return n;
 }
 
 void CryProperty::CopyTo(CryObject &Dest) const   //copies contents of this to Dest
 {
-    Dest.SetProperty(Name->AsPChar(),*Value);
+	if (Dest.IsA(TCryProperty))
+	{
+	CryProperty *Cast = (CryProperty *)&Dest;
+		Cast->SetProperty(Name->AsPChar(),Value);
+	}
+	CryString r;
+	GetProperty(Name->AsPChar(),r);
+	Dest.SetProperty(Name->AsPChar(),r);
 }
 
-const char *CryProperty::GetName() const
+const CryString *CryProperty::GetName() const
 {
-    return *Name;
+    return Name;
 }
 
 CryObject *CryProperty::Dup() const  /// creates a duplicate of this object
 {
-    CryProperty *n = new CryProperty(GetName());
-    n->SetValue(*Value);
+    CryProperty *n = new CryProperty(GetName()->AsPChar());
+    n->SetValue(Value);
     return n;
 }
 
 size_t CryProperty::Size() const
 {
-	return strlen(GetName()) + Value->Size();
+	return Name->Size() + Value->Size();
 }
 
 
@@ -185,27 +220,17 @@ size_t CryProperty::Size() const
 
 CryPropertyList::~CryPropertyList()
 {
-	if (Names)
-	{
-		CryList *t = Names;
-		Names = 0;
-		delete t;
-	}
 }
 
 CryPropertyList::PropertyIterator::PropertyIterator(const CryPropertyList *container)
 		: CryList::ListIterator((CryList *)container)
 {
-	Names = (CryList::ListIterator *) container->GetNames()->_CreateIterator();
 };
 
 void CryPropertyList::PropertyIterator::CopyTo(CryObject &Dest) const
 {
 	if (!Dest.IsA(TPropertyIterator))
 		CryList::ListIterator::CopyTo(Dest);
-CryPropertyList::PropertyIterator &d = (CryPropertyList::PropertyIterator &)Dest;
-	d.Names->p = Names->p;
-	d.p = p;
 }
 CryObject *CryPropertyList::PropertyIterator::Dup() const
 {
@@ -219,53 +244,46 @@ CryPropertyList *l =(CryPropertyList *)this->GetOrigContainer();
 
 bool CryPropertyList::PropertyIterator::GotoFirst()
 {
-	Names->GotoFirst();
 	return	CryList::ListIterator::GotoFirst();
 }
 bool CryPropertyList::PropertyIterator::GotoPrev()
 {
-	Names->GotoPrev();
 	return CryList::ListIterator::GotoPrev();
 }
 bool CryPropertyList::PropertyIterator::GotoNext()
 {
-	Names->GotoNext();
 	return CryList::ListIterator::GotoNext();
 }
 bool CryPropertyList::PropertyIterator::GotoLast()
 {
-	Names->GotoLast();
 	return CryList::ListIterator::GotoLast();
 }
 size_t CryPropertyList::PropertyIterator::GetItemSize()
 {
-	return CryList::ListIterator::GetItemSize() + Names->GetItemSize();
+	CryProperty *p = _Get();
+	return p->Size();
 }
-CryString *CryPropertyList::PropertyIterator::GetName()
+const CryString *CryPropertyList::PropertyIterator::GetName()
 {
-	return (CryString *)Names->Get();
+	CryProperty *p = _Get();
+	return p->GetName();
 }
-CryString *CryPropertyList::PropertyIterator::GetValue()
+const char *CryPropertyList::PropertyIterator::GetValue(CryString &r)
 {
-	return (CryString *) CryList::ListIterator::Get();
+	CryProperty *p = _Get();
+	p->GetProperty(r);
+	return r.AsPChar();
 }
 
 void CryPropertyList::PropertyIterator::SetName(const char *Name)
 {
-CryPropertyList *l = (CryPropertyList *)Names->GetOrigContainer();
-    CryList *n = l->GetNames();
-	n->SetAtIterator(Names,new CryString(Name),true,true,0);
-//	l->SetAtIterator(this,new CryString(Name),true,true,0);
-	//Names->Set(new CryString(Name),true,true,0);
-} 
+	CryProperty *p = _Get();
+	p->SetName(Name);
+}
 void CryPropertyList::PropertyIterator::SetValue(const char *Value)
 {
-	CryPropertyList *l = (CryPropertyList *)this->GetOrigContainer();
-	CryList *v = (CryList *)l;
-		v->SetAtIterator(this,new CryString(Value),true,true,0);
-//		l->SetAtIterator(this,new CryString(Value),true,true,0);
-
-	//Set(new CryString(Value),true,true,0);
+	CryProperty *p = _Get();
+	p->SetValue(Value);
 }
 
 //CryContainer::Iterator * CryPropertyList::CreateNameIterator() const
@@ -294,12 +312,35 @@ void CryPropertyList::DeleteIterator(Iterator *LI) const
 }
 size_t CryPropertyList::Size() const
 {
-	return Names->Size() + CryList::Size();
+PropertyIterator *pi = this->CreateIterator();
+size_t size = 0;
+	if (pi->GotoFirst()) {
+	   do
+	   {
+			size += pi->Size();
+	   } while(pi->GotoNext());
+	}
+	return size;
+}
+int CryPropertyList::Compare(int CompareType,const CryObject *Test1,const CryObject *Test2) const
+{
+	if (CompareType==0) {
+		if(Test2->IsA(TCryMemStream))
+		{
+		CryMemStream *t2 = (CryMemStream *)Test2;
+			if (Test1->IsA(TCryProperty))
+			{
+			CryProperty *p = (CryProperty *)Test1;
+				return (p->GetName()->EqualTo(CompareType,t2)==0);
+			}
+		}
+	}
+	return -1;
 }
 
 void CryPropertyList::RemoveNodeValue(const CryMemStream &Needle)
 {
-int n = Names->FindNodeValue(Needle);
+int n = FindNodeValue(Needle);
 	if (n>=0)
 	{
 		CryPropertyList::PropertyIterator *i = CreateIterator();
@@ -324,70 +365,73 @@ void CryPropertyList::CopyTo(CryObject &Dest) const
 	if (Dest.IsA(TCryPropertyList))
 	{
 		CryPropertyList *Cast = (CryPropertyList *)&Dest;
-		Names->CopyTo(*Cast->Names);
 		CryList::CopyTo(*Cast);
 	}
 	else
 	throw CryException(this,"Copying from CryPropertyList to object that is not a PropertyList");
 }
 
+/* should be covered in the base class
+
 void CryPropertyList::RemoveAtIterator(Iterator *LI)
 {
 	if (LI->IsA(TPropertyIterator))
 	{
 	PropertyIterator  *pi = (CryPropertyList::PropertyIterator *)LI;
-	ListIterator *ni = pi->Names;
-	CryList *l = (CryList *)	pi->GetOrigContainer();
+	CryList *l = (CryList *)	ni->GetOrigContainer();
 		l->RemoveAtIterator(ni);
-		CryList::RemoveAtIterator(pi);
+		ni = pi;
+		CryList::RemoveAtIterator(ni);
 	}
 	else
 	throw CryException("RemoveAtIterator called with wrong type of iterator");
-}
+} */
 
 
 CryPropertyList::CryPropertyList() : CryList()
 {
-	Names = new CryList();
 }
 
 // Set the Target Object's properties with values held here
 void CryPropertyList::Set(CryObject *Target)
 {
 PropertyIterator *pi = (CryPropertyList::PropertyIterator *)_CreateIterator();
+CryString r;
 	if (pi->GotoFirst())
 	{
 		do
 		{
 		CryPropertyParser ItemString( ((CryString *)pi->GetName())->AsPChar());
 		if (Target->HasProperty(ItemString))
-			Target->SetProperty(ItemString,*(const CryString *)pi->GetValue());
+			Target->SetProperty(ItemString,*(const CryString *)pi->GetValue(r));
 		} while(pi->GotoNext());
 	}
 	DeleteIterator(pi);
 }
 /// Get the Source's Properties (loose any currently held)
 void CryPropertyList::Get(CryObject *Source)
-
 {
 	Clear();
-	Names->Clear();
-	CryPropertyList *properties = Source->PropertyNames();
-	PropertyIterator *p = properties->CreateIterator();
-	if (p->GotoFirst())
-	{
-		do
-		{
-			AddProperty(p->GetName(),p->GetValue());
-		} while(p->GotoNext());
-	}
-	properties->DeleteIterator(p);
-	delete properties;
+	CryPropertyList *Properties = Source->PropertyNames();
+	SwapListElements(Properties);
+	delete Properties;
 }
 bool CryPropertyList::HasProperty(const CryPropertyParser &PropertyName) const
 {
-	if (!Names) return false;
-	return !(Names->FindNodeValue(PropertyName)==-1);
+PropertyIterator *pi = CreateIterator();
+	if (pi->GotoFirst()) {
+		do
+		{
+		CryProperty *p = pi->_Get();
+			if (*p->GetName()==PropertyName)
+			{
+				DeleteIterator(pi);
+				return true;
+			}
+		} while(pi->GotoNext());
+	}
+	DeleteIterator(pi);
+	return false;
 }
 void CryPropertyList::RenameProperty(const char *OldName,const char *NewName)
 {
@@ -430,39 +474,39 @@ bool CryPropertyList::GetIsPropertyContainer(const CryPropertyParser &PropertyNa
 
 CryObject *CryPropertyList::GetCopyOfPropertyAsObject(const CryPropertyParser &PropertyName) const
 {
-int i = Names->FindNodeValue(PropertyName);
-	if (i>=0)
-	{
-		PropertyIterator *it = CreateIterator();
-		it->GotoFirst();
-		while(i)
+PropertyIterator *pi = CreateIterator();
+	if (pi->GotoFirst()) {
+		do
 		{
-			it->GotoNext();
-			i--;
-		}
-		CryObject *Item = it->GetValue();
-		DeleteIterator(it);
-		return Item->Dup();
+		CryProperty *p = pi->_Get();
+			if (*p->GetName()==PropertyName)
+			{
+			const CryObject *Item = p->GetValue();
+				DeleteIterator(pi);
+				return Item->Dup();
+			}
+		} while(pi->GotoNext());
 	}
+	DeleteIterator(pi);
 	throw(CryException("Property %s not present in PropertyList",PropertyName.AsPChar()));
 }
 
 CryObject *CryPropertyList::_GetPropertyAsObject(const CryPropertyParser &PropertyName) const
 {                                       /* TODO : CryList::ListNode and helper functions should be hidden and anything that currently uses them should use common functions */
-int i = Names->FindNodeValue(PropertyName);
-	if (i>=0)
-	{
-		PropertyIterator *it = CreateIterator();
-		it->GotoFirst();
-		while(i)
+PropertyIterator *pi = CreateIterator();
+	if (pi->GotoFirst()) {
+		do
 		{
-			it->GotoNext();
-			i--;
-		}
-		CryObject *Item = it->GetValue();
-		DeleteIterator(it);
-		return Item;
+		CryProperty *p = pi->_Get();
+			if (*p->GetName()==PropertyName)
+			{
+			CryObject *Item = p->_GetValue();
+				DeleteIterator(pi);
+				return Item;
+			}
+		} while(pi->GotoNext());
 	}
+	DeleteIterator(pi);
 	throw(CryException("Property %s not present in PropertyList",PropertyName.AsPChar()));
 }
 
@@ -478,28 +522,26 @@ void CryPropertyList::AddProperty(const char *PropertyName,const char *Value)
 {
 	if (HasProperty(PropertyName))
 		throw(CryException("Property %s already present in PropertyList",PropertyName));
-	CryString *n = new CryString(PropertyName);
-    Names->AddOwned(n);
-    CryString *v = new CryString(Value);
-	AddOwned(v);
+	CryProperty *p = new CryProperty(PropertyName,Value);
+	AddOwned(p);
 }
 void CryPropertyList::AddProperty(const char *Name,CryObject *Value)
 {
 	if (HasProperty(Name))
 		throw(CryException("Property %s already present in PropertyList",Name));
-	CryString *n = new CryString(Name);
-	Names->AddOwned(n);
-	AddOwned(Value);
+	CryProperty *p = new CryProperty(Name);
+	p->SetValue(Value);
+	AddOwned(p);
 }
 void CryPropertyList::AddProperty(CryString *Name,CryString *Value)
 {
-if (HasProperty(Name->AsPChar()))
-{
-	GetValue(Name->AsPChar(),*Value);
-		throw(CryException("Property %s(%s) already present in PropertyList",Name->AsPChar()),Value->AsPChar());
-}
-	Names->AddOwned(Name);
-	AddOwned(Value);
+	if (HasProperty(Name->AsPChar()))
+	{
+		GetValue(Name->AsPChar(),*Value);
+			throw(CryException("Property %s(%s) already present in PropertyList",Name->AsPChar()),Value->AsPChar());
+	}
+	CryProperty *p = new CryProperty(*Name,*Value);
+	AddOwned(p);
 }
 extern int entries;
 /// return the results of the last operation (or current properties)
@@ -538,16 +580,17 @@ CryPropertyList *n = new CryPropertyList();
 
 			if (O2->HasProperty(pi->GetName()->AsPChar()))
 			{	// And (Same properties from both, with same value or "")
-			CryString v;
+			CryString v,r;
 				O2->GetProperty(pi->GetName()->AsPChar(),v);
-				if (*pi->GetValue()!= v)
+				if (v!=pi->GetValue(r))
 					v = "";
 				n->AddProperty(pi->GetName()->AsPChar(),v.AsPChar());
 			}
 			else
 			{
+			CryString r;
 				if (B==Or)
-					n->AddProperty(pi->GetName()->AsPChar(),pi->GetValue()->AsPChar());
+					n->AddProperty(pi->GetName()->AsPChar(),pi->GetValue(r));
 			}
 		} while(pi->GotoNext());
 	}
@@ -574,7 +617,7 @@ PropertyIterator *pi = CreateIterator();
 	return false;
 }
 /// return a char * of the value for a property
-const char *CryPropertyList::GetValueAsPChar(const CryPropertyParser &PropertyName) const
+const char *CryPropertyList::GetValueAsPChar(const CryPropertyParser &PropertyName,CryString &Result) const
 {
 PropertyIterator *pi = CreateIterator();
 	if (pi->GotoFirst())
@@ -583,17 +626,18 @@ PropertyIterator *pi = CreateIterator();
 		{
 			if (*pi->GetName()==PropertyName)
 			{
-			const char *v = pi->GetValue()->AsPChar();
+			const char *v = pi->GetValue(Result);
 				DeleteIterator(pi);
 				return v;
 			}
 		} while(pi->GotoNext());
 	}
 	DeleteIterator(pi);
-	return "";
+	Result = "";
+	return Result.AsPChar();
 }
 
-CryString *CryPropertyList::GetValue(const CryPropertyParser &PropertyName,CryString &Result) const
+const char *CryPropertyList::GetValue(const CryPropertyParser &PropertyName,CryString &Result) const
 {
 PropertyIterator *pi = CreateIterator();
 	if (pi->GotoFirst())
@@ -602,10 +646,9 @@ PropertyIterator *pi = CreateIterator();
 		{
 			if (*pi->GetName()==PropertyName)
 			{
-			CryString *vi = (CryString *)pi->GetValue();
-			Result = *vi;
+				pi->GetValue(Result);
 				DeleteIterator(pi);
-				return &Result;
+				return Result.AsPChar();
 			}
 		} while(pi->GotoNext());
 	}
@@ -613,6 +656,10 @@ PropertyIterator *pi = CreateIterator();
 	throw CryException("Property %s Not found",PropertyName.AsPChar());
 }
 
+void CryPropertyList::Sort(int CompareType)
+{
+	CryList::Sort(CompareType);
+}
 
 
 
@@ -623,42 +670,42 @@ PropertyIterator *pi = CreateIterator();
 /// this class is used to easily parse out propertyname[Index]
 CryPropertyParser::CryPropertyParser(const char *Property) : CryString(Property)
 {
-    int StartBracket = this->Pos("[");
-    if (StartBracket>-1)
-    {
-        int StopBracket = this->Pos("]");
-        if (StopBracket==-1)
-            throw CryException("Bad format of property %s",Property);
-        Index = 0;
-        int start = StartBracket+1;
-        while(start<StopBracket)
-        {
-            Index *=10;
-            Index += Property[start] - '0';
-            start++;
-        }
-        Delete(StartBracket,GetLength());
-    }
-    else
-        Index = -1;
+	int StartBracket = this->Pos("[");
+	if (StartBracket>-1)
+	{
+		int StopBracket = this->Pos("]");
+		if (StopBracket==-1)
+			throw CryException("Bad format of property %s",Property);
+		Index = 0;
+		int start = StartBracket+1;
+		while(start<StopBracket)
+		{
+			Index *=10;
+			Index += Property[start] - '0';
+			start++;
+		}
+		Delete(StartBracket,GetLength());
+	}
+	else
+		Index = -1;
 }
 int CryPropertyParser::GetIndex() const
 {
-    return Index;
+	return Index;
 }
 const char *CryPropertyParser::GetPlainProperty() const
 {
-    return AsPChar();
+	return AsPChar();
 }
 void CryPropertyParser::GetPlainProperty(CryString &Result) const
 {
-    Result = this;
+	Result = this;
 }
 void CryPropertyParser::Get(CryString &Result) const
 {
-    Result = this;
-    if (Index!=-1)
-        Result.printf("[%d]",Index);
+	Result = this;
+	if (Index!=-1)
+		Result.printf("[%d]",Index);
 }
 
 

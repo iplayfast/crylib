@@ -206,20 +206,24 @@ bool CryObject::IsAbstract() const
     return false;
 }    // is the class abstract?
 
+int CryObject::Compare(int CompareType,const CryObject *Test1,const CryObject *Test2) const
+{
+    return Test1->CompareLogical(CompareType,Test2);
+}
 int CryObject::CompareLogical(int CompareType,const CryObject *Test) const
 {
-    return 0;
+	return 0;
 }
 
-bool CryObject::LessThen(int CompareType,CryObject *Test) const
+bool CryObject::LessThen(int CompareType,const CryObject *Test) const
 {
-    return false;
+	return false;
 }
-bool CryObject::GreaterThen(int CompareType,CryObject *Test) const
+bool CryObject::GreaterThen(int CompareType,const CryObject *Test) const
 {
-    return false;
+	return false;
 }
-bool CryObject::EqualTo(int CompareType,CryObject *Test) const
+bool CryObject::EqualTo(int CompareType,const CryObject *Test) const
 {
     return true;
 }
@@ -446,7 +450,8 @@ const char *CryObject::GetProperty(const CryPropertyParser &PropertyName,CryStri
 
 bool CryObject::SetPropertyAsObject(CryProperty *Value)
 {
-	return SetProperty(Value->GetName(),Value->GetValue());
+CryString Result;
+	return SetProperty(Value->GetName()->AsPChar(),Value->GetValue(Result));
 }
 /*CryObject *CryObject::Dup() const
 {

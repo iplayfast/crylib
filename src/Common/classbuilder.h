@@ -120,7 +120,7 @@ class PropertyFactory : public CodeFactory
 {
     CryString Value;
 public:
-    PropertyFactory(CodeFactory *Parent,CryString *n,CryString *v);
+    PropertyFactory(CodeFactory *Parent,const CryString *n,const CryString *v);
     virtual bool IsA(const char *ClassName) const;    // can the object map to a ClassName
     const char *GetPropertyName();
     const CryString *GetPropertyValue();

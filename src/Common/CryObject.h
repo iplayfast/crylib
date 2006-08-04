@@ -236,16 +236,17 @@ public:
     	functions  */
     virtual CryFunctionDefList *GetAbstractFunctions(const char *Type) const;
 
-    /*! will return a value showing a comparison result using CompareType. Used by derived classes
-    	in order to have comparisons which makes sense to the class.  CompareType is used to allow different types of comparisons within a class
-    */
-    virtual int CompareLogical(int CompareType,const CryObject *Test) const;
+	virtual int Compare(int CompareType,const CryObject *Test1,const CryObject *Test2) const;
+	/*! will return a value showing a comparison result using CompareType. Used by derived classes
+		in order to have comparisons which makes sense to the class.  CompareType is used to allow different types of comparisons within a class
+	*/
+	virtual int CompareLogical(int CompareType,const CryObject *Test) const;
     /// returns bool value of LessThen as determined by CompareLogical
-    virtual bool LessThen(int CompareType,CryObject *Test) const;
-    /// returns bool value of GreaterThen as determined by CompareLogical
-    virtual bool GreaterThen(int CompareType,CryObject *Test) const;
-    /// returns bool value of EqualTo as determined by CompareLogical
-    virtual bool EqualTo(int CompareType,CryObject *Test) const;
+    virtual bool LessThen(int CompareType,const CryObject *Test) const;
+	/// returns bool value of GreaterThen as determined by CompareLogical
+	virtual bool GreaterThen(int CompareType,const CryObject *Test) const;
+	/// returns bool value of EqualTo as determined by CompareLogical
+	virtual bool EqualTo(int CompareType,const CryObject *Test) const;
 
 	/*! IsContainer is true when the object in question can contain
      accessable instances of data or objects

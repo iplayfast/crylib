@@ -67,19 +67,23 @@ CryPropertyList *ClassInstance::PropertyNames() const
 	}
 	return Names;
 }
-    /*! will return the property named in PropertyName in a string format */
+	/*! will return the property named in PropertyName in a string format */
 const char *ClassInstance::GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const
 {
 	if (PropertyName=="HasDefault")
 	{
 		Result = HasDefault ? "Yes" : "No";
-		return Result;
+		return Result.AsPChar();
 	}
-	if (PropertyName=="Default" && !HasDefault)
+	if (PropertyName=="Default")
 	{
-	throw CryException("Default Requested, when none was set");
-		Result = "";
-		return Result;
+		if(!HasDefault)
+			return PrimInstance::GetProperty(PropertyName,Result);
+//			throw CryException("Default Requested, when none was set");
+		CryXML x("obj");
+		x.LoadFrom(*p);
+		x.SaveTo(Result);
+		return Result.AsPChar();
 	}
 	return PrimInstance::GetProperty(PropertyName,Result);
 }
@@ -87,7 +91,7 @@ const char *ClassInstance::GetProperty(const CryPropertyParser &PropertyName,Cry
 	/*! The count of the properties a class has */
 int ClassInstance::GetPropertyCount() const
 {
-    return 2 + PrimInstance::GetPropertyCount();
+	return 2 + PrimInstance::GetPropertyCount();
 }
 
 
@@ -107,7 +111,10 @@ bool ClassInstance::SetProperty(const CryPropertyParser &PropertyName,const char
 	}
 	if (PropertyName=="Default")
 	{	// if the class couldn't use the default just let it go.
-		p->SetProperty("Default",PropertyValue);
+		CryXML x("obj");
+		CryString  s(PropertyValue);
+		x.LoadFrom(s);
+		x.SaveTo(*p);
 		HasDefault = true;
 		return true;
 	}

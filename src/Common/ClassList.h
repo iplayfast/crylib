@@ -44,22 +44,23 @@ struct ListNode : public EmptyObject
 	};
 public:
 struct ListIterator : public Iterator
-    {
-        ListNode *p;
+	{
+		ListNode *p;
 		ListIterator(const CryList *container);
 		virtual CryObject *Dup() const;
 
-    };
+	};
 private:
-    ListNode *Items;
-    EmptyObject *Add(EmptyObject *Item,bool IsCryObject,bool IsOwned,size_t Size = 0);
-    EmptyObject *DupItem(const ListNode *Node) const;
+	ListNode *Head;
+	ListNode *Tail;
+	EmptyObject *Add(EmptyObject *Item,bool IsCryObject,bool IsOwned,size_t Size = 0);
+	EmptyObject *DupItem(const ListNode *Node) const;
 	void DeleteItem(struct ListNode *n);
 	ListNode *_FirstNode() const;
 	ListNode *_LastNode() const;
 	ListNode *_NextNode(const ListNode *n) const;
 	bool _Remove(EmptyObject *Item);	// returns true if Item removed
-    ListNode *_FindNode(const EmptyObject *Needle) const;
+	ListNode *_FindNode(const EmptyObject *Needle) const;
 
 protected:
 	void AddListNode (ListNode *Node);
@@ -99,37 +100,39 @@ public:
 	const ListNode *FirstNode() const;
 	const ListNode *LastNode() const;
 	const ListNode *NextNode(const ListNode *n) const;
-    EmptyObject *Add(EmptyObject *Item,size_t Size);
+	EmptyObject *Add(EmptyObject *Item,size_t Size);
 	EmptyObject *AddOwned(EmptyObject *Item,size_t Size);
-    CryObject *Add(CryObject *Item);    // returns Item
-    CryObject *AddOwned(CryObject *Item);   // gives ownership to list
-    void SetItemOwnerShip(EmptyObject  *Item,bool Owned);
-    bool GetItemOwnerShip(const EmptyObject *Item) const;
-    bool IsCryObject(const Iterator *I) const;
-    size_t GetItemSize(Iterator *I) const;
-    bool LoadAsText(Iterator *I,CryString &FromStream) ;
-    bool SaveAsText(Iterator *I,CryString &ToStream) const;
+	CryObject *Add(CryObject *Item);    // returns Item
+	CryObject *AddOwned(CryObject *Item);   // gives ownership to list
+	void SetItemOwnerShip(EmptyObject  *Item,bool Owned);
+	bool GetItemOwnerShip(const EmptyObject *Item) const;
+	bool IsCryObject(const Iterator *I) const;
+	size_t GetItemSize(Iterator *I) const;
+	bool LoadAsText(Iterator *I,CryString &FromStream) ;
+	bool SaveAsText(Iterator *I,CryString &ToStream) const;
 
-    virtual void SetItemOwnerShip(Iterator  *I,bool Owned);
-    virtual bool GetItemOwnerShip(const Iterator *I) const;
-    bool InList(CryObject *Needle) const;
-    EmptyObject *GetItem(int i) const;
+	virtual void SetItemOwnerShip(Iterator  *I,bool Owned);
+	virtual bool GetItemOwnerShip(const Iterator *I) const;
+	bool InList(CryObject *Needle) const;
+	EmptyObject *GetItem(int i) const;
 	virtual bool IsContainer() const;
 /// throws exception if Item not found
 	void Remove(EmptyObject *Item);
 	void Remove(CryObject*Item);
 
 	void Copy(CryList *List);
-    // if this class contains the property name, it will attempt to load it
-    // if all is well returns true
-    //virtual bool SetProperty(CryString *PropertyName,CryString *PropertyValue);
+	// if this class contains the property name, it will attempt to load it
+	// if all is well returns true
+	//virtual bool SetProperty(CryString *PropertyName,CryString *PropertyValue);
 	virtual const char *GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const;
-    virtual bool HasProperty(const CryPropertyParser &PropertyName) const;
+	virtual bool HasProperty(const CryPropertyParser &PropertyName) const;
 	virtual int GetPropertyCount() const;
 	virtual CryPropertyList* PropertyNames() const;
 ///copies contents of this to Dest
-    virtual void CopyTo(CryObject &Dest) const;
-    virtual size_t Size() const;
+	virtual void CopyTo(CryObject &Dest) const;
+	virtual size_t Size() const;
+	void SwapListElements(CryList *ToSwap);
+
 }
 ;  // CryList
 #endif // TCryList

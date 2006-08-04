@@ -34,7 +34,6 @@
         <property category="build.config.2" name="settings.win32b" value="default"/>
         <property category="build.config.2" name="type" value="Toolset"/>
         <property category="build.config.2" name="win32.win32b.builddir" value="codeguard"/>
-        <property category="build.node" name="lastconfig" value="Release_Build"/>
         <property category="build.node" name="name" value="ClassBuilderVCL.exe"/>
         <property category="build.node" name="packages" value="vcl;vclx;dbrtl;Rave65VCL;bdertl;rtl;vcldb;adortl;dbxcds;dbexpress;vclib;ibxpress;xmlrtl;vclactnband;inet;IntrawebDB_80_100;Intraweb_80_100;vclie;inetdbbde;inetdbxpress;IndyCore;IndySystem;bcbsmp;soaprtl;dsnap;IndyProtocols;bcbie;teeui;teedb;tee;vcldbx"/>
         <property category="build.node" name="sparelibs" value="vcl.lib rtl.lib"/>
@@ -163,22 +162,19 @@
           <property category="win32.*.win32b.bcc32" name="option.AU.enabled" value="0"/>
           <property category="win32.*.win32b.bcc32" name="option.D.arg.merge" value="1"/>
           <property category="win32.*.win32b.bcc32" name="option.D.enabled" value="0"/>
+          <property category="win32.*.win32b.bcc32" name="option.H.enabled" value="1"/>
           <property category="win32.*.win32b.bcc32" name="option.H=.arg.1" value="$(BDS)\lib\vcl100.csm"/>
           <property category="win32.*.win32b.bcc32" name="option.H=.arg.merge" value="1"/>
           <property category="win32.*.win32b.bcc32" name="option.H=.enabled" value="1"/>
           <property category="win32.*.win32b.bcc32" name="option.Hc.enabled" value="1"/>
-          <property category="win32.*.win32b.bcc32" name="option.He.enabled" value="1"/>
+          <property category="win32.*.win32b.bcc32" name="option.He.enabled" value="0"/>
           <property category="win32.*.win32b.bcc32" name="option.Hs.enabled" value="1"/>
-          <property category="win32.*.win32b.bcc32" name="option.I.arg.1" value="..\Common\zlib"/>
-          <property category="win32.*.win32b.bcc32" name="option.I.arg.10" value="$(BDS)\include\vcl"/>
-          <property category="win32.*.win32b.bcc32" name="option.I.arg.2" value="..\Common"/>
-          <property category="win32.*.win32b.bcc32" name="option.I.arg.3" value="..\..\..\..\crylib\src\Borland"/>
-          <property category="win32.*.win32b.bcc32" name="option.I.arg.4" value="..\..\src"/>
-          <property category="win32.*.win32b.bcc32" name="option.I.arg.5" value="..\..\..\Borland Studio Projects\CryObject\src"/>
-          <property category="win32.*.win32b.bcc32" name="option.I.arg.6" value="..\..\..\Borland Studio Projects\CryObject\src\zlib"/>
-          <property category="win32.*.win32b.bcc32" name="option.I.arg.7" value="..\..\..\Borland Studio Projects\CryObject\ClassBuilder\vcl"/>
-          <property category="win32.*.win32b.bcc32" name="option.I.arg.8" value="$(BDS)\include"/>
-          <property category="win32.*.win32b.bcc32" name="option.I.arg.9" value="$(BDS)\include\dinkumware"/>
+          <property category="win32.*.win32b.bcc32" name="option.I.arg.1" value="$(BDS)\include"/>
+          <property category="win32.*.win32b.bcc32" name="option.I.arg.2" value="$(BDS)\include\dinkumware"/>
+          <property category="win32.*.win32b.bcc32" name="option.I.arg.3" value="$(BDS)\include\vcl"/>
+          <property category="win32.*.win32b.bcc32" name="option.I.arg.4" value="..\Common\zlib"/>
+          <property category="win32.*.win32b.bcc32" name="option.I.arg.5" value="..\Common"/>
+          <property category="win32.*.win32b.bcc32" name="option.I.arg.6" value="..\..\src"/>
           <property category="win32.*.win32b.bcc32" name="option.I.arg.merge" value="1"/>
           <property category="win32.*.win32b.bcc32" name="option.I.enabled" value="1"/>
           <property category="win32.*.win32b.bcc32" name="option.Jgi.enabled" value="0"/>
@@ -188,6 +184,7 @@
           <property category="win32.*.win32b.bcc32" name="option.Od.enabled" value="0"/>
           <property category="win32.*.win32b.bcc32" name="option.V0.enabled" value="0"/>
           <property category="win32.*.win32b.bcc32" name="option.V1.enabled" value="0"/>
+          <property category="win32.*.win32b.bcc32" name="option.VI.enabled" value="1"/>
           <property category="win32.*.win32b.bcc32" name="option.Vmd.enabled" value="0"/>
           <property category="win32.*.win32b.bcc32" name="option.Vmm.enabled" value="0"/>
           <property category="win32.*.win32b.bcc32" name="option.Vms.enabled" value="0"/>
@@ -393,15 +390,11 @@
           <property category="win32.*.win32b.ilink32" name="option.-w-.enabled" value="0"/>
           <property category="win32.*.win32b.ilink32" name="option.Gi.enabled" value="0"/>
           <property category="win32.*.win32b.ilink32" name="option.L.arg.1" value="..\Common\zlib"/>
-          <property category="win32.*.win32b.ilink32" name="option.L.arg.10" value="$(BDS)\lib\psdk"/>
           <property category="win32.*.win32b.ilink32" name="option.L.arg.2" value="..\Common"/>
-          <property category="win32.*.win32b.ilink32" name="option.L.arg.3" value="..\..\..\Borland Studio Projects\CryObject\ClassBuilder\vcl"/>
-          <property category="win32.*.win32b.ilink32" name="option.L.arg.4" value="..\..\..\..\crylib\src\Borland"/>
-          <property category="win32.*.win32b.ilink32" name="option.L.arg.5" value="..\..\src"/>
-          <property category="win32.*.win32b.ilink32" name="option.L.arg.6" value="..\..\..\Borland Studio Projects\CryObject\src"/>
-          <property category="win32.*.win32b.ilink32" name="option.L.arg.7" value="C:\Crystal\CryObject\ClassBuilder\vcl"/>
-          <property category="win32.*.win32b.ilink32" name="option.L.arg.8" value="$(BDS)\lib"/>
-          <property category="win32.*.win32b.ilink32" name="option.L.arg.9" value="$(BDS)\lib\obj"/>
+          <property category="win32.*.win32b.ilink32" name="option.L.arg.3" value="..\..\src"/>
+          <property category="win32.*.win32b.ilink32" name="option.L.arg.4" value="$(BDS)\lib"/>
+          <property category="win32.*.win32b.ilink32" name="option.L.arg.5" value="$(BDS)\lib\obj"/>
+          <property category="win32.*.win32b.ilink32" name="option.L.arg.6" value="$(BDS)\lib\psdk"/>
           <property category="win32.*.win32b.ilink32" name="option.L.arg.merge" value="1"/>
           <property category="win32.*.win32b.ilink32" name="option.L.enabled" value="1"/>
           <property category="win32.*.win32b.ilink32" name="option.Tpd.enabled" value="0"/>
@@ -475,6 +468,7 @@
         <FILE FILENAME="..\Common\BitArray.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="BitArray" FORMNAME="" DESIGNCLASS=""/>
         <FILE FILENAME="..\Common\CryPattern.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="CryPattern" FORMNAME="" DESIGNCLASS=""/>
         <FILE FILENAME="..\Common\HugeInt.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="HugeInt" FORMNAME="" DESIGNCLASS=""/>
+        <FILE FILENAME="..\Common\Unit1.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="Unit1" FORMNAME="" DESIGNCLASS="" ADDITIONAL="..\Common\Unit1.h"/>
       </FILELIST>
       <IDEOPTIONS>
         <VersionInfo>
