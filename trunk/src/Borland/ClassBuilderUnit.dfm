@@ -21,7 +21,7 @@ object ClassBuilderFrm: TClassBuilderFrm
     Top = 0
     Width = 1134
     Height = 203
-    ActivePage = SetBaseClass
+    ActivePage = AddVariables
     Align = alTop
     TabOrder = 0
     object SetBaseClass: TTabSheet
@@ -269,10 +269,6 @@ object ClassBuilderFrm: TClassBuilderFrm
       Caption = 'Remove Variable'
       Enabled = False
       ImageIndex = 2
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Label1: TLabel
         Left = 31
         Top = 42
@@ -285,7 +281,7 @@ object ClassBuilderFrm: TClassBuilderFrm
         Top = 38
         Width = 190
         Height = 25
-        ItemHeight = 0
+        ItemHeight = 17
         TabOrder = 0
         Text = 'RemoveVariableCB'
       end

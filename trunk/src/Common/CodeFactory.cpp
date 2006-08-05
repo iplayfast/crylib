@@ -219,55 +219,55 @@ void CodeFactory::AppendImp(const char *Value)
 
 void CodeFactory::AppendHeadImp(const char *s)
 {
-    AppendHead(s);
-    AppendImp(s);
+	AppendHead(s);
+	AppendImp(s);
 }
 
 void CodeFactory::SetHeadImp(const CryPropertyParser &PropertyName,const char *s)
 {
-    SetHead(PropertyName,s);
-    SetImp(PropertyName,s);
+	SetHead(PropertyName,s);
+	SetImp(PropertyName,s);
 }
 const CryString *CodeFactory::GetHead(const CryPropertyParser &PropertyName) const
 {
-    HeadImp *hp = (HeadImp *)Products._GetPropertyAsObject(PropertyName);
-    if (hp)
-        return hp->GetHead();
-    else
-        throw CryException("Property Not found");
+	HeadImp *hp = (HeadImp *)Products._GetPropertyAsObject(PropertyName);
+	if (hp)
+		return hp->GetHead();
+	else
+		throw CryException("Property Not found");
 }
 const CryString *CodeFactory::GetImp(const CryPropertyParser &PropertyName) const
 {
-    HeadImp *hp = (HeadImp *)Products._GetPropertyAsObject(PropertyName);
-    if (hp)
-        return hp->GetImp();
-    else
-        throw CryException("Property Not found");
+	HeadImp *hp = (HeadImp *)Products._GetPropertyAsObject(PropertyName);
+	if (hp)
+		return hp->GetImp();
+	else
+		throw CryException("Property Not found");
 }
 int CodeFactory::GetPropertyCount() const
 {
-    return CryFactory::GetPropertyCount() + 2; // Name and Products
+	return CryFactory::GetPropertyCount() + 2; // Name and Products
 };
 const char * CodeFactory::GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const
 {
-    Result.Clear();
-    if (PropertyName=="Name") {   // intercept crycontainer's property for our own
-        Result = Name;  // if Result != what is returned, it's a special situation
-        return Result.AsPChar();
-    }
-    if (PropertyName=="Products") {
-        Result = "[]";  // signal that Products is a container
-        return "*";
-    }
-    if (PropertyName=="IsPointer") {
-        Result = _IsPointer ? "yes" : "no";
-        return Result.AsPChar();
-    }
-    if (PropertyName=="IsProperty") {
-        Result = _IsProperty ? "yes" : "no";
-        return Result.AsPChar();
-    }
-    return CryFactory::GetProperty(PropertyName,Result);
+	Result.Clear();
+	if (PropertyName=="Name") {   // intercept crycontainer's property for our own
+		Result = Name;  // if Result != what is returned, it's a special situation
+		return Result.AsPChar();
+	}
+	if (PropertyName=="Products") {
+		Result = "[]";  // signal that Products is a container
+		return "*";
+	}
+	if (PropertyName=="IsPointer") {
+		Result = _IsPointer ? "Yes" : "No";
+		return Result.AsPChar();
+	}
+	if (PropertyName=="IsProperty") {
+		Result = _IsProperty ? "Yes" : "No";
+		return Result.AsPChar();
+	}
+	return CryFactory::GetProperty(PropertyName,Result);
 };
 
 	/// will return a property represented as an object, useful for classes which contain properties that are dynamically allocated, as a property that is dynamic is a CryObject and therefore callable
@@ -289,53 +289,53 @@ CryObject *CodeFactory::_GetPropertyAsObject(const CryPropertyParser &PropertyNa
 
 bool  CodeFactory::SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue)
 {
-    if (PropertyName=="Products") {
-        AddProduct(PropertyValue);
-        return true;
-    }
-    if (PropertyName=="Name") {
-        Name = PropertyValue;
-        return true;
-    }
-    if (PropertyName=="IsPointer") {
-        SetIsPointer(PropertyValue=="yes");
-        return true;
-    }
-    if (PropertyName=="IsProperty") {
-        SetIsProperty(PropertyValue=="yes");
-        return true;
-    }
-    return CryFactory::SetProperty(PropertyName,PropertyValue);
+	if (PropertyName=="Products") {
+		AddProduct(PropertyValue);
+		return true;
+	}
+	if (PropertyName=="Name") {
+		Name = PropertyValue;
+		return true;
+	}
+	if (PropertyName=="IsPointer") {
+		SetIsPointer(stricmp(PropertyValue,"Yes")==0);
+		return true;
+	}
+	if (PropertyName=="IsProperty") {
+		SetIsProperty(stricmp(PropertyValue,"Yes")==0);
+		return true;
+	}
+	return CryFactory::SetProperty(PropertyName,PropertyValue);
 }
 
 
 CryPropertyList *CodeFactory::PropertyNames() const
 {
-    CryPropertyList *pn = CryFactory::PropertyNames();
-    pn->AddPropertyByName("Name",this);
-    pn->AddPropertyByName("Products",this);
-    pn->AddPropertyByName("IsPointer",this);
-    pn->AddPropertyByName("IsProperty",this);
-    return pn;
-    //  pn->AddOwned(new CryString("Values"));
+	CryPropertyList *pn = CryFactory::PropertyNames();
+	pn->AddPropertyByName("Name",this);
+	pn->AddPropertyByName("Products",this);
+	pn->AddPropertyByName("IsPointer",this);
+	pn->AddPropertyByName("IsProperty",this);
+	return pn;
+	//  pn->AddOwned(new CryString("Values"));
 };
 bool CodeFactory::HasProperty(const CryPropertyParser &PropertyName) const
 {
-    return(PropertyName=="Name") ||
-    (PropertyName=="Products") ||
-    (PropertyName=="IsPointer") ||
-    (PropertyName=="IsProperty") ||
-    CryFactory::HasProperty(PropertyName);
+	return(PropertyName=="Name") ||
+	(PropertyName=="Products") ||
+	(PropertyName=="IsPointer") ||
+	(PropertyName=="IsProperty") ||
+	CryFactory::HasProperty(PropertyName);
 }
 bool CodeFactory::GetIsPropertyContainer(const CryPropertyParser &PropertyName) const
 {
-    if (PropertyName=="Products")
-        return true;
-    return CryFactory::GetIsPropertyContainer(PropertyName);
+	if (PropertyName=="Products")
+		return true;
+	return CryFactory::GetIsPropertyContainer(PropertyName);
 }
 
 CryObject *CodeFactory::Create(CryStream &FromStream)
 {
-    throw(CryException("Not Implemented"));
+	throw(CryException("Not Implemented"));
 }
 
