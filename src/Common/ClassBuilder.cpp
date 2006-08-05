@@ -742,6 +742,7 @@ void ClassBuilder::AddClassInstance(const char *ClassType,const char *ClassName,
 				n.printf("%d",count);
 				i->SetProperty("Count",n);
 				i->SetProperty("IsProperty",IsProperty ? "Yes" : "No");
+				i->SetProperty("IsPointer",IsPointer ? "Yes" : "No");
 				i->SetProperty("IsArrayPointer",IsArrayPointer ? "Yes" : "No");
 				if (HasDefault)
 				{

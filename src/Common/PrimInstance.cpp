@@ -211,26 +211,26 @@ const char *PrimInstance::GetProperty(const CryPropertyParser &PropertyName,CryS
     if (PropertyName=="ArrayPointer")
     {
         if (IsArrayPointer)
-            Result = "yes";
-        else
-            Result = "no";
-        return Result.AsPChar();
-    }
-    return CodeFactory::GetProperty(PropertyName,Result);
+			Result = "Yes";
+		else
+			Result = "No";
+		return Result.AsPChar();
+	}
+	return CodeFactory::GetProperty(PropertyName,Result);
 }
 /*! returns true if the class in question has the property */
 bool PrimInstance::HasProperty(const CryPropertyParser &PropertyName) const
 {
-    return (PropertyName=="Type") ||
-           (PropertyName=="Default") ||
-           (PropertyName=="Count") ||
-           (PropertyName=="ArrayPointer") ||
-           CodeFactory::HasProperty(PropertyName);
+	return (PropertyName=="Type") ||
+		   (PropertyName=="Default") ||
+		   (PropertyName=="Count") ||
+		   (PropertyName=="ArrayPointer") ||
+		   CodeFactory::HasProperty(PropertyName);
 }
 /*! The count of the properties a class has */
 int PrimInstance::GetPropertyCount() const
 {
-    return CodeFactory::GetPropertyCount() + 4;
+	return CodeFactory::GetPropertyCount() + 4;
 }
 /*! Make a list of all property names, the function is called from the parent class through each inheritance until it reaches this class, at which point a list is created and filled with any properties on the way back through the inheritance */
 CryPropertyList *PrimInstance::PropertyNames() const
@@ -279,25 +279,25 @@ bool PrimInstance::SetProperty(const CryPropertyParser &PropertyName,const char 
 
 const char *PrimInstance::Code_AssignDefaultValue(CryString &Result) const
 {
-    Result = "";
-    if (GetIsPointer())
-    {
-        if (GetCount()>1)
-            if (eType==Char)
-                Result.printf("*%s[i] = %s", GetName(), DefaultValue.AsPChar());// default value will be something like 'c'
-            else
-                Result.printf("*%s[i] = %s", GetName(), DefaultValue.AsPChar());
-        else
-            Result.printf("*%s = %s",GetName(),DefaultValue.AsPChar());
-    }
-    else
-    {
-        if (eType==Char && GetCount()>1)
-            Result.printf("\n\tstrncpy(%s,\"%s\",%s_LEN);",GetName(),DefaultValue.AsPChar(),GetName());
-        else
-            if (GetCount()>1)
-            {
-                Result.printf("%s[i] = %s",GetName(),DefaultValue.AsPChar());
+	Result = "";
+	if (GetIsPointer())
+	{
+		if (GetCount()>1)
+			if (eType==Char)
+				Result.printf("*%s[i] = %s", GetName(), DefaultValue.AsPChar());// default value will be something like 'c'
+			else
+				Result.printf("*%s[i] = %s", GetName(), DefaultValue.AsPChar());
+		else
+			Result.printf("*%s = %s",GetName(),DefaultValue.AsPChar());
+	}
+	else
+	{
+		if (eType==Char && GetCount()>1)
+			Result.printf("\n\tstrncpy(%s,\"%s\",%s_LEN);",GetName(),DefaultValue.AsPChar(),GetName());
+		else
+			if (GetCount()>1)
+			{
+				Result.printf("%s[i] = %s",GetName(),DefaultValue.AsPChar());
             }
             else
             {
