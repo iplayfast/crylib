@@ -57,7 +57,6 @@
         <property category="win32.Debug_Build.win32b.bcc32" name="option.Od.enabled" value="1"/>
         <property category="win32.Debug_Build.win32b.bcc32" name="option.Q.enabled" value="1"/>
         <property category="win32.Debug_Build.win32b.bcc32" name="option.infomsgs.enabled" value="1"/>
-        <property category="win32.Debug_Build.win32b.bcc32" name="option.k.enabled" value="1"/>
         <property category="win32.Debug_Build.win32b.bcc32" name="option.n.arg.1" value="..\..\bin\debug"/>
         <property category="win32.Debug_Build.win32b.bcc32" name="option.n.arg.merge" value="0"/>
         <property category="win32.Debug_Build.win32b.bcc32" name="option.n.enabled" value="1"/>
@@ -194,6 +193,7 @@
           <property category="win32.*.win32b.bcc32" name="option.align-5.enabled" value="0"/>
           <property category="win32.*.win32b.bcc32" name="option.b.enabled" value="0"/>
           <property category="win32.*.win32b.bcc32" name="option.disablewarns.enabled" value="0"/>
+          <property category="win32.*.win32b.bcc32" name="option.k.enabled" value="1"/>
           <property category="win32.*.win32b.bcc32" name="option.n.arg.merge" value="1"/>
           <property category="win32.*.win32b.bcc32" name="option.n.enabled" value="0"/>
           <property category="win32.*.win32b.bcc32" name="option.noregistervars.enabled" value="0"/>
@@ -412,6 +412,7 @@
           <property category="win32.*.win32b.ilink32" name="option.j.arg.7" value="C:\Crystal\CryObject\ClassBuilder\vcl"/>
           <property category="win32.*.win32b.ilink32" name="option.j.arg.merge" value="1"/>
           <property category="win32.*.win32b.ilink32" name="option.j.enabled" value="0"/>
+          <property category="win32.*.win32b.ilink32" name="option.q.enabled" value="0"/>
           <property category="win32.*.win32b.ilink32" name="option.w.enabled" value="0"/>
           <property category="win32.*.win32b.ilink32" name="param.libfiles.1" value="$(LIBRARIES)"/>
           <property category="win32.*.win32b.ilink32" name="param.libfiles.2" value="import32.lib"/>

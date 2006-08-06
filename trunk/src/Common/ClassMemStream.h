@@ -116,7 +116,8 @@ public:
     virtual size_t Tell() const;
     virtual bool Eof() const;
     virtual int CompareLogical(int CompareType,const CryObject *Test) const;
-    int Compare(const CryMemStream *MemStream) const;
+	virtual int Compare(const CryMemStream *MemStream) const;
+
     virtual bool IsOpen()  const;
     virtual bool Open(const char *Name,const char *Operation,bool ExceptOnError=true);
     virtual void Close(bool ExceptOnError=true);

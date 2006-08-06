@@ -41,7 +41,7 @@ using namespace std;
 
 ClassHeaderFactory::ClassHeaderFactory(CodeFactory *Parent) : CodeFactory(Parent,TClassHeaderFactory)
 {
-    SetSortValue(1);
+    SetSortValue(0X0001000);
     AddProduct(TClassHeaderFactory);
     AddProduct(TConstructorStart);
     AddProduct(TConstructorEnd);

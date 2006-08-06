@@ -300,15 +300,15 @@ int CryContainer::CompareLogical(int CompareType,const CryObject *Test) const
 {
     return 0;
 }
-bool CryContainer::LessThen(int CompareType,CryObject *Test) const
+bool CryContainer::LessThen(int CompareType,const CryObject *Test) const
 {
-    return false;
+	return false;
 }
-bool CryContainer::GreaterThen(int CompareType,CryObject *Test) const
+bool CryContainer::GreaterThen(int CompareType,const CryObject *Test) const
 {
-    return false;
+	return false;
 }
-bool CryContainer::EqualTo(int CompareType,CryObject *Test) const
+bool CryContainer::EqualTo(int CompareType,const CryObject *Test) const
 {
     return true;
 }

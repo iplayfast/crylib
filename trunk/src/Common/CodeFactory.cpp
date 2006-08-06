@@ -147,32 +147,32 @@ void CodeFactory::Sort(int SortType)
         NewArray[i] = GetFactory(i);
     }
     int Lowest = -1;
-    int SortValue = 100000;
-    CodeFactory *cf;
-    for (int i=0;i<GetMaxCount();i++) {
-        for (int j=0;j<GetMaxCount();j++) {
-            cf = (CodeFactory *)NewArray[j];
-            if (cf) {
-                if (Lowest==-1) {
-                    Lowest = j;
-                    SortValue = cf->GetSortValue();
-                } else
-                    if (cf->GetSortValue() < SortValue) {
-                    SortValue = cf->GetSortValue();
-                    Lowest = j;
-                }
-            }
-        }
-        SetFactory(i,NewArray[Lowest]);
-        NewArray[Lowest] = 0;
-        SortValue = 100000;
-        Lowest = -1;
-    }
-    delete []NewArray;
+	int SortValue = MAXINT;
+	CodeFactory *cf;
+	for (int i=0;i<GetMaxCount();i++) {
+		for (int j=0;j<GetMaxCount();j++) {
+			cf = (CodeFactory *)NewArray[j];
+			if (cf) {
+				if (Lowest==-1) {
+					Lowest = j;
+					SortValue = cf->GetSortValue();
+				} else
+					if (cf->GetSortValue() < SortValue) {
+					SortValue = cf->GetSortValue();
+					Lowest = j;
+				}
+			}
+		}
+		SetFactory(i,NewArray[Lowest]);
+		NewArray[Lowest] = 0;
+		SortValue = MAXINT;
+		Lowest = -1;
+	}
+	delete []NewArray;
 };
 void CodeFactory::SetSortValue(int v)
 {
-    SortValue = v;
+	SortValue = v;
 }
 int CodeFactory::GetSortValue() const
 {

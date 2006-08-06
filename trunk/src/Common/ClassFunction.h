@@ -50,9 +50,9 @@ public:
     void Parse(const char *Name);
     CryFunctionDef(const char *_ReturnType, const char *_FunctionName,bool _IsConst = false,bool _IsVirtual = false,bool _IsPure = false);
     virtual int CompareLogical(int CompareType,const CryObject *Test) const;
-    virtual bool LessThen(int CompareType,CryObject *Test)const;
-    virtual bool GreaterThen(int CompareType,CryObject *Test)const;
-    virtual bool EqualTo(int CompareType,CryObject *Test)const;
+    virtual bool LessThen(int CompareType,const CryObject *Test)const;
+	virtual bool GreaterThen(int CompareType,const CryObject *Test)const;
+	virtual bool EqualTo(int CompareType,const CryObject *Test)const;
     virtual int GetPropertyCount() const;
 	virtual bool HasProperty(const CryPropertyParser &PropertyName) const;
 	virtual CryPropertyList* PropertyNames() const;

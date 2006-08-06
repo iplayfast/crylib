@@ -697,15 +697,15 @@ void ClassBuilder::SetBaseClass(const char *Type,bool AddStubs,bool AddVirtuals,
     /* We add these functions just to make things easier */
     if (!AbstractFunctions)
         AbstractFunctions = new CryFunctionDefList();
+    AbstractFunctions->AddOwned(new CryFunctionDef(
+                               "virtual CryList *PropertyNames() const = 0;"));
 	AbstractFunctions->AddOwned(new CryFunctionDef(
-							   "virtual const char *GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const = 0;"));
+							   "virtual void CopyTo(CryObject &Dest) const = 0;"));
 	AbstractFunctions->AddOwned(new CryFunctionDef(
 							   "virtual bool SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue) = 0;"));
 	AbstractFunctions->AddOwned(new CryFunctionDef(
-							   "virtual void CopyTo(CryObject &Dest) const = 0;"));
-    AbstractFunctions->AddOwned(new CryFunctionDef(
-                               "virtual CryList *PropertyNames() const = 0;"));
-    //AbstractFunctions->Add(new CryFunctionDef(
+							   "virtual const char *GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const = 0;"));
+	//AbstractFunctions->Add(new CryFunctionDef(
     //                         "virtual CryObject *Dup() const = 0;"));
 
     InheritType = Type;
@@ -949,12 +949,30 @@ void ClassBuilder::SaveHeaderBody(CryStream &ToStreamHeader,CryStream &ToStreamB
 
 void ClassBuilder::SaveSource()	// will save the source under Filename.h and Filename.cpp and Filename.xml
 {
-    CryString fn = Filename;
+/*{
+CompositeIterator  ci(this);
+	if (ci.GotoFirst()) {
+		do
+		{
+		CryObject *o;
+			if (ci.IsCryObject())
+			{
+				o = (CryObject *)ci.Get();
+					if (o-Sortable()) {
+						o->Sort(0);
+					}
+				
+			}
+		}   while(ci.GotoNext());
+	}
+
+} */
+CryString fn = Filename;
     if (Filename =="")
         throw CryException("filename must be assigned before saving source (body must include header, so we need to know header's name)");
     fn += ".h";
     CryFileStream header;
-    //fn = "stdout";
+	//fn = "stdout";
     header.Open(fn,"w",true);
 
     fn = Filename;
@@ -1011,7 +1029,7 @@ ContainerFactory::ContainerFactory(CodeFactory *Parent,CryContainer *c) : CodeFa
 ============================================================================*/
 PropertyFactory::PropertyFactory(CodeFactory *Parent,const CryString *n,const CryString *v) : CodeFactory(Parent,TPropertyFactory)
 {
-    SetSortValue(9);
+	SetSortValue(0X00090000);
     SetName(*n);
     Value = *v;
     AddProduct("Property");
@@ -1035,7 +1053,7 @@ const CryString *PropertyFactory::GetPropertyValue()
 
 HeaderFactory::HeaderFactory(CodeFactory *Parent,CryFunctionDefList *AbstractFunctions) : CodeFactory(Parent,"HeaderFactory")
 {
-    SetSortValue(0);
+	SetSortValue(0);
     AddProduct("Header");
     AddFactory(new IncludesFactory(this));
     AddFactory(new ClassHeaderFactory(this));
@@ -1102,7 +1120,7 @@ CryObject *HeaderFactory::Create(const CryPropertyParser &PropertyName,CodeFacto
 ============================================================================*/
 FooterFactory::FooterFactory(CodeFactory *Parent) : CodeFactory(Parent,"FooterFactory")
 {
-    SetSortValue(100);
+	SetSortValue(MAXINT-100);
     AddProduct(TFooter);
 }
 
@@ -1131,7 +1149,7 @@ CryObject *FooterFactory::Create(const CryPropertyParser &PropertyName,CodeFacto
 ============================================================================*/
 IncludesFactory::IncludesFactory(CodeFactory *Parent) : CodeFactory(Parent,"IncludesFactory")
 {
-    SetSortValue(1);
+	SetSortValue(0X0001000);
     AddProduct("Includes");
 }
 
@@ -1260,7 +1278,7 @@ CryObject *IncludesFactory::Create(const CryPropertyParser &PropertyName,CodeFac
 InheritedFactory::InheritedFactory(CodeFactory *Parent,CryFunctionDef &_Func) : CodeFactory(Parent,TInheritedFactory)
 {
     Func = new CryFunctionDef(_Func);
-    SetSortValue(12);
+    SetSortValue(0X00120000);
     AddProduct(TInheritedFactory);
 }
 	/// will return a property represented as an object, useful for classes which contain properties that are dynamically allocated, as a property that is dynamic is a CryObject and therefore callable
@@ -1325,7 +1343,8 @@ bool InheritedFactory::SetProperty(const CryPropertyParser &PropertyName,const c
 {
 	if (PropertyName=="Function")
     {
-        Func->Parse(PropertyValue);
+		Func->Parse(PropertyValue);
+		this->SetSortValue(0x0012000 + Func->FunctionName.HashValue());
         return true;
     }
     return CodeFactory::HasProperty(PropertyName);

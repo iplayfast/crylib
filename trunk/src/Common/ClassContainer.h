@@ -111,9 +111,9 @@ public:
 	virtual int Compare2(int CompareType,const EmptyObject *First,const EmptyObject *Second) const;
 	// Compare to another Object
 	virtual int CompareLogical(int CompareType,const CryObject *Test) const;
-	virtual bool LessThen(int CompareType,CryObject *Test) const;
-	virtual bool GreaterThen(int CompareType,CryObject *Test) const;
-	virtual bool EqualTo(int CompareType,CryObject *Test) const;
+	virtual bool LessThen(int CompareType,const CryObject *Test) const;
+	virtual bool GreaterThen(int CompareType,const CryObject *Test) const;
+	virtual bool EqualTo(int CompareType,const CryObject *Test) const;
 #ifdef VALIDATING
 
 	virtual bool Test(bool Verbose,CryObject &Object,bool  (CallBack)(bool Verbose,const char *Result,bool fail));
