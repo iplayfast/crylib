@@ -132,9 +132,10 @@ virtual int GetPropertyCount() const;
     /* TODO : Impliment */
     virtual void Sort(int CompareType=0);
     virtual int CompareLogical(int CompareType,const CryObject *Test) const;
-    virtual bool LessThen(int CompareType,CryObject *Test) const;
-    virtual bool GreaterThen(int CompareType,CryObject *Test)const;
-    virtual bool EqualTo(int CompareType,CryObject *Test)const;
+    virtual bool LessThen(int CompareType,const CryObject *Test) const;
+	virtual bool GreaterThen(int CompareType,const CryObject *Test)const;
+	virtual bool EqualTo(int CompareType,const CryObject *Test)const;
+	virtual int HashValue()const;
 }
 ;//CryString
 #endif	// TCryString

@@ -308,7 +308,37 @@ CryString::operator const char *() const
 {
     return (const char *)GetRaw();
 }
-
+// creates a hash value of [a..z,A..Z,0..9,_]
+int CryString::HashValue()const
+{
+const char *c = (const char *)GetRaw();
+int e = Length();
+int Hash = 0;
+	for(int i=0;i<e;i++)
+	{
+	Hash *=63;
+		if (*c>='a' && *c<='z') {
+			Hash += *c - 'a';
+		}
+		else
+		{
+			if (*c>='A' && *c<='Z') {
+				Hash += *c - 'A' +  26;
+			}
+			else
+			{
+				if (*c>='0' && *c<='9') {
+					Hash += *c - '0' + 52;
+				}
+				else if (*c=='_') {
+						Hash += 63;
+					 }
+			}
+		}
+		c++;
+	}
+	return Hash;
+}
 size_t CryString::Read(CryStream *ToStream) const
 {
     return Read(ToStream,Size());
@@ -462,17 +492,17 @@ int CryString::CompareLogical(int CompareType,const CryObject *Test) const
     }
     return 0;
 }
-bool CryString::LessThen(int CompareType,CryObject *Test) const
+bool CryString::LessThen(int CompareType,const CryObject *Test) const
 {
-    int i = CompareLogical(CompareType,Test);
-    return (i<0);
+	int i = CompareLogical(CompareType,Test);
+	return (i<0);
 }
-bool CryString::GreaterThen(int CompareType,CryObject *Test)const
+bool CryString::GreaterThen(int CompareType,const CryObject *Test)const
 {
-    int i = CompareLogical(CompareType,Test);
-    return (i>0);
+	int i = CompareLogical(CompareType,Test);
+	return (i>0);
 }
-bool CryString::EqualTo(int CompareType,CryObject *Test)const
+bool CryString::EqualTo(int CompareType,const CryObject *Test)const
 {
     int i = CompareLogical(CompareType,Test);
     return (i==0);

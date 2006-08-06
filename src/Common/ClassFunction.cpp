@@ -87,18 +87,18 @@ CryFunctionDef::~CryFunctionDef()
 	//
 }
 
-bool CryFunctionDef::LessThen(int CompareType,CryObject *Test) const
+bool CryFunctionDef::LessThen(int CompareType,const CryObject *Test) const
 {
-    int c = CompareLogical(CompareType,Test);
-    return (c<0);
+	int c = CompareLogical(CompareType,Test);
+	return (c<0);
 }
-bool CryFunctionDef::GreaterThen(int CompareType,CryObject *Test) const
+bool CryFunctionDef::GreaterThen(int CompareType,const CryObject *Test) const
 {
-    int c = CompareLogical(CompareType,Test);
-    return (c>0);
+	int c = CompareLogical(CompareType,Test);
+	return (c>0);
 }
 
-bool CryFunctionDef::EqualTo(int CompareType,CryObject *Test) const
+bool CryFunctionDef::EqualTo(int CompareType,const CryObject *Test) const
 {
     int c = CompareLogical(CompareType,Test);
     return (c==0);

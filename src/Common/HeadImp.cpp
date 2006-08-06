@@ -88,13 +88,9 @@ void HeadImp::SetImp(const char *v)
 /**
  * Clear the implementation and header code
  */
- HeadImp *gHeadImp;
 void HeadImp::Clear()
 {
-if (this->ObjectID==47) { gHeadImp = this;
-	
-}
-    Head->Clear();
+	Head->Clear();
     Imp->Clear();
 }
 

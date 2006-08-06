@@ -28,7 +28,7 @@
 #define FILEDEL	"/"
 #endif
 
-#define DEBUG
+//#define DEBUG
 
 extern "C" bool CallBack(const char *Result,bool fail);
 
@@ -70,9 +70,12 @@ bool IsAbstract() const { return true; }
 #define StdFunctionsNoDup(ClassName,BaseClass)	StdFunctionsClassName(ClassName) StdFunctionsChildClassName(ClassName)  StdFunctionsIsA(ClassName,BaseClass) StdFunctionsIsAbstractFalse()
 
 extern int gdebug;
-
 namespace Crystal
 {
+#ifndef MAXINT
+#define MAXINT 0X7FFFFFFF
+#endif
+
 using namespace std;
 
 //#define VALIDATING
@@ -315,6 +318,8 @@ public:
 
 	CryObject &operator =(const CryObject &From);
 	CryObject &operator =(const CryObject *From);
+	virtual bool Sortable() const { return false;}
+	virtual void Sort(int CompareType=0) { };
 
 #ifdef VALIDATING
 

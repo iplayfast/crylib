@@ -613,7 +613,25 @@ CryObject *CryFactory::GetCopyOfPropertyAsObject(const CryPropertyParser &Proper
 {
     return CryContainer::GetCopyOfPropertyAsObject(PropertyName);
 }
-
+void CryFactory::Sort(int CompareType)
+{
+	CryFactory **Array;
+bool finished=false;	// simple bubble sort, re-implement a better sort when I have more time
+	while(!finished)
+	{
+	finished =true;
+		for(int i=0;i<MaxCount-1;i++)
+		{
+			if (Compare(CompareType,Array[i],Array[i+1])<0)
+			{
+			CryFactory *f = Array[i];
+				Array[i] = Array[i+1];
+				Array[i+1] = f;
+				finished = false;
+            }
+        }
+	}
+}
 
 const char * CryFactory::GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const
 {
@@ -810,7 +828,7 @@ bool CompositeIterator::GotoNext()
 	return true;
 
 
-	if (VisitingContainer)
+/*	if (VisitingContainer)
 	{
 		VisitingContainer = false;
 		VisitContainer = false;
@@ -831,14 +849,14 @@ bool CompositeIterator::GotoNext()
 			return GotoNext();
 		else
 			return false;
-	}
+	}*/
 }
 
 /// After GotoFirst the iterator will be pointing to a non-container that is the first possible item, (wether contained[subcontained] or not)
 bool CompositeIterator::GotoFirst()
 {
 	return (VisitingContainer = true);//Stack->I->GotoFirst());
-
+/*
 	if (VisitContainer && Stack->I->IsContainer())
 	{
 		VisitingContainer = true;
@@ -854,6 +872,7 @@ bool CompositeIterator::GotoFirst()
 	}
 	else
 		return GotoNext();
+*/		
 }
 
 EmptyObject *CompositeIterator::GetAtIterator() const

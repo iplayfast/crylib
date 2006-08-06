@@ -331,9 +331,21 @@ int CryPropertyList::Compare(int CompareType,const CryObject *Test1,const CryObj
 			if (Test1->IsA(TCryProperty))
 			{
 			CryProperty *p = (CryProperty *)Test1;
-				return (p->GetName()->EqualTo(CompareType,t2)==0);
+				return (p->GetName()->EqualTo(CompareType,t2));
 			}
 		}
+		else
+		{
+			if (Test2->IsA(TCryProperty)) {
+			const CryString *Name = ((CryProperty *)Test2)->GetName();
+			if (Test1->IsA(TCryProperty))
+			{
+			CryProperty *p = (CryProperty *)Test1;
+				return (p->GetName()->EqualTo(CompareType,Name));
+			}
+
+			}
+        }
 	}
 	return -1;
 }

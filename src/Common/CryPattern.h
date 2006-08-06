@@ -383,179 +383,181 @@ our things will always be CryObjects
 		virtual void RemoveAtIterator(Iterator *I)
 		{
 			return;
-        };
-        virtual size_t Count() const
-        {
-            return 0;
-        };
-        virtual void Clear()
-        {}
-        ;
-        virtual EmptyObject *Add(EmptyObject *Item,size_t Size)
-        {
-            return 0;
-        };
-        virtual EmptyObject *AddOwned(EmptyObject *Item,size_t Size)
-        {
-            return 0;
-        };
-        virtual CryObject *Add(CryObject *Item)
-        {
-            return 0;
-        }
-        ;    // returns Item
-        virtual CryObject *AddOwned(CryObject *Item)
-        {
-            return 0;
-        }
-        ;   // gives ownership to list
-        virtual void SetItemOwnerShip(Iterator *I,bool Owned)
-        {}
-        ;
-        virtual bool GetItemOwnerShip(const Iterator *I) const
-        {
-            return false;
-        };
-        virtual size_t GetItemSize(Iterator *I) const
-        {
-            return 0;
-        };
-        virtual bool LoadAsText(Iterator *I,CryString &FromStream)
-        {
-            return false;
-        };
-        virtual bool SaveAsText(Iterator *I,CryString &ToStream) const
-        {
-            return false;
-        };
-    protected:
-        CryFactory *GetFactory(int n) const
-        {
-            if (n<MaxCount)
-                return Array[n];
-            else
-                throw CryException("Out of range");
-        }
-        void SetFactory(int n,CryFactory *f) const
-        {
-            if (n<MaxCount)
-                Array[n]=f;
-        }
-    public:
-        // The factory part
-        virtual CryObject *Create(const CryPropertyParser &PropertyName,CryObject *Parent);
-        virtual CryList *GetProducts() const;
-        //void AddFactory(Factory *f);
-        virtual const char *Describe() const
-        {
-            return TCryFactory;
-        }
-        virtual bool CanCreate(const CryPropertyParser &PropertyName) const;
-        virtual void GetEleType(CryString &Result) const
-        {
-            Result = TCryFactory;
-        }
-        // The Factory Holder part
-        int GetMaxCount() const
-        {
-            return MaxCount;
-        }
-        CryFactory()
-        {
-            MaxCount = 0;
-            Array = new CryFactory*[0];
-            //Array[0] = new Factory();// default No Factories;
-        };
-        void DeleteFactoryDescribed(const char *Description);
-        void DeleteHeldFactories();
-        ~CryFactory();
-        /// Newest factory is always added as the first
-        void AddFactory(CryFactory *f);
-        virtual CryObject *Create(const char *FactoryName,const CryPropertyParser &PropertyName,CryObject *Parent=0);
-        virtual CryObject *Create(CryStream &s)
-        {
-            return CryObject::Create(s);
-        }
-        virtual const char *Describe(const char *FactoryName) const
-        {
-            return TCryFactory;
-        }
-        // Crystal Stuff
-        virtual Iterator *_CreateIterator() const
-        {
-            return new FactoryIterator(this);
-        }
-        FactoryIterator *CreateIterator() const
-        {
-            return(FactoryIterator *)_CreateIterator();
-        }
-        virtual void DeleteIterator(Iterator *I) const
-        {
-            delete I;
-        }
-        virtual CryFactory *FindFactory(const char *FactoryName) const;
-        virtual CryFactory *GetFactory(const Iterator *I) const
-        {
-            FactoryIterator *fi = (FactoryIterator *)I;
-            if (fi->Index<0 || fi->Index>=MaxCount)
-                throw CryException("Range Error");
-            return Array[fi->Index];
-        };
+		};
+		virtual size_t Count() const
+		{
+			return 0;
+		};
+		virtual void Clear()
+		{}
+		;
+		virtual EmptyObject *Add(EmptyObject *Item,size_t Size)
+		{
+			return 0;
+		};
+		virtual EmptyObject *AddOwned(EmptyObject *Item,size_t Size)
+		{
+			return 0;
+		};
+		virtual CryObject *Add(CryObject *Item)
+		{
+			return 0;
+		}
+		;    // returns Item
+		virtual CryObject *AddOwned(CryObject *Item)
+		{
+			return 0;
+		}
+		;   // gives ownership to list
+		virtual void SetItemOwnerShip(Iterator *I,bool Owned)
+		{}
+		;
+		virtual bool GetItemOwnerShip(const Iterator *I) const
+		{
+			return false;
+		};
+		virtual size_t GetItemSize(Iterator *I) const
+		{
+			return 0;
+		};
+		virtual bool LoadAsText(Iterator *I,CryString &FromStream)
+		{
+			return false;
+		};
+		virtual bool SaveAsText(Iterator *I,CryString &ToStream) const
+		{
+			return false;
+		};
+	protected:
+		CryFactory *GetFactory(int n) const
+		{
+			if (n<MaxCount)
+				return Array[n];
+			else
+				throw CryException("Out of range");
+		}
+		void SetFactory(int n,CryFactory *f) const
+		{
+			if (n<MaxCount)
+				Array[n]=f;
+		}
+	public:
+		// The factory part
+		virtual CryObject *Create(const CryPropertyParser &PropertyName,CryObject *Parent);
+		virtual CryList *GetProducts() const;
+		//void AddFactory(Factory *f);
+		virtual const char *Describe() const
+		{
+			return TCryFactory;
+		}
+		virtual bool CanCreate(const CryPropertyParser &PropertyName) const;
+		virtual void GetEleType(CryString &Result) const
+		{
+			Result = TCryFactory;
+		}
+		// The Factory Holder part
+		int GetMaxCount() const
+		{
+			return MaxCount;
+		}
+		CryFactory()
+		{
+			MaxCount = 0;
+			Array = new CryFactory*[0];
+			//Array[0] = new Factory();// default No Factories;
+		};
+		void DeleteFactoryDescribed(const char *Description);
+		void DeleteHeldFactories();
+		~CryFactory();
+		/// Newest factory is always added as the first
+		void AddFactory(CryFactory *f);
+		virtual CryObject *Create(const char *FactoryName,const CryPropertyParser &PropertyName,CryObject *Parent=0);
+		virtual CryObject *Create(CryStream &s)
+		{
+			return CryObject::Create(s);
+		}
+		virtual const char *Describe(const char *FactoryName) const
+		{
+			return TCryFactory;
+		}
+		// Crystal Stuff
+		virtual Iterator *_CreateIterator() const
+		{
+			return new FactoryIterator(this);
+		}
+		FactoryIterator *CreateIterator() const
+		{
+			return(FactoryIterator *)_CreateIterator();
+		}
+		virtual void DeleteIterator(Iterator *I) const
+		{
+			delete I;
+		}
+		virtual CryFactory *FindFactory(const char *FactoryName) const;
+		virtual CryFactory *GetFactory(const Iterator *I) const
+		{
+			FactoryIterator *fi = (FactoryIterator *)I;
+			if (fi->Index<0 || fi->Index>=MaxCount)
+				throw CryException("Range Error");
+			return Array[fi->Index];
+		};
 
-        virtual bool GotoFirst(Iterator *I) const
-        {
-            FactoryIterator *fi = (FactoryIterator *)I;
-            fi->Index = 0;
-            return MaxCount > 0;
-        }   // returns true if success
-        /// abstract function used by subclasses to go to the Prev element of a container (list or array doesn't matter)
-        virtual bool GotoPrev(Iterator *I) const
-        {
-            FactoryIterator *fi = (FactoryIterator *)I;
-            if (fi->Index>0)
-                fi->Index--;
-            else
-                return false;
-            return MaxCount > fi->Index;
-        }   // returns true if success
-        /// abstract function used by subclasses to go to the Next element of a container (list or array doesn't matter)
-        virtual bool GotoNext(Iterator *I) const
-        {
-            FactoryIterator *fi = (FactoryIterator *)I;
-            if (fi->Index<MaxCount-1)
-                fi->Index++;
-            else
-                return false;
-            return true;
-        }   // returns true if success
-        /// abstract function used by subclasses to go to the last element of a container (list or array doesn't matter)
-        virtual bool GotoLast(Iterator *Iterator) const     // returns true if success
-        {
-            FactoryIterator *fi = (FactoryIterator *)Iterator;
-            fi->Index = MaxCount-1;
-            return MaxCount > 0;
-        }   // returns true if success
-        /// abstract function used by subclasses to get a pointer to the first element of a container (list or array doesn't matter)
-        virtual bool IsEmpty(const Iterator *I) const
-        {
-            return MaxCount < 1;
-        }
-        virtual bool IsCryObject(const Iterator *I) const
-        {
-            return MaxCount!=0;
-        }
+		virtual bool GotoFirst(Iterator *I) const
+		{
+			FactoryIterator *fi = (FactoryIterator *)I;
+			fi->Index = 0;
+			return MaxCount > 0;
+		}   // returns true if success
+		/// abstract function used by subclasses to go to the Prev element of a container (list or array doesn't matter)
+		virtual bool GotoPrev(Iterator *I) const
+		{
+			FactoryIterator *fi = (FactoryIterator *)I;
+			if (fi->Index>0)
+				fi->Index--;
+			else
+				return false;
+			return MaxCount > fi->Index;
+		}   // returns true if success
+		/// abstract function used by subclasses to go to the Next element of a container (list or array doesn't matter)
+		virtual bool GotoNext(Iterator *I) const
+		{
+			FactoryIterator *fi = (FactoryIterator *)I;
+			if (fi->Index<MaxCount-1)
+				fi->Index++;
+			else
+				return false;
+			return true;
+		}   // returns true if success
+		/// abstract function used by subclasses to go to the last element of a container (list or array doesn't matter)
+		virtual bool GotoLast(Iterator *Iterator) const     // returns true if success
+		{
+			FactoryIterator *fi = (FactoryIterator *)Iterator;
+			fi->Index = MaxCount-1;
+			return MaxCount > 0;
+		}   // returns true if success
+		/// abstract function used by subclasses to get a pointer to the first element of a container (list or array doesn't matter)
+		virtual bool IsEmpty(const Iterator *I) const
+		{
+			return MaxCount < 1;
+		}
+		virtual bool IsCryObject(const Iterator *I) const
+		{
+			return MaxCount!=0;
+		}
+	virtual bool Sortable() const { return true;}
+	virtual void Sort(int CompareType=0);
 
-    };
+	};
 
 /*! CryOFactory will attempt to create CryObject classes if other classes aren't able to fit the bill*/
 
 #define TCryOFactory "CryOFactory"
-    class CryOFactory : public CryFactory {
-    public:
-        StdFunctions(CryOFactory,CryFactory);
+	class CryOFactory : public CryFactory {
+	public:
+		StdFunctions(CryOFactory,CryFactory);
 
-        virtual CryObject *Create(const char *FactoryName,const CryPropertyParser &PropertyName,CryObject *Parent=0);
-        virtual CryObject *Create(const CryPropertyParser &PropertyName,CryObject *Parent);
+		virtual CryObject *Create(const char *FactoryName,const CryPropertyParser &PropertyName,CryObject *Parent=0);
+		virtual CryObject *Create(const CryPropertyParser &PropertyName,CryObject *Parent);
         virtual CryObject *Create(CryStream &s)
         {
             return CryFactory::Create(s);
@@ -1290,7 +1292,7 @@ for object passing.
                 ch.DoMacro(4,Macro,&Operand);
 
             } catch (CryException &e) {
-                printf("\nunexpected exception, %s\n",(const char *)e);
+				printf("\nunexpected exception, %s\n",(const char *)e);
             }
         };
     };
@@ -1328,7 +1330,7 @@ for object passing.
         StdFunctionsNoDup(CompositeIterator,CryContainer::Iterator);
         virtual CryObject *Dup() const
         {
-            throw CryException("Dup not implemented for CompositeIterator");
+			throw CryException("Dup not implemented for CompositeIterator");
         } // creates a duplicate of this object
 
         CompositeIterator(const CryContainer *oc );
