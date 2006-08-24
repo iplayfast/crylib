@@ -937,7 +937,7 @@ test()
 {
 	CryTemplateArray<int> a;
 		a.SetSize(100);
-		a.IsA("shit");
+		a.IsA("TCryArray");
 		CryString str;
 		a.GetEleType(str);
 

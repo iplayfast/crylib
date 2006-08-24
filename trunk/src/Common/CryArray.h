@@ -217,6 +217,7 @@ class CryTemplateArray : public CrySimpleArray
 	{
 		return false;
 	};
+public:	// temporary public until debugged	
 	virtual void GetEleType(CryString &Result) const
 	{
 		Result = typename;
@@ -239,7 +240,7 @@ StdFunctionsNoDup(CryTemplateArray,CrySimpleArray);
 	}
 
 	virtual void RemoveAtIterator(Iterator *LI);
-	virtual bool LoadAsText(int i,CryString &FromStream);
+	bool LoadAsText(int i,CryString &FromStream);
 	virtual bool SaveAsText(int i,CryString &ToStream) const;
 	void SetItem(unsigned int i,EmptyObject *Item,bool IsCryObject,bool IsOwned,size_t Size)
 	{
