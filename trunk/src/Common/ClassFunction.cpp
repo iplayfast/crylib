@@ -305,44 +305,46 @@ bool  CryFunctionDef::SetProperty(const CryPropertyParser &PropertyName,const ch
 void CryFunctionDef::Parse(const char *Name)
 {
     CryString s;
-    s = Name;
-    s.Delete(s.Pos(";"),1);
-    s.Trim();
-    IsComment = (s.Pos("//")==0);
-    if (IsComment)
-    {
-        IsPure = true;  // usually more useful then not
-        IsConst = IsVirtual = false;
-        FunctionName = s;
-        return;
-    }
+	s = Name;
+	int p = s.Pos(";");
+	if (p>-1)
+		s.Delete(p,1);
+	s.Trim();
+	IsComment = (s.Pos("//")==0);
+	if (IsComment)
+	{
+		IsPure = true;  // usually more useful then not
+		IsConst = IsVirtual = false;
+		FunctionName = s;
+		return;
+	}
 
-    int lastbracket = s.Pos(")");
-    if (s.Pos("= 0")>lastbracket)
-    {
-        s.Delete(s.Pos("= 0"),s.GetLength());
-        IsPure = true;
-    }
-    else
-        IsPure = false;
-    if (s.Pos("const",lastbracket)>lastbracket)
-    {
-        IsConst = true;
-        s.Delete(lastbracket + 1,s.GetLength());
-    }
-    else
-        IsConst = false;
-    if (s.Pos("virtual ")==0)
-    {
-        s.Delete(0,8);
-        IsVirtual = true;
-    }
-    else
-        IsVirtual = false;
-    int i = s.Pos("(") - 1;
-    if (i<0)
-        i = 0;
-    const char *o,*c = s;
+	int lastbracket = s.Pos(")");
+	if (s.Pos("= 0")>lastbracket)
+	{
+		s.Delete(s.Pos("= 0"),s.GetLength());
+		IsPure = true;
+	}
+	else
+		IsPure = false;
+	if (s.Pos("const",lastbracket)>lastbracket)
+	{
+		IsConst = true;
+		s.Delete(lastbracket + 1,s.GetLength());
+	}
+	else
+		IsConst = false;
+	if (s.Pos("virtual ")==0)
+	{
+		s.Delete(0,8);
+		IsVirtual = true;
+	}
+	else
+		IsVirtual = false;
+	int i = s.Pos("(") - 1;
+	if (i<0)
+		i = 0;
+	const char *o,*c = s;
     o = c;
     c += i;
     while(c>o)

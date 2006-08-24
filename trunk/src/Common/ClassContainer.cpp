@@ -242,7 +242,8 @@ CryFunctionDefList *CryContainer::GetFunctions(const char *Type) const
     s += "virtual bool HasProperty(const char *PropertyName) const;";
     s += "virtual int GetPropertyCount() const;";
     s += "virtual const char* ChildClassName() const;";
-    s += "virtual CryList *PropertyNames() const;";
+	s += "virtual CryPropertyList* PropertyNames() const;";
+
 #ifdef VALIDATING
 
     s += "virtual bool Test(bool Verbose,CryObject &Object,bool  (CallBack)(bool Verbose,const char *Result,bool fail));";

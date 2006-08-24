@@ -29,6 +29,7 @@ namespace Crystal
 #ifndef TPrimInstance
 #define TPrimInstance "PrimInstance"
 
+
 class PrimInstance : public CodeFactory
 {
     enum _eType { Unknown,Char,CharStr,Int,Float,Bool,Double,Class };

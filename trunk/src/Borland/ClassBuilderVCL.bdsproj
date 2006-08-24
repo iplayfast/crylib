@@ -168,12 +168,13 @@
           <property category="win32.*.win32b.bcc32" name="option.Hc.enabled" value="1"/>
           <property category="win32.*.win32b.bcc32" name="option.He.enabled" value="0"/>
           <property category="win32.*.win32b.bcc32" name="option.Hs.enabled" value="1"/>
-          <property category="win32.*.win32b.bcc32" name="option.I.arg.1" value="$(BDS)\include"/>
-          <property category="win32.*.win32b.bcc32" name="option.I.arg.2" value="$(BDS)\include\dinkumware"/>
-          <property category="win32.*.win32b.bcc32" name="option.I.arg.3" value="$(BDS)\include\vcl"/>
-          <property category="win32.*.win32b.bcc32" name="option.I.arg.4" value="..\Common\zlib"/>
-          <property category="win32.*.win32b.bcc32" name="option.I.arg.5" value="..\Common"/>
-          <property category="win32.*.win32b.bcc32" name="option.I.arg.6" value="..\..\src"/>
+          <property category="win32.*.win32b.bcc32" name="option.I.arg.1" value="..\..\.."/>
+          <property category="win32.*.win32b.bcc32" name="option.I.arg.2" value="$(BDS)\include"/>
+          <property category="win32.*.win32b.bcc32" name="option.I.arg.3" value="$(BDS)\include\dinkumware"/>
+          <property category="win32.*.win32b.bcc32" name="option.I.arg.4" value="$(BDS)\include\vcl"/>
+          <property category="win32.*.win32b.bcc32" name="option.I.arg.5" value="..\Common\zlib"/>
+          <property category="win32.*.win32b.bcc32" name="option.I.arg.6" value="..\Common"/>
+          <property category="win32.*.win32b.bcc32" name="option.I.arg.7" value="..\..\src"/>
           <property category="win32.*.win32b.bcc32" name="option.I.arg.merge" value="1"/>
           <property category="win32.*.win32b.bcc32" name="option.I.enabled" value="1"/>
           <property category="win32.*.win32b.bcc32" name="option.Jgi.enabled" value="0"/>
@@ -218,183 +219,189 @@
           <property category="win32.*.win32b.bcc32" name="option.w.enabled" value="0"/>
           <property category="win32.*.win32b.bcc32" name="option.xd.enabled" value="1"/>
           <property category="win32.*.win32b.bcc32" name="option.xp.enabled" value="1"/>
-          <property category="win32.*.win32b.dcc32" name="option.I.arg.1" value="..\Common\zlib"/>
-          <property category="win32.*.win32b.dcc32" name="option.I.arg.2" value="..\Common"/>
-          <property category="win32.*.win32b.dcc32" name="option.I.arg.3" value="..\..\..\Borland Studio Projects\CryObject\ClassBuilder\vcl"/>
-          <property category="win32.*.win32b.dcc32" name="option.I.arg.4" value="..\..\..\..\crylib\src\Borland"/>
-          <property category="win32.*.win32b.dcc32" name="option.I.arg.5" value="..\..\src"/>
-          <property category="win32.*.win32b.dcc32" name="option.I.arg.6" value="..\..\..\Borland Studio Projects\CryObject\src"/>
-          <property category="win32.*.win32b.dcc32" name="option.I.arg.7" value="C:\Crystal\CryObject\ClassBuilder\vcl"/>
+          <property category="win32.*.win32b.dcc32" name="option.I.arg.1" value="..\..\.."/>
+          <property category="win32.*.win32b.dcc32" name="option.I.arg.2" value="..\Common\zlib"/>
+          <property category="win32.*.win32b.dcc32" name="option.I.arg.3" value="..\Common"/>
+          <property category="win32.*.win32b.dcc32" name="option.I.arg.4" value="..\..\..\Borland Studio Projects\CryObject\ClassBuilder\vcl"/>
+          <property category="win32.*.win32b.dcc32" name="option.I.arg.5" value="..\..\..\..\crylib\src\Borland"/>
+          <property category="win32.*.win32b.dcc32" name="option.I.arg.6" value="..\..\src"/>
+          <property category="win32.*.win32b.dcc32" name="option.I.arg.7" value="..\..\..\Borland Studio Projects\CryObject\src"/>
+          <property category="win32.*.win32b.dcc32" name="option.I.arg.8" value="C:\Crystal\CryObject\ClassBuilder\vcl"/>
           <property category="win32.*.win32b.dcc32" name="option.I.arg.merge" value="1"/>
           <property category="win32.*.win32b.dcc32" name="option.I.enabled" value="0"/>
-          <property category="win32.*.win32b.dcc32" name="option.O.arg.1" value="..\Common\zlib"/>
-          <property category="win32.*.win32b.dcc32" name="option.O.arg.2" value="..\Common"/>
-          <property category="win32.*.win32b.dcc32" name="option.O.arg.3" value="..\..\..\Borland Studio Projects\CryObject\ClassBuilder\vcl"/>
-          <property category="win32.*.win32b.dcc32" name="option.O.arg.4" value="..\..\..\..\crylib\src\Borland"/>
-          <property category="win32.*.win32b.dcc32" name="option.O.arg.5" value="..\..\src"/>
-          <property category="win32.*.win32b.dcc32" name="option.O.arg.6" value="..\..\..\Borland Studio Projects\CryObject\src"/>
-          <property category="win32.*.win32b.dcc32" name="option.O.arg.7" value="C:\Crystal\CryObject\ClassBuilder\vcl"/>
+          <property category="win32.*.win32b.dcc32" name="option.O.arg.1" value="..\..\.."/>
+          <property category="win32.*.win32b.dcc32" name="option.O.arg.2" value="..\Common\zlib"/>
+          <property category="win32.*.win32b.dcc32" name="option.O.arg.3" value="..\Common"/>
+          <property category="win32.*.win32b.dcc32" name="option.O.arg.4" value="..\..\..\Borland Studio Projects\CryObject\ClassBuilder\vcl"/>
+          <property category="win32.*.win32b.dcc32" name="option.O.arg.5" value="..\..\..\..\crylib\src\Borland"/>
+          <property category="win32.*.win32b.dcc32" name="option.O.arg.6" value="..\..\src"/>
+          <property category="win32.*.win32b.dcc32" name="option.O.arg.7" value="..\..\..\Borland Studio Projects\CryObject\src"/>
+          <property category="win32.*.win32b.dcc32" name="option.O.arg.8" value="C:\Crystal\CryObject\ClassBuilder\vcl"/>
           <property category="win32.*.win32b.dcc32" name="option.O.arg.merge" value="1"/>
           <property category="win32.*.win32b.dcc32" name="option.O.enabled" value="0"/>
-          <property category="win32.*.win32b.dcc32" name="option.R.arg.1" value="..\Common\zlib"/>
-          <property category="win32.*.win32b.dcc32" name="option.R.arg.2" value="..\Common"/>
-          <property category="win32.*.win32b.dcc32" name="option.R.arg.3" value="..\..\..\Borland Studio Projects\CryObject\ClassBuilder\vcl"/>
-          <property category="win32.*.win32b.dcc32" name="option.R.arg.4" value="..\..\..\..\crylib\src\Borland"/>
-          <property category="win32.*.win32b.dcc32" name="option.R.arg.5" value="..\..\src"/>
-          <property category="win32.*.win32b.dcc32" name="option.R.arg.6" value="..\..\..\Borland Studio Projects\CryObject\src"/>
-          <property category="win32.*.win32b.dcc32" name="option.R.arg.7" value="C:\Crystal\CryObject\ClassBuilder\vcl"/>
+          <property category="win32.*.win32b.dcc32" name="option.R.arg.1" value="..\..\.."/>
+          <property category="win32.*.win32b.dcc32" name="option.R.arg.2" value="..\Common\zlib"/>
+          <property category="win32.*.win32b.dcc32" name="option.R.arg.3" value="..\Common"/>
+          <property category="win32.*.win32b.dcc32" name="option.R.arg.4" value="..\..\..\Borland Studio Projects\CryObject\ClassBuilder\vcl"/>
+          <property category="win32.*.win32b.dcc32" name="option.R.arg.5" value="..\..\..\..\crylib\src\Borland"/>
+          <property category="win32.*.win32b.dcc32" name="option.R.arg.6" value="..\..\src"/>
+          <property category="win32.*.win32b.dcc32" name="option.R.arg.7" value="..\..\..\Borland Studio Projects\CryObject\src"/>
+          <property category="win32.*.win32b.dcc32" name="option.R.arg.8" value="C:\Crystal\CryObject\ClassBuilder\vcl"/>
           <property category="win32.*.win32b.dcc32" name="option.R.arg.merge" value="1"/>
           <property category="win32.*.win32b.dcc32" name="option.R.enabled" value="0"/>
-          <property category="win32.*.win32b.dcc32" name="option.U.arg.1" value="..\Common\zlib"/>
-          <property category="win32.*.win32b.dcc32" name="option.U.arg.10" value="$(BDS)\lib\obj"/>
-          <property category="win32.*.win32b.dcc32" name="option.U.arg.2" value="..\Common"/>
-          <property category="win32.*.win32b.dcc32" name="option.U.arg.3" value="..\..\..\Borland Studio Projects\CryObject\ClassBuilder\vcl"/>
-          <property category="win32.*.win32b.dcc32" name="option.U.arg.4" value="..\..\..\..\crylib\src\Borland"/>
-          <property category="win32.*.win32b.dcc32" name="option.U.arg.5" value="..\..\src"/>
-          <property category="win32.*.win32b.dcc32" name="option.U.arg.6" value="..\..\..\Borland Studio Projects\CryObject\src"/>
-          <property category="win32.*.win32b.dcc32" name="option.U.arg.7" value="C:\Crystal\CryObject\ClassBuilder\vcl"/>
-          <property category="win32.*.win32b.dcc32" name="option.U.arg.8" value="C:\Documents and Settings\Chris\My Documents\Borland Studio Projects"/>
-          <property category="win32.*.win32b.dcc32" name="option.U.arg.9" value="$(BDS)\lib"/>
+          <property category="win32.*.win32b.dcc32" name="option.U.arg.1" value="..\..\.."/>
+          <property category="win32.*.win32b.dcc32" name="option.U.arg.10" value="$(BDS)\lib"/>
+          <property category="win32.*.win32b.dcc32" name="option.U.arg.11" value="$(BDS)\lib\obj"/>
+          <property category="win32.*.win32b.dcc32" name="option.U.arg.2" value="..\Common\zlib"/>
+          <property category="win32.*.win32b.dcc32" name="option.U.arg.3" value="..\Common"/>
+          <property category="win32.*.win32b.dcc32" name="option.U.arg.4" value="..\..\..\Borland Studio Projects\CryObject\ClassBuilder\vcl"/>
+          <property category="win32.*.win32b.dcc32" name="option.U.arg.5" value="..\..\..\..\crylib\src\Borland"/>
+          <property category="win32.*.win32b.dcc32" name="option.U.arg.6" value="..\..\src"/>
+          <property category="win32.*.win32b.dcc32" name="option.U.arg.7" value="..\..\..\Borland Studio Projects\CryObject\src"/>
+          <property category="win32.*.win32b.dcc32" name="option.U.arg.8" value="C:\Crystal\CryObject\ClassBuilder\vcl"/>
+          <property category="win32.*.win32b.dcc32" name="option.U.arg.9" value="C:\Documents and Settings\Chris\My Documents\Borland Studio Projects"/>
           <property category="win32.*.win32b.dcc32" name="option.U.arg.merge" value="1"/>
           <property category="win32.*.win32b.dcc32" name="option.U.enabled" value="1"/>
           <property category="win32.*.win32b.dcc32" name="param.filenames.merge" value="1"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.1" value="..\Common\zlib"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.10" value="Studio"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.100" value="Studio"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.101" value="Projects\CryObject\ClassBuilder\vcl"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.102" value="..\..\..\Borland"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.103" value="Studio"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.104" value="Projects\CryObject\src"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.105" value="..\..\..\Borland"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.106" value="Studio"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.107" value="Projects\CryObject\ClassBuilder\vcl"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.108" value="..\..\..\Borland"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.109" value="Studio"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.11" value="Projects\CryObject\src"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.110" value="Projects\CryObject\src"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.111" value="..\..\..\Borland"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.112" value="Studio"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.113" value="Projects\CryObject\ClassBuilder\vcl"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.114" value="..\..\..\Borland"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.115" value="Studio"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.116" value="Projects\CryObject\src"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.117" value="..\..\..\Borland"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.118" value="Studio"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.119" value="Projects\CryObject\ClassBuilder\vcl"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.12" value="..\..\..\Borland"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.120" value="..\..\..\Borland"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.121" value="Studio"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.122" value="Projects\CryObject\src"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.123" value="..\..\..\..\crylib\src\Borland"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.124" value="..\..\src"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.125" value="..\src"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.126" value="C:\Crystal\CryObject\ClassBuilder\vcl"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.13" value="Studio"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.14" value="Projects\CryObject\src"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.15" value="..\..\..\Borland"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.16" value="Studio"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.17" value="Projects\CryObject\src"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.18" value="..\..\..\Borland"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.19" value="Studio"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.2" value="..\Common"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.20" value="Projects\CryObject\src"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.21" value="..\..\..\Borland"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.22" value="Studio"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.23" value="Projects\CryObject\src"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.24" value="..\..\..\Borland"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.25" value="Studio"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.26" value="Projects\CryObject\src"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.27" value="..\..\..\Borland"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.28" value="Studio"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.29" value="Projects\CryObject\src"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.3" value="..\..\..\Borland"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.30" value="..\..\..\Borland"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.31" value="Studio"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.32" value="Projects\CryObject\src"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.33" value="..\..\..\Borland"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.34" value="Studio"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.35" value="Projects\CryObject\src"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.36" value="..\..\..\Borland"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.37" value="Studio"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.38" value="Projects\CryObject\src"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.39" value="..\..\..\Borland"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.4" value="Studio"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.40" value="Studio"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.41" value="Projects\CryObject\src"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.42" value="..\..\..\Borland"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.43" value="Studio"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.44" value="Projects\CryObject\src"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.45" value="..\..\..\Borland"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.46" value="Studio"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.47" value="Projects\CryObject\src"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.48" value="..\..\..\Borland"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.49" value="Studio"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.5" value="Projects\CryObject\src"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.50" value="Projects\CryObject\src"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.51" value="..\..\..\Borland"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.52" value="Studio"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.53" value="Projects\CryObject\src"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.54" value="..\..\..\Borland"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.55" value="Studio"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.56" value="Projects\CryObject\src"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.57" value="..\..\..\Borland"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.58" value="Studio"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.59" value="Projects\CryObject\src"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.6" value="..\..\..\Borland"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.60" value="..\..\..\Borland"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.61" value="Studio"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.62" value="Projects\CryObject\src"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.63" value="..\..\..\Borland"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.64" value="Studio"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.65" value="Projects\CryObject\src"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.66" value="..\..\..\Borland"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.67" value="Studio"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.68" value="Projects\CryObject\src"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.69" value="..\..\..\Borland"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.7" value="Studio"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.70" value="Studio"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.71" value="Projects\CryObject\src"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.72" value="..\..\..\Borland"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.73" value="Studio"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.74" value="Projects\CryObject\src"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.75" value="..\..\..\Borland"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.76" value="Studio"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.77" value="Projects\CryObject\src"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.78" value="..\..\..\Borland"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.79" value="Studio"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.8" value="Projects\CryObject\src"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.80" value="Projects\CryObject\src"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.81" value="..\..\..\Borland"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.82" value="Studio"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.83" value="Projects\CryObject\src"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.84" value="..\..\..\Borland"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.85" value="Studio"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.86" value="Projects\CryObject\src"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.87" value="..\..\..\Borland"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.88" value="Studio"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.89" value="Projects\CryObject\src"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.9" value="..\..\..\Borland"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.90" value="..\..\..\Borland"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.91" value="Studio"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.92" value="Projects\CryObject\src"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.93" value="..\..\..\Borland"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.94" value="Studio"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.95" value="Projects\CryObject\src"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.96" value="..\..\..\Borland"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.97" value="Studio"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.98" value="Projects\CryObject\src"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.99" value="..\..\..\Borland"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.1" value="..\..\.."/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.10" value="..\..\..\Borland"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.100" value="..\..\..\Borland"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.101" value="Studio"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.102" value="Projects\CryObject\ClassBuilder\vcl"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.103" value="..\..\..\Borland"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.104" value="Studio"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.105" value="Projects\CryObject\src"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.106" value="..\..\..\Borland"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.107" value="Studio"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.108" value="Projects\CryObject\ClassBuilder\vcl"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.109" value="..\..\..\Borland"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.11" value="Studio"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.110" value="Studio"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.111" value="Projects\CryObject\src"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.112" value="..\..\..\Borland"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.113" value="Studio"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.114" value="Projects\CryObject\ClassBuilder\vcl"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.115" value="..\..\..\Borland"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.116" value="Studio"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.117" value="Projects\CryObject\src"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.118" value="..\..\..\Borland"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.119" value="Studio"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.12" value="Projects\CryObject\src"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.120" value="Projects\CryObject\ClassBuilder\vcl"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.121" value="..\..\..\Borland"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.122" value="Studio"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.123" value="Projects\CryObject\src"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.124" value="..\..\..\..\crylib\src\Borland"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.125" value="..\..\src"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.126" value="..\src"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.127" value="C:\Crystal\CryObject\ClassBuilder\vcl"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.13" value="..\..\..\Borland"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.14" value="Studio"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.15" value="Projects\CryObject\src"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.16" value="..\..\..\Borland"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.17" value="Studio"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.18" value="Projects\CryObject\src"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.19" value="..\..\..\Borland"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.2" value="..\Common\zlib"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.20" value="Studio"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.21" value="Projects\CryObject\src"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.22" value="..\..\..\Borland"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.23" value="Studio"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.24" value="Projects\CryObject\src"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.25" value="..\..\..\Borland"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.26" value="Studio"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.27" value="Projects\CryObject\src"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.28" value="..\..\..\Borland"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.29" value="Studio"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.3" value="..\Common"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.30" value="Projects\CryObject\src"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.31" value="..\..\..\Borland"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.32" value="Studio"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.33" value="Projects\CryObject\src"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.34" value="..\..\..\Borland"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.35" value="Studio"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.36" value="Projects\CryObject\src"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.37" value="..\..\..\Borland"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.38" value="Studio"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.39" value="Projects\CryObject\src"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.4" value="..\..\..\Borland"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.40" value="..\..\..\Borland"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.41" value="Studio"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.42" value="Projects\CryObject\src"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.43" value="..\..\..\Borland"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.44" value="Studio"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.45" value="Projects\CryObject\src"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.46" value="..\..\..\Borland"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.47" value="Studio"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.48" value="Projects\CryObject\src"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.49" value="..\..\..\Borland"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.5" value="Studio"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.50" value="Studio"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.51" value="Projects\CryObject\src"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.52" value="..\..\..\Borland"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.53" value="Studio"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.54" value="Projects\CryObject\src"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.55" value="..\..\..\Borland"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.56" value="Studio"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.57" value="Projects\CryObject\src"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.58" value="..\..\..\Borland"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.59" value="Studio"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.6" value="Projects\CryObject\src"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.60" value="Projects\CryObject\src"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.61" value="..\..\..\Borland"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.62" value="Studio"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.63" value="Projects\CryObject\src"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.64" value="..\..\..\Borland"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.65" value="Studio"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.66" value="Projects\CryObject\src"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.67" value="..\..\..\Borland"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.68" value="Studio"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.69" value="Projects\CryObject\src"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.7" value="..\..\..\Borland"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.70" value="..\..\..\Borland"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.71" value="Studio"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.72" value="Projects\CryObject\src"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.73" value="..\..\..\Borland"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.74" value="Studio"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.75" value="Projects\CryObject\src"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.76" value="..\..\..\Borland"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.77" value="Studio"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.78" value="Projects\CryObject\src"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.79" value="..\..\..\Borland"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.8" value="Studio"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.80" value="Studio"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.81" value="Projects\CryObject\src"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.82" value="..\..\..\Borland"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.83" value="Studio"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.84" value="Projects\CryObject\src"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.85" value="..\..\..\Borland"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.86" value="Studio"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.87" value="Projects\CryObject\src"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.88" value="..\..\..\Borland"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.89" value="Studio"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.9" value="Projects\CryObject\src"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.90" value="Projects\CryObject\src"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.91" value="..\..\..\Borland"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.92" value="Studio"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.93" value="Projects\CryObject\src"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.94" value="..\..\..\Borland"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.95" value="Studio"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.96" value="Projects\CryObject\src"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.97" value="..\..\..\Borland"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.98" value="Studio"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.99" value="Projects\CryObject\src"/>
           <property category="win32.*.win32b.idl2cpp" name="option.I.arg.merge" value="1"/>
           <property category="win32.*.win32b.idl2cpp" name="option.I.enabled" value="1"/>
           <property category="win32.*.win32b.ilink32" name="container.SelectedWarnings.containerenabled" value="1"/>
           <property category="win32.*.win32b.ilink32" name="option.-w-.enabled" value="0"/>
           <property category="win32.*.win32b.ilink32" name="option.Gi.enabled" value="0"/>
-          <property category="win32.*.win32b.ilink32" name="option.L.arg.1" value="..\Common\zlib"/>
-          <property category="win32.*.win32b.ilink32" name="option.L.arg.2" value="..\Common"/>
-          <property category="win32.*.win32b.ilink32" name="option.L.arg.3" value="..\..\src"/>
-          <property category="win32.*.win32b.ilink32" name="option.L.arg.4" value="$(BDS)\lib"/>
-          <property category="win32.*.win32b.ilink32" name="option.L.arg.5" value="$(BDS)\lib\obj"/>
-          <property category="win32.*.win32b.ilink32" name="option.L.arg.6" value="$(BDS)\lib\psdk"/>
+          <property category="win32.*.win32b.ilink32" name="option.L.arg.1" value="..\..\.."/>
+          <property category="win32.*.win32b.ilink32" name="option.L.arg.2" value="..\Common\zlib"/>
+          <property category="win32.*.win32b.ilink32" name="option.L.arg.3" value="..\Common"/>
+          <property category="win32.*.win32b.ilink32" name="option.L.arg.4" value="..\..\src"/>
+          <property category="win32.*.win32b.ilink32" name="option.L.arg.5" value="$(BDS)\lib"/>
+          <property category="win32.*.win32b.ilink32" name="option.L.arg.6" value="$(BDS)\lib\obj"/>
+          <property category="win32.*.win32b.ilink32" name="option.L.arg.7" value="$(BDS)\lib\psdk"/>
           <property category="win32.*.win32b.ilink32" name="option.L.arg.merge" value="1"/>
           <property category="win32.*.win32b.ilink32" name="option.L.enabled" value="1"/>
           <property category="win32.*.win32b.ilink32" name="option.Tpd.enabled" value="0"/>
@@ -403,13 +410,14 @@
           <property category="win32.*.win32b.ilink32" name="option.aa.enabled" value="1"/>
           <property category="win32.*.win32b.ilink32" name="option.ap.enabled" value="0"/>
           <property category="win32.*.win32b.ilink32" name="option.dynamicrtl.enabled" value="1"/>
-          <property category="win32.*.win32b.ilink32" name="option.j.arg.1" value="..\Common\zlib"/>
-          <property category="win32.*.win32b.ilink32" name="option.j.arg.2" value="..\Common"/>
-          <property category="win32.*.win32b.ilink32" name="option.j.arg.3" value="..\..\..\Borland Studio Projects\CryObject\ClassBuilder\vcl"/>
-          <property category="win32.*.win32b.ilink32" name="option.j.arg.4" value="..\..\..\..\crylib\src\Borland"/>
-          <property category="win32.*.win32b.ilink32" name="option.j.arg.5" value="..\..\src"/>
-          <property category="win32.*.win32b.ilink32" name="option.j.arg.6" value="..\..\..\Borland Studio Projects\CryObject\src"/>
-          <property category="win32.*.win32b.ilink32" name="option.j.arg.7" value="C:\Crystal\CryObject\ClassBuilder\vcl"/>
+          <property category="win32.*.win32b.ilink32" name="option.j.arg.1" value="..\..\.."/>
+          <property category="win32.*.win32b.ilink32" name="option.j.arg.2" value="..\Common\zlib"/>
+          <property category="win32.*.win32b.ilink32" name="option.j.arg.3" value="..\Common"/>
+          <property category="win32.*.win32b.ilink32" name="option.j.arg.4" value="..\..\..\Borland Studio Projects\CryObject\ClassBuilder\vcl"/>
+          <property category="win32.*.win32b.ilink32" name="option.j.arg.5" value="..\..\..\..\crylib\src\Borland"/>
+          <property category="win32.*.win32b.ilink32" name="option.j.arg.6" value="..\..\src"/>
+          <property category="win32.*.win32b.ilink32" name="option.j.arg.7" value="..\..\..\Borland Studio Projects\CryObject\src"/>
+          <property category="win32.*.win32b.ilink32" name="option.j.arg.8" value="C:\Crystal\CryObject\ClassBuilder\vcl"/>
           <property category="win32.*.win32b.ilink32" name="option.j.arg.merge" value="1"/>
           <property category="win32.*.win32b.ilink32" name="option.j.enabled" value="0"/>
           <property category="win32.*.win32b.ilink32" name="option.q.enabled" value="0"/>
@@ -470,6 +478,7 @@
         <FILE FILENAME="..\Common\CryPattern.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="CryPattern" FORMNAME="" DESIGNCLASS=""/>
         <FILE FILENAME="..\Common\HugeInt.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="HugeInt" FORMNAME="" DESIGNCLASS=""/>
         <FILE FILENAME="..\Common\Unit1.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="Unit1" FORMNAME="" DESIGNCLASS="" ADDITIONAL="..\Common\Unit1.h"/>
+        <FILE FILENAME="..\Common\CrySet.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="CrySet" FORMNAME="" DESIGNCLASS=""/>
       </FILELIST>
       <IDEOPTIONS>
         <VersionInfo>

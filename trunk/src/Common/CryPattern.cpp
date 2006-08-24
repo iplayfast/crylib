@@ -812,7 +812,8 @@ bool CompositeIterator::GotoNext()
 			if (!GotoFirst())
 			{
 				PopIfContainer();
-				return GotoNext();
+				return	Stack->I->GotoFirst();	// was visiting container, now go to first item inside the container
+//				return GotoNext();
 			}
 			return true;
 		}
@@ -855,7 +856,8 @@ bool CompositeIterator::GotoNext()
 /// After GotoFirst the iterator will be pointing to a non-container that is the first possible item, (wether contained[subcontained] or not)
 bool CompositeIterator::GotoFirst()
 {
-	return (VisitingContainer = true);//Stack->I->GotoFirst());
+	return	Stack->I->GotoFirst();
+	return (VisitingContainer = true);
 /*
 	if (VisitContainer && Stack->I->IsContainer())
 	{

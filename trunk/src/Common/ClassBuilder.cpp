@@ -521,7 +521,7 @@ void ClassBuilder::SetDefaultBodies(CryFunctionDefList *AbstractFunctions) // wi
 				{
 					CryString Def;
 					s->GetDeclaration(Def);
-					if (s->IsPure && (!s->IsComment) && !cf->Present(s))
+					if (/*s->IsPure && */(!s->IsComment) && !cf->Present(s))
 					{
 						CryString Declare = s->GetNPDeclaration();
 						InheritedFactory *If = (InheritedFactory *)Create(TInheritedFactory,hf);
@@ -697,14 +697,14 @@ void ClassBuilder::SetBaseClass(const char *Type,bool AddStubs,bool AddVirtuals,
     /* We add these functions just to make things easier */
     if (!AbstractFunctions)
         AbstractFunctions = new CryFunctionDefList();
-    AbstractFunctions->AddOwned(new CryFunctionDef(
-                               "virtual CryList *PropertyNames() const = 0;"));
 	AbstractFunctions->AddOwned(new CryFunctionDef(
-							   "virtual void CopyTo(CryObject &Dest) const = 0;"));
+								"virtual CryPropertyList *PropertyNames() const;"));
 	AbstractFunctions->AddOwned(new CryFunctionDef(
-							   "virtual bool SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue) = 0;"));
+							   "virtual void CopyTo(CryObject &Dest) const;"));
 	AbstractFunctions->AddOwned(new CryFunctionDef(
-							   "virtual const char *GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const = 0;"));
+								"virtual bool SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue);"));
+	AbstractFunctions->AddOwned(new CryFunctionDef(
+							"virtual const char *GetProperty(const char *PropertyName,CryString &Result) const;"));
 	//AbstractFunctions->Add(new CryFunctionDef(
     //                         "virtual CryObject *Dup() const = 0;"));
 
@@ -778,11 +778,11 @@ void ClassBuilder::AddPrimInstance(const char *PrimType,
                 n = GetName();
                 if (chf->Present(&n))
                     //		if (chf->Present(ClassName))
-                    throw CryException("Component name \"%s\" is already being used");
-                chf->AddFactory(new PrimInstance(chf,PrimType,PrimName,DefaultValue,Count,IsProperty,IsPointer,IsArrayPointer));
+					throw CryException("Component name \"%s\" is already being used");
+				chf->AddFactory(new PrimInstance(chf,PrimType,PrimName,DefaultValue,Count,IsProperty,IsPointer,IsArrayPointer));
+			}
 //                break;
-            }
-        }
+		}
         while(a.GotoNext());
 }
 
@@ -1395,27 +1395,27 @@ CryObject *InheritedFactory::Create(const CryPropertyParser &PropertyName,CodeFa
         fd.GetNPDeclaration(Tester);
         if (Header==Tester)
         {
-            Header.printf("\n");
-            Func->GetImplementedDeclaration(Parent->GetName(),s,true);
-            Implementation = s;
-            Implementation.printf("\n{");
-            {
-                CompositeIterator *ci = new CompositeIterator(Parent);
-                if (ci->GotoFirst())
-                {
-                    do
-                    {
-                        CryObject *o = (CryObject *)ci->Get();
-                        {
-                            CodeFactory *cf;
-                            const char *N;
-                            if (o->IsA(TCodeFactory))
-                            {
-                                cf = (CodeFactory *)o;
-                                if (cf->GetIsProperty())
-                                {
+			Header.printf("\n");
+			Func->GetImplementedDeclaration(Parent->GetName(),s,true);
+			Implementation = s;
+			Implementation.printf("\n{");
+			{
+				CompositeIterator *ci = new CompositeIterator(Parent);
+				if (ci->GotoFirst())
+				{
+					do
+					{
+						CryObject *o = (CryObject *)ci->Get();
+						{
+							CodeFactory *cf;
+							const char *N;
+							if (o->IsA(TCodeFactory))
+							{
+								cf = (CodeFactory *)o;
+								if (cf->GetIsProperty())
+								{
 				CryString PropertyStart;
-                                    const char *N = cf->GetName();
+									const char *N = cf->GetName();
 				if (cf->IsA(TCryProperty))
 					PropertyStart.printf("PropertyName==%s.GetName()",N);
 				else
@@ -1423,37 +1423,37 @@ CryObject *InheritedFactory::Create(const CryPropertyParser &PropertyName,CodeFa
 					PropertyStart.printf("%s.HasProperty(PropertyName)",N);
 				else
 					PropertyStart.printf("PropertyName==\"%s\"",N);
-				
-                                    if (cf->GetCount()>1)
-                                        Implementation.printf(
-                                            "\n\tif (%s)\n\t{\n\t\tif (PropertyName.GetIndex()>-1)\n\t\t Get%s(PropertyName.GetIndex(),Result);\n\telse\n\t\tthrow CryException(\"%s needs an index\");\n\t}",PropertyStart.AsPChar(),N,N);
-                                    else
-                                        Implementation.printf("\n\tif (%s)\n\t{\n#ifdef RangeChecking\n\t\tif (PropertyName.GetIndex()!=-1)\n\t\t\tthrow CryException(\"%s should not have an index\");\n#endif\n\t\tGet%s(Result);\n\t\treturn Result.AsPChar();\n\t}",PropertyStart.AsPChar(),N,N);
-				
-                                }
-                            }
-                            else
-                                if (o->IsA(TPrimInstance))
-                                {
-                                    PrimInstance *pi = (PrimInstance *)o;
-                                    const char *N;
-                                    if (pi->GetIsProperty())
-                                    {
-                                        N = pi->GetName();
-                                        if (pi->GetCount()>1)
-                                            Implementation.printf("\n\tif (PropertyName==T%s)==0)\n\t{\n\t\tResult = \"[]\"; \n\t\treturn \"*\";// indicate that it's an indexed property\n\t}",N);
-                                        else
-                                            Implementation.printf("\n\tif (PropertyName==T%s)\n\t\t{\n\t\t\tGet%s(&Result);\n\t\t\treturn Result.AsPChar();\n\t\t}",N,N);
-                                    }
-                                }
-                                else
-                                {
-                                    if (o->IsA(TClassInstance))
-                                    {
-                                        ClassInstance *AClassInstance = (ClassInstance *)o;
-                                        const char *N;
-                                        if (AClassInstance->GetIsProperty())
-                                        {
+
+									if (cf->GetCount()>1)
+										Implementation.printf(
+											"\n\tif (%s)\n\t{\n\t\tif (PropertyName.GetIndex()>-1)\n\t\t Get%s(PropertyName.GetIndex(),Result);\n\telse\n\t\tthrow CryException(\"%s needs an index\");\n\t}",PropertyStart.AsPChar(),N,N);
+									else
+										Implementation.printf("\n\tif (%s)\n\t{\n#ifdef RangeChecking\n\t\tif (PropertyName.GetIndex()!=-1)\n\t\t\tthrow CryException(\"%s should not have an index\");\n#endif\n\t\tGet%s(Result);\n\t\treturn Result.AsPChar();\n\t}",PropertyStart.AsPChar(),N,N);
+
+								}
+							}
+							else
+								if (o->IsA(TPrimInstance))
+								{
+									PrimInstance *pi = (PrimInstance *)o;
+									const char *N;
+									if (pi->GetIsProperty())
+									{
+										N = pi->GetName();
+										if (pi->GetCount()>1)
+											Implementation.printf("\n\tif (PropertyName==T%s)==0)\n\t{\n\t\tResult = \"[]\"; \n\t\treturn \"*\";// indicate that it's an indexed property\n\t}",N);
+										else
+											Implementation.printf("\n\tif (PropertyName==T%s)\n\t\t{\n\t\t\tGet%s(&Result);\n\t\t\treturn Result.AsPChar();\n\t\t}",N,N);
+									}
+								}
+								else
+								{
+									if (o->IsA(TClassInstance))
+									{
+										ClassInstance *AClassInstance = (ClassInstance *)o;
+										const char *N;
+										if (AClassInstance->GetIsProperty())
+										{
 N = AClassInstance->GetName();
 CryString PropertyStart;
 if (AClassInstance->IsA(TCryProperty))
@@ -1464,18 +1464,18 @@ else
 	else
 		PropertyStart.printf("PropertyName==T%s",N);
 
-                                            if (AClassInstance->GetCount()>1)
-                                            {
-                                                int l = strlen(N)+1;
-                                                Implementation.printf("\n\tif (%s)\n\t{\n\t\tResult = \"[]\"; \n\t\treturn \"*\";// indicate that it's an indexed property\n\t}",PropertyStart.AsPChar());
-                                                Implementation.printf("\nint i;\n\tif (::strncmp(PropertyName,T%s,%d)==0 && sscanf(PropertyName+%d,\"%d\",&i);)\n\t{\n\t\tResult = \"[]\"; \n\t\treturn \"*\";// indicate that it's an indexed property\n\t}",N,l,l+1);
+											if (AClassInstance->GetCount()>1)
+											{
+												int l = strlen(N)+1;
+												Implementation.printf("\n\tif (%s)\n\t{\n\t\tResult = \"[]\"; \n\t\treturn \"*\";// indicate that it's an indexed property\n\t}",PropertyStart.AsPChar());
+												Implementation.printf("\nint i;\n\tif (::strncmp(PropertyName,T%s,%d)==0 && sscanf(PropertyName+%d,\"%d\",&i);)\n\t{\n\t\tResult = \"[]\"; \n\t\treturn \"*\";// indicate that it's an indexed property\n\t}",N,l,l+1);
 
-                                            }
-                                            else
-                                                Implementation.printf("\n\tif (%s)\n\t\tGet%s(&Result);\n\t\t\treturn Result.AsPChar();\n\t\t}",PropertyStart.AsPChar(),N);
-                                        }
-                                    }
-                                }
+											}
+											else
+												Implementation.printf("\n\tif (%s)\n\t\tGet%s(&Result);\n\t\t\treturn Result.AsPChar();\n\t\t}",PropertyStart.AsPChar(),N);
+										}
+									}
+								}
                         }
 
                     }
@@ -1499,98 +1499,67 @@ else
         {
             Header.printf("\n");
             Func->GetImplementedDeclaration(Parent->GetName(),s,true);
-            Implementation = s;
-            Implementation.printf("\n{\n");
-            {
-                CompositeIterator *ci = new CompositeIterator(Parent);
-                if (ci->GotoFirst())
-                {
-                    do
-                    {
-                        CryObject *o = (CryObject *)ci->Get();
-                        {
-                            CodeFactory *cf;
-                            if (o->IsA(TCodeFactory))
-                            {
-                                cf = (CodeFactory *)o;
-                                if (cf->GetIsProperty())
-                                {
-                                    const char *N = cf->GetName();
-                                    if (cf->GetCount()>1)
-                                        Implementation.printf(
-                                            "\tif (PropertyName==\"%s\")\n\t{\n\t\tif (PropertyName.GetIndex()>-1)\n\t\t Set%s(PropertyName.GetIndex(),PropertyValue);\n\telse\n\t\tthrow CryException(\"%s needs an index\");\n\t}",N,N,N);
-                                    else
-                                        Implementation.printf( "\tif (PropertyName==\"%s\")\n\t{\n#ifdef RangeChecking\n\t\tif (PropertyName.GetIndex()!=-1)\n\t\t\tthrow CryException(\"%s should not have an index\");\n#endif\n\t\tSet%s(PropertyValue);\n\t\treturn true;\n\t}",N,N,N);
-                                }
-                            }
-                            else
-                                if (o->IsA(TPrimInstance))
-                                {
-                                    PrimInstance *pi = (PrimInstance *)o;
-                                    const char *N;
-                                    if (pi->GetIsProperty())
-                                    {
-                                        N = pi->GetName();
-                                        if (pi->GetCount()>1)
-                                            Implementation.printf("\n\tif (PropertyName==\"%s\")\n\t{\n\t\treturn false;// can't set an indexed property this way\n\t}",N);
-                                        else
-                                            Implementation.printf("\n\tif (PropertyName==\"%s\")\n\t\t{\n\t\t\tSet%s(&Result);\n\t\t\treturn true \n\t\t}",N,N);
-                                    }
-                                }
-
-                        }
-
-                    }
-                    while(ci->GotoNext());
-                }
-                delete(ci);
-                Implementation.printf(
-                    "\n\treturn %s::SetProperty(PropertyName,PropertyValue);\n}\n\n",
-                    cbParent->GetInheritType());
-                Clear(PropertyName);
-                SetHead(PropertyName,Header);
-                SetImp(PropertyName,Implementation);
-                Parent->AppendHead(*GetHead(PropertyName));
-                Parent->AppendImp(*GetImp(PropertyName));
-                return 0;
-            }
-
-        }
-	fd.Parse("virtual CryList *PropertyNames() const");
-	fd.GetNPDeclaration(Tester);
-	if (Header==Tester)
-	{
-        if (!Parent->IsA(TClassBuilder))
-            throw CryException("Bad Parent at PropertyNames function");
-	    ClassBuilder *p = (ClassBuilder *)Parent;
-            Clear(PropertyName);
-            Header.printf("\n");
-		Implementation = "\n\n/*!Get the names of all properties of this class*/\n";
-            Implementation += Func->GetImplementedDeclaration(Parent->GetName(),true);
-            Implementation.printf("\n{\n// get base class's properties");
-			Implementation.printf("\nCryPropertyList *Names = %s::PropertyNames();",p->GetInheritType());
-		Implementation.printf("\n// now add our own properties (if any)");
-		{
-		CryPropertyList *Names = p->Getp()->PropertyNames();
-		CryPropertyList::PropertyIterator *i = Names->CreateIterator();
-		Implementation.printf("\n\n// first, inherited properites which can be exposed by uncommenting");
-		if(i->GotoFirst())
-		{
-			do
+			Implementation = s;
+			Implementation.printf("\n{\n");
 			{
-			CryString r;
-				Implementation.printf("\n//\tNames->AddProperty(\"%s\",\"%s\");",i->GetName(),i->GetValue(r));
-			} while(i->GotoNext());
-		}
-		Names->DeleteIterator(i);
-		delete Names;
-		}
-		Implementation.printf("\n\n// next properties that are local to this class");
-
 				CompositeIterator *ci = new CompositeIterator(Parent);
 				if (ci->GotoFirst())
 				{
 					do
+					{
+						CryObject *o = (CryObject *)ci->Get();
+						if (o->IsA(TClassHeaderFactory))
+						{
+							ClassHeaderFactory *chf = (ClassHeaderFactory *)o;
+							CompositeIterator *ci = new CompositeIterator(chf);
+							if (ci->GotoFirst()) {
+								do
+								{
+								CryObject *o = (CryObject *)ci->Get();
+
+
+
+							CodeFactory *cf;
+							if (o->IsA(TCodeFactory))
+							{
+								cf = (CodeFactory *)o;
+								if (cf->GetIsProperty())
+								{
+									const char *N = cf->GetName();
+									if (cf->GetCount()>1)
+										Implementation.printf(
+											"\tif (PropertyName==\"%s\")\n\t{\n\t\tif (PropertyName.GetIndex()>-1)\n\t\t Set%s(PropertyName.GetIndex(),PropertyValue);\n\telse\n\t\tthrow CryException(\"%s needs an index\");\n\t}",N,N,N);
+									else
+										Implementation.printf( "\tif (PropertyName==\"%s\")\n\t{\n#ifdef RangeChecking\n\t\tif (PropertyName.GetIndex()!=-1)\n\t\t\tthrow CryException(\"%s should not have an index\");\n#endif\n\t\tSet%s(PropertyValue);\n\t\treturn true;\n\t}",N,N,N);
+								}
+							}
+							else
+								if (o->IsA(TPrimInstance))
+								{
+									PrimInstance *pi = (PrimInstance *)o;
+									const char *N;
+									if (pi->GetIsProperty())
+									{
+										N = pi->GetName();
+										if (pi->GetCount()>1)
+											Implementation.printf("\n\tif (PropertyName==\"%s\")\n\t{\n\t\treturn false;// can't set an indexed property this way\n\t}",N);
+										else
+											Implementation.printf("\n\tif (PropertyName==\"%s\")\n\t\t{\n\t\t\tSet%s(&Result);\n\t\t\treturn true \n\t\t}",N,N);
+									}
+								}
+								}   while(ci->GotoNext());
+
+							}
+							delete(ci);
+						}
+
+					}
+					while(ci->GotoNext());
+				}
+
+
+
+/*					do
 					{
 						CryObject *o = (CryObject *)ci->Get();
 						{
@@ -1601,9 +1570,108 @@ else
 								if (cf->GetIsProperty())
 								{
 									const char *N = cf->GetName();
-					Implementation.printf("\n\tNames->AddOwned(new CryString(\"%s\"));",N);
+									if (cf->GetCount()>1)
+										Implementation.printf(
+											"\tif (PropertyName==\"%s\")\n\t{\n\t\tif (PropertyName.GetIndex()>-1)\n\t\t Set%s(PropertyName.GetIndex(),PropertyValue);\n\telse\n\t\tthrow CryException(\"%s needs an index\");\n\t}",N,N,N);
+									else
+										Implementation.printf( "\tif (PropertyName==\"%s\")\n\t{\n#ifdef RangeChecking\n\t\tif (PropertyName.GetIndex()!=-1)\n\t\t\tthrow CryException(\"%s should not have an index\");\n#endif\n\t\tSet%s(PropertyValue);\n\t\treturn true;\n\t}",N,N,N);
 								}
 							}
+							else
+								if (o->IsA(TPrimInstance))
+								{
+									PrimInstance *pi = (PrimInstance *)o;
+									const char *N;
+									if (pi->GetIsProperty())
+									{
+										N = pi->GetName();
+										if (pi->GetCount()>1)
+											Implementation.printf("\n\tif (PropertyName==\"%s\")\n\t{\n\t\treturn false;// can't set an indexed property this way\n\t}",N);
+										else
+											Implementation.printf("\n\tif (PropertyName==\"%s\")\n\t\t{\n\t\t\tSet%s(&Result);\n\t\t\treturn true \n\t\t}",N,N);
+									}
+								}
+
+						}
+
+					}
+					while(ci->GotoNext());
+  				}
+  */
+				delete(ci);
+				Implementation.printf(
+					"\n\treturn %s::SetProperty(PropertyName,PropertyValue);\n}\n\n",
+					cbParent->GetInheritType());
+				Clear(PropertyName);
+				SetHead(PropertyName,Header);
+				SetImp(PropertyName,Implementation);
+                Parent->AppendHead(*GetHead(PropertyName));
+                Parent->AppendImp(*GetImp(PropertyName));
+                return 0;
+            }
+
+        }
+	fd.Parse("virtual CryPropertyList *PropertyNames() const");
+	fd.GetNPDeclaration(Tester);
+	if (Header==Tester)
+	{
+		if (!Parent->IsA(TClassBuilder))
+			throw CryException("Bad Parent at PropertyNames function");
+		ClassBuilder *p = (ClassBuilder *)Parent;
+			Clear(PropertyName);
+			Header.printf("\n");
+		Implementation = "\n\n/*!Get the names of all properties of this class*/\n";
+			Implementation += Func->GetImplementedDeclaration(Parent->GetName(),true);
+			Implementation.printf("\n{\n// get base class's properties");
+			Implementation.printf("\nCryPropertyList *Names = %s::PropertyNames();",p->GetInheritType());
+		Implementation.printf("\n// now add our own properties (if any)");
+		{
+		bool Found = false;
+		CryPropertyList *Names = p->Getp()->PropertyNames();
+		CryPropertyList::PropertyIterator *i = Names->CreateIterator();
+		if(i->GotoFirst())
+		{
+			do
+			{
+			if (!Found) {
+				Implementation.printf("\n\n// inherited properites which can be exposed by uncommenting");
+				Found = true;
+			}
+			CryString r;
+				Implementation.printf("\n//\tNames->AddProperty(\"%s\",\"%s\");",i->GetName(),i->GetValue(r));
+			} while(i->GotoNext());
+		}
+		Names->DeleteIterator(i);
+		delete Names;
+		}
+		Implementation.printf("\n\n// properties that are local to this class");
+
+				CompositeIterator *ci = new CompositeIterator(Parent);
+				if (ci->GotoFirst())
+				{
+					do
+					{
+						CryObject *o = (CryObject *)ci->Get();
+						if (o->IsA(TClassHeaderFactory))
+						{
+							ClassHeaderFactory *chf = (ClassHeaderFactory *)o;
+							CompositeIterator *ci = new CompositeIterator(chf);
+							if (ci->GotoFirst()) {
+								do
+								{
+								CryObject *o = (CryObject *)ci->Get();
+									if (o->IsA(TPrimInstance)) {
+									PrimInstance *pi = (PrimInstance *) o;
+										if (pi->GetIsProperty()) {
+
+									const char *N = pi->GetName();
+					Implementation.printf("\n\t\\\\If there is interference with parent classes then get the value manually and add.\n\tNames->AddPropertyByName(\"%s\",this);",N);
+										}
+									}
+								}   while(ci->GotoNext());
+
+							}
+							delete(ci);
 						}
 
 					}
@@ -1624,60 +1692,60 @@ else
 		if (Header == Tester)
 		{
 			if (!CanBuildProduct(TCopyToEnd))
-            {
-                AddProduct(TCopyToEnd);
-            }
+			{
+				AddProduct(TCopyToEnd);
+			}
 
-            Clear(PropertyName);
-            Header.printf("\n");
+			Clear(PropertyName);
+			Header.printf("\n");
 		Implementation = "\n/*!Copy this class and any parts of it to Dest, if possible*/";
-            Implementation = Func->GetImplementedDeclaration(Parent->GetName(),true);
-            Implementation.printf("\n{\n");
-            Implementation.printf("\n\tif (Dest.IsA(T%s))\n\t{",Parent->GetName());
+			Implementation = Func->GetImplementedDeclaration(Parent->GetName(),true);
+			Implementation.printf("\n{\n");
+			Implementation.printf("\n\tif (Dest.IsA(T%s))\n\t{",Parent->GetName());
 		Implementation.printf("\n\t\t// Copy this classes variables first");
-            Implementation.printf("\n\t\t%s *CastDest = (%s *)&Dest;",Parent->GetName(),Parent->GetName());
+			Implementation.printf("\n\t\t%s *CastDest = (%s *)&Dest;",Parent->GetName(),Parent->GetName());
 
-            //            Implementation.printf("\t\t*CastDest = *this;");
-            /*            Iterator *ci = Parent->_CreateIterator();
-            if (ci->GotoFirst())
-            {
-            do
-            {
-            CryObject *o = (CryObject *)ci->Get();
-            {
-            CodeFactory *cf;
-            CryString N;
-            if (o->IsA(TCodeFactory))
-            {
-            cf = (CodeFactory *)o;
-            N = cf->GetName();
-            N = (CryString *)cf->Create("VarName",Parent);
-            if (N!="")
-            Implementation.printf("\t\tCastDest.%s = %s;\n",N.AsPChar(),N.AsPChar());
-            }
-            }
-            }
-            while(ci->GotoNext());
-            }*/
+			//            Implementation.printf("\t\t*CastDest = *this;");
+			/*            Iterator *ci = Parent->_CreateIterator();
+			if (ci->GotoFirst())
+			{
+			do
+			{
+			CryObject *o = (CryObject *)ci->Get();
+			{
+			CodeFactory *cf;
+			CryString N;
+			if (o->IsA(TCodeFactory))
+			{
+			cf = (CodeFactory *)o;
+			N = cf->GetName();
+			N = (CryString *)cf->Create("VarName",Parent);
+			if (N!="")
+			Implementation.printf("\t\tCastDest.%s = %s;\n",N.AsPChar(),N.AsPChar());
+			}
+			}
+			}
+			while(ci->GotoNext());
+			}*/
 
-            // ToDo: Ask Factories to give implementation of variables here
-            //            Implementation.printf("\t}\n\n}\\\\%s\n\n",Func->GetFunctionName());
-            Clear(PropertyName);
-            SetHead(PropertyName,Header);
-            SetImp(PropertyName,Implementation);
-            Parent->AppendHead(*GetHead(PropertyName));
-            Parent->AppendImp(*GetImp(PropertyName));
-            GetParent()->Create(TCopyTo,Parent);
-            GetParent()->Create(TCopyToEnd,Parent);
-            return 0;
-        }
-        SetHead(PropertyName,Func->GetNPDeclaration());
-        Implementation.printf("%s\n{\n}\n",Func->GetImplementedDeclaration(Parent->GetName(),true).AsPChar());
-        SetImp(PropertyName,Implementation);
-        Parent->AppendHead(*GetHead(PropertyName));
-        Parent->AppendImp(*GetImp(PropertyName));
-        return 0;
-    }// don't return result because there might be more then one Inherited type function
-    return CodeFactory::Create(PropertyName,Parent);
+			// ToDo: Ask Factories to give implementation of variables here
+			//            Implementation.printf("\t}\n\n}\\\\%s\n\n",Func->GetFunctionName());
+			Clear(PropertyName);
+			SetHead(PropertyName,Header);
+			SetImp(PropertyName,Implementation);
+			Parent->AppendHead(*GetHead(PropertyName));
+			Parent->AppendImp(*GetImp(PropertyName));
+			GetParent()->Create(TCopyTo,Parent);
+			GetParent()->Create(TCopyToEnd,Parent);
+			return 0;
+		}
+		SetHead(PropertyName,Func->GetNPDeclaration());
+		Implementation.printf("%s\n{\n}\n",Func->GetImplementedDeclaration(Parent->GetName(),true).AsPChar());
+		SetImp(PropertyName,Implementation);
+		Parent->AppendHead(*GetHead(PropertyName));
+		Parent->AppendImp(*GetImp(PropertyName));
+		return 0;
+	}// don't return result because there might be more then one Inherited type function
+	return CodeFactory::Create(PropertyName,Parent);
 }
 
