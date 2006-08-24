@@ -303,6 +303,11 @@ bool  CodeFactory::SetProperty(const CryPropertyParser &PropertyName,const char 
 	}
 	if (PropertyName=="IsProperty") {
 		SetIsProperty(stricmp(PropertyValue,"Yes")==0);
+		if (_IsProperty)
+		{
+			AddProduct(TGetProperty);
+			AddProduct(TSetProperty);
+		}
 		return true;
 	}
 	return CryFactory::SetProperty(PropertyName,PropertyValue);

@@ -187,6 +187,7 @@ void __fastcall TClassBuilderFrm::RefreshView(void)
 			//            else
 			//              t.Insert(0,"|");
 			TreeView1->Items->AddChild(body,t.AsPChar());
+
 		}
 		s = SourceBody;
 		body = TreeView1->Items->AddChild(SourceTree,"Body:");
@@ -205,6 +206,9 @@ void __fastcall TClassBuilderFrm::RefreshView(void)
 			TreeView1->Items->AddChild(body,t.AsPChar());
 		}
 	}
+	const TTreeNode *n;
+		n = TreeView1->Items->GetFirstNode();
+		n->Expand(true);
 /*
 CryContainer::Iterator *I = ANewClass->_CreateIterator();
 	if (ANewClass->GotoFirst(I))

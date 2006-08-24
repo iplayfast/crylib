@@ -23,6 +23,7 @@
 #include "CryFuzzy.h"
 #include "CryPattern.h"
 #include "CodeFactory.h"
+#include "ClassProperty.h"
 #ifndef TClassBuilder
 
 namespace Crystal
@@ -37,8 +38,6 @@ namespace Crystal
 #define TConstructorEnd	"ConstructorEnd"
 #define TDestructorStart	"DestructorStart"
 #define TDestructorEnd	"DestructorEnd"
-#define TSetProperty "SetProperty"
-#define TGetProperty "GetProperty"
 
 
 
@@ -52,7 +51,7 @@ version can be edited or changed after the initial Create of it is done
 
 class ClassBuilder : public CodeFactory
 {
-    CryObject *p;
+	CryObject *p;
     bool _IsAbstract;	// Is this needed, since ClassBuilder only creates non-abstract classes?
     CryString InheritType;
     CryString Filename;

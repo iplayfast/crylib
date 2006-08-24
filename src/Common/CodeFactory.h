@@ -29,6 +29,8 @@ namespace Crystal {
 @author Chris Bruner
 */
 
+#define TSetProperty "SetProperty"
+#define TGetProperty "GetProperty"
 
 class CodeFactory : public CryFactory
 {

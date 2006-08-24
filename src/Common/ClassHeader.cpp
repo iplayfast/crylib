@@ -108,11 +108,11 @@ CryObject *ClassHeaderFactory::Create(const CryPropertyParser &PropertyName,Code
 		if (strcmp(PropertyName,TConstructorStart)==0)
 		{
 			CryString s;
-			s.printf("\t%s();",Parent->GetName());
-			SetHead(PropertyName,s);
+			s.printf("\t%s();",Parent->GetName());   // eg. Myclass();
+			SetHead(PropertyName,s);                 // put it in the header
 			Parent->AppendHead(*GetHead(PropertyName));
 			s.Clear();
-			s.printf("\n%s::%s()\n{",Parent->GetName(),Parent->GetName());
+			s.printf("\n%s::%s()\n{",Parent->GetName(),Parent->GetName());  //eg Myclass::Myclass()
 			SetImp(PropertyName,s);
 			Parent->AppendImp(*GetImp(PropertyName));
 			return this;

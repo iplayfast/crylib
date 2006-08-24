@@ -35,109 +35,108 @@ using namespace std;
 ============================================================================*/
 PrimInstance::PrimInstance(CodeFactory *Parent) : CodeFactory(Parent,TPrimInstance)
 {
-    eType = Unknown;
-    AddProduct(TCountDefine);
-    AddProduct(TPrimInstance);
-    AddProduct(TDeclaration);
-    AddProduct(TConstructor);
-    AddProduct(TDestructor);
-    AddProduct(TCopyTo);
-
+	eType = Unknown;
+	AddProduct(TCountDefine);
+	AddProduct(TPrimInstance);
+	AddProduct(TDeclaration);
+	AddProduct(TConstructor);
+	AddProduct(TDestructor);
+	AddProduct(TCopyTo);
 }
 PrimInstance::PrimInstance(CodeFactory *Parent,const char *PrimType,const char *PrimName,const char *_DefaultValue, int _Count,bool IsProperty,bool IsPointer,bool IsArrayPointer) : CodeFactory(Parent,TPrimInstance)
 {
-    CryString Type;
-    Type = PrimType;
-    SetName(PrimName);
-    DefaultValue = _DefaultValue;
-    CodeFactory::SetCount(_Count);
-    Type.Trim();
-    eType = Unknown; // default
-    SetIsPointer(IsPointer);
-    SetIsArrayPointer(IsArrayPointer);
-    SetType(PrimType);
-    SetCount();
-    SetDefaultValue(_DefaultValue);
-    SetIsProperty(IsProperty);
-    AddProduct(TCountDefine);
-    AddProduct(TPrimInstance);
-    AddProduct(TDeclaration);
-    AddProduct(TConstructor);
-    AddProduct(TDestructor);
-    AddProduct(TCopyTo);
-    if (IsProperty)
-    {
-        AddProduct(TGetProperty);
-        AddProduct(TSetProperty);
-    }
+	CryString Type;
+	Type = PrimType;
+	SetName(PrimName);
+	DefaultValue = _DefaultValue;
+	CodeFactory::SetCount(_Count);
+	Type.Trim();
+	eType = Unknown; // default
+	SetIsPointer(IsPointer);
+	SetIsArrayPointer(IsArrayPointer);
+	SetType(PrimType);
+	SetCount();
+	SetDefaultValue(_DefaultValue);
+	SetIsProperty(IsProperty);
+	AddProduct(TCountDefine);
+	AddProduct(TPrimInstance);
+	AddProduct(TDeclaration);
+	AddProduct(TConstructor);
+	AddProduct(TDestructor);
+	AddProduct(TCopyTo);
+	if (IsProperty)
+	{
+		AddProduct(TGetProperty);
+		AddProduct(TSetProperty);
+	}
 }
 void PrimInstance::SetDefaultValue(const char *_DefaultValue)
 {
-    DefaultValue = _DefaultValue;
-    switch(eType)
-    {
-    case Unknown:
-        throw CryException("Cannot set default value of unknown type");
-    case Char:
-        if ((DefaultValue.Length()!=3) ||((DefaultValue.AsPChar()[0]!='\'') && (DefaultValue.AsPChar()[2]!='\'')))
-        {
-            char ch = DefaultValue.AsPChar()[0];
-            if ((ch=='"')  && DefaultValue.Length()>0)
-                ch = DefaultValue.AsPChar()[1];
-            DefaultValue.Clear();
-            if (ch=='\0')
-                DefaultValue = "\'\0\'";
-            else
-                DefaultValue.printf("'%c'",ch);
-        }
-        break;
-        //    case CharStr:
-        //DefaultValue.Insert(0,"\"");
-        //DefaultValue += "\"";
-        //eak
-    case 	Int:
-        {
-            int i = 0;
-            DefaultValue.scanf("%d",&i);
-            DefaultValue.Clear();
-            DefaultValue.printf("%d",i);
-        }
-        break;
+	DefaultValue = _DefaultValue;
+	switch(eType)
+	{
+	case Unknown:
+		throw CryException("Cannot set default value of unknown type");
+	case Char:
+		if ((DefaultValue.Length()!=3) ||((DefaultValue.AsPChar()[0]!='\'') && (DefaultValue.AsPChar()[2]!='\'')))
+		{
+			char ch = DefaultValue.AsPChar()[0];
+			if ((ch=='"')  && DefaultValue.Length()>0)
+				ch = DefaultValue.AsPChar()[1];
+			DefaultValue.Clear();
+			if (ch=='\0')
+				DefaultValue = "\'\0\'";
+			else
+				DefaultValue.printf("'%c'",ch);
+		}
+		break;
+		//    case CharStr:
+		//DefaultValue.Insert(0,"\"");
+		//DefaultValue += "\"";
+		//eak
+	case 	Int:
+		{
+			int i = 0;
+			DefaultValue.scanf("%d",&i);
+			DefaultValue.Clear();
+			DefaultValue.printf("%d",i);
+		}
+		break;
 
-    case Bool:
-        if ((DefaultValue!="true") && (DefaultValue!="false"))
-            DefaultValue = "false";
-        break;
-    case Float:
-    case Double:
-        {
-            double d = 0.0;
-            DefaultValue.scanf("%lf",&d);
-            DefaultValue.Clear();
-            DefaultValue.printf("%lf",d);
-        }
-        break;
-    }
+	case Bool:
+		if ((DefaultValue!="true") && (DefaultValue!="false"))
+			DefaultValue = "false";
+		break;
+	case Float:
+	case Double:
+		{
+			double d = 0.0;
+			DefaultValue.scanf("%lf",&d);
+			DefaultValue.Clear();
+			DefaultValue.printf("%lf",d);
+		}
+		break;
+	}
 }
 void PrimInstance::SetCount()
 {
-    if (this->GetType()=="char")
-    {
-        if (GetIsPointer() && GetIsArrayPointer())
-            eType = Char;
-        else
-            if ((GetIsPointer() || GetIsArrayPointer()) && (GetCount()>1))
-                eType = CharStr;
-            else
-                eType = Char;
-    }
+	if (this->GetType()=="char")
+	{
+		if (GetIsPointer() && GetIsArrayPointer())
+			eType = Char;
+		else
+			if ((GetIsPointer() || GetIsArrayPointer()) && (GetCount()>1))
+				eType = CharStr;
+			else
+				eType = Char;
+	}
 }
 const char *PrimInstance::GetType() const
 {
-    switch(eType)
-    {
-    case Char:
-        return "char";
+	switch(eType)
+	{
+	case Char:
+		return "char";
 	case CharStr:
 		return "char";
 	case Int:
@@ -154,31 +153,31 @@ const char *PrimInstance::GetType() const
 }
 void PrimInstance::SetType(const char *PrimType)
 {
-    CryString Type(PrimType);
-    if (Type=="class")
-    {
-        eType = Class;
-    }
-    if (Type=="bool")
-    {
-        eType = Bool;
-    }
-    if (Type=="char")
-    {
-        if (GetIsPointer() && GetIsArrayPointer())
-            eType = Char;
-        else
-            if ((GetIsPointer() || GetIsArrayPointer()) && (GetCount()>1))
-                eType = CharStr;
-            else
-                eType = Char;
-    }
-    if (Type=="int")
-        eType = Int;
-    if (Type=="float")
-        eType = Float;
-    if (Type=="double")
-        eType = Double;
+	CryString Type(PrimType);
+	if (Type=="class")
+	{
+		eType = Class;
+	}
+	if (Type=="bool")
+	{
+		eType = Bool;
+	}
+	if (Type=="char")
+	{
+		if (GetIsPointer() && GetIsArrayPointer())
+			eType = Char;
+		else
+			if ((GetIsPointer() || GetIsArrayPointer()) && (GetCount()>1))
+				eType = CharStr;
+			else
+				eType = Char;
+	}
+	if (Type=="int")
+		eType = Int;
+	if (Type=="float")
+		eType = Float;
+	if (Type=="double")
+		eType = Double;
 }
 /*! will return a const pointer to the property */
 CryObject *PrimInstance::GetCopyOfPropertyAsObject(const CryPropertyParser &PropertyName) const
@@ -188,29 +187,29 @@ CryObject *PrimInstance::GetCopyOfPropertyAsObject(const CryPropertyParser &Prop
 /*! will return whether or not the property named in PropertyName is a container */
 bool PrimInstance::GetIsPropertyContainer(const CryPropertyParser &PropertyName) const
 {
-    return false;
+	return false;
 }
 /*! will return the property named in PropertyName in a string format */
 const char *PrimInstance::GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const
 {
-    if (PropertyName=="Type")
-    {
-        Result = GetType();
-        return Result.AsPChar();
-    }
-    if (PropertyName=="Count")
-    {
-        Result.printf("%d",GetCount());
-        return Result.AsPChar();
-    }
-    if (PropertyName=="Default")
-    {
-        Result = DefaultValue;
-        return Result.AsPChar();
-    }
-    if (PropertyName=="ArrayPointer")
-    {
-        if (IsArrayPointer)
+	if (PropertyName=="Type")
+	{
+		Result = GetType();
+		return Result.AsPChar();
+	}
+	if (PropertyName=="Count")
+	{
+		Result.printf("%d",GetCount());
+		return Result.AsPChar();
+	}
+	if (PropertyName=="Default")
+	{
+		Result = DefaultValue;
+		return Result.AsPChar();
+	}
+	if (PropertyName=="ArrayPointer")
+	{
+		if (IsArrayPointer)
 			Result = "Yes";
 		else
 			Result = "No";
@@ -269,9 +268,9 @@ bool PrimInstance::SetProperty(const CryPropertyParser &PropertyName,const char 
 		SetDefaultValue(PropertyValue);
 		return true;
 	}
-	if (PropertyName=="ArrayPointer")
+	if (PropertyName=="IsArrayPointer")       //IsArrayPointer
 	{
-		SetIsArrayPointer(PropertyValue);
+		SetIsArrayPointer(stricmp(PropertyValue,"Yes")==0);
 		return true;
 	}
 	return CodeFactory::SetProperty(PropertyName,PropertyValue);
@@ -443,125 +442,125 @@ CryObject *PrimInstance::Create(const CryPropertyParser &PropertyName,CodeFactor
         Parent->AppendHead(*GetHead(PropertyName));
         return 0;
     };
-    if (PropertyName==TConstructor)
-    {		// we are construction our variables
-        CryString s;
-        CryString Dummy;
-    
-        s.Clear();
-        if (GetIsPointer())
-        {
-            CryString C;
-            if (GetCount()>1)
-                C.printf("%s[%s_LEN]",GetIsArrayPointer() ? "*" : "",GetName());
-            if (GetIsArrayPointer())
-                s.printf("\n\t%s = new %s%s;",
-                         GetName(),GetType(),
-                         C.AsPChar());
-            C = "";
-            if (GetCount()>1)
-                s.printf("\n\tfor(int i=0;i<%s_LEN;i++)\n\t{\n\t\t%s[i] = %s%s;\n\t\t%s;\n\t}",
-                         GetName(),//LEN
-                         GetName(),
-                         GetIsPointer() ? "new " : "",
-                         GetType(),
-                         Code_AssignDefaultValue(Dummy));
-            else
-                s.printf("\n\t%s = new %s;\n\t%s;",GetName(),GetType(),Code_AssignDefaultValue(Dummy));
-        }
-        else
-        {
-            if (eType==Char && GetCount()>1)
-                s.printf("\n\t%s;",Code_AssignDefaultValue(Dummy));
-            else
-                if (GetCount()>1)
-                {
-                    if (GetIsArrayPointer())
-                        s.printf("\n\t%s = new %s[%s_LEN];",GetName(),GetType(),GetName());
-		    Code_AssignDefaultValue(Dummy);
-	
+	if (PropertyName==TConstructor)
+	{		// we are construction our variables
+		CryString s;
+		CryString Dummy;
+
+		s.Clear();
+		if (GetIsPointer())
+		{
+			CryString C;
+			if (GetCount()>1)
+				C.printf("%s[%s_LEN]",GetIsArrayPointer() ? "*" : "",GetName());
+			if (GetIsArrayPointer())
+				s.printf("\n\t%s = new %s%s;",
+						 GetName(),GetType(),
+						 C.AsPChar());
+			C = "";
+			if (GetCount()>1)
+				s.printf("\n\tfor(int i=0;i<%s_LEN;i++)\n\t{\n\t\t%s[i] = %s%s;\n\t\t%s;\n\t}",
+						 GetName(),//LEN
+						 GetName(),
+						 GetIsPointer() ? "new " : "",
+						 GetType(),
+						 Code_AssignDefaultValue(Dummy));
+			else
+				s.printf("\n\t%s = new %s;\n\t%s;",GetName(),GetType(),Code_AssignDefaultValue(Dummy));
+		}
+		else
+		{
+			if (eType==Char && GetCount()>1)
+				s.printf("\n\t%s;",Code_AssignDefaultValue(Dummy));
+			else
+				if (GetCount()>1)
+				{
+					if (GetIsArrayPointer())
+						s.printf("\n\t%s = new %s[%s_LEN];",GetName(),GetType(),GetName());
+			Code_AssignDefaultValue(Dummy);
+
 			bool Comment = (Dummy.Pos("/*")!=-1) && (Dummy.Pos("/*")<5);
-                    s.printf("\n\t%sfor(int i=0;i<%s_LEN;i++)%s\n\t\t%s;",
+					s.printf("\n\t%sfor(int i=0;i<%s_LEN;i++)%s\n\t\t%s;",
 				Comment ? "/*" : "",
-                             GetName(),
+							 GetName(),
 				Comment ? "*/" : "",
-                             Dummy.AsPChar());
-                }
-                else
-                {
-                    if (eType==Char && GetCount()>1)
-                        s.printf("\n\t%s;",Code_AssignDefaultValue(Dummy));
-                    s.printf("\n\t%s;", Code_AssignDefaultValue(Dummy));
-                }
-        }
-        SetImp(PropertyName,s.AsPChar());
-        Parent->AppendImp(*GetImp(PropertyName));
-        return 0;
-    }
-    if (PropertyName==TDestructor)
-    {
-        CryString s;
-        if (GetIsPointer())
-        {
-            if (GetCount()>1)
-            {
-                if (GetIsPointer())
-                    s.printf("\n\tfor(int i=0;i<%s_LEN;i++)\n\t\tdelete (%s[i]);",
-                             GetName(),GetName());
-            }
-            else
-                s.printf("\n\tdelete %s;",GetName());
-        }
-        if (GetIsArrayPointer())
-            s.printf("\n\tdelete %s%s;",GetCount()>1 ? "[]" : "",GetName());
-        SetImp(PropertyName,s.AsPChar());
-        Parent->AppendImp(*GetImp(PropertyName));
-        return 0;
-    }
-    if (PropertyName==TCopyTo)
-    {
-        CryString s;
-        if (GetIsPointer())
-        {
-            if (GetCount()>1)
-                s.printf("\n\t\tfor(int i=0;i<%s_LEN;i++)\n\t\t\t*CastDest->%s[i] = *%s[i];",
-                         GetName(),GetName(),GetName());
-            else
-                s.printf("\n\t\t%sCastDest%s%s = %s%s%s;",
-                         (GetIsPointer() || GetIsArrayPointer()) ? "*" : "",
-                         GetIsPointer() ? "->" : ".",GetName(),GetIsArrayPointer() ? "*" : "",GetIsPointer() ? "*" : "", GetName());
-        }
-        else
-        {
-            if (GetCount()>1)
-                s.printf("\n\t\tfor(int i=0;i<%s_LEN;i++)\n\t\t\tCastDest->%s[i] = %s[i];",
-                         GetName(),GetName(),GetName());
-            else
-                s.printf("\n\t\tCastDest->%s = %s;",GetName(),GetName());
-        }
-        SetImp(PropertyName,s.AsPChar());
-        Parent->AppendImp(*GetImp(PropertyName));
-        return 0;
-    }
-    if ((PropertyName==TSetProperty) && CanBuildProduct(PropertyName))//Can't build if it isn't a property
-    {
-        CryString s;
-        CryFunctionDef Func;
-        if (GetCount()>1)
-        {
-            s.printf("void Set%s(int Index,const char *Value);",GetName());
-            Func.Parse(s);
-            s = Func.GetNPDeclaration();
-            SetHead(PropertyName,s.AsPChar());
-            s.Clear();
-            s = Func.GetImplementedDeclaration(Parent->GetName(),true);
-            s.printf("\n{\n#ifdef RangeChecking\n\tif ((Index<0) || (Index>=%s_LEN))\n\t\tthrow CryException(\"Range Error\");\n#endif",
-                     GetName(),GetName());
-            CryString temp;
-            s += "\n\t";
-            Code_SetProperty(temp);
-            s += temp;
-            s += "\n}\n";
+							 Dummy.AsPChar());
+				}
+				else
+				{
+					if (eType==Char && GetCount()>1)
+						s.printf("\n\t%s;",Code_AssignDefaultValue(Dummy));
+					s.printf("\n\t%s;", Code_AssignDefaultValue(Dummy));
+				}
+		}
+		SetImp(PropertyName,s.AsPChar());
+		Parent->AppendImp(*GetImp(PropertyName));
+		return 0;
+	}
+	if (PropertyName==TDestructor)
+	{
+		CryString s;
+		if (GetIsPointer())
+		{
+			if (GetCount()>1)
+			{
+				if (GetIsPointer())
+					s.printf("\n\tfor(int i=0;i<%s_LEN;i++)\n\t\tdelete (%s[i]);",
+							 GetName(),GetName());
+			}
+			else
+				s.printf("\n\tdelete %s;",GetName());
+		}
+		if (GetIsArrayPointer())
+			s.printf("\n\tdelete %s%s;",GetCount()>1 ? "[]" : "",GetName());
+		SetImp(PropertyName,s.AsPChar());
+		Parent->AppendImp(*GetImp(PropertyName));
+		return 0;
+	}
+	if (PropertyName==TCopyTo)
+	{
+		CryString s;
+		if (GetIsPointer())
+		{
+			if (GetCount()>1)
+				s.printf("\n\t\tfor(int i=0;i<%s_LEN;i++)\n\t\t\t*CastDest->%s[i] = *%s[i];",
+						 GetName(),GetName(),GetName());
+			else
+				s.printf("\n\t\t%sCastDest%s%s = %s%s%s;",
+						 (GetIsPointer() || GetIsArrayPointer()) ? "*" : "",
+						 GetIsPointer() ? "->" : ".",GetName(),GetIsArrayPointer() ? "*" : "",GetIsPointer() ? "*" : "", GetName());
+		}
+		else
+		{
+			if (GetCount()>1)
+				s.printf("\n\t\tfor(int i=0;i<%s_LEN;i++)\n\t\t\tCastDest->%s[i] = %s[i];",
+						 GetName(),GetName(),GetName());
+			else
+				s.printf("\n\t\tCastDest->%s = %s;",GetName(),GetName());
+		}
+		SetImp(PropertyName,s.AsPChar());
+		Parent->AppendImp(*GetImp(PropertyName));
+		return 0;
+	}
+	if ((PropertyName==TSetProperty) && CanBuildProduct(PropertyName))//Can't build if it isn't a property
+	{
+		CryString s;
+		CryFunctionDef Func;
+		if (GetCount()>1)
+		{
+			s.printf("void Set%s(int Index,const char *Value);",GetName());
+			Func.Parse(s);
+			s = Func.GetNPDeclaration();
+			SetHead(PropertyName,s.AsPChar());
+			s.Clear();
+			s = Func.GetImplementedDeclaration(Parent->GetName(),true);
+			s.printf("\n{\n#ifdef RangeChecking\n\tif ((Index<0) || (Index>=%s_LEN))\n\t\tthrow CryException(\"Range Error\");\n#endif",
+					 GetName(),GetName());
+			CryString temp;
+			s += "\n\t";
+			Code_SetProperty(temp);
+			s += temp;
+			s += "\n}\n";
         }
         else
         {
@@ -579,11 +578,11 @@ CryObject *PrimInstance::Create(const CryPropertyParser &PropertyName,CodeFactor
             s += "\n}\n";
         }
         SetImp(PropertyName,s);
-        Parent->AppendHead(*GetHead(PropertyName));
-        Parent->AppendImp(*GetImp(PropertyName));
-        return 0;
-    }
-    if ((PropertyName==TGetProperty,PropertyName) && CanBuildProduct(PropertyName))//Can't build if it isn't a property
+		Parent->AppendHead(*GetHead(PropertyName));
+		Parent->AppendImp(*GetImp(PropertyName));
+		return 0;
+	}
+	if ((PropertyName==TGetProperty) && CanBuildProduct(PropertyName))//Can't build if it isn't a property
     {
         CryString s;
         CryFunctionDef Func;
