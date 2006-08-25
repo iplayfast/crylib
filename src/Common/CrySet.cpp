@@ -14,16 +14,86 @@
 
 using namespace Crystal;
 
+/// Add a value to the set
+void CrySet::Add(int v)
+{
+int S = Size();
+	for(int i=0;i<S;i++)
+	{
+	int n = GetValue(i);
+		if (n==v) return;	// set already contains value
+		if (n<v) {	// insertion sort
+			SetValue(i,v);
+			v = n;
+		}
+	}
+	SetSize(S+1);
+	SetValue(S,v);
+}
 
-//Class Header
+/// remove a value from the set
+void CrySet::Sub(int v)
+{
+int p = Pos(v);
+	if (p>-1) 
+		Delete(p,1);
+	return;
+}
+int CrySet::Pos(int v)
+{
+int s = Size();
+	for(int i=0;i<s;i++)
+	{
+	int n = GetValue(i);
+		if (n==v) return i;
+		if (n>v) return -1;
+	}
+	return -1;
+}
+bool CrySet::IsIn(int v)
+{
+	return Pos(v)!=-1;
+}
+int CrySet::Matches(CrySet &s)
+{
+int count =0;
+	for(int i=0;i<s.Size();i++)
+	{
+	int v = s[i];
+	bool found = false;
+		for(int j=0;j<Size();j++)
+		{
+			if (found = (GetValue(j)==v)) break;
+		}
+		if (found) count++;
+	}
+	return count;
+}
 
 
-
-//Array Length defines
-
-
-//Local Variables Declaration
-
-
+void CrySet::Union(CrySet &s)
+{
+int SS = s.Size();
+	for(int i=0;i<SS;i++)
+		Add(s.GetValue(i));
+}
+void CrySet::Intersect(CrySet &s)
+{
+CrySet Copy(*this);
+int CS = Copy.Size();
+int SS = s.Size();
+	Clear();
+	for(int i=0;i<CS;i++)
+	{
+		for(int j=0;j<SS;j++)
+		{
+		int v = Copy.GetValue(i);
+			if (v=s.GetValue(j)) {
+				Add(v);
+				break;
+			}
+		}
+	}
+}
 
 

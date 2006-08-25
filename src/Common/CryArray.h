@@ -29,6 +29,7 @@ namespace Crystal
 {
 using namespace Crystal;
 #define TCryArray    "CryArray"
+#define TCryTemplateArray "CryTemplateArray"
 #define TCrySimpleArray    "CrySimpleArray"
 #define TCryDoubleArray "CryDoubleArray"
 #define TCryIntArray "CryIntArray"
@@ -194,6 +195,7 @@ class CryTemplateArray : public CrySimpleArray
 	{
 		return Item;
 	};
+
 	virtual CryObject *Add(CryObject *Item)
 	{
 		return Item;
@@ -217,16 +219,15 @@ class CryTemplateArray : public CrySimpleArray
 	{
 		return false;
 	};
-public:	// temporary public until debugged	
-	virtual void GetEleType(CryString &Result) const
-	{
-		Result = typename;
-	}
+	virtual void GetEleType(CryString &Result) const;
 public:
-StdFunctionsNoDup(CryTemplateArray,CrySimpleArray);
+	CryTemplateArray<T>(CryTemplateArray<T> &Copy);
+	StdFunctionsNoDup(CryTemplateArray,CrySimpleArray);
 	void SetSize(size_t _Size);
 	virtual CryObject *Dup()const; // creates a duplicate of this object
+	CryTemplateArray<T> &Delete(int start,int amount);
 
+	virtual void Clear() { CurrentCount = 0; }
 
 	CryTemplateArray(int _Size=100) : CrySimpleArray(sizeof(T))
 	{
@@ -240,7 +241,7 @@ StdFunctionsNoDup(CryTemplateArray,CrySimpleArray);
 	}
 
 	virtual void RemoveAtIterator(Iterator *LI);
-	bool LoadAsText(int i,CryString &FromStream);
+	virtual bool LoadAsText(int i,CryString &FromStream);
 	virtual bool SaveAsText(int i,CryString &ToStream) const;
 	void SetItem(unsigned int i,EmptyObject *Item,bool IsCryObject,bool IsOwned,size_t Size)
 	{
