@@ -207,10 +207,51 @@ void CryTemplateArray<T>::SetSize(size_t _Size)
 		n[i] = Values[i];
 //	for(unsigned int i=CopyAmount;i<_Size;i++)
 //		n[i] = 0.0;  // default value for <T>?
-	delete Values;
+	delete []Values;
 	CurrentCount = _Size;
 	Values = n;
 }
+template<typename T>
+CryTemplateArray<T> &CryTemplateArray<T>::Delete(int start,int amount)
+{
+	if (start>=Size()) return *this;
+	while(start<Size())
+	{
+		if (start+amount>=Size()) {
+			CurrentAmount=start;
+			return *this;
+		}
+		Values[start] = Values[start+amount];
+		start++;
+	}
+	return *this;
+}
+
+template<typename T>
+CryTemplateArray<T>::CryTemplateArray(CryTemplateArray<T> &Copy)
+{
+	SetMax(Copy.Size());
+	CurrentCount = Copy.Size();
+	delete []Values;
+	Values = new T[Copy.Size()];
+	for(int i=0;i<Copy.Size();i++)
+    	Values[i] = Copy.Values[i];
+}
+template<>
+void CryTemplateArray<int>::GetEleType(CryString &Result) const
+	{
+		Result = "int";
+	}
+template<>
+void CryTemplateArray<float>::GetEleType(CryString &Result) const
+	{
+		Result = "float";
+	}
+template<>
+void CryTemplateArray<CryString>::GetEleType(CryString &Result) const
+	{
+		Result = "CryString";
+	}
 
 template<>
 bool CryTemplateArray<int>::LoadAsText(int i,CryString &FromStream)
@@ -228,6 +269,24 @@ template<>
 bool CryTemplateArray<int>::SaveAsText(int i,CryString &ToStream) const
 {
 	ToStream.printf("%d ",Values[i]);
+	return true;
+}
+template<>
+bool CryTemplateArray<float>::LoadAsText(int i,CryString &FromStream)
+{
+	float v;
+	FromStream.scanf("%f ",&v);
+	if (i>=0 && i < GetMax())
+	{
+		Values[i] = v;
+		return true;
+	}
+	return false;
+}
+template<>
+bool CryTemplateArray<float>::SaveAsText(int i,CryString &ToStream) const
+{
+	ToStream.printf("%f ",Values[i]);
 	return true;
 }
 
@@ -933,15 +992,7 @@ CryFunctionDefList *CryDoubleArray::GetFunctions(const char *Type) const
 	l->LoadFromString(s,";");
 	return l;
 }
-test()
-{
-	CryTemplateArray<int> a;
-		a.SetSize(100);
-		a.IsA("TCryArray");
-		CryString str;
-		a.GetEleType(str);
 
-}
 // if this class contains the property name, it will attempt to load it
 // if all is well returns true
 bool CryDoubleArray::SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue)

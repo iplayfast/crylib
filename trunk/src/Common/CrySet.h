@@ -24,7 +24,18 @@
 
 namespace Crystal {
 using namespace Crystal;
-
+class CrySet : public CryTemplateArray<int>
+{
+public:
+	int Matches(CrySet &s);	// returns number of elements that match
+	int UnMatches(CrySet &s) { return Size() - Matches(s); }
+	void Union(CrySet &s);
+	void Intersect(CrySet &s);
+	void Add(int v);
+	void Sub(int v);
+	bool IsIn(int v);
+	int Pos(int v);	// returns -1 if not present, else returns position of value in set
+};
 
 
 }; // namespace Crystal
