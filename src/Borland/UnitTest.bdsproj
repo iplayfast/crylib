@@ -43,11 +43,32 @@
         <property category="win32.*.win32b.tasm32" name="param.listfile.merge" value="1"/>
         <property category="win32.*.win32b.tasm32" name="param.objfile.merge" value="1"/>
         <property category="win32.*.win32b.tasm32" name="param.xreffile.merge" value="1"/>
+        <property category="win32.Debug_Build.win32b.bcc32" name="container.SelectedOptimizations.containerenabled" value="0"/>
+        <property category="win32.Debug_Build.win32b.bcc32" name="option.4.enabled" value="0"/>
+        <property category="win32.Debug_Build.win32b.bcc32" name="option.5.enabled" value="0"/>
+        <property category="win32.Debug_Build.win32b.bcc32" name="option.6.enabled" value="0"/>
+        <property category="win32.Debug_Build.win32b.bcc32" name="option.A.enabled" value="0"/>
+        <property category="win32.Debug_Build.win32b.bcc32" name="option.AK.enabled" value="0"/>
+        <property category="win32.Debug_Build.win32b.bcc32" name="option.AU.enabled" value="0"/>
         <property category="win32.Debug_Build.win32b.bcc32" name="option.D.arg.1" value="_DEBUG"/>
         <property category="win32.Debug_Build.win32b.bcc32" name="option.D.arg.merge" value="1"/>
         <property category="win32.Debug_Build.win32b.bcc32" name="option.D.enabled" value="1"/>
+        <property category="win32.Debug_Build.win32b.bcc32" name="option.Jgd.enabled" value="0"/>
+        <property category="win32.Debug_Build.win32b.bcc32" name="option.Jgi.enabled" value="1"/>
+        <property category="win32.Debug_Build.win32b.bcc32" name="option.Jgx.enabled" value="0"/>
+        <property category="win32.Debug_Build.win32b.bcc32" name="option.O1.enabled" value="0"/>
+        <property category="win32.Debug_Build.win32b.bcc32" name="option.O2.enabled" value="0"/>
         <property category="win32.Debug_Build.win32b.bcc32" name="option.Od.enabled" value="1"/>
+        <property category="win32.Debug_Build.win32b.bcc32" name="option.Q.enabled" value="1"/>
+        <property category="win32.Debug_Build.win32b.bcc32" name="option.align-1.enabled" value="0"/>
+        <property category="win32.Debug_Build.win32b.bcc32" name="option.align-2.enabled" value="0"/>
+        <property category="win32.Debug_Build.win32b.bcc32" name="option.align-3.enabled" value="0"/>
+        <property category="win32.Debug_Build.win32b.bcc32" name="option.align-5.enabled" value="0"/>
         <property category="win32.Debug_Build.win32b.bcc32" name="option.k.enabled" value="1"/>
+        <property category="win32.Debug_Build.win32b.bcc32" name="option.p.enabled" value="0"/>
+        <property category="win32.Debug_Build.win32b.bcc32" name="option.pm.enabled" value="0"/>
+        <property category="win32.Debug_Build.win32b.bcc32" name="option.pr.enabled" value="0"/>
+        <property category="win32.Debug_Build.win32b.bcc32" name="option.ps.enabled" value="0"/>
         <property category="win32.Debug_Build.win32b.bcc32" name="option.r.enabled" value="0"/>
         <property category="win32.Debug_Build.win32b.bcc32" name="option.v.enabled" value="1"/>
         <property category="win32.Debug_Build.win32b.bcc32" name="option.vG.enabled" value="1"/>

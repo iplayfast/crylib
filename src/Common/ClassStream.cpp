@@ -34,7 +34,7 @@ bool CryStream::Test(bool Verbose,CryObject &Object,bool (CallBack)(bool Verbose
 {
     char Result[200];
     bool Fail = false;
-    CryMemStream *DebugViewMemStream = (CryMemStream *)&Object;
+//    CryMemStream *DebugViewMemStream = (CryMemStream *)&Object;
     bool IsString=Object.IsA(TCryString);	// some tests have different results for strings
     size_t t;
     if (Object.IsA(TCryStream))

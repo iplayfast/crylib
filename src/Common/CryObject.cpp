@@ -885,6 +885,7 @@ CryObject *CryOwnedObject::Create(const CryPropertyParser &PropertyName,CryObjec
 	try
 	{
 		CryObject *o = CryObject::Create(PropertyName,Parent);
+		return o;
 	}
 	catch(CryException &e)
 	{

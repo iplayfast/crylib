@@ -43,6 +43,7 @@ CryString s;
 bool ListFunctionDef::IteratedFunction(ListFunctionDef::IControl *Control,FunctionDef *Item)
 {
 //	switch(Control->State) ...
+	return false;
 }
 FunctionDef* ListFunctionDef::AddOwned(FunctionDef * Item)
 {

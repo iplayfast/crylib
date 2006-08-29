@@ -226,10 +226,20 @@ class CryTemplateArray : public CrySimpleArray
 	};
 	virtual void GetEleType(CryString &Result) const;
 public:
-	CryTemplateArray<T>(CryTemplateArray<T> &Copy);
+	CryTemplateArray<T>(const CryTemplateArray<T> &Copy)
+	{
+		SetMax(Copy.Size());
+		CurrentCount = Copy.Size();
+		Values = new T[Copy.Size()];
+		for(int i=0;i<Copy.Size();i++)
+			Values[i] = Copy.Values[i];
+	}
 	StdFunctionsNoDup(CryTemplateArray,CrySimpleArray);
 	void SetSize(size_t _Size);
-	virtual CryObject *Dup()const; // creates a duplicate of this object
+	virtual CryObject *Dup()const // creates a duplicate of this object
+	{
+		return new CryTemplateArray<T>(*this);
+	}
 	CryTemplateArray<T> &Delete(int start,int amount);
 
 	virtual void Clear() { CurrentCount = 0; }

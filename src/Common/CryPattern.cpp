@@ -857,7 +857,7 @@ bool CompositeIterator::GotoNext()
 bool CompositeIterator::GotoFirst()
 {
 	return	Stack->I->GotoFirst();
-	return (VisitingContainer = true);
+//	return (VisitingContainer = true);
 /*
 	if (VisitContainer && Stack->I->IsContainer())
 	{
@@ -975,35 +975,35 @@ void TestCompositeIterator::AddMenuItems(TestCompositeIterator::Menu *l,char *te
 }
 TestCompositeIterator::Menu *TestCompositeIterator::AddSubMenu(TestCompositeIterator::Menu *Parent,char *text,int n)
 {
-    Menu *l = new Menu(text);
-    AddMenuItems(l,text,n);
-    Parent->AddOwned(l);
-    return l;
+	Menu *l = new Menu(text);
+	AddMenuItems(l,text,n);
+	Parent->AddOwned(l);
+	return l;
 }
 
 TestCompositeIterator::TestCompositeIterator()
 {}
 void TestCompositeIterator::DoTest()
 {
-    TestCompositeIterator::Menu l("File");
-    AddSubMenu(&l,"Nothing",0);
-    AddMenuItems(&l,"Main",3);
-    AddSubMenu(AddSubMenu(&l,"Sub Main",4),"SubSub Main",3);
-    AddMenuItems(&l,"More Main",2);
-    int Indent = 0;
-    CompositeIterator ci(&l);
-    printf("\nforward\n");
-    if (ci.GotoFirst())
-    {
-        do
-        {
-            if (!ci.IsEmpty())
-            {
-                if (ci.IsCryObject())
-                {
-                    CryObject *o  = (CryObject *) ci.Get();
-                    if (o->IsA(TCryString))
-                    {
+	TestCompositeIterator::Menu l("File");
+	AddSubMenu(&l,"Nothing",0);
+	AddMenuItems(&l,"Main",3);
+	AddSubMenu(AddSubMenu(&l,"Sub Main",4),"SubSub Main",3);
+	AddMenuItems(&l,"More Main",2);
+ //	int Indent = 0;
+	CompositeIterator ci(&l);
+	printf("\nforward\n");
+	if (ci.GotoFirst())
+	{
+		do
+		{
+			if (!ci.IsEmpty())
+			{
+				if (ci.IsCryObject())
+				{
+					CryObject *o  = (CryObject *) ci.Get();
+					if (o->IsA(TCryString))
+					{
 			int i = ci.GetCurrentLevel();
 			Menu *m = (TestCompositeIterator::Menu *) ci.GetLevelContainer(i);
 			while(i--)
@@ -1011,42 +1011,42 @@ void TestCompositeIterator::DoTest()
 				printf("____");
 			}
 			printf("%s_",m->Name.AsPChar());
-                        const char *c = ((CryString *)o)->AsPChar();
-                        printf("%s\n",c);
-                    }
-                    else
-                    {
-                        throw CryException("Shouldn't get here!");
-                    }
-                }
-                else
-                {// should never get here in this example
-                    EmptyObject *e = ci.Get();
-                    throw CryException("Shouldn't get here!");
-                }
-            }
-        }
-        while(ci.GotoNext());
-    }
-    printf("\nReverse\n");
-    if (ci.GotoLast())
-    {
-        do
-        {
-            if (ci.IsCryObject())
-            {
-                CryObject *o  = (CryObject *) ci.Get();
-                if (o->IsA(TCryString))
-                {
-                    const char *c = ((CryString *)o)->AsPChar();
-                    printf("%s\n",c);
-                }
-                else
-                    throw CryException("Shouldn't get here!");
-            }
-        }
-        while(ci.GotoPrev());
-    }
+						const char *c = ((CryString *)o)->AsPChar();
+						printf("%s\n",c);
+					}
+					else
+					{
+						throw CryException("Shouldn't get here!");
+					}
+				}
+				else
+				{// should never get here in this example
+//					EmptyObject *e = ci.Get();
+					throw CryException("Shouldn't get here!");
+				}
+			}
+		}
+		while(ci.GotoNext());
+	}
+	printf("\nReverse\n");
+	if (ci.GotoLast())
+	{
+		do
+		{
+			if (ci.IsCryObject())
+			{
+				CryObject *o  = (CryObject *) ci.Get();
+				if (o->IsA(TCryString))
+				{
+					const char *c = ((CryString *)o)->AsPChar();
+					printf("%s\n",c);
+				}
+				else
+					throw CryException("Shouldn't get here!");
+			}
+		}
+		while(ci.GotoPrev());
+	}
 }
 
 

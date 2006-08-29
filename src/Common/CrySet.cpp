@@ -59,13 +59,14 @@ bool CrySet::IsIn(int v)
 int CrySet::Matches(CrySet &s)
 {
 int count =0;
-	for(int i=0;i<s.Size();i++)
+	for(unsigned int i=0;i<s.Size();i++)
 	{
 	int v = s[i];
 	bool found = false;
-		for(int j=0;j<Size();j++)
+		for(unsigned int j=0;j<Size();j++)
 		{
-			if (found = (GetValue(j)==v)) break;
+			found = GetValue(j)==v;
+			if (found) break;
 		}
 		if (found) count++;
 	}
@@ -75,8 +76,8 @@ int count =0;
 
 void CrySet::Union(CrySet &s)
 {
-int SS = s.Size();
-	for(int i=0;i<SS;i++)
+unsigned int SS = s.Size();
+	for(unsigned int i=0;i<SS;i++)
 		Add(s.GetValue(i));
 }
 void CrySet::Intersect(CrySet &s)
@@ -90,7 +91,7 @@ int SS = s.Size();
 		for(int j=0;j<SS;j++)
 		{
 		int v = Copy.GetValue(i);
-			if (v=s.GetValue(j)) {
+			if (v==s.GetValue(j)) {
 				Add(v);
 				break;
 			}
