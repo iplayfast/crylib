@@ -119,7 +119,7 @@ CryFileStream fs;
 CryXML x("obj");
     x.LoadFrom(f);
     x.SaveTo(fs);
-    fs.Close();
+	fs.Close();
 }       // Test Fuzzy saved to fuzzy.xml
 {
 CryFileStream fs;
@@ -157,7 +157,7 @@ CryFuzzy g(f);
         "g:" << g << endl;
     g.Range(0.0,1.0);
     f.Range(0.0,1.0);
-    cout << "Fuzzy Value are :"<< endl << f << endl <<g<<endl;
+	cout << "Fuzzy Value are :"<< endl << f << endl <<g<<endl;
     cout << g.Or(f,4.0);
     g.SwapXY();
     g.Range(0.0,1.0);
@@ -271,7 +271,7 @@ char *os1 = s1;
       if (*s2!=ch) d++;
       if (! testing)
         *s1 = ch;
-    }
+	}
     else
     if (*s1!=*s2) d++;
     if (s1==os1 && d!=0) d+=10000;
@@ -385,7 +385,7 @@ bool FlipFirst = false;
     }
     worst = Apply(nH,cH,Every[bestindex].Index,FlipFirst,false);
     while(*cH)
-    {
+	{
       if (*cH!=*nH) break;
       cH++;nH++;
     }
@@ -538,4 +538,4 @@ return EXIT_SUCCESS;
   }
   TestFuzzyMain(argc,argv);
   return EXIT_SUCCESS;
-}
+  }

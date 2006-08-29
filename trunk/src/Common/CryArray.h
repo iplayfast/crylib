@@ -131,8 +131,8 @@ StdFunctionsNoDup(CrySimpleArray,CryContainer);
 	{
 		ArrayIterator *AI = (ArrayIterator *)I;
 		AI->i = CurrentCount-1;
-        return CurrentCount > 0;
-    }
+		return CurrentCount > 0;
+	}
 	virtual bool LoadAsText(int i,CryString &FromStream) = 0;
 	virtual bool SaveAsText(int i,CryString &ToStream) const = 0;
 
@@ -178,6 +178,11 @@ StdFunctionsNoDup(CrySimpleArray,CryContainer);
 	{
 		return AllowResize;
 	}
+#ifdef VALIDATING
+
+	virtual bool Test(bool Verbose,CryObject &Object,bool  (CallBack)(bool Verbose,const char *Result,bool fail));
+#endif
+
 };
 
 
@@ -263,6 +268,10 @@ public:
 		return Values[i];
 	}
 	virtual bool IsEmpty(const Iterator *I) const {  return ((ArrayIterator *)I)->i>CurrentCount; }
+#ifdef VALIDATING
+	virtual bool Test(bool Verbose,CryObject &Object,bool  (CallBack)(bool Verbose,const char *Result,bool fail));
+#endif
+
 };
 
 

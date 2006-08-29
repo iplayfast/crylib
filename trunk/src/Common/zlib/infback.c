@@ -14,7 +14,7 @@
 #include "inftrees.h"
 #include "inflate.h"
 #include "inffast.h"
-
+#include "deflate.h"
 /* function prototypes */
 local void fixedtables OF((struct inflate_state FAR *state));
 
@@ -54,9 +54,9 @@ ZEXTERN int ZEXPORT inflateBackInit_ OF((z_stream FAR *strm, int windowBits,
                                                sizeof(struct inflate_state));
     if (state == Z_NULL) return Z_MEM_ERROR;
     Tracev((stderr, "inflate: allocated\n"));
-    //strm->state = (voidpf)state;
-    strm->state = (internal_state FAR *)state;
-    state->wbits = windowBits;
+	//strm->state = (voidpf)state;
+	strm->state = (internal_state FAR *)state;
+	state->wbits = windowBits;
     state->wsize = 1U << windowBits;
     state->window = window;
     state->write = 0;

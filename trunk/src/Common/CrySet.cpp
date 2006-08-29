@@ -11,8 +11,10 @@
 #include "CrySet.h"
 #include "ClassProperty.h"
 #include "CryXML.h"	//Needed for SetDefaultValues
+#include "CryArray.h"
 
 using namespace Crystal;
+using namespace std;
 
 /// Add a value to the set
 void CrySet::Add(int v)

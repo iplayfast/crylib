@@ -1496,7 +1496,8 @@ This has been implmented by allowing different strategys to represent the states
         };
 
 
-        class SoldOut : public _GumBallState    // The state of being sold out. {
+		class SoldOut : public _GumBallState    // The state of being sold out.
+		{
         public:
             int FillMachine() const
             {
@@ -1504,7 +1505,8 @@ This has been implmented by allowing different strategys to represent the states
                 return(int) NO_QUARTER;
             }
         };
-        class NoQuarter : public _GumBallState// the state of having gumballs to sell but nobody to sell to {
+		class NoQuarter : public _GumBallState// the state of having gumballs to sell but nobody to sell to
+		{
         public:
             int InsertQuarter() const
             {
@@ -1512,7 +1514,8 @@ This has been implmented by allowing different strategys to represent the states
                 return(int) HAS_QUARTER;
             }
         };
-        class HasQuarter : public _GumBallState// have quarter and is ready to dispense {
+		class HasQuarter : public _GumBallState// have quarter and is ready to dispense
+		{
         public:
             int TurnCrank() const
             {
