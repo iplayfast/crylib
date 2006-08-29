@@ -464,7 +464,11 @@ CryObject *CryXMLNode::CreateObjectFromNode(CryObject *Parent)
 	//    CryObject *f = CryList::FactoryCreate(Type,Parent);
 	CryObject *f;
 	const char *c = Type;
-	const char *ParentType = Parent->ChildClassName();
+	const char *ParentType;
+		if (Parent)
+			ParentType = Parent->ChildClassName();
+		else
+			ParentType = 0;
 	const CryPropertyParser PropertyName(Type);
 	if (Parent)
 		f = Parent->Create(PropertyName,Parent);

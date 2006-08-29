@@ -133,7 +133,7 @@ bool CryString::Test(bool Verbose,CryObject &Object,bool (CallBack)(bool Verbose
         {
             CryString a;
             ErrorStr = emptyconst;
-            if (a.Length() && (a==""))
+            if (a.Length()==0 && (a==""))
             {
                 if ((Verbose) && (!CallBack(Verbose,ErrorStr,fail)))
                     return false;

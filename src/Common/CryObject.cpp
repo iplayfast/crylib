@@ -67,24 +67,29 @@ bool CryObject::Test(bool Verbose,CryObject &Object, bool (CallBack)(bool Verbos
 
     {
 
-        CryList *pn = Object.PropertyNames();
+        CryPropertyList *pn = Object.PropertyNames();
 
         sprintf(Result,"\n%s has %d properties", Object.ClassName(),pn->Count());
         if (!CallBack(Verbose,Result,Fail))
             return false;
 
-        for(size_t i=0;i<pn->Count();i++)
-        {
+		CryPropertyList::PropertyIterator *i = pn->CreateIterator();
+		{
+		int count=0;
+		if (i->GotoFirst()) {
+			do
+			{
+			count++;
+			CryString value;
+			const CryString *item =  i->GetName();
+			i->GetValue(value);
+			sprintf(Result,"\n  Property %d) %s = %s",count,item->AsPChar(),value.AsPChar());
+			} while(i->GotoNext());
 
-            CryString *item =  (CryString *)pn->GetItem(i);
-            const char *c = *item;
-            const char *v = Object.GetProperty(*((CryString *)pn->GetItem(i)),stemp);
-
-            sprintf(Result,"\n  Property %d) %s = %s",i,c,v);
-            if (!CallBack(Verbose,Result,Fail))
-                return false;
-        }
-        delete(pn);
+		}
+		}
+		pn->DeleteIterator(i);
+		delete(pn);
         try
         {
             CryString t;
@@ -786,7 +791,7 @@ CryProperty *CryObject::GetPropertyAsCryProperty(const CryPropertyParser &Proper
             s.Clear();
             s.printf("*%s",PropertyName.AsPChar());
 		// we now get what is at the array
-            GetProperty(s.AsPChar(),s);
+			GetProperty(s.AsPChar(),s);
         }
         o->SetValue(s.AsPChar());
         return o;

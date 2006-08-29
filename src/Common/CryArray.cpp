@@ -135,7 +135,7 @@ bool CrySimpleArray::SetPropertyAsObject(const CryPropertyParser &PropertyName,C
 
 bool CrySimpleArray::SetPropertyAsObject(CryProperty *Value)
 {
-	CryContainer::SetPropertyAsObject(Value);
+	return CryContainer::SetPropertyAsObject(Value);
 }
 
 const char *CrySimpleArray::GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const
@@ -182,6 +182,133 @@ CryPropertyList* CrySimpleArray::PropertyNames() const
 	n->AddPropertyByName("AllowResize",this);
 	return n;
 }
+
+
+#ifdef VALIDATING
+bool CrySimpleArray::Test(bool Verbose,CryObject &Object,bool (CallBack)(bool Verbose,const char *Result,bool fail))
+{
+/* need to create a test for the following functions
+StdFunctionsNoDup(CrySimpleArray,CryContainer);
+	CrySimpleArray(size_t _ElementSize = 0)
+	{
+		ElementSize = _ElementSize;
+		CurrentCount = MaxCount = 0;
+	}
+	virtual void CopyTo(CryObject &Dest) const;  //copies contents of this to Dest
+	int IteratorValue(const Iterator *I) const
+	{
+		return ((ArrayIterator *)I)->i;
+	}// if Iterator comes from a subclass it must be an ArrayIiterator
+	virtual Iterator *_CreateIterator() const
+	{
+		ArrayIterator  *AI = new ArrayIterator(this);
+		AI->i= 0;
+		return AI;
+	}
+	ArrayIterator *CreateIterator() const
+	{
+		return (ArrayIterator *)_CreateIterator();
+	}
+	void SetAllowResize(bool v)
+	{
+		AllowResize = v;
+	}
+	virtual size_t Size() const
+	{
+		return CurrentCount;
+	}
+	virtual size_t Count() const
+	{
+		return CurrentCount;
+	}
+	virtual CryFunctionDefList *GetFunctions(const char *Type=0) const;
+
+	virtual void DeleteIterator(Iterator *AI) const
+	{
+		delete (ArrayIterator *)AI;
+	}
+	virtual bool GotoFirst(Iterator *AI) const
+	{
+		((ArrayIterator *)AI)->i = 0;
+		return CurrentCount>0;
+	}
+	virtual bool GotoNext(Iterator *I) const
+	{
+		ArrayIterator *AI = (ArrayIterator *)I;
+		if (AI->i<CurrentCount-1)
+		{
+			AI->i++;
+			return true;
+		}
+		else
+			return false;
+	}
+	virtual bool GotoPrev(Iterator *I) const   // returns true if success
+	{
+		ArrayIterator *AI = (ArrayIterator *)I;
+		if ((AI->i-1<CurrentCount) && (AI->i>0))
+		{
+			AI->i--;
+			return true;
+		}
+		else
+			return false;
+	}
+	virtual bool GotoLast(Iterator *I) const
+	{
+		ArrayIterator *AI = (ArrayIterator *)I;
+		AI->i = CurrentCount-1;
+		return CurrentCount > 0;
+	}
+	virtual bool LoadAsText(int i,CryString &FromStream) = 0;
+	virtual bool SaveAsText(int i,CryString &ToStream) const = 0;
+
+	virtual bool LoadAsText(Iterator *I,CryString &FromStream)
+	{
+		return LoadAsText(((ArrayIterator *)I)->i,FromStream);
+	}
+	virtual bool SaveAsText(Iterator *I,CryString &ToStream) const
+	{
+		return SaveAsText(((ArrayIterator *)I)->i,ToStream);
+	}
+
+	// this class may be used for other things, so this is not used
+	virtual EmptyObject *GetAtIterator(const Iterator *I) const = 0;
+	/// will set a value to the container[Iterator]
+	virtual void SetAtIterator(const Iterator *I,EmptyObject *Item,bool IsCryObject,bool IsOwned,size_t Size = 0);
+	virtual void SetItem(unsigned int i,EmptyObject *Item,bool IsCryObject,bool IsOwned,size_t Size = 0) = 0;
+	virtual void RemoveAtIterator(Iterator *LI) = 0;
+	virtual bool IsEmpty(const Iterator *I) const { return GetAtIterator(I)==0; }
+	virtual void Clear() = 0;
+	virtual bool SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue);
+	virtual bool SetPropertyAsObject(const CryPropertyParser &PropertyName,CryObject *Value);
+	virtual bool SetPropertyAsObject(CryProperty *Value);
+	virtual const char *GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const;
+	virtual bool HasProperty(const CryPropertyParser &PropertyName)const;
+	virtual int GetPropertyCount() const
+	{
+		return CryContainer::GetPropertyCount() + 4;
+	}
+	virtual CryPropertyList* PropertyNames() const;
+
+
+	virtual size_t GetItemSize(Iterator *I) const
+	{
+		return ElementSize;
+	}
+	virtual void SetMax(size_t m);
+	int GetMax() const
+	{
+		return MaxCount;
+	}
+	bool GetAllowResize() const
+	{
+		return AllowResize;
+	}*/
+	return true;
+}
+#endif
+
 //
 //	CryTemplateArray
 //
@@ -194,6 +321,56 @@ CryObject * CryTemplateArray<T>::Dup() const
 		n->Values[i] = Values[i];
 	return n;
 }
+#ifdef VALIDATING
+template<typename T>
+bool CryTemplateArray<T>::Test(bool Verbose,CryObject &Object,bool (CallBack)(bool Verbose,const char *Result,bool fail))
+{
+/* need to code tests for the following functions
+	StdFunctionsNoDup(CryTemplateArray,CrySimpleArray);
+	void SetSize(size_t _Size);
+	virtual CryObject *Dup()const; // creates a duplicate of this object
+	CryTemplateArray<T> &Delete(int start,int amount);
+
+	virtual void Clear() { CurrentCount = 0; }
+
+	CryTemplateArray(int _Size=100) : CrySimpleArray(sizeof(T))
+	{
+		Values = new T[_Size];
+		SetMax(_Size);
+		SetSize(_Size);
+	}
+	~CryTemplateArray()
+	{
+		delete [] Values;
+	}
+
+	virtual void RemoveAtIterator(Iterator *LI);
+	virtual bool LoadAsText(int i,CryString &FromStream);
+	virtual bool SaveAsText(int i,CryString &ToStream) const;
+	void SetItem(unsigned int i,EmptyObject *Item,bool IsCryObject,bool IsOwned,size_t Size)
+	{
+		SetValue(i,*(T*)Item);
+	}
+
+	const T operator [](int i)
+	{
+		return Values[i];
+	}
+	void SetValue(int i,T v)
+	{
+		Values[i] = v;
+	}
+	T GetValue(int i) const
+	{
+		if ((i<0) || ((unsigned )i>=CurrentCount))
+			throw CryException(this,"Range Error");
+		return Values[i];
+	}
+	virtual bool IsEmpty(const Iterator *I) const {  return ((ArrayIterator *)I)->i>CurrentCount; }
+*/
+	return CryContainer::Test(Verbose,Object,CallBack);
+}
+#endif
 
 template<typename T>
 void CryTemplateArray<T>::SetSize(size_t _Size)
@@ -218,7 +395,7 @@ CryTemplateArray<T> &CryTemplateArray<T>::Delete(int start,int amount)
 	while(start<Size())
 	{
 		if (start+amount>=Size()) {
-			CurrentAmount=start;
+			CurrentCount=start;
 			return *this;
 		}
 		Values[start] = Values[start+amount];
@@ -409,17 +586,17 @@ int CryArray::DeleteItem(unsigned int i)
 }
 void CryArray::RemoveAtIterator(Iterator *LI)
 {
-	EmptyObject *r;
+//	EmptyObject *r;
 	int i = IteratorValue(LI);
 	if (!LI->IsOwned())
 	{
-		r = GetAtIterator(LI);
+//		r = GetAtIterator(LI);
 		GotoPrev(LI);
 		DeleteItemOffset(i);
 	}
 	else
 	{
-		r = 0;
+ //		r = 0;
 		LI->GotoPrev();
 		DeleteItem(i);
 	}
