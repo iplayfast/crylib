@@ -312,7 +312,7 @@ StdFunctionsNoDup(CrySimpleArray,CryContainer);
 //
 //	CryTemplateArray
 //
-template<typename T>
+/*template<typename T>
 CryObject * CryTemplateArray<T>::Dup() const
 {
 	int i, m = GetMax();
@@ -320,10 +320,10 @@ CryObject * CryTemplateArray<T>::Dup() const
 	for(i=0;i<m;i++)
 		n->Values[i] = Values[i];
 	return n;
-}
+} */
 #ifdef VALIDATING
-template<typename T>
-bool CryTemplateArray<T>::Test(bool Verbose,CryObject &Object,bool (CallBack)(bool Verbose,const char *Result,bool fail))
+template<>
+bool CryTemplateArray<int>::Test(bool Verbose,CryObject &Object,bool (CallBack)(bool Verbose,const char *Result,bool fail))
 {
 /* need to code tests for the following functions
 	StdFunctionsNoDup(CryTemplateArray,CrySimpleArray);
@@ -404,16 +404,7 @@ CryTemplateArray<T> &CryTemplateArray<T>::Delete(int start,int amount)
 	return *this;
 }
 
-template<typename T>
-CryTemplateArray<T>::CryTemplateArray(CryTemplateArray<T> &Copy)
-{
-	SetMax(Copy.Size());
-	CurrentCount = Copy.Size();
-	delete []Values;
-	Values = new T[Copy.Size()];
-	for(int i=0;i<Copy.Size();i++)
-    	Values[i] = Copy.Values[i];
-}
+
 template<>
 void CryTemplateArray<int>::GetEleType(CryString &Result) const
 	{
@@ -992,19 +983,19 @@ void CryIntArray::Clear()
 }
 EmptyObject *CryIntArray::Add(EmptyObject *Item,size_t Size)
 {
-
+ return 0;	// to do fill in the stub
 }
 EmptyObject *CryIntArray::AddOwned(EmptyObject *Item,size_t Size)
 {
-
+ return 0;	// to do fill in the stub
 }
 CryObject *CryIntArray::Add(CryObject *Item)    // returns Item
 {
-
+ return 0;	// to do fill in the stub
 }
 CryObject *CryIntArray::AddOwned(CryObject *Item)   // gives ownership to list
 {
-
+ return 0;	// to do fill in the stub
 }
 void CryIntArray::SetItemOwnerShip(Iterator *I,bool Owned)
 {
@@ -1012,11 +1003,11 @@ void CryIntArray::SetItemOwnerShip(Iterator *I,bool Owned)
 }
 bool CryIntArray::GetItemOwnerShip(const Iterator *I) const
 {
-
+ return false;	// to do fill in the stub
 }
 bool CryIntArray::IsCryObject(const Iterator *I) const
 {
-
+ return false;	// to do fill in the stub
 }
 //bool LoadAsText(Iterator *I,CryString &FromStream) = 0;
 //bool SaveAsText(Iterator *I,CryString &ToStream) const = 0;
@@ -1039,7 +1030,7 @@ void CryIntArray::CopyTo(CryObject &Dest) const
 	if (Dest.IsA(TCryIntArray))
 	{
 		// Copy this classes variables first
-		CryIntArray *CastDest = (CryIntArray *)&Dest;
+//		CryIntArray *CastDest = (CryIntArray *)&Dest;
 
 	}
 //Now copy the base class
@@ -1061,14 +1052,12 @@ bool CryIntArray::SetProperty(const CryPropertyParser &PropertyName,const char *
 	if (CrySimpleArray::SetProperty(PropertyName,PropertyValue))
 		return true;
 	return false;
-
-
-	return CrySimpleArray::SetProperty(PropertyName,PropertyValue);
 }
 
 
 const char *CryIntArray::GetProperty(const char *PropertyName,CryString &Result) const
 {
+ return 0;	// to do fill in the stub
 }
 
 

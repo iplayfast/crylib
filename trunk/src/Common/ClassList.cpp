@@ -353,10 +353,8 @@ void CryList::RemoveAtIterator(Iterator *LI)
 	GotoPrev(LI);
 	ListIterator *li = (ListIterator *)LI;
 	ListNode *ToDelete,*PrevNode = li->p;
-	EmptyObject *e;
 	ToDelete = PrevNode->Next;
 	PrevNode->Next = ToDelete->Next;
-	e = ToDelete->Item;
 	DeleteItem(ToDelete); // only deletes Items if owned
 	delete ToDelete;
 	return;
@@ -480,7 +478,7 @@ ListNode *Prev,*p = Head;
 	if (Head)
 	{
 		Prev = p;
-		if (Head->Item = _Item) {
+		if (Head->Item == _Item) {
 			Head = Head->Next;
 			p->Next = 0;
 			DeleteItem(p);

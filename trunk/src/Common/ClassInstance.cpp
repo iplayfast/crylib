@@ -154,7 +154,6 @@ CryObject *ClassInstance::Create(const CryPropertyParser &PropertyName,CodeFacto
     if (strcmp(TConstructor,PropertyName)==0)
     {		// we are construction our variables
         CryString s;
-        bool Pointer = false;
         s.Clear();
         CryString C;
         if (GetCount()>1)

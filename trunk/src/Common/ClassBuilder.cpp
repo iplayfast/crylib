@@ -902,7 +902,7 @@ CryPropertyList *Properties = p->PropertyNames();
 		{
 			const CryString *name = pi->GetName();
 			CryString r;
-			const char *value = pi->GetValue(r);
+//			const char *value = pi->GetValue(r);
 			this->AddFactory(new PropertyFactory(this,name,&r));
 		}
 		while(pi->GotoNext());
