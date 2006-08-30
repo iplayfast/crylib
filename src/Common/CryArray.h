@@ -22,6 +22,8 @@
 #define ARRAY_DEF
 #include "ClassContainer.h"
 #include "ClassException.h"
+#include "ClassString.h"
+#include "ClassProperty.h"
 
 extern "C" int (Compare) (const void *ele1,const void *ele2);
 
@@ -224,8 +226,8 @@ class CryTemplateArray : public CrySimpleArray
 	{
 		return false;
 	};
-	virtual void GetEleType(CryString &Result) const;
 public:
+	virtual void GetEleType(CryString &Result) const;
 	CryTemplateArray<T>(const CryTemplateArray<T> &Copy)
 	{
 		SetMax(Copy.Size());
@@ -235,7 +237,43 @@ public:
 			Values[i] = Copy.Values[i];
 	}
 	StdFunctionsNoDup(CryTemplateArray,CrySimpleArray);
-	void SetSize(size_t _Size);
+//	void SetSize(size_t _Size);
+void SetSize(size_t _Size)
+{
+	T *n = new T[_Size];
+	SetMax(_Size);
+	int CopyAmount = CurrentCount;
+	if (_Size<CurrentCount)
+		CopyAmount = _Size;
+	for(int i=0;i<CopyAmount;i++)
+		n[i] = Values[i];
+//	for(unsigned int i=CopyAmount;i<_Size;i++)
+//		n[i] = 0.0;  // default value for <T>?
+	delete []Values;
+	CurrentCount = _Size;
+	Values = n;
+}
+CryPropertyList* PropertyNames() const
+{
+		CryPropertyList *n = CrySimpleArray::PropertyNames();
+		n->AddPropertyByName("Type",this);
+//		n->AddPropertyByName("Values",this);
+    	return n;
+}
+	const char *GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const
+	{
+	Result.Clear();
+	if (PropertyName=="Type")
+	{
+		GetEleType(Result);
+		return Result;
+	}
+	if (PropertyName=="Values") {
+		Result = "[]";  // if Result != what is returned, it's a special situation
+		return "*";
+	}
+    	return CrySimpleArray::GetProperty(PropertyName,Result);
+	}
 	virtual CryObject *Dup()const // creates a duplicate of this object
 	{
 		return new CryTemplateArray<T>(*this);
@@ -279,11 +317,120 @@ public:
 	}
 	virtual bool IsEmpty(const Iterator *I) const {  return ((ArrayIterator *)I)->i>CurrentCount; }
 #ifdef VALIDATING
-	virtual bool Test(bool Verbose,CryObject &Object,bool  (CallBack)(bool Verbose,const char *Result,bool fail));
+	virtual bool Test(bool Verbose,CryObject &Object,bool  (CallBack)(bool Verbose,const char *Result,bool fail))
+{
+/* need to code tests for the following functions
+	StdFunctionsNoDup(CryTemplateArray,CrySimpleArray);
+	void SetSize(size_t _Size);
+	virtual CryObject *Dup()const; // creates a duplicate of this object
+	CryTemplateArray<T> &Delete(int start,int amount);
+
+	virtual void Clear() { CurrentCount = 0; }
+
+	CryTemplateArray(int _Size=100) : CrySimpleArray(sizeof(T))
+	{
+		Values = new T[_Size];
+		SetMax(_Size);
+		SetSize(_Size);
+	}
+	~CryTemplateArray()
+	{
+		delete [] Values;
+	}
+
+	virtual void RemoveAtIterator(Iterator *LI);
+	virtual bool LoadAsText(int i,CryString &FromStream);
+	virtual bool SaveAsText(int i,CryString &ToStream) const;
+	void SetItem(unsigned int i,EmptyObject *Item,bool IsCryObject,bool IsOwned,size_t Size)
+	{
+		SetValue(i,*(T*)Item);
+	}
+
+	const T operator [](int i)
+	{
+		return Values[i];
+	}
+	void SetValue(int i,T v)
+	{
+		Values[i] = v;
+	}
+	T GetValue(int i) const
+	{
+		if ((i<0) || ((unsigned )i>=CurrentCount))
+			throw CryException(this,"Range Error");
+		return Values[i];
+	}
+	virtual bool IsEmpty(const Iterator *I) const {  return ((ArrayIterator *)I)->i>CurrentCount; }
+*/
+	return CryContainer::Test(Verbose,Object,CallBack);
+}
 #endif
 
 };
 
+template<>
+void CryTemplateArray<int>::GetEleType(CryString &Result) const
+	{
+		Result = "int";
+	}
+template<>
+void CryTemplateArray<float>::GetEleType(CryString &Result) const
+	{
+		Result = "float";
+	}
+template<>
+void CryTemplateArray<CryString>::GetEleType(CryString &Result) const
+	{
+		Result = "CryString";
+	}
+
+template<>
+bool CryTemplateArray<int>::LoadAsText(int i,CryString &FromStream)
+{
+	int v;
+	FromStream.scanf("%d ",&v);
+	if (i>=0 && i < GetMax())
+	{
+		Values[i] = v;
+		return true;
+	}
+	return false;
+}
+template<>
+bool CryTemplateArray<int>::SaveAsText(int i,CryString &ToStream) const
+{
+	ToStream.printf("%d ",Values[i]);
+	return true;
+}
+template<>
+bool CryTemplateArray<float>::LoadAsText(int i,CryString &FromStream)
+{
+	float v;
+	FromStream.scanf("%f ",&v);
+	if (i>=0 && i < GetMax())
+	{
+		Values[i] = v;
+		return true;
+	}
+	return false;
+}
+template<>
+bool CryTemplateArray<float>::SaveAsText(int i,CryString &ToStream) const
+{
+	ToStream.printf("%f ",Values[i]);
+	return true;
+}
+
+template<typename T>
+void CryTemplateArray<T>::RemoveAtIterator(Iterator *LI)
+{
+	unsigned int i = IteratorValue(LI);
+	for(;i<CurrentCount-1;i++)
+	{
+		Values[i] = Values[i+1];
+	}
+	return;
+}
 
 
 /// An Array class. Array elements are pointed to, and are created in the derived classes

@@ -1,9 +1,9 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_PREREQ(2.60)
+AC_PREREQ(2.59)
 AC_INIT([FULL-PACKAGE-NAME],[VERSION],[BUG-REPORT-ADDRESS])
-AM_INIT_AUTOMAKE
+
 AC_CONFIG_SRCDIR([UnitTest.cpp])
 #AC_CONFIG_HEADER([config.h])
 AC_PROG_MAKE_SET
