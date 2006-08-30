@@ -322,7 +322,7 @@ CryObject * CryTemplateArray<T>::Dup() const
 	return n;
 } */
 #ifdef VALIDATING
-template<>
+/*template<>
 bool CryTemplateArray<int>::Test(bool Verbose,CryObject &Object,bool (CallBack)(bool Verbose,const char *Result,bool fail))
 {
 /* need to code tests for the following functions
@@ -367,13 +367,14 @@ bool CryTemplateArray<int>::Test(bool Verbose,CryObject &Object,bool (CallBack)(
 		return Values[i];
 	}
 	virtual bool IsEmpty(const Iterator *I) const {  return ((ArrayIterator *)I)->i>CurrentCount; }
-*/
+
 	return CryContainer::Test(Verbose,Object,CallBack);
 }
+*/
 #endif
-
+/*
 template<typename T>
-void CryTemplateArray<T>::SetSize(size_t _Size)
+void Crystal::CryTemplateArray<T>::SetSize(size_t _Size)
 {
 	T *n = new T[_Size];
 	SetMax(_Size);
@@ -387,7 +388,7 @@ void CryTemplateArray<T>::SetSize(size_t _Size)
 	delete []Values;
 	CurrentCount = _Size;
 	Values = n;
-}
+}*/
 template<typename T>
 CryTemplateArray<T> &CryTemplateArray<T>::Delete(int start,int amount)
 {
@@ -404,70 +405,6 @@ CryTemplateArray<T> &CryTemplateArray<T>::Delete(int start,int amount)
 	return *this;
 }
 
-
-template<>
-void CryTemplateArray<int>::GetEleType(CryString &Result) const
-	{
-		Result = "int";
-	}
-template<>
-void CryTemplateArray<float>::GetEleType(CryString &Result) const
-	{
-		Result = "float";
-	}
-template<>
-void CryTemplateArray<CryString>::GetEleType(CryString &Result) const
-	{
-		Result = "CryString";
-	}
-
-template<>
-bool CryTemplateArray<int>::LoadAsText(int i,CryString &FromStream)
-{
-	int v;
-	FromStream.scanf("%d ",&v);
-	if (i>=0 && i < GetMax())
-	{
-		Values[i] = v;
-		return true;
-	}
-	return false;
-}
-template<>
-bool CryTemplateArray<int>::SaveAsText(int i,CryString &ToStream) const
-{
-	ToStream.printf("%d ",Values[i]);
-	return true;
-}
-template<>
-bool CryTemplateArray<float>::LoadAsText(int i,CryString &FromStream)
-{
-	float v;
-	FromStream.scanf("%f ",&v);
-	if (i>=0 && i < GetMax())
-	{
-		Values[i] = v;
-		return true;
-	}
-	return false;
-}
-template<>
-bool CryTemplateArray<float>::SaveAsText(int i,CryString &ToStream) const
-{
-	ToStream.printf("%f ",Values[i]);
-	return true;
-}
-
-template<typename T>
-void CryTemplateArray<T>::RemoveAtIterator(Iterator *LI)
-{
-	unsigned int i = IteratorValue(LI);
-	for(;i<CurrentCount-1;i++)
-	{
-		Values[i] = Values[i+1];
-	}
-	return;
-}
 
 
 //
