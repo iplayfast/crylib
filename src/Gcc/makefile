@@ -1,5 +1,0 @@
-source = UnitTestForm.cpp ../Common/BitArray.cpp ../Common/ClassBuilder.cpp ../Common/ClassContainer.cpp ../Common/ClassException.cpp ../Common/ClassFileStream.cpp ../Common/ClassFooter.cpp ../Common/ClassFunction.cpp ../Common/ClassHeader.cpp ../Common/ClassInstance.cpp ../Common/ClassList.cpp ../Common/ClassMemStream.cpp ../Common/ClassProperty.cpp ../Common/ClassStream.cpp ../Common/ClassString.cpp ../Common/CodeFactory.cpp ../Common/CryArray.cpp ../Common/CryBackProp.cpp ../Common/CryFunctionDef.cpp ../Common/CryFuzzy.cpp ../Common/CryNN.cpp ../Common/CryObject.cpp ../Common/CryPattern.cpp ../Common/CryPatterns.cpp ../Common/CrySet.cpp ../Common/CryXML.cpp ../Common/DefaultBuild.cpp ../Common/Factest.cpp ../Common/HeadImp.cpp ../Common/HugeInt.cpp ../Common/NNPrime.cpp ../Common/PrimInstance.cpp ../Common/PrimeTab.cpp ../Common/Utility.cpp ../Common/bignumfactor.cpp ../Common/hugedouble.cpp ../Common/librarytest.cpp
-
-UnitTest.exe : $(source)
-	g++ -o UnitTest.exe -D VALIDATING -I ../Common $(source)
-
