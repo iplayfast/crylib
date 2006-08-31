@@ -4,6 +4,7 @@
 #include "CryBackProp.h"
 #include "CryFuzzy.h"
 #include "HugeInt.h"
+#include "CrySet.h"
 
 using namespace Crystal;
 //---------------------------------------------------------------------------
@@ -76,9 +77,25 @@ CryString s;
 
 }
 //---------------------------------------------------------------------------
-
+void SetTest()
+{
+try
+{
+CrySet a;
+	a.Test(true,a,FormCallBack);
+}
+catch(CryException &E)
+{
+CryString s;
+	s ="Exception Caught: ";
+	s += E;
+	printf("%s",s.AsPChar());
+}
+}
+//---------------------------------------------------------------------------
 int main(int argc,char *argv[])
 {
+	SetTest();
 	TemplateTest();
 	StringTest();
 }

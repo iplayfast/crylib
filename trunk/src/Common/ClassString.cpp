@@ -22,7 +22,6 @@
 #include <iostream>
 #ifdef __BORLANDC__
 #include <io.h>
-#define strcasecmp stricmp
 #endif
 
 #include "ClassProperty.h"

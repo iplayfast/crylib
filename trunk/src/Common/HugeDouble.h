@@ -19,7 +19,7 @@
  ***************************************************************************/
 
  
- #include "hugeint.h"
+#include "HugeInt.h"
 
 namespace Crystal {
 

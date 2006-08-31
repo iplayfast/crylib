@@ -7,7 +7,7 @@
 #include "CryFuzzy.h"
 #include "CryXML.h"
 #include "CryNN.h"
-#include "hugeint.h"
+#include "HugeInt.h"
 #include "PrimeTab.h"
 #include "Utility.h"
 //---------------------------------------------------------------------------

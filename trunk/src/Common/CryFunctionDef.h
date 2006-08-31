@@ -234,10 +234,10 @@ virtual bool IteratedFunction(EmptyObject *Control,EmptyObject *Item)
 virtual bool IteratedFunction(ListFunctionDef::IControl *Control,FunctionDef *Item);
 /*! This function will add an object of type FunctionDef to
 the container. The Owned part means that the container is responsible for deleting it*/
-virtual FunctionDef* ListFunctionDef::AddOwned(FunctionDef * Item);
+virtual FunctionDef* AddOwned(FunctionDef * Item);
 /*! This function will add an object of type FunctionDef to
 the container. It is not "Owned" so the container is NOT responsible for deleting it*/
-virtual FunctionDef* ListFunctionDef::Add(FunctionDef * Item);
+virtual FunctionDef* Add(FunctionDef * Item);
 
 // Iterator functions available because this is a container class
 

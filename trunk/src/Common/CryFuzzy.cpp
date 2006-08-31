@@ -443,7 +443,7 @@ CryFuzzy temp;
 void CryFuzzy::CopyAndInhibitTemp(CryFuzzy &Fuzzy,CryFuzzy &Temp)
 {
 float l,h,r,d;
-    clear();
+    Clear();
     l = Fuzzy.LowestRange();
     h = Fuzzy.HighestRange();
     if ((l<0) || (h<0)) return;
@@ -451,10 +451,10 @@ float l,h,r,d;
     r = l;
 
 //    Temp.SetUsedLength(ceil(h - l));	// make space needed
-    Temp.clear();// set the space used right now
+    Temp.Clear();// set the space used right now
 //    SetUsedLength(ceil(h-l)*10);
 //    SetUsedLength(0);
-    clear();
+    Clear();
 	while(r<h)
 	{
 		AddPoint(r,Fuzzy.Value(r));
@@ -466,7 +466,7 @@ float l,h,r,d;
 		Temp.AddPoint(r,Value(r) - (Value(r-d)/2.0) - (Value(r+d)/2.0));
 		r = r + d;
 	};
-	clear();
+	Clear();
 	r = l + d;
 	AddPoint(r,Temp.Value(r));
 	AddPoint(h-d,Temp.Value(h-d));

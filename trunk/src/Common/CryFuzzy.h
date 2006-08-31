@@ -58,7 +58,7 @@ protected:
 
 public:
 StdFunctionsNoDup(CryFuzzy,CryArray);
-virtual CryObject *CryFuzzy::Dup()const;
+virtual CryObject *Dup()const;
     CryFuzzy();
 	CryFuzzy(const CryFuzzy &c);
     CryFuzzy(const CryFuzzy *p);
