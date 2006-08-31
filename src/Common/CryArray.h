@@ -227,7 +227,11 @@ class CryTemplateArray : public CrySimpleArray
 		return false;
 	};
 public:
-	virtual void GetEleType(CryString &Result) const;
+	virtual void GetEleType(CryString &Result) const
+	{
+		Result = "unknown";
+	}
+
 	CryTemplateArray<T>(const CryTemplateArray<T> &Copy)
 	{
 		SetMax(Copy.Size());
@@ -250,7 +254,6 @@ void SetSize(size_t _Size)
 //	for(unsigned int i=CopyAmount;i<_Size;i++)
 //		n[i] = 0.0;  // default value for <T>?
 	delete []Values;
-	CurrentCount = _Size;
 	Values = n;
 }
 CryPropertyList* PropertyNames() const
@@ -278,14 +281,28 @@ CryPropertyList* PropertyNames() const
 	{
 		return new CryTemplateArray<T>(*this);
 	}
-	CryTemplateArray<T> &Delete(int start,int amount);
+	CryTemplateArray<T> &Delete(int start,int amount)
+	{
+		if (start>=Size()) return *this;
+		while(start<Size())
+		{
+			if (start+amount>=Size()) {
+				CurrentCount=start;
+				return *this;
+			}
+		
+
+		Values[start] = Values[start+amount];
+		start++;
+		}
+	return *this;
+	}
 
 	virtual void Clear() { CurrentCount = 0; }
 
 	CryTemplateArray(int _Size=100) : CrySimpleArray(sizeof(T))
 	{
 		Values = new T[_Size];
-		SetMax(_Size);
 		SetSize(_Size);
 	}
 	~CryTemplateArray()
@@ -293,7 +310,11 @@ CryPropertyList* PropertyNames() const
 		delete [] Values;
 	}
 
-	virtual void RemoveAtIterator(Iterator *LI);
+	virtual void RemoveAtIterator(Iterator *LI)
+	{
+	int i = ((ArrayIterator *)LI)->i;
+		Delete(i,1);
+	}
 	virtual bool LoadAsText(int i,CryString &FromStream);
 	virtual bool SaveAsText(int i,CryString &ToStream) const;
 	void SetItem(unsigned int i,EmptyObject *Item,bool IsCryObject,bool IsOwned,size_t Size)
@@ -368,70 +389,6 @@ CryPropertyList* PropertyNames() const
 
 };
 
-template<>
-void CryTemplateArray<int>::GetEleType(CryString &Result) const
-	{
-		Result = "int";
-	}
-template<>
-void CryTemplateArray<float>::GetEleType(CryString &Result) const
-	{
-		Result = "float";
-	}
-template<>
-void CryTemplateArray<CryString>::GetEleType(CryString &Result) const
-	{
-		Result = "CryString";
-	}
-
-template<>
-bool CryTemplateArray<int>::LoadAsText(int i,CryString &FromStream)
-{
-	int v;
-	FromStream.scanf("%d ",&v);
-	if (i>=0 && i < GetMax())
-	{
-		Values[i] = v;
-		return true;
-	}
-	return false;
-}
-template<>
-bool CryTemplateArray<int>::SaveAsText(int i,CryString &ToStream) const
-{
-	ToStream.printf("%d ",Values[i]);
-	return true;
-}
-template<>
-bool CryTemplateArray<float>::LoadAsText(int i,CryString &FromStream)
-{
-	float v;
-	FromStream.scanf("%f ",&v);
-	if (i>=0 && i < GetMax())
-	{
-		Values[i] = v;
-		return true;
-	}
-	return false;
-}
-template<>
-bool CryTemplateArray<float>::SaveAsText(int i,CryString &ToStream) const
-{
-	ToStream.printf("%f ",Values[i]);
-	return true;
-}
-
-template<typename T>
-void CryTemplateArray<T>::RemoveAtIterator(Iterator *LI)
-{
-	unsigned int i = IteratorValue(LI);
-	for(;i<CurrentCount-1;i++)
-	{
-		Values[i] = Values[i+1];
-	}
-	return;
-}
-
 
 /// An Array class. Array elements are pointed to, and are created in the derived classes
 class CryArray : public CrySimpleArray
@@ -458,17 +415,13 @@ class CryArray : public CrySimpleArray
   void    DeleteItemOffset(unsigned int i);
   virtual void Sort(int SortType=0) {};
 
-protected:
-	virtual ~CryArray();									// derived class's destructor should SetCurrent(0); for proper cleanup
 	EmptyObject *Add(EmptyObject *Item,bool IsCryObject,bool IsOwned,size_t Size = 0);
 public:
 StdFunctionsNoDup(CryArray,CrySimpleArray);
 	CryArray(size_t ElementSize = 1);
+	virtual ~CryArray();
 	virtual CryFunctionDefList *GetFunctions(const char *Type=0) const;
-	void clear()
-	{
-		SetSize(0);
-	}
+	virtual void Clear();
 	EmptyObject *GetItem(unsigned int i) const;						//will return object[i] indexed from 0
 	virtual void SetAtIterator(const Iterator *I,EmptyObject *Item,bool IsCryObject,bool IsOwned,size_t Size = 0);
 
@@ -510,7 +463,7 @@ StdFunctionsNoDup(CryArray,CrySimpleArray);
 	virtual CryPropertyList* PropertyNames() const;
 	virtual EmptyObject *GetAtIterator(const Iterator *I) const
 	{
-		int i = IteratorValue(I);
+		unsigned int i = IteratorValue(I);
 		return GetItem(i);
 	}
 	/// will set a value to the container[Iterator]
@@ -546,7 +499,7 @@ StdFunctionsNoDup(CryArray,CrySimpleArray);
     {
         return (CryObject *)Add(Item,true,true,0);
     }   // gives ownership to list
-    EmptyObject *CryArray::DupItem(const CryArray::ElePtr  *Node) const;
+    EmptyObject *DupItem(const ElePtr  *Node) const;
     virtual void SetItemOwnerShip(Iterator *I,bool Owned);
     virtual bool GetItemOwnerShip(const Iterator *I) const;
     virtual bool IsCryObject(const Iterator *I) const;
@@ -555,7 +508,6 @@ StdFunctionsNoDup(CryArray,CrySimpleArray);
     size_t GetItemSize(Iterator *I) const;
     virtual void GetEleType(CryString &Result) const;
 
-	virtual void Clear();
 
 };
 
@@ -667,7 +619,7 @@ StdFunctionsNoDup(CryDoubleArray,CrySimpleArray);
 			printf("here");
 		return Values[i];
 	}
-	void Clear()
+	virtual void Clear()
 { }	// means nothing do a double
 
 	// if this class contains the property name, it will attempt to load it

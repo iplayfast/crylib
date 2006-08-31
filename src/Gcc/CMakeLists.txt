@@ -2,6 +2,13 @@ PROJECT(UnitTest)
 SUBDIRS(Common)
 INCLUDE_DIRECTORIES(Common Common/zlib)
 ADD_DEFINITIONS(-DVALIDATING)
+IF(NOT CMAKE_BUILD_TYPE)
+  SET(CMAKE_BUILD_TYPE Debug CACHE STRING
+        "Choose the type of build, options are: None Debug Release
+	RelWithDebInfo MinSizeRel."
+	      FORCE)
+	      ENDIF(NOT CMAKE_BUILD_TYPE)
+
 ADD_EXECUTABLE(UnitTest UnitTest.cpp 
 Common/BitArray.cpp
 Common/ClassBuilder.cpp
@@ -35,7 +42,7 @@ Common/PrimInstance.cpp
 Common/PrimeTab.cpp
 Common/Utility.cpp
 Common/bignumfactor.cpp
-Common/hugedouble.cpp
+Common/HugeDouble.cpp
 Common/zlib/adler32.c
 Common/zlib/compress.c
 Common/zlib/crc32.c

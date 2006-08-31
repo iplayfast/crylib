@@ -48,7 +48,7 @@ class FileStreamIterator : public StreamIterator
     CryFileStream(CryFileStream &nono);
 public:
     StdFunctionsNoDup(CryFileStream,CryStream);
-    virtual CryObject *CryFileStream::Dup() const; // creates a duplicate of this object
+    virtual CryObject *Dup() const; // creates a duplicate of this object
     virtual const cbyte* GetRaw() const;
     virtual CryFunctionDefList *GetFunctions(const char *Type=0) const;
     //    const char* ClassName() const;

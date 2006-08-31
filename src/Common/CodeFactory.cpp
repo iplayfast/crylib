@@ -298,11 +298,11 @@ bool  CodeFactory::SetProperty(const CryPropertyParser &PropertyName,const char 
 		return true;
 	}
 	if (PropertyName=="IsPointer") {
-		SetIsPointer(stricmp(PropertyValue,"Yes")==0);
+		SetIsPointer(strcasecmp(PropertyValue,"Yes")==0);
 		return true;
 	}
 	if (PropertyName=="IsProperty") {
-		SetIsProperty(stricmp(PropertyValue,"Yes")==0);
+		SetIsProperty(strcasecmp(PropertyValue,"Yes")==0);
 		if (_IsProperty)
 		{
 			AddProduct(TGetProperty);

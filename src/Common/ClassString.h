@@ -24,7 +24,9 @@ namespace Crystal
 using namespace std;
 #ifndef TCryString
 #define TCryString  "CryString"
-
+#ifdef __BORLANDC__
+#define strcasecmp stricmp
+#endif
 /// string handling as though it were a stream
 class CryString : public CryMemStream
 {

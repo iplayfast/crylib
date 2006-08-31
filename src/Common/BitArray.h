@@ -96,7 +96,7 @@ virtual bool GotoNext(Iterator *I) const;
 virtual bool GotoLast(Iterator *Iterator) const;
 virtual bool GotoFirst(Iterator *I) const;
 virtual bool GetItemOwnerShip(const Iterator *I) const;
-void BitArray::RemoveAtIterator(Iterator *I);
+void RemoveAtIterator(Iterator *I);
 virtual Iterator *_CreateIterator() const
 {
 	return new BitIterator(this);

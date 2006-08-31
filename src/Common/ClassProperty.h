@@ -47,7 +47,7 @@ public:
 	CryProperty(CryProperty &Copy);
 	virtual ~CryProperty();
 	virtual CryFunctionDefList *GetFunctions(const char *Type=0) const;
-	virtual CryObject *CryProperty::Dup() const;  /// creates a duplicate of this object
+	virtual CryObject *Dup() const;  /// creates a duplicate of this object
 
 	void SetValue(const char *_Value);
 	void SetValue(const CryObject *_Value);
@@ -135,7 +135,7 @@ public:
 //	void DeleteNameIterator(Iterator *I) const;
 	/// return the results of the last operation
 	virtual CryPropertyList* PropertyNames() const;
-	CryPropertyList *CryPropertyList::Boolean(const CryObject *O2,BOperation B);
+	CryPropertyList *Boolean(const CryObject *O2,BOperation B);
 	void Load(const CryObject *o);
 	void Set(CryObject *Source);
 	/// Get the currently held properties that are also in Target, and set them from TheseValues

@@ -99,7 +99,7 @@ bool ClassInstance::SetProperty(const CryPropertyParser &PropertyName,const char
 {
 	if (PropertyName=="HasDefault")
 	{
-		HasDefault = stricmp(PropertyValue,"Yes")==0;
+		HasDefault = strcasecmp(PropertyValue,"Yes")==0;
 		return true;
 	}
 	if (PropertyName=="Type")

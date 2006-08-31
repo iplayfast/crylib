@@ -270,7 +270,7 @@ bool PrimInstance::SetProperty(const CryPropertyParser &PropertyName,const char 
 	}
 	if (PropertyName=="IsArrayPointer")       //IsArrayPointer
 	{
-		SetIsArrayPointer(stricmp(PropertyValue,"Yes")==0);
+		SetIsArrayPointer(strcasecmp(PropertyValue,"Yes")==0);
 		return true;
 	}
 	return CodeFactory::SetProperty(PropertyName,PropertyValue);
