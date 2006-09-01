@@ -342,6 +342,7 @@ bool CryTemplateArray<int>::LoadAsText(int i,CryString &FromStream)
 	}
 	return false;
 }
+
 template<>
 bool CryTemplateArray<int>::SaveAsText(int i,CryString &ToStream) const
 {

@@ -386,7 +386,6 @@ CryPropertyList* PropertyNames() const
 	return CryContainer::Test(Verbose,Object,CallBack);
 }
 #endif
-
 };
 
 
