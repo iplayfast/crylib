@@ -50,7 +50,7 @@
         <property category="win32.Debug_Build.win32b.bcc32" name="option.A.enabled" value="0"/>
         <property category="win32.Debug_Build.win32b.bcc32" name="option.AK.enabled" value="0"/>
         <property category="win32.Debug_Build.win32b.bcc32" name="option.AU.enabled" value="0"/>
-        <property category="win32.Debug_Build.win32b.bcc32" name="option.D.arg.1" value="_DEBUG"/>
+        <property category="win32.Debug_Build.win32b.bcc32" name="option.D.arg.1" value="DEBUG"/>
         <property category="win32.Debug_Build.win32b.bcc32" name="option.D.arg.merge" value="1"/>
         <property category="win32.Debug_Build.win32b.bcc32" name="option.D.enabled" value="1"/>
         <property category="win32.Debug_Build.win32b.bcc32" name="option.Jgd.enabled" value="0"/>
@@ -123,11 +123,12 @@
           <property category="win32.*.win32b.bcc32" name="option.H=.arg.merge" value="1"/>
           <property category="win32.*.win32b.bcc32" name="option.H=.enabled" value="1"/>
           <property category="win32.*.win32b.bcc32" name="option.Hc.enabled" value="1"/>
-          <property category="win32.*.win32b.bcc32" name="option.I.arg.1" value="..\Common"/>
-          <property category="win32.*.win32b.bcc32" name="option.I.arg.2" value="$(BDS)\include"/>
-          <property category="win32.*.win32b.bcc32" name="option.I.arg.3" value="$(BDS)\include\dinkumware"/>
-          <property category="win32.*.win32b.bcc32" name="option.I.arg.4" value="$(BDS)\include\vcl"/>
-          <property category="win32.*.win32b.bcc32" name="option.I.arg.5" value="..\common\zlib"/>
+          <property category="win32.*.win32b.bcc32" name="option.I.arg.1" value="..\..\..\Borland Studio Projects\test1"/>
+          <property category="win32.*.win32b.bcc32" name="option.I.arg.2" value="..\Common"/>
+          <property category="win32.*.win32b.bcc32" name="option.I.arg.3" value="$(BDS)\include"/>
+          <property category="win32.*.win32b.bcc32" name="option.I.arg.4" value="$(BDS)\include\dinkumware"/>
+          <property category="win32.*.win32b.bcc32" name="option.I.arg.5" value="$(BDS)\include\vcl"/>
+          <property category="win32.*.win32b.bcc32" name="option.I.arg.6" value="..\common\zlib"/>
           <property category="win32.*.win32b.bcc32" name="option.I.arg.merge" value="1"/>
           <property category="win32.*.win32b.bcc32" name="option.I.enabled" value="1"/>
           <property category="win32.*.win32b.bcc32" name="option.b.enabled" value="0"/>
@@ -140,50 +141,58 @@
           <property category="win32.*.win32b.bcc32" name="option.tWC.enabled" value="0"/>
           <property category="win32.*.win32b.bcc32" name="option.tWD.enabled" value="0"/>
           <property category="win32.*.win32b.bcc32" name="option.tWM.enabled" value="1"/>
-          <property category="win32.*.win32b.dcc32" name="option.I.arg.1" value="..\Common\zlib"/>
-          <property category="win32.*.win32b.dcc32" name="option.I.arg.2" value="..\crylib\src\Borland"/>
-          <property category="win32.*.win32b.dcc32" name="option.I.arg.3" value="..\crylib\src\Common"/>
-          <property category="win32.*.win32b.dcc32" name="option.I.arg.4" value="..\Common"/>
+          <property category="win32.*.win32b.dcc32" name="option.I.arg.1" value="..\..\..\Borland Studio Projects\test1"/>
+          <property category="win32.*.win32b.dcc32" name="option.I.arg.2" value="..\Common\zlib"/>
+          <property category="win32.*.win32b.dcc32" name="option.I.arg.3" value="..\crylib\src\Borland"/>
+          <property category="win32.*.win32b.dcc32" name="option.I.arg.4" value="..\crylib\src\Common"/>
+          <property category="win32.*.win32b.dcc32" name="option.I.arg.5" value="..\Common"/>
           <property category="win32.*.win32b.dcc32" name="option.I.arg.merge" value="1"/>
           <property category="win32.*.win32b.dcc32" name="option.I.enabled" value="0"/>
-          <property category="win32.*.win32b.dcc32" name="option.O.arg.1" value="..\Common\zlib"/>
-          <property category="win32.*.win32b.dcc32" name="option.O.arg.2" value="..\crylib\src\Borland"/>
-          <property category="win32.*.win32b.dcc32" name="option.O.arg.3" value="..\crylib\src\Common"/>
-          <property category="win32.*.win32b.dcc32" name="option.O.arg.4" value="..\Common"/>
+          <property category="win32.*.win32b.dcc32" name="option.O.arg.1" value="..\..\..\Borland Studio Projects\test1"/>
+          <property category="win32.*.win32b.dcc32" name="option.O.arg.2" value="..\Common\zlib"/>
+          <property category="win32.*.win32b.dcc32" name="option.O.arg.3" value="..\crylib\src\Borland"/>
+          <property category="win32.*.win32b.dcc32" name="option.O.arg.4" value="..\crylib\src\Common"/>
+          <property category="win32.*.win32b.dcc32" name="option.O.arg.5" value="..\Common"/>
           <property category="win32.*.win32b.dcc32" name="option.O.arg.merge" value="1"/>
           <property category="win32.*.win32b.dcc32" name="option.O.enabled" value="0"/>
-          <property category="win32.*.win32b.dcc32" name="option.R.arg.1" value="..\Common\zlib"/>
-          <property category="win32.*.win32b.dcc32" name="option.R.arg.2" value="..\crylib\src\Borland"/>
-          <property category="win32.*.win32b.dcc32" name="option.R.arg.3" value="..\crylib\src\Common"/>
-          <property category="win32.*.win32b.dcc32" name="option.R.arg.4" value="..\Common"/>
+          <property category="win32.*.win32b.dcc32" name="option.R.arg.1" value="..\..\..\Borland Studio Projects\test1"/>
+          <property category="win32.*.win32b.dcc32" name="option.R.arg.2" value="..\Common\zlib"/>
+          <property category="win32.*.win32b.dcc32" name="option.R.arg.3" value="..\crylib\src\Borland"/>
+          <property category="win32.*.win32b.dcc32" name="option.R.arg.4" value="..\crylib\src\Common"/>
+          <property category="win32.*.win32b.dcc32" name="option.R.arg.5" value="..\Common"/>
           <property category="win32.*.win32b.dcc32" name="option.R.arg.merge" value="1"/>
           <property category="win32.*.win32b.dcc32" name="option.R.enabled" value="0"/>
-          <property category="win32.*.win32b.dcc32" name="option.U.arg.1" value="..\Common\zlib"/>
-          <property category="win32.*.win32b.dcc32" name="option.U.arg.2" value="..\crylib\src\Borland"/>
-          <property category="win32.*.win32b.dcc32" name="option.U.arg.3" value="..\crylib\src\Common"/>
-          <property category="win32.*.win32b.dcc32" name="option.U.arg.4" value="..\Common"/>
-          <property category="win32.*.win32b.dcc32" name="option.U.arg.5" value="..\..\..\Borland Studio Projects"/>
-          <property category="win32.*.win32b.dcc32" name="option.U.arg.6" value="$(BDS)\lib"/>
-          <property category="win32.*.win32b.dcc32" name="option.U.arg.7" value="$(BDS)\lib\obj"/>
+          <property category="win32.*.win32b.dcc32" name="option.U.arg.1" value="..\..\..\Borland Studio Projects\test1"/>
+          <property category="win32.*.win32b.dcc32" name="option.U.arg.2" value="..\Common\zlib"/>
+          <property category="win32.*.win32b.dcc32" name="option.U.arg.3" value="..\crylib\src\Borland"/>
+          <property category="win32.*.win32b.dcc32" name="option.U.arg.4" value="..\crylib\src\Common"/>
+          <property category="win32.*.win32b.dcc32" name="option.U.arg.5" value="..\Common"/>
+          <property category="win32.*.win32b.dcc32" name="option.U.arg.6" value="..\..\..\Borland Studio Projects"/>
+          <property category="win32.*.win32b.dcc32" name="option.U.arg.7" value="$(BDS)\lib"/>
+          <property category="win32.*.win32b.dcc32" name="option.U.arg.8" value="$(BDS)\lib\obj"/>
           <property category="win32.*.win32b.dcc32" name="option.U.arg.merge" value="1"/>
           <property category="win32.*.win32b.dcc32" name="option.U.enabled" value="1"/>
           <property category="win32.*.win32b.dcc32" name="param.filenames.merge" value="1"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.1" value="..\Common\zlib"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.2" value="..\Common"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.3" value="..\crylib\src\Borland"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.4" value="..\crylib\src\Common"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.5" value="..\Borland"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.6" value="\crylib\src\Common"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.1" value="..\..\..\Borland"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.2" value="Studio"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.3" value="Projects\test1"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.4" value="..\Common\zlib"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.5" value="..\Common"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.6" value="..\crylib\src\Borland"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.7" value="..\crylib\src\Common"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.8" value="..\Borland"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.9" value="\crylib\src\Common"/>
           <property category="win32.*.win32b.idl2cpp" name="option.I.arg.merge" value="1"/>
           <property category="win32.*.win32b.idl2cpp" name="option.I.enabled" value="1"/>
           <property category="win32.*.win32b.ilink32" name="option.Gi.enabled" value="0"/>
-          <property category="win32.*.win32b.ilink32" name="option.L.arg.1" value="..\Common\zlib"/>
-          <property category="win32.*.win32b.ilink32" name="option.L.arg.2" value="..\crylib\src\Borland"/>
-          <property category="win32.*.win32b.ilink32" name="option.L.arg.3" value="..\crylib\src\Common"/>
-          <property category="win32.*.win32b.ilink32" name="option.L.arg.4" value="..\Common"/>
-          <property category="win32.*.win32b.ilink32" name="option.L.arg.5" value="$(BDS)\lib"/>
-          <property category="win32.*.win32b.ilink32" name="option.L.arg.6" value="$(BDS)\lib\obj"/>
-          <property category="win32.*.win32b.ilink32" name="option.L.arg.7" value="$(BDS)\lib\psdk"/>
+          <property category="win32.*.win32b.ilink32" name="option.L.arg.1" value="..\..\..\Borland Studio Projects\test1"/>
+          <property category="win32.*.win32b.ilink32" name="option.L.arg.2" value="..\Common\zlib"/>
+          <property category="win32.*.win32b.ilink32" name="option.L.arg.3" value="..\crylib\src\Borland"/>
+          <property category="win32.*.win32b.ilink32" name="option.L.arg.4" value="..\crylib\src\Common"/>
+          <property category="win32.*.win32b.ilink32" name="option.L.arg.5" value="..\Common"/>
+          <property category="win32.*.win32b.ilink32" name="option.L.arg.6" value="$(BDS)\lib"/>
+          <property category="win32.*.win32b.ilink32" name="option.L.arg.7" value="$(BDS)\lib\obj"/>
+          <property category="win32.*.win32b.ilink32" name="option.L.arg.8" value="$(BDS)\lib\psdk"/>
           <property category="win32.*.win32b.ilink32" name="option.L.arg.merge" value="1"/>
           <property category="win32.*.win32b.ilink32" name="option.L.enabled" value="1"/>
           <property category="win32.*.win32b.ilink32" name="option.Tpd.enabled" value="0"/>
@@ -192,10 +201,11 @@
           <property category="win32.*.win32b.ilink32" name="option.aa.enabled" value="1"/>
           <property category="win32.*.win32b.ilink32" name="option.ap.enabled" value="0"/>
           <property category="win32.*.win32b.ilink32" name="option.dynamicrtl.enabled" value="1"/>
-          <property category="win32.*.win32b.ilink32" name="option.j.arg.1" value="..\Common\zlib"/>
-          <property category="win32.*.win32b.ilink32" name="option.j.arg.2" value="..\crylib\src\Borland"/>
-          <property category="win32.*.win32b.ilink32" name="option.j.arg.3" value="..\crylib\src\Common"/>
-          <property category="win32.*.win32b.ilink32" name="option.j.arg.4" value="..\Common"/>
+          <property category="win32.*.win32b.ilink32" name="option.j.arg.1" value="..\..\..\Borland Studio Projects\test1"/>
+          <property category="win32.*.win32b.ilink32" name="option.j.arg.2" value="..\Common\zlib"/>
+          <property category="win32.*.win32b.ilink32" name="option.j.arg.3" value="..\crylib\src\Borland"/>
+          <property category="win32.*.win32b.ilink32" name="option.j.arg.4" value="..\crylib\src\Common"/>
+          <property category="win32.*.win32b.ilink32" name="option.j.arg.5" value="..\Common"/>
           <property category="win32.*.win32b.ilink32" name="option.j.arg.merge" value="1"/>
           <property category="win32.*.win32b.ilink32" name="option.j.enabled" value="0"/>
           <property category="win32.*.win32b.ilink32" name="option.outputdir.arg.merge" value="1"/>
@@ -260,6 +270,7 @@
         <FILE FILENAME="..\Common\zlib\trees.c" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="trees" FORMNAME="" DESIGNCLASS=""/>
         <FILE FILENAME="..\Common\zlib\uncompr.c" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="uncompr" FORMNAME="" DESIGNCLASS=""/>
         <FILE FILENAME="..\Common\zlib\zutil.c" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="zutil" FORMNAME="" DESIGNCLASS=""/>
+        <FILE FILENAME="..\..\..\Borland Studio Projects\test1\test.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="test" FORMNAME="" DESIGNCLASS=""/>
       </FILELIST>
       <IDEOPTIONS>
         <VersionInfo>

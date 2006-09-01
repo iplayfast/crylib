@@ -39,10 +39,6 @@ object Form1: TForm1
       Lines.Strings = (
         '')
       TabOrder = 0
-      ExplicitLeft = 216
-      ExplicitTop = 8
-      ExplicitWidth = 409
-      ExplicitHeight = 273
     end
   end
   object Button2: TButton
@@ -71,5 +67,14 @@ object Form1: TForm1
     Caption = 'CryArray'
     TabOrder = 4
     OnClick = Button4Click
+  end
+  object Button5: TButton
+    Left = 16
+    Top = 128
+    Width = 75
+    Height = 25
+    Caption = 'CrySet'
+    TabOrder = 5
+    OnClick = Button5Click
   end
 end

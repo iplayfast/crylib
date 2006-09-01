@@ -60,7 +60,7 @@ bool CryContainer::Test(bool Verbose,CryObject &Object, bool (CallBack)(bool Ver
             if (!CallBack(Verbose,Result,Fail))
                 return false;
         }
-        if (c->Count())
+        if (c->Count()==0)
         {
             sprintf(Result,"\nContainer Emtpy Can't test iterator");
             if (!CallBack(Verbose,Result,Fail))

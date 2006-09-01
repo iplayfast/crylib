@@ -12,6 +12,7 @@
 #include "CryBackProp.h"
 #include "CryFuzzy.h"
 #include "HugeInt.h"
+#include "CrySet.h"
 
 using namespace Dialogs;
 using namespace Crystal;
@@ -102,8 +103,12 @@ void __fastcall TForm1::Button4Click(TObject *Sender)
 Memo1->Clear();
 try
 {
-CryTemplateArray<int> a;
+CryTArray<int> a;
 #ifdef VALIDATING
+	for(int i=10;i<40;i++)
+		a.SetValue(i,i);
+	a.SetValue(5,20);
+	a.SetValue(0,30);
 	a.Test(true,a,FormCallBack);
 #endif
 
@@ -118,3 +123,28 @@ CryString s;
 
 }
 //---------------------------------------------------------------------------
+void __fastcall TForm1::Button5Click(TObject *Sender)
+{
+Memo1->Clear();
+try
+{
+CrySet a;
+#ifdef VALIDATING
+	for(int i=10;i<40;i++)
+		a.SetValue(i,i);
+	a.SetValue(5,20);
+	a.SetValue(0,30);
+	a.Test(true,a,FormCallBack);
+#endif
+
+}
+catch(CryException &E)
+{
+CryString s;
+	s ="Exception Caught: ";
+	s += E;
+	ShowMessage(s.AsPChar());
+}
+}
+//---------------------------------------------------------------------------
+
