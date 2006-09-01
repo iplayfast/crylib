@@ -110,61 +110,96 @@ bool CryObject::Test(bool Verbose,CryObject &Object, bool (CallBack)(bool Verbos
     if (Object.CanDup())
     {
         CryString spn,stemp;
-        char Result[200];
-        Object.SaveTo(spn);
-        CryObject *co;
-        {
-            {
-                CryXML x;
-                x.LoadFrom(Object);
-                try
-                {
-                    co = x.CreateObjectFromNode();
-                }
-                catch (CryException &e)
-                {
-                    CryString s;
-                    s.printf("Exception thrown on CreateObjectFromNode \"%s\"",(const char *)e);
-                    if (!CallBack(Verbose,s,Fail))
-                        return false;
-
-                }
-
-            }
-
-            CryString factorystring;
-            co->SaveTo(factorystring);
-            if (factorystring!=spn)
-            {
-                sprintf(Result,"\nObject failed XML save rebuild test");
-                Fail = true;
-            }
-            else
-            {
-                sprintf(Result,"\nObject passed XML save rebuild test");
-            }
-            delete co;
-            if (!CallBack(Verbose,Result,Fail))
-                return false;
-        }
-
-    }
+		char Result[200];
+		try
+		{
+		Object.SaveTo(spn);
+		if (!CallBack(Verbose,"Object saved to string without problems",Fail)) {
+			return false;
+		}
+		}
+		catch (CryException &e)
+		{
+			Fail=true;
+			if (!CallBack(Verbose,"Object saved to string with problems",Fail)) {
+				return false;
+			}
+		}
+		{
+		CryObject *co=0;
+			{
+				CryXML x;
+				try
+				{
+				x.LoadFrom(Object);
+				if (!CallBack(Verbose,"CryXML Loaded Object without problems",Fail))
+				{
+					return false;
+				}
+				}
+				catch (CryException &e)
+				{
+					Fail=true;
+					if (!CallBack(Verbose,"CryXML Loaded Object with problems",Fail)) {
+					return false;
+					}
+				}
 
 
-    return Fail;
-    /*
-    virtual void SaveTo(CryStream *ToStream);
-    virtual void LoadFrom(CryStream *FromStream);
-    virtual void CopyTo(CryObject *Dest) const =0;  //copies contents of this to Dest
-    virtual CryObject *Dup() const =0; // creates a duplicate of this object
-    int GetCopyCount() const {  return CopyCount; }
-    int IncCopyCount() {  CopyCount++; return CopyCount; }
-    int DecCopyCount() {  CopyCount--; return CopyCount; }
-    void Destroy(CryObject *Object);
-    virtual CryObject *CreateItemType(const char *Name);
-    virtual const cbyte* GetRaw() const = 0;
-    virtual bool Event(EObject EventNumber,Context::IO &Context);
-    */
+				try
+				{
+					co = x.CreateObjectFromNode();
+				}
+				catch (CryException &e)
+				{
+					CryString s;
+					Fail = true;
+					s.printf("Exception thrown on CreateObjectFromNode \"%s\"",(const char *)e);
+					if (!CallBack(Verbose,s,Fail))
+						return false;
+
+				}
+
+			}
+			if (co) {
+
+
+			CryString factorystring;
+			co->SaveTo(factorystring);
+			if (factorystring!=spn)
+			{
+				sprintf(Result,"\nObject failed XML save rebuild test");
+				Fail = true;
+			}
+			else
+			{
+				sprintf(Result,"\nObject passed XML save rebuild test");
+			}
+			delete co;
+
+
+			if (!CallBack(Verbose,Result,Fail))
+				return false;
+			}
+		}
+
+	}
+
+
+	return Fail;
+	/*
+	virtual void SaveTo(CryStream *ToStream);
+	virtual void LoadFrom(CryStream *FromStream);
+	virtual void CopyTo(CryObject *Dest) const =0;  //copies contents of this to Dest
+	virtual CryObject *Dup() const =0; // creates a duplicate of this object
+	int GetCopyCount() const {  return CopyCount; }
+	int IncCopyCount() {  CopyCount++; return CopyCount; }
+	int DecCopyCount() {  CopyCount--; return CopyCount; }
+	void Destroy(CryObject *Object);
+	virtual CryObject *CreateItemType(const char *Name);
+	virtual const cbyte* GetRaw() const = 0;
+	virtual bool Event(EObject EventNumber,Context::IO &Context);
+	*/
 }
 #endif
 
@@ -172,7 +207,7 @@ CryObject::~CryObject()
 {}
 bool CryObject::CanDup() const
 {
-    return true;
+	return true;
 }
 
 CryObject &CryObject::operator =(const CryObject &From)
