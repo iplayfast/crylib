@@ -1,0 +1,6 @@
+make a soft link in Gcc to ../Common
+ie
+cd Gcc
+ln -s ../Common Common
+
+then make will work
