@@ -227,7 +227,10 @@ class CryTArray : public CrySimpleArray
 		return false;
 	};
 public:
-	virtual void GetEleType(CryString &Result) const;
+	virtual void GetEleType(CryString &Result) const
+	{
+		throw CryException("Class needs to be expanded");
+	}
 	CryTArray<T>(const CryTArray<T> &Copy)
 	{
 		SetMax(Copy.Size());
@@ -251,11 +254,15 @@ public:
 				return;
 			}
 			throw CryException("Copying to an array of different type");
-		}                                          
+		}
 		CrySimpleArray::CopyTo(Dest);
-    }
+	}
 
-	T GetDefault() const;// default value for <T>
+	T GetDefault() const
+	{
+	// default value for <T>
+		throw CryException("Class needs to be expanded");
+	}
 //	void SetSize(size_t _Size);
 void SetSize(size_t _Size)
 {
@@ -279,7 +286,7 @@ CryPropertyList* PropertyNames() const
 		CryPropertyList *n = CrySimpleArray::PropertyNames();
 		n->AddPropertyByName("Type",this);
 //		n->AddPropertyByName("Values",this);
-    	return n;
+		return n;
 }
 	const char *GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const
 	{
@@ -293,7 +300,7 @@ CryPropertyList* PropertyNames() const
 		Result = "[]";  // if Result != what is returned, it's a special situation
 		return "*";
 	}
-    	return CrySimpleArray::GetProperty(PropertyName,Result);
+		return CrySimpleArray::GetProperty(PropertyName,Result);
 	}
 	virtual CryObject *Dup()const // creates a duplicate of this object
 	{
@@ -312,9 +319,20 @@ CryPropertyList* PropertyNames() const
 		delete [] Values;
 	}
 
-	virtual void RemoveAtIterator(Iterator *LI);
-	virtual bool LoadAsText(int i,CryString &FromStream);
-	virtual bool SaveAsText(int i,CryString &ToStream) const;
+	virtual void RemoveAtIterator(Iterator *LI)
+	{
+		ArrayIterator *ai = (ArrayIterator *)LI;
+		Delete(ai->i,1);
+	}
+	virtual bool LoadAsText(int i,CryString &FromStream)
+	{
+		throw CryException("Class needs to be expanded");
+	}
+	virtual bool SaveAsText(int i,CryString &ToStream) const
+	{
+		throw CryException("Class needs to be expanded");
+	}
+	
 	void SetItem(unsigned int i,EmptyObject *Item,bool IsCryObject,bool IsOwned,size_t Size)
 	{
 		SetValue(i,*(T*)Item);
@@ -412,23 +430,23 @@ CryTArray<T> &Delete(int start,int amount)
 #endif
 };
 
-template<>
-int CryTArray<int>::GetDefault() const
+/*template<>
+int Crystal::CryTArray<int>::GetDefault() const
 {
 	return 0;
 }
 template<>
-float CryTArray<float>::GetDefault() const
+float Crystal::CryTArray<float>::GetDefault() const
 {
 	return 0.0;
 }
 
 template<>
-CryString CryTArray<CryString>::GetDefault() const
+CryString Crystal::CryTArray<CryString>::GetDefault() const
 {
 	return "";
 }
-
+*/
 /*template<>
 void CryTArray<int>::GetEleType(CryString &Result) const
 	{
