@@ -61,7 +61,7 @@ void TemplateTest()
 {
 try
 {
-CryTemplateArray<int> a;
+CryTArray<int> a;
 #ifdef VALIDATING
 	a.Test(true,a,FormCallBack);
 #endif
