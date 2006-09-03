@@ -24,7 +24,6 @@
 
 namespace Crystal {
 using namespace Crystal;
-class CryTArray<int> test;
 
 class CrySet : public CryTArray<int>
 {
