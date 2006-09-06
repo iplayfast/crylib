@@ -477,7 +477,6 @@
         <FILE FILENAME="..\Common\BitArray.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="BitArray" FORMNAME="" DESIGNCLASS=""/>
         <FILE FILENAME="..\Common\CryPattern.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="CryPattern" FORMNAME="" DESIGNCLASS=""/>
         <FILE FILENAME="..\Common\HugeInt.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="HugeInt" FORMNAME="" DESIGNCLASS=""/>
-        <FILE FILENAME="..\Common\Unit1.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="Unit1" FORMNAME="" DESIGNCLASS="" ADDITIONAL="..\Common\Unit1.h"/>
         <FILE FILENAME="..\Common\CrySet.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="CrySet" FORMNAME="" DESIGNCLASS=""/>
       </FILELIST>
       <IDEOPTIONS>

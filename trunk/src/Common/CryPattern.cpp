@@ -168,85 +168,141 @@ void StrategyHolderSender::DoStrategy(int StrategyIndex,CryObject *Sender) const
 
 TestStrategy::Ducks::Ducks()
 {
-    Sitting = true;
+	Sitting = true;
 }
 bool TestStrategy::Ducks::GetSitting()
 {
-    return Sitting;
+	return Sitting;
 }
 bool TestStrategy::Ducks::SetSitting(bool V)
 {
-    return Sitting = V;
+	return Sitting = V;
 }
 bool TestStrategy::Ducks::IsA(const char *ClassName) const
 {
-    if (strcmp(ClassName,"Duck")==0)
-        return true;
-    else
-        return false;
+	if (strcmp(ClassName,"Duck")==0)
+		return true;
+	else
+		return false;
 }
+
 int TestStrategy::DucksFly::DoStrategy() const
 {
-    printf("I'm Flying!\n");
-    return -1;
+	sprintf(Result,"I'm Flying!\n");
+	return -1;
 }
 int TestStrategy::DucksFly::DoStrategy(CryObject *d) const
 {
-    printf("I'm Flying!\n");
-    return -1;
+	sprintf(Result,"I'm Flying!\n");
+	return -1;
 }
 
 int TestStrategy::DucksNoFly::DoStrategy() const
 {
-    printf("I can't fly!\n");
-    return -1;
+	sprintf(Result,"I can't fly!\n");
+	return -1;
 }
 int TestStrategy::DucksNoFly::DoStrategy(CryObject *) const
 {
-    return DoStrategy();
+	return DoStrategy();
 }
 int TestStrategy::DucksMove::DoStrategy() const
 {
-    printf("I'm moving in some fashion\n");
-    return -1;
+	// no object is passed in, so we don't know if the duck is sitting or not
+//	sprintf(Result,"I'm moving in some fashion\n");
+	return -1;
 }
 int TestStrategy::DucksMove::DoStrategy(CryObject *d) const
 {
-    if (d->IsA("Duck"))
-    {
-        if (((Ducks *)d)->GetSitting())
-            printf("I'm Waddling\n");
-        else
-            return _FLY;	// tell the strategy holder to do the _FLY strategy
-        return -1;
-    }
-    return -1;
+	if (d->IsA("Duck"))
+	{
+		if (((Ducks *)d)->GetSitting())
+			sprintf(Result,"I'm Waddling\n");
+		else
+			return _FLY;	// tell the strategy holder to do the _FLY strategy
+		return -1;
+	}
+	return -1;
 }
 
-TestStrategy::TestStrategy()
+bool Strategy::Test(bool Verbose,CryObject &Object,bool  (CallBack)(bool Verbose,const char *Result,bool fail))
 {
-    StrategyHolder h(2);
-    StrategyHolderSender hs(2);
-    DucksFly df;
-    DucksNoFly dnf;
-    DucksMove dm;
-    Ducks d;		//  normally it would make sense for these strategies to be contained inside
-    //the duck but for testing purposes this will do.
-    h.DoStrategy(_MOVE);	// nothing should happen as no strategies have been set
-    h.SetStrategy(_FLY,&df);	// set dsome strategies
-    h.SetStrategy(_MOVE,&dm);
-    h.DoStrategy(_MOVE);	// shouldn't work since our move strategy requires the object passed to it to see the state
-    h.DoStrategy(_FLY);	// should work "I'm Flying!"
-    h.SetStrategy(_FLY,&dnf);
-    h.DoStrategy(_MOVE);	// nothing should happen for same reason as above
-    h.DoStrategy(_FLY);	// should work "I can't fly!"
+char _Result[100];
+	TestStrategy a(_Result,Verbose,Object,CallBack);
+	if (_Result[0]=='F') {
+		return false;
+	}
+	return CryObject::Test(Verbose,Object,CallBack);
+}
 
-    hs.SetStrategy(_FLY,&df);	// set dsome strategies
-    hs.SetStrategy(_MOVE,&dm);
-    d.SetSitting(true);		// a sitting duck if moved will waddle
-    hs.DoStrategy(_MOVE,&d);	// should waddle
-    d.SetSitting(false);
-    hs.DoStrategy(_MOVE,&d);	// should fly
+TestStrategy::TestStrategy(char *_Result,bool Verbose,CryObject &Object,bool  (CallBack)(bool Verbose,const char *Result,bool fail))
+{
+Result = _Result;
+	StrategyHolder h(2);
+	StrategyHolderSender hs(2);
+	DucksFly df(_Result);
+	DucksNoFly dnf(_Result);
+	DucksMove dm(_Result);
+	Ducks d;		//  normally it would make sense for these strategies to be contained inside
+	//the duck but for testing purposes this will do.
+	Result[0] = '\0';
+	h.DoStrategy(_MOVE);	// nothing should happen as no strategies have been set
+bool fail = Result[0]!='\0';
+	CallBack(Verbose,"No strategy's set",fail);
+	h.SetStrategy(_FLY,&df);	// set dsome strategies
+	h.SetStrategy(_MOVE,&dm);
+	h.DoStrategy(_MOVE);	// shouldn't work since our move strategy requires the object passed to it to see the state
+	fail |= Result[0]!='\0';
+	CallBack(Verbose,"Do strategy with no object should ignore",fail);
+	h.DoStrategy(_FLY);	// should work "I'm Flying!"
+	fail |= strcmp("I'm Flying!\n",Result)!=0;
+	if (!CallBack(Verbose,"Do strategy with no object should invoke",fail))
+	{
+		_Result[0] = fail ? 'F' :'P';
+		return;
+	}
+	Result[0] = '\0';
+	h.SetStrategy(_FLY,&dnf);
+	h.DoStrategy(_MOVE);	// nothing should happen for same reason as above
+	fail |= Result[0]!='\0';
+	if (!CallBack(Verbose,"Do strategy with no object should ignore",fail))
+	{
+		_Result[0] = fail ? 'F' :'P';
+		return;
+	}
+	h.DoStrategy(_FLY);	// should work "I can't fly!"
+	fail |= strcmp("I can't fly!\n",Result)!=0;
+	if (!CallBack(Verbose,"Do strategy with no object should invoke",fail))
+	{
+		_Result[0] = fail ? 'F' :'P';
+		return;
+	}
+
+	hs.SetStrategy(_FLY,&df);	// set dsome strategies
+	hs.SetStrategy(_MOVE,&dm);
+	d.SetSitting(true);		// a sitting duck if moved will waddle
+
+	hs.DoStrategy(_MOVE,&d);	// should waddle
+	fail |= strcmp("I'm Waddling\n",Result)!=0;
+	if (!CallBack(Verbose,"Do strategy with object should invoke",fail))
+	{
+		_Result[0] = fail ? 'F' :'P';
+		return;
+	}
+
+	d.SetSitting(false);
+	hs.DoStrategy(_MOVE,&d);	// should fly
+	fail |= strcmp("I'm Flying!\n",Result)!=0;
+	if (!CallBack(Verbose,"Do strategy with object should invoke",fail))
+	{
+		_Result[0] = fail ? 'F' :'P';
+		return;
+	}
+
+	if (fail) {
+		_Result[0] = 'F';
+	}
+	else _Result[0] = 'P';
 };
 #endif
 
@@ -363,12 +419,18 @@ void Observable::SetChanged()
 }
 
 #ifdef VALIDATING
+bool Observer::Test(bool Verbose,CryObject &Object,bool  (CallBack)(bool Verbose,const char *Result,bool fail))
+{
+char _Result[100];
+	TestObserver(_Result,Verbose,Object,CallBack);
+}
+
 #include <iostream>
 #include <cstdlib>
-TestObserver::TestObserver()
+TestObserver::TestObserver(char *_Result,bool Verbose,CryObject &Object,bool  (CallBack)(bool Verbose,const char *Result,bool fail))
 {
-    Weather w;
-    w.SetName("Weather");
+	Weather w;
+	w.SetName("Weather");
     w.RegisterObserver(new Forcast(),true);
     w.RegisterObserver(new CurrentConditions(),true);
     w.setMeasurements(4.4,24.5,22.5);
@@ -377,7 +439,7 @@ TestObserver::TestObserver()
 }
 void TestObserver::CurrentConditions::NotifyObservers(Observable *Observed)
 {
-    if (Observed->IsA("Weather"))
+    if (Observed->IsName("Weather"))
     {
         Weather *w = (Weather *)Observed;
         temp = w->getTemp();

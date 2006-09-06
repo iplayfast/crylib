@@ -58,85 +58,96 @@ will need, that number will be passed in on the creation. StrategyHolder will
 access the strategies through an index. StrategyHolder never owns the strategy
 so care must be taken to delete any created stratgies once they are finished
 with.
- 
+
 StrategyHolderSender is a variation of StrategyHolder in that all it's
 strategy's Send pointers to a CryObject (originally from the calling function).
 It was kept separate from StrategyHolder so that there was no possiblity of mixing
-Strategy which need a sender with strategies without. The same strategy can be used for 
+Strategy which need a sender with strategies without. The same strategy can be used for
 StrategyHolder and StrategyHolderSender, but only one type within each holder.
- 
+
 The pattern has been extended so that strategies return a value.
 If the value >=0 then the value represents the next strategy to be called.
 This way one strategy can invoke another.
- 
+
 */
 #define TStrategy "Strategy"
-    class Strategy : public CryObject {
-    public:
-        StdFunctions(Strategy,CryObject);
-        virtual int DoStrategy() const;
-        virtual int DoStrategy(CryObject *Sender) const;
-    };
+	class Strategy : public CryObject {
+	public:
+		StdFunctions(Strategy,CryObject);
+		virtual int DoStrategy() const;
+		virtual int DoStrategy(CryObject *Sender) const;
+#ifdef VALIDATING
+	virtual bool Test(bool Verbose,CryObject &Object,bool  (CallBack)(bool Verbose,const char *Result,bool fail));
+#endif		
+	};
 
 #define TStrategyHolder "StrategyHolder"
-    class StrategyHolder : public Strategy {
-        const Strategy **Array;
-        unsigned int MaxCount;
-        bool OwnsStrategies;
-    public:
-        StdFunctions(StrategyHolder,Strategy);
-        int GetMaxCount() const;
-        StrategyHolder(unsigned int NumStrategies=1);
-        ~StrategyHolder();
-        void SetOwnsStrategies(bool Owns);
-        bool GetOwnsStrategies() const;
-        void SetStrategy(unsigned int StrategyIndex,const Strategy *s);
-        const Strategy *GetStrategy(unsigned int StrategyIndex) const;
-        virtual int DoStrategy() const;
-        virtual int DoStrategy(CryObject *o) const;
-        void DoStrategy(int StrategyIndex) const;
-    };
+	class StrategyHolder : public Strategy {
+		const Strategy **Array;
+		unsigned int MaxCount;
+		bool OwnsStrategies;
+	public:
+		StdFunctions(StrategyHolder,Strategy);
+		int GetMaxCount() const;
+		StrategyHolder(unsigned int NumStrategies=1);
+		~StrategyHolder();
+		void SetOwnsStrategies(bool Owns);
+		bool GetOwnsStrategies() const;
+		void SetStrategy(unsigned int StrategyIndex,const Strategy *s);
+		const Strategy *GetStrategy(unsigned int StrategyIndex) const;
+		virtual int DoStrategy() const;
+		virtual int DoStrategy(CryObject *o) const;
+		void DoStrategy(int StrategyIndex) const;
+	};
 
 #define TStrategyHolderSender "StrategyHolderSender"
-    class StrategyHolderSender : public StrategyHolder {
-    public:
-        StdFunctions(StrategyHolderSender,StrategyHolder);
-        StrategyHolderSender(unsigned int NumStrategies=1);
-        virtual int DoStrategy() const;
-        virtual int DoStrategy(CryObject *o) const;
-        void DoStrategy(int StrategyIndex,CryObject *Sender) const;
-    };
+	class StrategyHolderSender : public StrategyHolder {
+	public:
+		StdFunctions(StrategyHolderSender,StrategyHolder);
+		StrategyHolderSender(unsigned int NumStrategies=1);
+		virtual int DoStrategy() const;
+		virtual int DoStrategy(CryObject *o) const;
+		void DoStrategy(int StrategyIndex,CryObject *Sender) const;
+	};
 
 #ifdef VALIDATING
-    class TestStrategy {
+	class TestStrategy {
+	public:
+	char *Result; // array of 100 bytes showing the text of result
 #define _FLY	0
 #define _MOVE	1
-        class Ducks : public CryObject {
-            bool Sitting;
-        public:
-            Ducks();
-            bool GetSitting();
-            bool SetSitting(bool V);
-            virtual bool IsA(const char *ClassName) const;
-        };
-        // test case for Strategy pattern
-        class DucksFly : public Strategy {
-        public:
-            int DoStrategy() const;
-            int DoStrategy(CryObject *d) const;
-        };
-        class DucksNoFly : public Strategy {
-        public:
-            int DoStrategy() const;
-            int DoStrategy(CryObject *) const;
-        };
-        class DucksMove : public Strategy {
-        public:
-            int DoStrategy() const;
-            int DoStrategy(CryObject *d) const;
-        };
-    public:
-        TestStrategy();
+		class Ducks : public CryObject {
+			bool Sitting;
+		public:
+        	Ducks();
+			bool GetSitting();
+			bool SetSitting(bool V);
+			virtual bool IsA(const char *ClassName) const;
+		};
+		// test case for Strategy pattern
+		class DucksFly : public Strategy {
+		char *Result;
+		public:
+			DucksFly(char *_Result) { Result = _Result; }
+			int DoStrategy() const;
+			int DoStrategy(CryObject *d) const;
+		};
+		class DucksNoFly : public Strategy {
+		char *Result;
+		public:
+			DucksNoFly(char *_Result) { Result = _Result; }
+			int DoStrategy() const;
+			int DoStrategy(CryObject *) const;
+		};
+		class DucksMove : public Strategy {
+		char *Result;
+		public:
+			DucksMove(char *_Result) { Result = _Result; }
+			int DoStrategy() const;
+			int DoStrategy(CryObject *d) const;
+		};
+	public:
+        TestStrategy(char *_Result,bool Verbose,CryObject &Object,bool  (CallBack)(bool Verbose,const char *Result,bool fail));
     };
 #endif
 
@@ -144,99 +155,103 @@ This way one strategy can invoke another.
 */
 
 #define TObserver "Observer"
-    class Observable;
-    class Observer: public CryObject {
-    public:
-        Observer();
-        ~Observer();
-        /// multiple behaviours are possible for one class
-        virtual void NotifyObservers(Observable *Observed,int ObserverID);
-        virtual void NotifyObservers(Observable *Observed);
-        StdFunctions(Observer,CryObject);
-        /*virtual bool IsA(const char *ClassName) const    // can the object map to a ClassName
-        {
-            return (strcmp(ClassName,TObserver)==0) ||
-                   CryObject::IsA(ClassName);
-        }
-        /// returns a pointer to a string stating the current class Name, EG CryObject (not CryString)
-        const char* ClassName() const
-        {
-            return TObserver;
-        }
-    
-        /// returns a pointer to a string stating the ChildClassName, EG CryString (not CryObject)
-        virtual const char *ChildClassName() const
-        {
-            return TObserver;
-        }
-        */
-    };
-#define TObservable "Observable"
-    class Observable : public CryList {
-        bool Changed;
-        CryString Name;
-    public:
-        Observable();
-        void SetName(const char *_Name);
-        //virtual bool IsA(const char *_Name) const;
-        ~Observable();
-        void RegisterObserver(Observer *_Observer,bool Owned = false);
-        void UnRegisterObserver(Observer *_Observer);
-        void SetChanged();
-        void NotifyObservers(int ObserverID);
-        void NotifyObservers();
-        StdFunctions(Observable,CryList);
-        /*/// returns a pointer to a string stating the current class Name, EG CryObject (not CryString)
-        const char* ClassName() const
-        {
-            return TObservable;
-        }
-    
-        /// returns a pointer to a string stating the ChildClassName, EG CryString (not CryObject)
-        virtual const char *ChildClassName() const
-        {
-            return TObservable;
-        }
-        */
+	class Observable;
+	class Observer: public CryObject {
+	public:
+		Observer();
+		~Observer();
+		/// multiple behaviours are possible for one class
+		virtual void NotifyObservers(Observable *Observed,int ObserverID);
+		virtual void NotifyObservers(Observable *Observed);
+		StdFunctions(Observer,CryObject);
+		/*virtual bool IsA(const char *ClassName) const    // can the object map to a ClassName
+		{
+			return (strcmp(ClassName,TObserver)==0) ||
+				   CryObject::IsA(ClassName);
+		}
+		/// returns a pointer to a string stating the current class Name, EG CryObject (not CryString)
+		const char* ClassName() const
+		{
+			return TObserver;
+		}
 
-    };
+		/// returns a pointer to a string stating the ChildClassName, EG CryString (not CryObject)
+		virtual const char *ChildClassName() const
+		{
+			return TObserver;
+		}
+		*/
+#ifdef VALIDATING
+		virtual bool Test(bool Verbose,CryObject &Object,bool  (CallBack)(bool Verbose,const char *Result,bool fail));
+#endif
+
+	};
+#define TObservable "Observable"
+	class Observable : public CryList {
+		bool Changed;
+		CryString Name;
+	public:
+		Observable();
+		void SetName(const char *_Name);
+
+		virtual bool IsName(const char *_Name) const { return Name==_Name; }
+		~Observable();
+		void RegisterObserver(Observer *_Observer,bool Owned = false);
+		void UnRegisterObserver(Observer *_Observer);
+		void SetChanged();
+		void NotifyObservers(int ObserverID);
+		void NotifyObservers();
+		StdFunctions(Observable,CryList);
+		/*/// returns a pointer to a string stating the current class Name, EG CryObject (not CryString)
+		const char* ClassName() const
+		{
+			return TObservable;
+		}
+
+		/// returns a pointer to a string stating the ChildClassName, EG CryString (not CryObject)
+		virtual const char *ChildClassName() const
+		{
+			return TObservable;
+		}
+		*/
+	};
 
 
 #ifdef VALIDATING
 
 // test case Observer Pattern based on Head First Design Patterns example
-    class TestObserver {
-        class CurrentConditions : public Observer {
-        protected:
-            float temp;
-            float humidity;
-            float pressure;
-        public:
-            virtual void NotifyObservers(Observable *Observed,int status);
-            virtual void NotifyObservers(Observable *Observed);
-            virtual void Display();
-        };
+	class TestObserver {
+		class CurrentConditions : public Observer {
+		protected:
+			float temp;
+			float humidity;
+			float pressure;
+		public:
+			virtual void NotifyObservers(Observable *Observed,int status);
+			virtual void NotifyObservers(Observable *Observed);
+			virtual void Display();
+		};
 
-        class Forcast : public CurrentConditions {
-        public:
-            virtual void Display();
-        };
+		class Forcast : public CurrentConditions {
+		public:
+			virtual void Display();
+		};
 
-        class Weather : public Observable {
-            float temp;
-            float humidity;
-            float pressure;
-        public:
-            Weather();
-            float getTemp();
-            float getHumidity();
-            float getPressure();
-            void measurementsChanged();
-            void setMeasurements(float _temp,float hum,float press);
-        };
-    public:
-        TestObserver();
-    };
+		class Weather : public Observable {
+			float temp;
+			float humidity;
+			float pressure;
+		public:
+			Weather();
+			float getTemp();
+			float getHumidity();
+			float getPressure();
+			void measurementsChanged();
+			void setMeasurements(float _temp,float hum,float press);
+		};
+	public:
+		TestObserver(char *_Result,bool Verbose,CryObject &Object,bool  (CallBack)(bool Verbose,const char *Result,bool fail));
+	};
 #endif
 
 /*! The Decorator pattern attaches additional responibilities to an object dynamically. Decorators provide a flexible alternative to subclassing for extending functionality.

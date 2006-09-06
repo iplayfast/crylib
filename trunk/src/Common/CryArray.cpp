@@ -312,63 +312,6 @@ StdFunctionsNoDup(CrySimpleArray,CryContainer);
 //
 //	CryTemplateArray
 //
-//
-template<>
-void CryTemplateArray<int>::GetEleType(CryString &Result) const
-	{
-		Result = "int";
-	}
-
-template<>
-void CryTemplateArray<float>::GetEleType(CryString &Result) const
-	{
-		Result = "float";
-	}
-template<>
-void CryTemplateArray<CryString>::GetEleType(CryString &Result) const
-	{
-		Result = "CryString";
-	}
-
-template<>
-bool CryTemplateArray<int>::LoadAsText(int i,CryString &FromStream)
-{
-	int v;
-	FromStream.scanf("%d ",&v);
-	if (i>=0 && i < GetMax())
-	{
-		Values[i] = v;
-		return true;
-	}
-	return false;
-}
-
-template<>
-bool CryTemplateArray<int>::SaveAsText(int i,CryString &ToStream) const
-{
-	ToStream.printf("%d ",Values[i]);
-	return true;
-}
-template<>
-bool CryTemplateArray<float>::LoadAsText(int i,CryString &FromStream)
-{
-	float v;
-	FromStream.scanf("%f ",&v);
-	if (i>=0 && i < GetMax())
-	{
-		Values[i] = v;
-		return true;
-	}
-	return false;
-}
-template<>
-bool CryTemplateArray<float>::SaveAsText(int i,CryString &ToStream) const
-{
-	ToStream.printf("%f ",Values[i]);
-	return true;
-}
-
-
 /*template<typename T>
 CryObject * CryTemplateArray<T>::Dup() const
 {
@@ -446,6 +389,23 @@ void Crystal::CryTemplateArray<T>::SetSize(size_t _Size)
 	CurrentCount = _Size;
 	Values = n;
 }*/
+/*template<typename T>
+CryTArray<T> &CryTArray<T>::Delete(int start,int amount)
+{
+	if (start>=Size()) return *this;
+	while(start<Size())
+	{
+		if (start+amount>=Size()) {
+			CurrentCount=start;
+			return *this;
+		}
+		Values[start] = Values[start+amount];
+		start++;
+	}
+	return *this;
+}
+
+  */
 
 //
 // CryArray
@@ -532,7 +492,6 @@ void CryArray::Clear()
         DestroyArrayItem(this,item);
     }
     CurrentCount = 0;
-    SetSize(0);	// just incase a direived class does something special
 }
 
 void CryArray::DeleteItemOffset(unsigned int i)

@@ -430,7 +430,7 @@ int main(int argc, char *argv[])
 #ifdef VALIDATING
 {
 // Patterns test
-TestObserver to;
+//TestObserver to;
 StateTest s;
 TestCompositeIterator tci;
 tci.DoTest();
@@ -438,7 +438,7 @@ TestCommand tc;
 TestSingleton tsingleton;
 TestFactory tf;
 TestDecorator td;
-TestStrategy ts;
+//TestStrategy ts;
 
 }
 #endif

@@ -13,6 +13,7 @@
 #include "CryFuzzy.h"
 #include "HugeInt.h"
 #include "CrySet.h"
+#include "CryPattern.h"
 
 using namespace Dialogs;
 using namespace Crystal;
@@ -145,6 +146,72 @@ CryString s;
 	s += E;
 	ShowMessage(s.AsPChar());
 }
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::Button6Click(TObject *Sender)
+{
+Memo1->Clear();
+try
+{
+CryList a;
+#ifdef VALIDATING
+	a.Test(true,a,FormCallBack);
+#endif
+
+}
+catch(CryException &E)
+{
+CryString s;
+	s ="Exception Caught: ";
+	s += E;
+	ShowMessage(s.AsPChar());
+}
+
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::Button7Click(TObject *Sender)
+{
+Memo1->Clear();
+try
+{
+Strategy a;
+#ifdef VALIDATING
+	a.Test(true,a,FormCallBack);
+#endif
+
+}
+catch(CryException &E)
+{
+CryString s;
+	s ="Exception Caught: ";
+	s += E;
+	ShowMessage(s.AsPChar());
+}
+
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::Button8Click(TObject *Sender)
+{
+Memo1->Clear();
+try
+{
+Observer a;
+#ifdef VALIDATING
+	a.Test(true,a,FormCallBack);
+#endif
+
+}
+catch(CryException &E)
+{
+CryString s;
+	s ="Exception Caught: ";
+	s += E;
+	ShowMessage(s.AsPChar());
+}
+
 }
 //---------------------------------------------------------------------------
 
