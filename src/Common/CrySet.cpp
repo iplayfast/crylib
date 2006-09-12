@@ -19,15 +19,15 @@ using namespace std;
 void CrySet::Add(int v)
 {
 int S = Size();
-	for(int i=0;i<S;i++)
-	{
-	int n = GetValue(i);
-		if (n==v) return;	// set already contains value
-		if (n<v) {	// insertion sort
-			SetValue(i,v);
-			v = n;
+		for(int i=0;i<S;i++)
+		{
+		int n = GetValue(i);
+			if (n==v) return;	// set already contains value
+			if (n<v) {	// insertion sort
+				SetValue(i,v);
+				v = n;
+			}
 		}
-	}
 	SetSize(S+1);
 	SetValue(S,v);
 }
@@ -117,7 +117,7 @@ CrySet Copy;
 CrySet *OrgObject = 0;
 	Object.CopyTo(Copy);
 	if (Object.IsA(TCrySet)) {
-		OrgObject=(CrySet *)&Object;        
+		OrgObject=(CrySet *)&Object;
 	}
 	Fail = Copy!=*OrgObject;
 	sprintf(Result,"Copy Constructor");
