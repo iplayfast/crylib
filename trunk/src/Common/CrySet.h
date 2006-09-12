@@ -28,6 +28,7 @@ using namespace Crystal;
 class CrySet : public CryTArray<int>
 {
 public:
+	CrySet(int SetSize=10) : CryTArray<int>(SetSize) { }
 	StdFunctions(CrySet,CryTArray<int>);
 	int Matches(CrySet &s);	// returns number of elements that match
 	int UnMatches(CrySet &s) { return Size() - Matches(s); }

@@ -276,8 +276,8 @@ void SetSize(size_t _Size)
 		CopyAmount = _Size;
 	for(int i=0;i<CopyAmount;i++)
 		n[i] = Values[i];
-	for(unsigned int i=CopyAmount;i<_Size;i++)
-		n[i] = GetDefault();  // default value for <T>
+//	for(unsigned int i=CopyAmount;i<_Size;i++)
+//		n[i] = GetDefault();  // default value for <T>
 	delete []Values;
 	Values = n;
 }
@@ -338,7 +338,7 @@ CryPropertyList* PropertyNames() const
 		SetValue(i,*(T*)Item);
 	}
 
-	const T operator [](int i)
+	const T &operator [](int i)
 	{
 		return Values[i];
 	}
@@ -463,7 +463,7 @@ void CryTArray<CryString>::GetEleType(CryString &Result) const
 		Result = "CryString";
 	}
   */
-/*template<>
+template<>
 bool CryTArray<int>::LoadAsText(int i,CryString &FromStream)
 {
 	int v;
@@ -499,7 +499,7 @@ bool CryTArray<float>::SaveAsText(int i,CryString &ToStream) const
 	ToStream.printf("%f ",Values[i]);
 	return true;
 }
-
+/*
 template<typename T>
 void CryTArray<T>::RemoveAtIterator(Iterator *LI)
 {
@@ -515,7 +515,6 @@ void CryTArray<T>::RemoveAtIterator(Iterator *LI)
 /// An Array class. Array elements are pointed to, and are created in the derived classes
 class CryArray : public CrySimpleArray
 {
-
 	struct ElePtr
 	{
 		EmptyObject *Item;
