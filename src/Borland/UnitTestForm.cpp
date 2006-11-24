@@ -131,6 +131,11 @@ try
 {
 CrySet a;
 #ifdef VALIDATING
+	a.Add(5);
+	a.Add(10);
+	a.Add(8);
+	a.Add(7);
+	a.Add(7);	
 	for(int i=10;i<40;i++)
 		a.SetValue(i,i);
 	a.SetValue(5,20);

@@ -67,7 +67,7 @@ CryFunctionDefList *CrySimpleArray::GetFunctions(const char *Type) const
 	s +="virtual bool GotoPrev(Iterator *I) const;";
 	s +="virtual bool GotoLast(Iterator *I) const;";
 	s +="virtual bool LoadAsText(int i,CryString &FromStream) = 0;";
-    s +="virtual bool SaveAsText(int i,CryString &ToStream) const = 0;";
+	s +="virtual bool SaveAsText(int i,CryString &ToStream) const = 0;";
     s +="virtual bool LoadAsText(Iterator *I,CryString &FromStream);";
     s +="virtual bool SaveAsText(Iterator *I,CryString &ToStream) const;";
     s +="virtual EmptyObject *GetAtIterator(const Iterator *I) const = 0;";
@@ -103,14 +103,14 @@ unsigned i = IteratorValue(I);
 
 bool CrySimpleArray::SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue)
 {
-	if (PropertyName=="CurrentCount")
+/*	if (PropertyName=="CurrentCount")
 	{
 		CurrentCount = atoi(PropertyValue);
 		return true;
 	}
-	if (PropertyName=="MaxCount")
+*/	if (PropertyName=="MaxCount")
 	{
-		MaxCount = atoi(PropertyValue);
+		SetSize(atoi(PropertyValue));
 		return true;
 	}
 	if (PropertyName=="ElementSize")
@@ -120,7 +120,7 @@ bool CrySimpleArray::SetProperty(const CryPropertyParser &PropertyName,const cha
 	}
 	if (PropertyName=="AllowResize")
 	{
-		AllowResize = atoi(PropertyValue);
+		AllowResize = strcasecmp(PropertyValue,"Yes")==0;
 		return true;
 	}
 	return CryContainer::SetProperty(PropertyName,PropertyValue);
@@ -141,12 +141,12 @@ bool CrySimpleArray::SetPropertyAsObject(CryProperty *Value)
 const char *CrySimpleArray::GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const
 {
 	Result.Clear();
-	if (PropertyName=="CurrentCount")
+/*	if (PropertyName=="CurrentCount")
 	{
 		Result.printf("%d",CurrentCount);
 		return Result;
 	}
-	if (PropertyName=="MaxCount")
+*/	if (PropertyName=="MaxCount")
 	{
 		Result.printf("%d",MaxCount);
 		return Result;
@@ -158,7 +158,8 @@ const char *CrySimpleArray::GetProperty(const CryPropertyParser &PropertyName,Cr
 	}
 	if (PropertyName=="AllowResize")
 	{
-		Result.printf("%d",AllowResize);
+
+		Result.printf("%s",AllowResize ? "Yes" : "No");
 		return Result;
 	}
 	return CryContainer::GetProperty(PropertyName,Result);
@@ -166,7 +167,7 @@ const char *CrySimpleArray::GetProperty(const CryPropertyParser &PropertyName,Cr
 
 bool CrySimpleArray::HasProperty(const CryPropertyParser &PropertyName)const
 {
-	return ((PropertyName=="CurrentCount") ||
+	return (//(PropertyName=="CurrentCount") ||
 		(PropertyName=="MaxCount") ||
 		(PropertyName=="ElementSize") ||
 		(PropertyName=="AllowResize") ||
@@ -176,7 +177,7 @@ bool CrySimpleArray::HasProperty(const CryPropertyParser &PropertyName)const
 CryPropertyList* CrySimpleArray::PropertyNames() const
 {
 	CryPropertyList *n = CryContainer::PropertyNames();
-	n->AddPropertyByName("CurrentCount",this);	//current number of objects in the array
+//	n->AddPropertyByName("CurrentCount",this);	//current number of objects in the array
 	n->AddPropertyByName("MaxCount",this);	// maximum number of objects that can be contained in the array
 	n->AddPropertyByName("ElementSize",this);
 	n->AddPropertyByName("AllowResize",this);
@@ -426,7 +427,7 @@ CryArray::~CryArray()
 CryFunctionDefList *CryArray::GetFunctions(const char *Type) const
 {
     // if a type has been defined and it's not this class, check subclasses for it
-    if (Type && !IsA(Type))
+	if (Type && !IsA(Type))
         return CrySimpleArray::GetFunctions(Type);
     // otherwise get any functions in subclasses
     CryFunctionDefList *l = CrySimpleArray::GetFunctions();
@@ -498,7 +499,7 @@ void CryArray::DeleteItemOffset(unsigned int i)
 {
     while(i<Count()-1)
     {
-        pPtr[i] = pPtr[i+1];
+		pPtr[i] = pPtr[i+1];
         i++;
     }
     CurrentCount--;
@@ -534,7 +535,7 @@ void CryArray::RemoveAtIterator(Iterator *LI)
 void CryArray::SetMax(size_t m)
 {
     ElePtr *NewPtr = new ElePtr[m];
-    size_t i;
+	size_t i;
     for(i=0;i<m;i++)
         NewPtr[i].Item = 0;
     for(i=m;i<MaxCount;i++)
@@ -570,7 +571,7 @@ void CryArray::SetSize(size_t n) // set the number currently in use (either grow
             if (pPtr[CurrentCount].IsAutoCreated)
                 DestroyArrayItem(this,pPtr[CurrentCount].Item);
             else
-                delete pPtr[CurrentCount].Item;
+				delete pPtr[CurrentCount].Item;
         }
         pPtr[CurrentCount].Item = 0;
         CurrentCount--;
@@ -874,12 +875,8 @@ bool CryIntArray::LoadAsText(int i,CryString &FromStream)
 {
 	int v;
 	FromStream.scanf("%d ",&v);
-	if (i>=0 && i < GetMax())
-	{
-		Values[i] = v;
-		return true;
-	}
-	return false;
+	SetValue(i,v);
+	return true;
 }
 
 bool CryIntArray::SaveAsText(int i,CryString &ToStream) const
@@ -1026,6 +1023,9 @@ bool CryDoubleArray::LoadAsText(int i,CryString &FromStream)
 {
 	double v;
 	FromStream.scanf("%f ",&v);
+	SetValue(i,v);
+	return true;
+	
 	if (i>=0 && i < GetMax())
 	{
 		Values[i] = v;

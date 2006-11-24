@@ -399,7 +399,9 @@ class CrySimpleArrayNAbstract : public CrySimpleArray
     {
         return 0;
     }
-
+	void SetSize(size_t _Size)
+	{
+	}
     virtual bool LoadAsText(int i,CryString &FromStream)
     {
         return false;

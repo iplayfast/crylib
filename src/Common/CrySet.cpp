@@ -107,6 +107,7 @@ int SS = s.Size();
 	return false;
 }
 #ifdef VALIDATING
+CrySet *gtest;
 bool CrySet::Test(bool Verbose,CryObject &Object,bool  (CallBack)(bool Verbose,const char *Result,bool fail))
 {
 char Result[200];
@@ -143,6 +144,7 @@ CrySet Odd;
 	if (!CallBack(Verbose,Result,Fail))
 		return false;
 CrySet Test(Odd);
+	gtest = &Test;
 	Test.Union(Prime);
 	for(int i=0;i<15;i++)
 	{

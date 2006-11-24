@@ -174,14 +174,20 @@
           <property category="win32.*.win32b.dcc32" name="option.U.enabled" value="1"/>
           <property category="win32.*.win32b.dcc32" name="param.filenames.merge" value="1"/>
           <property category="win32.*.win32b.idl2cpp" name="option.I.arg.1" value="..\..\..\Borland"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.10" value="..\Common\zlib"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.11" value="..\Common"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.12" value="..\crylib\src\Borland"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.13" value="..\crylib\src\Common"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.14" value="..\Borland"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.15" value="\crylib\src\Common"/>
           <property category="win32.*.win32b.idl2cpp" name="option.I.arg.2" value="Studio"/>
           <property category="win32.*.win32b.idl2cpp" name="option.I.arg.3" value="Projects\test1"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.4" value="..\Common\zlib"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.5" value="..\Common"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.6" value="..\crylib\src\Borland"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.7" value="..\crylib\src\Common"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.8" value="..\Borland"/>
-          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.9" value="\crylib\src\Common"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.4" value="..\..\..\Borland"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.5" value="Studio"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.6" value="Projects\test1"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.7" value="..\..\..\Borland"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.8" value="Studio"/>
+          <property category="win32.*.win32b.idl2cpp" name="option.I.arg.9" value="Projects\test1"/>
           <property category="win32.*.win32b.idl2cpp" name="option.I.arg.merge" value="1"/>
           <property category="win32.*.win32b.idl2cpp" name="option.I.enabled" value="1"/>
           <property category="win32.*.win32b.ilink32" name="option.Gi.enabled" value="0"/>
@@ -270,7 +276,6 @@
         <FILE FILENAME="..\Common\zlib\trees.c" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="trees" FORMNAME="" DESIGNCLASS=""/>
         <FILE FILENAME="..\Common\zlib\uncompr.c" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="uncompr" FORMNAME="" DESIGNCLASS=""/>
         <FILE FILENAME="..\Common\zlib\zutil.c" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="zutil" FORMNAME="" DESIGNCLASS=""/>
-        <FILE FILENAME="..\..\..\Borland Studio Projects\test1\test.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="test" FORMNAME="" DESIGNCLASS=""/>
       </FILELIST>
       <IDEOPTIONS>
         <VersionInfo>
@@ -325,6 +330,9 @@
           <Language Name="ProjectLang">$00000000</Language>
           <Language Name="RootDir"></Language>
         </Language>
+        <Excluded_Packages>
+          <Excluded_Packages Name="C:\BDS\4.0\CodeCentral AddIn\CodeCentralIDE100.bpl">CodeCentral Web Service Search Add-in</Excluded_Packages>
+        </Excluded_Packages>
         <Linker>
           <Linker Name="LibPrefix"></Linker>
           <Linker Name="LibSuffix"></Linker>

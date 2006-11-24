@@ -154,9 +154,23 @@ bool CryObject::Test(bool Verbose,CryObject &Object, bool (CallBack)(bool Verbos
 				{
 					CryString s;
 					Fail = true;
-					s.printf("Exception thrown on CreateObjectFromNode \"%s\"",(const char *)e);
+					s.printf("Exception thrown on CreateObjectFromNode \"%s\" continue to attempt using object as parent",(const char *)e);
 					if (!CallBack(Verbose,s,Fail))
 						return false;
+					try
+					{
+					Fail = false;	// above failure may be valid (as designed)
+					co = x.CreateObjectFromNode(&Object);
+					}
+					catch (CryException &e)
+					{
+					CryString s;
+					Fail = true;
+					s.printf("Exception thrown on CreateObjectFromNode \"%s\" using object as parent",(const char *)e);
+					if (!CallBack(Verbose,s,Fail))
+						return false;
+
+					}
 
 				}
 
