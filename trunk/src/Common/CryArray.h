@@ -163,11 +163,14 @@ StdFunctionsNoDup(CrySimpleArray,CryContainer);
 	virtual bool HasProperty(const CryPropertyParser &PropertyName)const;
 	virtual int GetPropertyCount() const
 	{
-		return CryContainer::GetPropertyCount() + 4;
+		return CryContainer::GetPropertyCount() + 3;
 	}
 	virtual CryPropertyList* PropertyNames() const;
 
+	virtual void SetSize(size_t _Size)	=0;
 
+
+	
 	virtual size_t GetItemSize(Iterator *I) const
 	{
 		return ElementSize;
@@ -229,8 +232,20 @@ class CryTArray : public CrySimpleArray
 public:
 	virtual void GetEleType(CryString &Result) const
 	{
-		throw CryException("Class needs to be expanded");
+		throw CryException("GetEleType needs to be added from CryTArray");
 	}
+		/*! will create an object of the Type named in Type. In container classes where the Type is the contained object, the Parent must be the appropriete container type or a derived class which can create the object (if the default class can't) */
+	virtual CryObject *Create(const CryPropertyParser &PropertyName,CryObject *Parent=0)
+	{
+		return CrySimpleArray::Create(PropertyName,Parent);
+//		throw CryException("Create needs to be added from CryTArray");
+	}
+	static CryObject *ClassCreate(const CryPropertyParser &PropertyName,CryObject *Parent=0)
+	{
+		return CrySimpleArray::Create(PropertyName,Parent);
+//		throw CryException("ClassCreate needs to be added from CryTArray");
+	}
+
 	CryTArray<T>(const CryTArray<T> &Copy)
 	{
 		SetMax(Copy.Size());
@@ -239,6 +254,11 @@ public:
 		Values = new T[Copy.Size()];
 		for(int i=0;i<Copy.Size();i++)
 			Values[i] = Copy.Values[i];
+	}
+	CryTArray<T> &operator =(const CryTArray<T> &From)
+	{
+		From.CopyTo(*this);
+		return *this;
 	}
 
 	StdFunctionsNoDup(CryTArray,CrySimpleArray);
@@ -312,7 +332,7 @@ CryPropertyList* PropertyNames() const
 	CryTArray(int _Size=100) : CrySimpleArray(sizeof(T))
 	{
 		Values = 0;
-		SetSize(_Size);
+		SetSize(_Size+1);
 	}
 	~CryTArray()
 	{
@@ -326,11 +346,11 @@ CryPropertyList* PropertyNames() const
 	}
 	virtual bool LoadAsText(int i,CryString &FromStream)
 	{
-		throw CryException("Class needs to be expanded");
+		throw CryException("CryTArray needs LoadAsText");
 	}
 	virtual bool SaveAsText(int i,CryString &ToStream) const
 	{
-		throw CryException("Class needs to be expanded");
+		throw CryException("CryTarray needs SaveAsText");
 	}
 	
 	void SetItem(unsigned int i,EmptyObject *Item,bool IsCryObject,bool IsOwned,size_t Size)
@@ -345,8 +365,8 @@ CryPropertyList* PropertyNames() const
 	void SetValue(int i,T v)
 	{
 		if (i>=CurrentCount) {
-			if(i>Size())
-				SetSize(i);
+			if(i>=MaxCount)
+				SetSize(i+1);
 			CurrentCount = i+1;
 		}
 		Values[i] = v;
@@ -468,12 +488,8 @@ bool CryTArray<int>::LoadAsText(int i,CryString &FromStream)
 {
 	int v;
 	FromStream.scanf("%d ",&v);
-	if (i>=0 && i < GetMax())
-	{
-		Values[i] = v;
-		return true;
-	}
-	return false;
+	SetValue(i,v);
+	return true;
 }
 template<>
 bool CryTArray<int>::SaveAsText(int i,CryString &ToStream) const
@@ -486,12 +502,8 @@ bool CryTArray<float>::LoadAsText(int i,CryString &FromStream)
 {
 	float v;
 	FromStream.scanf("%f ",&v);
-	if (i>=0 && i < GetMax())
-	{
-		Values[i] = v;
-		return true;
-	}
-	return false;
+	SetValue(i,v);
+	return true;
 }
 template<>
 bool CryTArray<float>::SaveAsText(int i,CryString &ToStream) const
