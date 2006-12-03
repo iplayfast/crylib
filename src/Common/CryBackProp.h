@@ -48,7 +48,7 @@ class BackPropagateLayer : public CryObject
 	BackPropagateLayer();	// can't access
 public:
 
-        int           LayerSize;     /* - number of units in this Layer       */
+		int           LayerSize;     /* - number of units in this Layer       */
 	int		PreviousLayerSize;// handy to know
 	int		OutputStart;	// output of Nth unit
 	int		ErrorStart;		// error term of Nth unit
@@ -77,6 +77,7 @@ virtual bool SetProperty(const CryPropertyParser &PropertyName,const char *Prope
 /// low level backpropagation array class
 class CryBPNet : public CryArray
 {
+public:// shit remove atfter testing
 double *AllWeights;
 int	AllWeightsSize;
 int LockLevel;
@@ -108,8 +109,8 @@ StdFunctions(CryBPNet,CryArray);
     virtual bool SaveAsText(Iterator *I,CryString &ToStream) const
     {
         return CryArray::SaveAsText(I,ToStream);
-    }
-	void SetLayerSize(int i,int Size);
+	}
+	BackPropagateLayer *SetLayerSize(int i,int Size);
 	int GetLayerSize(int i) const;
 	void Propagate(int From,int To,double Gain);
     void BackPropagate(int From,int To,double Gain);
@@ -146,21 +147,23 @@ StdFunctions(CryBPNetContainer,CryBPNet);
   void SetGain(double g) { Gain = g; }
 
 // functions needed by CryObject
-    virtual CryFunctionDefList *GetFunctions(const char *Type=0) const;
+	virtual CryFunctionDefList *GetFunctions(const char *Type=0) const;
 
    virtual void CopyTo(CryObject &Dest) const;  //copies contents of this to Dest
 // functions needed by CryNamedObject
-    virtual bool HasProperty(const CryPropertyParser &PropertyName)const;
+	virtual bool HasProperty(const CryPropertyParser &PropertyName)const;
 	virtual int GetPropertyCount() const;
 	virtual CryPropertyList* PropertyNames() const;
 	virtual const char *GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const;
-    // if this class contains the property name, it will attempt to load it
-    // if all is well returns true
-    virtual bool SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue);
+	// if this class contains the property name, it will attempt to load it
+	// if all is well returns true
+	virtual bool SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue);
+	/*! will create an object of the Type named in Type. In container classes where the Type is the contained object, the Parent must be the appropriete container type or a derived class which can create the object (if the default class can't) */
+	virtual CryObject *Create(const CryPropertyParser &PropertyName,CryObject *Parent=0);
 
 // functions if multithreaded
 const char *GetStatus() const { return Status.AsPChar(); }
-virtual void ShowStatus() { printf("%s\n",Status.AsPChar()); }
+virtual void ShowStatus() {/* printf("%s\n",Status.AsPChar());*/ }	// derived class could get updates with this
 // functions needed to run the network
 void TrainNet(int Epochs,int LengthIn,double *SampleIn,int LengthOut,double *SampleOut);
 void STTrainNet(int Epochs,int LengthIn,double *SampleIn,int LengthOut,double *SampleOut);

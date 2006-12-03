@@ -41,6 +41,7 @@
 #include "ClassList.h"
 
 int gdebug =0;
+
 using namespace Crystal;
 #ifdef DEBUG
 int ObjectID =0;
@@ -52,13 +53,16 @@ int ObjectID =0;
 
 
 #ifdef VALIDATING
-bool CryObject::Test(bool Verbose,CryObject &Object, bool (CallBack)(bool Verbose,const char *Result,bool Fail))
+
+bool CryObject::Test(bool Verbose,CryObject &Object, bool (CallBack)(bool Verbose,const
+                     char *Result,bool Fail))
 {
     char Result[200];
     bool Fail = false;
     CryString spn,spv,stemp;
     sprintf(Result,"\nCryObject Testing:\nObject of ClassName %s,ChildClassName %s",
             Object.ClassName(),Object.ChildClassName());
+
     if (!CallBack(Verbose,Result,Fail))
         return false;
 
@@ -70,35 +74,50 @@ bool CryObject::Test(bool Verbose,CryObject &Object, bool (CallBack)(bool Verbos
         CryPropertyList *pn = Object.PropertyNames();
 
         sprintf(Result,"\n%s has %d properties", Object.ClassName(),pn->Count());
+
         if (!CallBack(Verbose,Result,Fail))
             return false;
 
-		CryPropertyList::PropertyIterator *i = pn->CreateIterator();
-		{
-		int count=0;
-		if (i->GotoFirst()) {
-			do
-			{
-			count++;
-			CryString value;
-			const CryString *item =  i->GetName();
-			i->GetValue(value);
-			sprintf(Result,"\n  Property %d) %s = %s",count,item->AsPChar(),value.AsPChar());
-			} while(i->GotoNext());
+        CryPropertyList::PropertyIterator *i = pn->CreateIterator();
 
-		}
-		}
-		pn->DeleteIterator(i);
-		delete(pn);
+        {
+            int count=0;
+
+            if (i->GotoFirst())
+            {
+                do
+                {
+                    count++;
+                    CryString value;
+
+                    const
+                    CryString *item =  i->GetName();
+
+                    i->GetValue(value);
+
+                    sprintf(Result,"\n  Property %d) %s = %s",count,item->AsPChar(),value.AsPChar());
+                }
+
+                while (i->GotoNext());
+
+            }
+        }
+
+        pn->DeleteIterator(i);
+
+        delete(pn);
+
         try
         {
             CryString t;
             Object.GetProperty("BADVALUE",t);
             Fail = true;
+
             if (!CallBack(Verbose,"Exception thrown on \"BADVALUE\"",Fail))
                 return false;
 
         }
+
         catch (CryException &e)
         {
             if (!CallBack(Verbose,"Exception thrown on \"BADVALUE\"",Fail))
@@ -110,137 +129,172 @@ bool CryObject::Test(bool Verbose,CryObject &Object, bool (CallBack)(bool Verbos
     if (Object.CanDup())
     {
         CryString spn,stemp;
-		char Result[200];
-		try
-		{
-		Object.SaveTo(spn);
-		if (!CallBack(Verbose,"Object saved to string without problems",Fail)) {
-			return false;
-		}
-		}
-		catch (CryException &e)
-		{
-			Fail=true;
-			if (!CallBack(Verbose,"Object saved to string with problems",Fail)) {
-				return false;
-			}
-		}
-		{
-		CryObject *co=0;
-			{
-				CryXML x;
-				try
-				{
-				x.LoadFrom(Object);
-				if (!CallBack(Verbose,"CryXML Loaded Object without problems",Fail))
-				{
-					return false;
-				}
-				}
-				catch (CryException &e)
-				{
-					Fail=true;
-					if (!CallBack(Verbose,"CryXML Loaded Object with problems",Fail)) {
-					return false;
-					}
-				}
+        char Result[200];
+
+        try
+        {
+            Object.SaveTo(spn);
+
+            if (!CallBack(Verbose,"Object saved to string without problems",Fail))
+            {
+                return false;
+            }
+        }
+
+        catch (CryException &e)
+        {
+            Fail=true;
+
+            if (!CallBack(Verbose,"Object saved to string with problems",Fail))
+            {
+                return false;
+            }
+        }
+
+        {
+            CryObject *co=0;
+            {
+                CryXML x;
+
+                try
+                {
+                    x.LoadFrom(Object);
+
+                    if (!CallBack(Verbose,"CryXML Loaded Object without problems",Fail))
+                    {
+                        return false;
+                    }
+                }
+
+                catch (CryException &e)
+                {
+                    Fail=true;
+
+                    if (!CallBack(Verbose,"CryXML Loaded Object with problems",Fail))
+                    {
+                        return false;
+                    }
+                }
 
 
 				try
 				{
 					co = x.CreateObjectFromNode();
 				}
+
 				catch (CryException &e)
 				{
 					CryString s;
 					Fail = true;
-					s.printf("Exception thrown on CreateObjectFromNode \"%s\" continue to attempt using object as parent",(const char *)e);
-					if (!CallBack(Verbose,s,Fail))
-						return false;
+
+					s.printf("Exception thrown on CreateObjectFromNode \"%s\" continue to attempt using object as parent",(const
+							 char *)e);
+
 					try
 					{
-					Fail = false;	// above failure may be valid (as designed)
-					co = x.CreateObjectFromNode(&Object);
+						Fail = false;	// above failure may be valid (as designed)
+						co = x.CreateObjectFromNode(&Object);
 					}
+
 					catch (CryException &e)
 					{
-					CryString s;
-					Fail = true;
-					s.printf("Exception thrown on CreateObjectFromNode \"%s\" using object as parent",(const char *)e);
-					if (!CallBack(Verbose,s,Fail))
-						return false;
+						CryString s;
+						Fail = true;
+
+						s.printf("Failed to CreateObjectFromNode \"%s\" (including using object as parent)",(const
+								 char *)e);
+
+						if (!CallBack(Verbose,s,Fail))
+							return false;
 
 					}
 
 				}
 
 			}
-			if (co) {
 
-
-			CryString factorystring;
-			co->SaveTo(factorystring);
-			if (factorystring!=spn)
+			if (co)
 			{
-				sprintf(Result,"\nObject failed XML save rebuild test");
-				Fail = true;
-			}
-			else
-			{
-				sprintf(Result,"\nObject passed XML save rebuild test");
-			}
-			delete co;
+				if (!CallBack(Verbose,"CreateObjectFromNode",Fail))
+                	return false;
+
+				CryString factorystring;
+				co->SaveTo(factorystring);
+
+				if (factorystring!=spn)
+				{
+					sprintf(Result,"\nObject failed XML save rebuild test");
+                    Fail = true;
+                }
+
+                else
+                {
+                    sprintf(Result,"\nObject passed XML save rebuild test");
+                }
+
+                delete co;
 
 
-			if (!CallBack(Verbose,Result,Fail))
-				return false;
-			}
-		}
+                if (!CallBack(Verbose,Result,Fail))
+                    return false;
+            }
+        }
 
-	}
+    }
 
 
-	return Fail;
-	/*
-	virtual void SaveTo(CryStream *ToStream);
-	virtual void LoadFrom(CryStream *FromStream);
-	virtual void CopyTo(CryObject *Dest) const =0;  //copies contents of this to Dest
-	virtual CryObject *Dup() const =0; // creates a duplicate of this object
-	int GetCopyCount() const {  return CopyCount; }
-	int IncCopyCount() {  CopyCount++; return CopyCount; }
-	int DecCopyCount() {  CopyCount--; return CopyCount; }
-	void Destroy(CryObject *Object);
-	virtual CryObject *CreateItemType(const char *Name);
-	virtual const cbyte* GetRaw() const = 0;
-	virtual bool Event(EObject EventNumber,Context::IO &Context);
-	*/
+    return !Fail;
+
+    /*
+    virtual void SaveTo(CryStream *ToStream);
+    virtual void LoadFrom(CryStream *FromStream);
+    virtual void CopyTo(CryObject *Dest) const =0;  //copies contents of this to Dest
+    virtual CryObject *Dup() const =0; // creates a duplicate of this object
+    int GetCopyCount() const {  return CopyCount; }
+    int IncCopyCount() {  CopyCount++; return CopyCount; }
+    int DecCopyCount() {  CopyCount--; return CopyCount; }
+    void Destroy(CryObject *Object);
+    virtual CryObject *CreateItemType(const char *Name);
+    virtual const cbyte* GetRaw() const = 0;
+    virtual bool Event(EObject EventNumber,Context::IO &Context);
+    */
 }
+
 #endif
 
 CryObject::~CryObject()
 {}
+
 bool CryObject::CanDup() const
+
 {
-	return true;
+    return true;
 }
 
-CryObject &CryObject::operator =(const CryObject &From)
+CryObject &CryObject::operator =(const
+
+                                 CryObject &From)
 {
-	From.CopyTo(*this);
-	return *this;
+    From.CopyTo(*this);
+    return *this;
 }
 
-CryObject &CryObject::operator =(const CryObject *From)
+CryObject &CryObject::operator =(const
+
+                                 CryObject *From)
 {
-	From->CopyTo(*this);
-	return *this;
+    From->CopyTo(*this);
+    return *this;
 }
 
 void CryObject::CopyTo(CryObject &Dest) const
+
 {
     return;
 }
+
 CryObject *CryObject::Dup() const
+
 {
     return new CryObject();
 } // creates a duplicate of this object (no data so it's easy!)
@@ -250,34 +304,51 @@ size_t CryObject::Size() const
     return 0;
 }
 
-const char *CryObject::AsPChar() const
+const
+char *CryObject::AsPChar() const
 {
-    return (const char *) GetRaw();
+
+    return (const
+            char *) GetRaw();
 }
 
 bool CryObject::IsAbstract() const
+
 {
     return false;
 }    // is the class abstract?
 
-int CryObject::Compare(int CompareType,const CryObject *Test1,const CryObject *Test2) const
+int CryObject::Compare(int CompareType,const
+                       CryObject *Test1,const
+                       CryObject *Test2) const
 {
     return Test1->CompareLogical(CompareType,Test2);
 }
-int CryObject::CompareLogical(int CompareType,const CryObject *Test) const
+
+int CryObject::CompareLogical(int CompareType,const
+
+                              CryObject *Test) const
 {
-	return 0;
+    return 0;
 }
 
-bool CryObject::LessThen(int CompareType,const CryObject *Test) const
+bool CryObject::LessThen(int CompareType,const
+
+                         CryObject *Test) const
 {
-	return false;
+    return false;
 }
-bool CryObject::GreaterThen(int CompareType,const CryObject *Test) const
+
+bool CryObject::GreaterThen(int CompareType,const
+
+                            CryObject *Test) const
 {
-	return false;
+    return false;
 }
-bool CryObject::EqualTo(int CompareType,const CryObject *Test) const
+
+bool CryObject::EqualTo(int CompareType,const
+
+                        CryObject *Test) const
 {
     return true;
 }
@@ -292,51 +363,62 @@ bool CryObject::IsContainer() const
 }
 
 /*! returns true if the class in question has the property    */
-bool CryObject::HasProperty(const CryPropertyParser &PropertyName) const
+bool CryObject::HasProperty(const
+                            CryPropertyParser &PropertyName) const
 {
 #ifdef DEBUG
-	return PropertyName=="ObjectID";
+    return PropertyName=="ObjectID";
 #else
-	return false;
+    return false;
 #endif
 }
+
 /*! returns true if the class in question can have the property    */
-bool CryObject::CanHaveProperty(const CryPropertyParser &PropertyName) const
+bool CryObject::CanHaveProperty(const
+                                CryPropertyParser &PropertyName) const
 {
-	return HasProperty(PropertyName);
+    return HasProperty(PropertyName);
 }
 
 /*! The count of the properties a class has */
 int CryObject::GetPropertyCount() const
 {
 #ifdef DEBUG
-	return 1;
+    return 1;
 #else
-	return 0;
+    return 0;
 #endif
 }
 
-bool CryObject::SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue)
+bool CryObject::SetProperty(const
+
+                            CryPropertyParser &PropertyName,const
+                            char *PropertyValue)
 {
 #ifdef DEBUG
-	if (PropertyName=="ObjectID")
-	{
-	CryString s;
-		s = PropertyValue;
-			s.scanf("%d",&ObjectID);
-		return true;
-	}
+
+    if (PropertyName=="ObjectID")
+    {
+        CryString s;
+        s = PropertyValue;
+        s.scanf("%d",&ObjectID);
+        return true;
+    }
+
 #endif
-	return false;
+    return false;
 }
 
 /*! will create an object of the Type named in Type. In container classes where the Type is the contained object, the Parent must be the appropriete container type */
-CryObject *CryObject::Create(const CryPropertyParser &PropertyName,CryObject *Parent)
+CryObject *CryObject::Create(const
+                             CryPropertyParser &PropertyName,CryObject *Parent)
 {
-	return ClassCreate(PropertyName,Parent);
+    return ClassCreate(PropertyName,Parent);
 }
 
-bool CryObject::CanCreate(const CryPropertyParser &PropertyName) const
+bool CryObject::CanCreate(const
+
+                          CryPropertyParser &PropertyName) const
 {
     return ClassCanCreate(PropertyName);
 }
@@ -350,50 +432,86 @@ bool CryObject::IteratedFunction(EmptyObject *Control,EmptyObject *Item)
 }
 
 
-CryFunctionDefList *CryObject::GetFunctions(const char *Type) const
+CryFunctionDefList *CryObject::GetFunctions(const
+
+        char *Type) const
 {
-	if (Type && !IsA(Type))
-		throw CryException("Cannot GetFunctions for type %s",Type);
+    if (Type && !IsA(Type))
+        throw CryException("Cannot GetFunctions for type %s",Type);
+
     CryString s;
+
     s+= "//Class CryObject;";
+
     s+= "virtual bool CanDup() const;";
+
     s+= "virtual void CopyTo(CryObject &Dest) const = 0;";
+
     s+= "virtual CryObject *Dup() const = 0;";
+
     s+= "virtual size_t Size() const;";
+
     s+= "virtual CryObject *CreateItemType(const char *Name);";
+
     s+= "const char* ClassName() const;";
+
     s+= "virtual const char *ChildClassName() const;";
+
     s+= "virtual const cbyte* GetRaw() const;";
+
     s+= "virtual const char *AsPChar() const;";
+
     s+= "virtual bool IsA(const char *ClassName) const;";
+
     s+= "virtual bool Event(EObject EventNumber,Context::IO &Context);";
+
     //    s+= "CryObject *LoadItem(CryStream &FromStream);";
     s+= "virtual CryString *GetFunctions() const;";
+
     s+= "virtual bool IsContainer() const;";
+
     s+= "virtual CryProperty *GetPropertyAsCryProperty(const char *PropertyName) const;";
+
     s+= "virtual const char *GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const = 0;";
+
     s+= "virtual bool HasProperty(const char *PropertyName) const;";
+
     s+= "virtual int GetPropertyCount() const;";
+
     s+= "virtual CryList *PropertyNames() const;";
+
     s+= "virtual bool SetProperty(const char *PropertyName,const char *PropertyValue) = 0;";
+
     s+= "virtual bool SetPropertyAsObject(CryProperty *Value);";
+
     s+= "virtual void SaveTo(CryStream &ToStream) const;";
+
     s+= "virtual void LoadFrom(CryStream &FromStream);";
+
     s+= "virtual CryObject *Create(CryStream &FromStream);";
+
     s+= "virtual CryObject *Create(const char *Type,CryObject *Parent=0);";
+
     s+= "bool IterateThroughAll(CryContainer *Container,EmptyObject *Control);";
+
     s+= "virtual bool IteratedFunction(EmptyObject *Control,EmptyObject *Item);";
+
 #ifdef VALIDATING
 
     s+= "virtual bool Test(bool Verbose,CryObject &Object,bool  (CallBack)(bool Verbose,const char *Result,bool fail));";
+
 #endif
 
     CryFunctionDefList *l = new CryFunctionDefList();
+
     l->LoadFromString(s,";");
+
     return l;
 }
 
-CryFunctionDefList *CryObject::GetAbstractFunctions(const char *Type) const
+CryFunctionDefList *CryObject::GetAbstractFunctions(const
+
+        char *Type) const
 {
     // pure and abstract mean the same thing
     // first get all the functions (from the derived childclass)
@@ -401,112 +519,147 @@ CryFunctionDefList *CryObject::GetAbstractFunctions(const char *Type) const
     CryFunctionDefList::ListIterator	*it =(CryFunctionDefList::ListIterator *) l->_CreateIterator();
     CryFunctionDefList *Return = new CryFunctionDefList();
     CryFunctionDef *s,*s1;
+
     if (it->GotoFirst())
         do
         {
             s = (CryFunctionDef *)it->Get();
+
             if (!s->IsPure)	// found one that isn't pure, change any pure ones following to non-pure
             {
-                CryFunctionDefList::ListIterator *it1 = 
-			(CryFunctionDefList::ListIterator *)it->Dup();
+                CryFunctionDefList::ListIterator *it1 =
+                    (CryFunctionDefList::ListIterator *)it->Dup();
+
                 if (it1->GotoNext()) // check all functions following
                     do
                     {
                         s1 = (CryFunctionDef *)it1->Get();
+
                         if (s1->GetNPDeclaration()==s->GetNPDeclaration())	// same function def
                             s1->IsPure = false;
                     }
-                    while(it1->GotoNext());
+
+                    while (it1->GotoNext());
+
                 l->DeleteIterator(it1);
             }
-        } while(it->GotoNext());
+        }
+
+        while (it->GotoNext());
+
     // now any pure functions are unique
     if (it->GotoFirst())
         do
         {
 
             s = (CryFunctionDef *)it->Get();
+
             if (s->IsPure)
             {
                 CryFunctionDef *n = new CryFunctionDef(*s);
                 Return->AddOwned(n);
             }
         }
-        while(it->GotoNext());
+
+        while (it->GotoNext());
+
     l->DeleteIterator(it);
+
     delete l;
+
     return Return;
 }
 
 
 
-const cbyte* CryObject::GetRaw() const
+const
+cbyte* CryObject::GetRaw() const
 {
     throw CryException(this,"Cannot GetRaw from CryObject");
 }
 
-bool CryObject::GetIsPropertyContainer(const CryPropertyParser &PropertyName) const
+bool CryObject::GetIsPropertyContainer(const
+
+                                       CryPropertyParser &PropertyName) const
 {
     if (HasProperty(PropertyName))
         return false; // generally properties are strings containing values, special case needs to be handled specially
+
     throw CryException(this,ExceptionUnknownProperty,"Unknown Property \"%s\"",PropertyName.AsPChar());
 }
 
 /// Get a property
-CryObject *CryObject::GetCopyOfPropertyAsObject(const CryPropertyParser &PropertyName) const
+CryObject *CryObject::GetCopyOfPropertyAsObject(const
+        CryPropertyParser &PropertyName) const
 {
 #ifdef DEBUG
-	if (PropertyName=="ObjectID")
-	{
-	CryString *s = new CryString();
-		s->printf("%d",ObjectID);
-		return s;
-	}
+
+    if (PropertyName=="ObjectID")
+    {
+        CryString *s = new CryString();
+        s->printf("%d",ObjectID);
+        return s;
+    }
+
 #endif
-	if (HasProperty(PropertyName))
-	{
-		throw CryException(this,ExceptionNotImplemented,"\"%s\" has not implemented GetCopyOfPropertyAsObject for Property \"%s\"",
-						   ChildClassName(),PropertyName.AsPChar());
-	}
-	else
-		throw CryException(this,ExceptionUnknownProperty,"Unknown Property \"%s\"",PropertyName.AsPChar());
+    if (HasProperty(PropertyName))
+    {
+        throw CryException(this,ExceptionNotImplemented,"\"%s\" has not implemented GetCopyOfPropertyAsObject for Property \"%s\"",
+                           ChildClassName(),PropertyName.AsPChar());
+    }
+
+    else
+        throw CryException(this,ExceptionUnknownProperty,"Unknown Property \"%s\"",PropertyName.AsPChar());
 }
+
 /// Get a property
-CryObject *CryObject::_GetPropertyAsObject(const CryPropertyParser &PropertyName) const
+CryObject *CryObject::_GetPropertyAsObject(const
+        CryPropertyParser &PropertyName) const
 {
-	if (HasProperty(PropertyName))
-	{
-		throw CryException(this,ExceptionNotImplemented,"\"%s\" has not implemented _GetPropertyAsObject for Property \"%s\"",
-						   ChildClassName(),PropertyName.AsPChar());
-	}
-	else
-		throw CryException(this,ExceptionUnknownProperty,"Unknown Property \"%s\"",PropertyName.AsPChar());
+    if (HasProperty(PropertyName))
+    {
+        throw CryException(this,ExceptionNotImplemented,"\"%s\" has not implemented _GetPropertyAsObject for Property \"%s\"",
+                           ChildClassName(),PropertyName.AsPChar());
+    }
+
+    else
+        throw CryException(this,ExceptionUnknownProperty,"Unknown Property \"%s\"",PropertyName.AsPChar());
 }
 
-const char *CryObject::GetProperty(const char *PropertyName,CryString &Result) const
+const
+char *CryObject::GetProperty(const
+                             char *PropertyName,CryString &Result) const
 {
-	CryPropertyParser pp(PropertyName);
-	return GetProperty(pp,Result);
+    CryPropertyParser pp(PropertyName);
+    return GetProperty(pp,Result);
 
 }
 
-const char *CryObject::GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const
+const
+char *CryObject::GetProperty(const
+                             CryPropertyParser &PropertyName,CryString &Result) const
 {
 #ifdef DEBUG
-	if (PropertyName=="ObjectID")
-	{
-		Result.printf("%d",ObjectID);
-		return (const char *)Result;
-	}
+
+    if (PropertyName=="ObjectID")
+    {
+        Result.printf("%d",ObjectID);
+
+        return (const
+                char *)Result;
+    }
+
 #endif
-	throw CryException(this,ExceptionUnknownProperty,"Unknown Property \"%s\"",PropertyName.AsPChar());
+    throw CryException(this,ExceptionUnknownProperty,"Unknown Property \"%s\"",PropertyName.AsPChar());
 }
 
 bool CryObject::SetPropertyAsObject(CryProperty *Value)
+
 {
-CryString Result;
-	return SetProperty(Value->GetName()->AsPChar(),Value->GetValue(Result));
+    CryString Result;
+    return SetProperty(Value->GetName()->AsPChar(),Value->GetValue(Result));
 }
+
 /*CryObject *CryObject::Dup() const
 {
     throw CryException(this,"Cannot Dup a CryObject");
@@ -516,21 +669,26 @@ CryString Result;
 CryObject::CryObject()
 {
 #ifdef DEBUG
-	ObjectID = ::ObjectID;
-	::ObjectID++;
+    ObjectID = ::ObjectID;
+    ::ObjectID++;
 #endif
 }
 
-const char* CryObject::ClassName() const
-{
-    return TCryObject;
-}
-const char* CryObject::ChildClassName() const
+const
+char* CryObject::ClassName() const
 {
     return TCryObject;
 }
 
-bool CryObject::IsA(const char *_ClassName) const // can the object map to a ClassName
+const
+char* CryObject::ChildClassName() const
+{
+    return TCryObject;
+}
+
+bool CryObject::IsA(const
+
+                    char *_ClassName) const // can the object map to a ClassName
 {
     return strcmp(_ClassName,TCryObject)==0;
 }
@@ -538,50 +696,65 @@ bool CryObject::IsA(const char *_ClassName) const // can the object map to a Cla
 // returns true if handled
 bool CryObject::Event(EObject EventNumber,Context::IO &Context)
 {
-    switch(EventNumber)
+    switch (EventNumber)
     {
+
 EFirst:
-        return false;
+            return false;
+
 ESaveObject:
-        Context.In.InSave.ToStream->SetMode(SObject);
-        SaveTo(*Context.In.InSave.ToStream);    // ToStream as Object
-        break;
+            Context.In.InSave.ToStream->SetMode(SObject);
+            SaveTo(*Context.In.InSave.ToStream);    // ToStream as Object
+            break;
+
 ELoadObject:
-        Context.In.InLoad.FromStream->SetMode(SObject);
-        LoadFrom(*Context.In.InLoad.FromStream);    // FromStream as Object
-        break;
+            Context.In.InLoad.FromStream->SetMode(SObject);
+            LoadFrom(*Context.In.InLoad.FromStream);    // FromStream as Object
+            break;
+
 ESaveStream:
-        Context.In.InSave.ToStream->SetMode(SText);
-        SaveTo(*Context.In.InSave.ToStream);    // ToStream as Object
-        break;
+            Context.In.InSave.ToStream->SetMode(SText);
+            SaveTo(*Context.In.InSave.ToStream);    // ToStream as Object
+            break;
+
 ELoadStream:
-        Context.In.InLoad.FromStream->SetMode(SText);
-        LoadFrom(*Context.In.InLoad.FromStream);    // FromStream as Object
-        break;
+            Context.In.InLoad.FromStream->SetMode(SText);
+            LoadFrom(*Context.In.InLoad.FromStream);    // FromStream as Object
+            break;
+
 ECopyTo:
-        CopyTo(*Context.In.InCopyTo.Object);  //copies contents of this to Dest
-        break;
+            CopyTo(*Context.In.InCopyTo.Object);  //copies contents of this to Dest
+            break;
+
 EDup:
-        Context.Out.OutDup.Object = Dup();
-        break;
+            Context.Out.OutDup.Object = Dup();
+            break;
+
 ESize:
-        Context.Out.OutSize.Result = Size();
-        break;
+            Context.Out.OutSize.Result = Size();
+            break;
+
 EClassName:
-        Context.Out.OutClassName.Text = ChildClassName();
-        break;
+            Context.Out.OutClassName.Text = ChildClassName();
+            break;
+
 EIsA:
-        Context.Out.OutIsa.Result = IsA(Context.In.InIsa.Text);
-        break;
+            Context.Out.OutIsa.Result = IsA(Context.In.InIsa.Text);
+            break;
+
 EEvent:
-        return false;
+            return false;
+
 ELast:
-        return false;
+            return false;
     }
+
     return true;
 }
 
-bool CryObject::ClassCanCreate(const CryPropertyParser &PropertyName)
+bool CryObject::ClassCanCreate(const
+
+                               CryPropertyParser &PropertyName)
 {
     return (PropertyName==TCryMemStream) ||
            (PropertyName==TCryXML) ||
@@ -603,7 +776,7 @@ bool CryObject::ClassCanCreate(const CryPropertyParser &PropertyName)
 
 
 /*!
-	Create can create 
+	Create can create
 	CryMemStream,
 	CryFileStream,
 	CryString,
@@ -616,206 +789,186 @@ bool CryObject::ClassCanCreate(const CryPropertyParser &PropertyName)
 	BackPropagateLayer
 	HugeInt
 */
-CryObject *CryObject::ClassCreate(const CryPropertyParser &PropertyName,CryObject *Parent)
+CryObject *CryObject::ClassCreate(const
+                                  CryPropertyParser &PropertyName,CryObject *Parent)
 {
     CryObject *NewObject = 0;
     // first create the object
-    if (PropertyName==TCryObject)
-        NewObject = new CryObject();
-    else
-        if (PropertyName==TCryMemStream)
-            NewObject =(CryObject *) new CryMemStream();
-        else
-            if (PropertyName==TCryXML)
-                NewObject = (CryObject *)new CryXML();
-            else
-                if (PropertyName==TCryXMLNode)
-                    NewObject = (CryObject *)new CryXMLNode();
-                else
-                    if (PropertyName==TCryFileStream)
-                        NewObject = (CryObject *)new CryFileStream();
-                    else
-                        if (PropertyName==TCryString)
-                            NewObject = (CryObject *)new CryString();
-                        else
-                            if (PropertyName==TCryProperty)
-                                NewObject = (CryObject *)new CryProperty("NoName");
-                            else
-                                if (PropertyName==TCryList)
-                                    NewObject = (CryObject *)new CryList();
-                                else
-                                    if (PropertyName==TCryPropertyList)
-                                        NewObject = (CryObject *)new CryPropertyList();
-                                    else
-                                        if (PropertyName==TCryDoubleArray)
-                                            NewObject = (CryObject *)new CryDoubleArray();
-                                        else
-                                            if (PropertyName==TCryFunctionDef)
-                                                NewObject = (CryFunctionDef *)new CryFunctionDef();
-                                            else
-                                                if (PropertyName==TCryFunctionDefList)
-                                                    NewObject = (CryFunctionDefList *) new CryFunctionDefList();
-                                                else
-                                                    if (PropertyName==TCryFuzzy)
-                                                        NewObject = (CryObject *)new CryFuzzy();
-                                                    else
-                                                        if (PropertyName==TBitArray)
-                                                            NewObject = (BitArray *) new BitArray();
-                                                        else
-                                                            /*if (PropertyName=="CryBPNet")
-                                                               (CryBPNet *) NewObject = new CryBPNet();
-                                                            else*/
-                                                            if (PropertyName==TStrategy)
-                                                                NewObject = new Strategy();
-                                                            else
-                                                                if (PropertyName==TStrategyHolder)
-                                                                    NewObject = new StrategyHolder();
-                                                                else
-                                                                    if (PropertyName==TStrategyHolderSender)
-                                                                        NewObject = new StrategyHolderSender();
-                                                                    else
-                                                                        if (PropertyName==TObserver)
-                                                                            NewObject = new Observer();
-                                                                        else
-                                                                            if (PropertyName==TObservable)
-                                                                                NewObject = new Observable();
-                                                                            else
-                                                                                if (PropertyName==TDecorator)
-                                                                                {
-                                                                                    if (Parent==0 || Parent->IsA(TDecorator))
-                                                                                        NewObject = new Decorator((Decorator *)Parent);
-                                                                                }
-                                                                                else
-                                                                                    if (PropertyName==TCryFactory)
-                                                                                        NewObject = new CryFactory();
-                                                                                    else
-                                                                                        if (PropertyName==TCryOFactory)
-                                                                                            NewObject = new CryOFactory();
-                                                                                        else
-                                                                                            if (PropertyName==TCommandHolder)
-                                                                                                NewObject = new CommandHolder();
-                                                                                            else
-                                                                                                if (PropertyName==TCommandHolderSender)
-                                                                                                    NewObject = new CommandHolderSender();
-                                                                                                else
-                                                                                                    if (PropertyName==TCompositeIterator)
-																										NewObject = new CompositeIterator(0);
-                                                                                                    else
-                                                                                                        if (PropertyName==TState)
-                                                                                                            NewObject = new State(1);
 
-    if (PropertyName==TCryBPNetContainer)
-        NewObject = (CryObject *)new CryBPNetContainer();
-    else
-        if (PropertyName==TBackPropagateLayer)
-        {
-            if (Parent && (Parent->IsA(TCryBPNet)))
-            {
-                NewObject = (CryObject *) ((CryBPNet *)Parent)->AddLayer(0);
-            }
-            else
-                throw CryException("Cannot Create BackPropagateLayer, Must have a parent of %s (or a decendent)",TCryBPNet);
-        }
-        else
-            if (PropertyName==THugeInt)
-                NewObject = (CryObject *)new HugeInt();
-            else
-                if (Parent)
-                    NewObject = Parent->Create(PropertyName,0);
-	if (!NewObject)
+	if (PropertyName==TCryObject)
+		return new CryObject();
+	if (PropertyName==TCryMemStream)
+		return (CryObject *) new CryMemStream();
+	if (PropertyName==TCryXML)
+		return (CryObject *)new CryXML();
+	if (PropertyName==TCryXMLNode)
+		return (CryObject *)new CryXMLNode();
+	if (PropertyName==TCryFileStream)
+		return (CryObject *)new CryFileStream();
+	if (PropertyName==TCryString)
+		return (CryObject *)new CryString();
+	if (PropertyName==TCryProperty)
+		return (CryObject *)new CryProperty("NoName");
+	if (PropertyName==TCryList)
+		return (CryObject *)new CryList();
+	if (PropertyName==TCryPropertyList)
+		return (CryObject *)new CryPropertyList();
+	if (PropertyName==TCryDoubleArray)
+		return (CryObject *)new CryDoubleArray();
+	if (PropertyName==TCryFunctionDef)
+		return (CryFunctionDef *)new CryFunctionDef();
+	if (PropertyName==TCryFunctionDefList)
+		return (CryFunctionDefList *) new CryFunctionDefList();
+	if (PropertyName==TCryFuzzy)
+		return (CryObject *)new CryFuzzy();
+	if (PropertyName==TBitArray)
+		return (BitArray *) new BitArray();
+	if (PropertyName==TStrategy)
+		return new Strategy();
+	if (PropertyName==TStrategyHolder)
+		return new StrategyHolder();
+	if (PropertyName==TStrategyHolderSender)
+		return new StrategyHolderSender();
+	if (PropertyName==TObserver)
+		return new Observer();
+	if (PropertyName==TObservable)
+		return new Observable();
+	if (PropertyName==TDecorator)
 	{
-		throw CryException("Could not Create Class %s (maybe abstract?)",(const char *)PropertyName);
+		if (Parent==0 || Parent->IsA(TDecorator))
+			return  new Decorator((Decorator *)Parent);
 	}
-    return NewObject;
+	if (PropertyName==TCryFactory)
+		return new CryFactory();
+	if (PropertyName==TCryOFactory)
+		return new CryOFactory();
+	if (PropertyName==TCommandHolder)
+		return new CommandHolder();
+	if (PropertyName==TCommandHolderSender)
+		return new CommandHolderSender();
+	if (PropertyName==TCompositeIterator)
+		return new CompositeIterator(0);
+	if (PropertyName==TState)
+		return new State(1);
+		// Uncomment this to make backpropagation part of the base class creation abilities
+/*
+	 if (PropertyName==TCryBPNetContainer)
+		return (CryObject *)new CryBPNetContainer();
+	if (PropertyName==TBackPropagateLayer)
+	{
+		if (Parent && (Parent->IsA(TCryBPNet)))
+		{
+			return ((CryBPNet *)Parent)->AddLayer(0);
+		}
+		else
+			throw CryException("Cannot Create BackPropagateLayer, Must have a parent of %s (or a decendent)",TCryBPNet);
+	}
+*/
+	if (PropertyName==THugeInt)
+		return (CryObject *)new HugeInt();
+	if (Parent)
+		return Parent->Create(PropertyName,0);
+	throw CryException("Could not Create Class %s (maybe abstract?)",(const char *)PropertyName);
 }
 
 
 
 void CryObject::SaveTo(CryStream &ToStream) const
-{
-    CryXML xml;
-    xml.LoadFrom(*this);
 
-    switch(ToStream.GetMode())
-    {
-    case SObject:
-        // zlib compression of xml class
-        {
-            CryString w;
-            xml.SaveTo(w);
-            CryMemStream c;
-            int wl = w.GetLength();
-            c.SetLength(w.GetLength()+ 100);    // safty range of size
-            //        zlibcompress(w,c);
-            int l = 0;
-            ToStream.Write((const char *) &l,sizeof(l));    // marker for asciiz if opened incorrectly and also indicator that this is compressed
-            ToStream.Write((const char *)&wl,sizeof(wl));  // original length
-            l = c.GetLength();
-            ToStream.Write((const char *)&l,sizeof(l));   // compressed length
-            ToStream.Write((const char *)c.GetRaw(),l);   //data
-        }
-        break;
-    case SText:
-        xml.SaveTo(ToStream);
-        break;
-    }
+{
+	CryXML xml;
+	xml.LoadFrom(*this);
+	switch (ToStream.GetMode())
+	{
+		case
+				SObject:
+			// zlib compression of xml class
+			{
+				CryString w;
+				xml.SaveTo(w);
+				CryMemStream c;
+				int wl = w.GetLength();
+				c.SetLength(w.GetLength()+ 100);    // safty range of size
+				//        zlibcompress(w,c);
+				int l = 0;
+				ToStream.Write((const char *) &l,sizeof(l));    // marker for asciiz if opened incorrectly and also indicator that this is compressed
+				ToStream.Write((const char *)&wl,sizeof(wl));  // original length
+				l = c.GetLength();
+				ToStream.Write((const char *)&l,sizeof(l));   // compressed length
+				ToStream.Write((const char *)c.GetRaw(),l);   //data
+			}
+			break;
+		case
+				SText:
+			xml.SaveTo(ToStream);
+			break;
+	}
 }
 
 void CryObject::LoadFrom(const CryStream &FromStream)
 {
-    CryXML xml;
-    switch(FromStream.GetMode())
-    {
-    case SObject:
-        // zlib compression of xml class
-        {
-            int l;
-            FromStream.Read((char *)&l,sizeof(l));
-            if (l!=0)   // get marker
-                throw CryException(this,"Compressed Read from non-compressed format");
-            FromStream.Read((char *)&l,sizeof(l));  // original length
-            CryString w;
-            w.SetLength(l);
-            CryMemStream c;
-            FromStream.Read((char *)&l,sizeof(l));
-            c.SetLength(l);
-            c.Write(&FromStream,l);
-            //            zlibuncompress(c,w);
-            xml.LoadFrom(c);
-        }
-        break;
-    case SText:
-        xml.LoadFrom(FromStream);
+	CryXML xml;
+	switch (FromStream.GetMode())
+	{
+		case
+				SObject:
+			// zlib compression of xml class
+			{
+				int l;
+				FromStream.Read((char *)&l,sizeof(l));
+				if (l!=0)   // get marker
+					throw CryException(this,"Compressed Read from non-compressed format");
+				FromStream.Read((char *)&l,sizeof(l));  // original length
+				CryString w;
+				w.SetLength(l);
+				CryMemStream c;
+				FromStream.Read((char *)&l,sizeof(l));
+				c.SetLength(l);
+				c.Write(&FromStream,l);
+				//            zlibuncompress(c,w);
+				xml.LoadFrom(c);
+			}
+			break;
+		case
+				SText:
+            xml.LoadFrom(FromStream);
     }
+
     return xml.SaveTo(*this);
 }
+
 CryObject *CryObject::Create(CryStream &FromStream)
+
 {
     CryXML xml;
-    switch(FromStream.GetMode())
+
+    switch (FromStream.GetMode())
     {
-    case SObject:
-        // zlib compression of xml class
-        {
-            int l;
-            FromStream.Read((char *)&l,sizeof(l));
-            if (l!=0)   // get marker
-                throw CryException(this,"Compressed Read from non-compressed format");
-            FromStream.Read((char *)&l,sizeof(l));  // original length
-            CryString w;
-            w.SetLength(l);
-            CryMemStream c;
-            FromStream.Read((char *)&l,sizeof(l));
-            c.SetLength(l);
-            c.Write(&FromStream,l);
-            //            zlibuncompress(c,w);
-            xml.LoadFrom(c);
-        }
-        break;
-    case SText:
-        xml.LoadFrom(FromStream);
-    }
-    return  xml.CreateObjectFromNode(this);
+        case
+
+                SObject:
+            // zlib compression of xml class
+			{
+				int l;
+				FromStream.Read((char *)&l,sizeof(l));
+				if (l!=0)   // get marker
+					throw CryException(this,"Compressed Read from non-compressed format");
+				FromStream.Read((char *)&l,sizeof(l));  // original length
+				CryString w;
+				w.SetLength(l);
+				CryMemStream c;
+				FromStream.Read((char *)&l,sizeof(l));
+				c.SetLength(l);
+				c.Write(&FromStream,l);
+				//            zlibuncompress(c,w);
+				xml.LoadFrom(c);
+			}
+			break;
+		case
+			SText:
+			xml.LoadFrom(FromStream);
+	}
+	return  xml.CreateObjectFromNode(this);
 }
 
 CryPropertyList *CryObject::PropertyNames() const
@@ -824,126 +977,122 @@ CryPropertyList *CryObject::PropertyNames() const
 #ifdef DEBUG
 	n->AddPropertyByName("ObjectID",this);
 #endif
-    return n;
+	return n;
 }
 
-CryProperty *CryObject::GetPropertyAsCryProperty(const CryPropertyParser &PropertyName) const
+CryProperty *CryObject::GetPropertyAsCryProperty(const
+
+		CryPropertyParser &PropertyName) const
 {
-    if (HasProperty(PropertyName))
-    {
-        CryProperty *o = new CryProperty(PropertyName);
-        CryString s;
-        const char *c =GetProperty(PropertyName,s);
-        if ((*c=='*' ) && (s=="[]"))
-        {
-		// usually s and *c will be the same, but in this case it indicates an array
-            s.Clear();
-            s.printf("*%s",PropertyName.AsPChar());
-		// we now get what is at the array
+	if (HasProperty(PropertyName))
+	{
+		CryProperty *o = new CryProperty(PropertyName);
+		CryString s;
+
+		const
+		char *c =GetProperty(PropertyName,s);
+
+		if ((*c=='*' ) && (s=="[]"))
+		{
+			// usually s and *c will be the same, but in this case it indicates an array
+			s.Clear();
+			s.printf("*%s",PropertyName.AsPChar());   // this get's overridden, but is used to show the property name
 			GetProperty(s.AsPChar(),s);
-        }
-        o->SetValue(s.AsPChar());
-        return o;
-    }
-    throw CryException(this,ExceptionUnknownProperty,"Unknown Property \"%s\"",PropertyName.AsPChar());
+		}
+
+		o->SetValue(s.AsPChar());
+
+		return o;
+	}
+
+	throw CryException(this,ExceptionUnknownProperty,"Unknown Property \"%s\"",PropertyName.AsPChar());
 }
 
 
 bool CryObject::IterateThroughAll(CryContainer *Container,EmptyObject *Control) // for each item, will call bool (*FunctionToCall)(EmptyObject *); (unless 0)
+
 {
 	CryContainer::Iterator *i = Container->_CreateIterator();
-    bool result = true;
-    if (i->GotoFirst())
-    {
-        do
-        {
-            EmptyObject *eo = i->Get();
-            if (IteratedFunction(Control,eo))
-            {
-                result = true;
-                break;
-            }
-        }
-        while(i->GotoNext());
-    }
-    Container->DeleteIterator(i);
-    return result;
-}
-CryObject *CryObject::CreateItemType(const CryPropertyParser &PropertyName)
-{
-    CryObject *NewObject;
-    if (PropertyName==TCryList)
-        NewObject = new CryList();
-    else
-        if (PropertyName==TCryFileStream)
-            NewObject = new CryFileStream();
-        else
-            if (PropertyName==TCryMemStream)
-                NewObject = new CryMemStream();
-            else
-                if (PropertyName==TCryString)
-                    NewObject = new CryString();
-                else
-                    if (PropertyName==TStrategy)
-                        NewObject = new Strategy();
-                    else
-                        if (PropertyName==TStrategyHolder)
-                            NewObject = new StrategyHolder();
-                        else
-                            if (PropertyName==TStrategyHolderSender)
-                                NewObject = new StrategyHolderSender();
-                            else
-                                if (PropertyName==TObserver)
-                                    NewObject = new Observer();
-                                else
-                                    if (PropertyName==TObservable)
-                                        NewObject = new Observable();
-                                    else
-                                        if (PropertyName==TDecorator)
-                                            NewObject = new Decorator(0);
-                                        else
-                                            if (PropertyName==TCryFactory)
-                                                NewObject = new CryFactory();
-                                            else
-                                                if (PropertyName==TCryOFactory)
-                                                    NewObject = new CryOFactory();
-                                                else
-                                                    if (PropertyName==TCommandHolder)
-                                                        NewObject = new CommandHolder();
-                                                    else
-                                                        if (PropertyName==TCommandHolderSender)
-                                                            NewObject = new CommandHolderSender();
-                                                        else
-                                                            if (PropertyName==TCompositeIterator)
-                                                                NewObject = new CompositeIterator(0);
-                                                            else
-                                                                if (PropertyName==TState)
-                                                                    NewObject = new State(1);
-                                                                else
-                                                                    if (PropertyName==TCryStream)
-                                                                        throw CryException(this,"Trying to create instance of Abstract Class CryStream");
-                                                                    else
-                                                                        throw CryException(this,"Trying to create instance of Unknown Class %s",PropertyName.AsPChar());
-    return NewObject;
-}
+	bool result = true;
 
-
-
-CryObject *CryOwnedObject::Create(const CryPropertyParser &PropertyName,CryObject *Parent)
-{
-	try
+	if (i->GotoFirst())
 	{
-		CryObject *o = CryObject::Create(PropertyName,Parent);
-		return o;
-	}
-	catch(CryException &e)
-	{
-		if (Owner)
+		do
 		{
-			return Owner->Create(PropertyName,Parent);
+			EmptyObject *eo = i->Get();
+			if (IteratedFunction(Control,eo))
+			{
+				result = true;
+				break;
+			}
 		}
-		throw e;
+		while (i->GotoNext());
 	}
+	Container->DeleteIterator(i);
+	return result;
+}
+
+CryObject *CryObject::CreateItemType(const
+									 CryPropertyParser &PropertyName)
+{
+	CryObject *NewObject;
+
+	if (PropertyName==TCryList)
+		return new CryList();
+	if (PropertyName==TCryFileStream)
+		return new CryFileStream();
+	if (PropertyName==TCryMemStream)
+		return new CryMemStream();
+	if (PropertyName==TCryString)
+		return new CryString();
+	if (PropertyName==TStrategy)
+		return new Strategy();
+	if (PropertyName==TStrategyHolder)
+		return new StrategyHolder();
+	if (PropertyName==TStrategyHolderSender)
+		return new StrategyHolderSender();
+	if (PropertyName==TObserver)
+		return new Observer();
+	if (PropertyName==TObservable)
+		return new Observable();
+	if (PropertyName==TDecorator)
+		return new Decorator(0);
+	if (PropertyName==TCryFactory)
+		return new CryFactory();
+	if (PropertyName==TCryOFactory)
+		return new CryOFactory();
+	if (PropertyName==TCommandHolder)
+		return new CommandHolder();
+	if (PropertyName==TCommandHolderSender)
+		return new CommandHolderSender();
+	if (PropertyName==TCompositeIterator)
+		return new CompositeIterator(0);
+	if (PropertyName==TState)
+		NewObject = new State(1);
+	throw CryException(this,"Trying to create instance of Unknown or Abstract Class %s",PropertyName.AsPChar());
+}
+
+
+
+CryObject *CryOwnedObject::Create(const
+
+                                  CryPropertyParser &PropertyName,CryObject *Parent)
+{
+    try
+    {
+        CryObject *o = CryObject::Create(PropertyName,Parent);
+        return o;
+    }
+
+    catch (CryException &e)
+    {
+        if (Owner)
+        {
+            return Owner->Create(PropertyName,Parent);
+        }
+
+        throw e;
+    }
 }
 
 

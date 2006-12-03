@@ -70,7 +70,7 @@ bool CryString::Test(bool Verbose,CryObject &Object,bool (CallBack)(bool Verbose
             const char* ClassName() const;
             virtual const char *ChildClassName() const;
             virtual operator const char *() const { return (const char *)GetRaw(); }
-            CryString operator &() { return *this; }
+			CryString operator &() { return *this; }
             char operator [](unsigned int Offset) const;
             virtual CryObject *Dup() const{ CryString *Result = new CryString(); CopyTo(*Result); return Result; } // creates a duplicate of this object
             virtual size_t Read(CryStream *ToStream,size_t Size) const;
@@ -106,7 +106,7 @@ bool CryString::Test(bool Verbose,CryObject &Object,bool (CallBack)(bool Verbose
             virtual CryString &Replace(const char *_Search,const char *_Replace);
             int SeekTextFromStart(const char *SearchString) const;
             int SeekTextFromCurrent(const char *SearchString) const;
-            virtual void Close(bool ExceptOnError=true) { Clear(0);};
+			virtual void Close(bool ExceptOnError=true) { Clear(0);};
             virtual bool Convert(int *i) const;
             virtual bool Convert(char *b,int len) const;
         //    virtual bool Convert(double *d) const;
@@ -142,7 +142,7 @@ bool CryString::Test(bool Verbose,CryObject &Object,bool (CallBack)(bool Verbose
             if (a!="")
                 fail = true;
             else
-            {
+			{
                 if ((Verbose) && (!CallBack(Verbose,ErrorStr,fail)))
                     return false;
             }
@@ -178,7 +178,7 @@ bool CryString::Test(bool Verbose,CryObject &Object,bool (CallBack)(bool Verbose
                         return false;
                 }
                 ErrorStr = "revSort case insensitive";
-                s.Sort(3);
+				s.Sort(3);
                 fail = s != "dDcCbBaA";
                 if (fail)
                 {
@@ -214,7 +214,7 @@ bool CryString::Test(bool Verbose,CryObject &Object,bool (CallBack)(bool Verbose
             {
                 if ((Verbose) && (!CallBack(Verbose,ErrorStr,fail)))
                     return false;
-            }
+			}
             else
                 fail = true;
             if (a!="test")
@@ -250,7 +250,7 @@ bool CryString::Test(bool Verbose,CryObject &Object,bool (CallBack)(bool Verbose
             ErrorStr = cleartest;
             CryString a("1234567");
             // 0 == all, 1.. from start, -1..-N from end
-            a.Clear(0);
+			a.Clear(0);
             if (a!="")
                 fail = true;
             else
@@ -290,22 +290,22 @@ bool CryString::Test(bool Verbose,CryObject &Object,bool (CallBack)(bool Verbose
 #endif
 size_t CryString::WriteNStr(const char *StrBuffer)
 {
-    int l = Length();
-    printf("%d %s",strlen(StrBuffer),StrBuffer);
-    return Length() - l + 1;
+	int l = Length();
+	printf("%d %s",strlen(StrBuffer),StrBuffer);
+	return Length() - l + 1;
 }
 bool CryString::SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue)
 {
-    if (PropertyName=="Value")
-    {
-        *this = PropertyValue;
-        return true;
-    }
-    return CryMemStream::SetProperty(PropertyName,PropertyValue);
+	if (PropertyName=="Value")
+	{
+		*this = PropertyValue;
+		return true;
+	}
+	return CryMemStream::SetProperty(PropertyName,PropertyValue);
 }
 CryString::operator const char *() const
 {
-    return (const char *)GetRaw();
+	return (const char *)GetRaw();
 }
 // creates a hash value of [a..z,A..Z,0..9,_]
 int CryString::HashValue()const
@@ -961,9 +961,9 @@ CryString & CryString::operator =(const char *text)
 }
 CryString & CryString::operator+=(const char *text)
 {
-    if (text)
-        strcat(text);
-    return *this;
+	if (text)
+		strcat(text);
+	return *this;
 }
 
 void CryString::SetValue(const char *_Value)

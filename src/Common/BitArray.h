@@ -19,7 +19,7 @@ using namespace Crystal;
 
 class BitArray : public CryMemStream
 {
-
+int BitCount;	// number of bits we are dealing with
 class BitIterator: public Iterator
 {
 int BitIndex;
@@ -81,7 +81,7 @@ virtual void DeleteIterator(Iterator *I) const;
 	/*!Copy this class and any parts of it to Dest*/
 virtual bool GetBit(int BitIndex);
 virtual void SetBit(int BitIndex,bool Value);
-virtual void SetNumBitsInArray(int Length) { SetLength(Length / 8 + 1); }
+virtual void SetNumBitsInArray(int Length) { BitCount = Length; SetLength(Length / 8 + 1); }
 virtual void CopyTo(CryObject &Dest) const;
 virtual void Clear();
 virtual void Clear(int amount); // 0 == all, 1.. from start, -1..-N from end
@@ -123,6 +123,9 @@ virtual CryFunctionDefList *GetFunctions(const char *Type=0) const;
 
 virtual const char *GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const;
 virtual bool SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue);
+#ifdef VALIDATING
+	virtual bool Test(bool Verbose,CryObject &Object,bool  (CallBack)(bool Verbose,const char *Result,bool fail));
+#endif
 
 }; // class BitArray
 

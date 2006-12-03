@@ -39,7 +39,7 @@ class CryProperty : public CryObject
 public:
 	CryProperty()
 	{
-	Init("","");
+	Init("NoName","");
 	}
 	StdFunctionsNoDup(CryProperty,CryObject);
 	CryProperty(const char *_Name,const char *_Value);
@@ -64,7 +64,8 @@ public:
 	virtual const char *GetProperty(CryString &Result) const;
 	virtual const cbyte* GetRaw() const;
     //    virtual const char *ChildClassName() const;
-    virtual bool HasProperty(const CryPropertyParser &PropertyName) const;
+	virtual bool HasProperty(const CryPropertyParser &PropertyName) const;
+	virtual bool SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue);
     virtual bool SetProperty(const CryPropertyParser &PropertyName,const CryObject *PropertyValue);
 	//virtual bool SetProperty(const char*PropertyName,const CryString &PropertyValue);
 	virtual CryPropertyList* PropertyNames() const;

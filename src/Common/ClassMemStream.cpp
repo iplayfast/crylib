@@ -171,7 +171,7 @@ void CryMemStream::SetRaw(unsigned int Start,const cbyte *v,size_t Length)
 }
 size_t CryMemStream::GetLength() const
 {
-    return DataLength;
+	return DataLength;
 }
 void CryMemStream::SetLength(int i)
 {
@@ -633,7 +633,10 @@ size_t CryMemStream::WriteTI(CryStream *FromBuffer,size_t Size)
     else
         return CryStream::WriteTI(FromBuffer,Size);
 }
-
+void CryMemStream::Zero()
+{
+	memset(Buffer,0,Length);
+}
 void CryMemStream::Clear(int amount) // 0 == all, 1.. from start, -1..-N from end
 {
     if (amount==0)

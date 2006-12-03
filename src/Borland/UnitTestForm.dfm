@@ -13,95 +13,52 @@ object Form1: TForm1
   OldCreateOrder = False
   PixelsPerInch = 96
   TextHeight = 12
-  object Button1: TButton
-    Left = 12
-    Top = 60
-    Width = 56
-    Height = 19
-    Caption = 'CryString'
-    TabOrder = 0
-    OnClick = Button1Click
-  end
   object Panel1: TPanel
-    Left = 96
+    Left = 144
     Top = 0
-    Width = 661
+    Width = 613
     Height = 414
     Align = alRight
     Caption = 'Panel1'
-    TabOrder = 1
+    TabOrder = 0
     object Memo1: TMemo
       Left = 1
       Top = 1
-      Width = 659
+      Width = 611
       Height = 412
       Align = alClient
       Lines.Strings = (
         '')
       TabOrder = 0
+      ExplicitWidth = 644
     end
   end
-  object Button2: TButton
-    Left = 6
-    Top = 210
-    Width = 74
-    Height = 19
-    Caption = 'BackProp Test'
+  object CheckListBox1: TCheckListBox
+    Left = 0
+    Top = 66
+    Width = 121
+    Height = 286
+    ItemHeight = 12
+    Items.Strings = (
+      'CryObject'
+      'CryArray'
+      'CryString'
+      'CrySet'
+      'CryList'
+      'Strategy Pattern'
+      'Observer Pattern'
+      'BackProp Nural Net'
+      'BitArray')
+    TabOrder = 1
+    OnClick = CheckListBox1Click
+  end
+  object Button10: TButton
+    Left = 24
+    Top = 368
+    Width = 75
+    Height = 25
+    Caption = 'Test All'
     TabOrder = 2
-    OnClick = Button2Click
-  end
-  object Button3: TButton
-    Left = 12
-    Top = 6
-    Width = 56
-    Height = 19
-    Caption = 'CryObject'
-    TabOrder = 3
-    OnClick = Button3Click
-  end
-  object Button4: TButton
-    Left = 12
-    Top = 29
-    Width = 56
-    Height = 19
-    Caption = 'CryArray'
-    TabOrder = 4
-    OnClick = Button4Click
-  end
-  object Button5: TButton
-    Left = 12
-    Top = 96
-    Width = 56
-    Height = 19
-    Caption = 'CrySet'
-    TabOrder = 5
-    OnClick = Button5Click
-  end
-  object Button6: TButton
-    Left = 12
-    Top = 131
-    Width = 56
-    Height = 19
-    Caption = 'CryList'
-    TabOrder = 6
-    OnClick = Button6Click
-  end
-  object Button7: TButton
-    Left = 12
-    Top = 155
-    Width = 80
-    Height = 18
-    Caption = 'Strategy Pattern'
-    TabOrder = 7
-    OnClick = Button7Click
-  end
-  object Button8: TButton
-    Left = 12
-    Top = 178
-    Width = 80
-    Height = 19
-    Caption = 'Observer Pattern'
-    TabOrder = 8
-    OnClick = Button8Click
+    OnClick = Button10Click
   end
 end

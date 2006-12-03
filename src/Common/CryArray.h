@@ -378,7 +378,7 @@ CryTArray<T> &Delete(int start,int amount)
 		amount = MaxCount - start;
 		if (amount<=0) {
             return *this;
-		}       
+		}
 	}
 	while(start<Size())
 	{
@@ -483,6 +483,20 @@ void CryTArray<CryString>::GetEleType(CryString &Result) const
 		Result = "CryString";
 	}
   */
+	/*! will create an object of the Type named in Type. In container classes where the Type is the contained object, the Parent must be the appropriete container type or a derived class which can create the object (if the default class can't) */
+CryObject *CryTArray<int>::Create(const CryPropertyParser &PropertyName,CryObject *Parent)
+{
+
+	if (PropertyName==TCryTArray)
+		return new CryTArray<int>();
+	return CrySimpleArray::Create(PropertyName,Parent);
+}
+template<>
+void CryTArray<int>::GetEleType(CryString &Result) const
+{
+	Result = "int";
+}
+
 template<>
 bool CryTArray<int>::LoadAsText(int i,CryString &FromStream)
 {
@@ -497,6 +511,21 @@ bool CryTArray<int>::SaveAsText(int i,CryString &ToStream) const
 	ToStream.printf("%d ",Values[i]);
 	return true;
 }
+	/*! will create an object of the Type named in Type. In container classes where the Type is the contained object, the Parent must be the appropriete container type or a derived class which can create the object (if the default class can't) */
+CryObject *CryTArray<float>::Create(const CryPropertyParser &PropertyName,CryObject *Parent)
+{
+
+	if (PropertyName==TCryTArray)
+		return new CryTArray<float>();
+	return CrySimpleArray::Create(PropertyName,Parent);
+}
+
+template<>
+void CryTArray<float>::GetEleType(CryString &Result) const
+{
+	Result = "float";
+}
+
 template<>
 bool CryTArray<float>::LoadAsText(int i,CryString &FromStream)
 {

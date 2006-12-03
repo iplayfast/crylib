@@ -250,6 +250,7 @@ This way one strategy can invoke another.
 			void setMeasurements(float _temp,float hum,float press);
 		};
 	public:
+		
 		TestObserver(char *_Result,bool Verbose,CryObject &Object,bool  (CallBack)(bool Verbose,const char *Result,bool fail));
 	};
 #endif
