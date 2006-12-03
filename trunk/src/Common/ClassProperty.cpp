@@ -30,16 +30,16 @@ using namespace Crystal;
 ///----------------------------------------------------------------------------
 void CryProperty::Init(const char *_Name,const char *_Value)
 {
-    Value = new CryString(_Value);
-    if (Value==0)
-        throw CryException("Out of memory creating CryProperty");
+	Value = new CryString(_Value);
+	if (Value==0)
+		throw CryException("Out of memory creating CryProperty");
 
-    Name = new CryString(_Name);
-    if (Name==0)
-    {
-        delete Value;
-        throw CryException("Out of memory creating CryProperty");
-    }
+	Name = new CryString(_Name);
+	if (Name==0)
+	{
+		delete Value;
+		throw CryException("Out of memory creating CryProperty");
+	}
 }
 CryProperty::CryProperty(const char *_Name,const char *_Value)
 {
@@ -53,18 +53,18 @@ CryProperty::CryProperty(const char *_Name)
 
 CryProperty::CryProperty(CryProperty &Copy)
 {
-    if (&Copy!=this)
-    {
+	if (&Copy!=this)
+	{
 	Init(Copy.Name->AsPChar(),Copy.Value->AsPChar());
-    };
+	};
 }
 
 CryProperty::~CryProperty()
 {
-    delete Value;
-    Value = 0;
-    delete Name;
-    Name = 0;
+	delete Value;
+	Value = 0;
+	delete Name;
+	Name = 0;
 }
 
 void CryProperty::SetValue(const char *_Value)
@@ -79,7 +79,7 @@ void CryProperty::SetValue(const CryObject *_Value)
 }
 void CryProperty::SetName(const char *_Name)
 {
-    *Name = _Name;
+	*Name = _Name;
 }
 
 const CryObject *CryProperty::GetValue() const
@@ -97,15 +97,21 @@ const char *CryProperty::GetValue(CryString &Result) const	// return string valu
 }
 CryObject *CryProperty::_GetValue() const
 {
-    return Value;
+	return Value;
 }
 const cbyte* CryProperty::GetRaw() const
 {
-    return Value->GetRaw();
+	return Value->GetRaw();
 }
 
 bool CryProperty::HasProperty(const CryPropertyParser &PropertyName) const
 {
+#ifdef DEBUG
+	if (PropertyName=="ObjectID")	// properties are normally parts of other objects so ObjectID doesn't make sense when saving or loading these
+		return false;
+#endif
+	if (*GetName()=="NoName")
+		return true;	// Properties can have any one Property, none has been assigned yet so go for it
     return (PropertyName==*GetName()) || CryObject::HasProperty(PropertyName);
 }
 
@@ -118,16 +124,16 @@ CryFunctionDefList *CryProperty::GetFunctions(const char *Type) const
     CryFunctionDefList *l = CryObject::GetFunctions();
     CryString s;
     s += "//  Class CryProperty;";
-    s += "virtual CryString *GetFunctions() const;";
-    s += "void SetValue(const char * _Value);";
-    s += "const CryString &GetValue() const;";
-    s += "virtual const char *GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const;";
-    s += "virtual const cbyte* GetRaw() const;";
-    s += "bool IsA(const char *_ClassName) const;";
-    s += "virtual const char *ChildClassName() const;";
-    s += "virtual bool HasProperty(const char *PropertyName) const;";
-    s += "bool SetProperty(const char*PropertyName,const char *PropertyValue);";
-    s += "virtual CryList *PropertyNames() const;";
+	s += "virtual CryString *GetFunctions() const;";
+	s += "void SetValue(const char * _Value);";
+	s += "const CryString &GetValue() const;";
+	s += "virtual const char *GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const;";
+	s += "virtual const cbyte* GetRaw() const;";
+	s += "bool IsA(const char *_ClassName) const;";
+	s += "virtual const char *ChildClassName() const;";
+	s += "virtual bool HasProperty(const char *PropertyName) const;";
+	s += "bool SetProperty(const char*PropertyName,const char *PropertyValue);";
+	s += "virtual CryList *PropertyNames() const;";
 	s += "virtual void CopyTo(CryObject &Dest) const;";
 	s += "virtual CryObject *Dup() const;";
 	s += "virtual size_t Size() const;";
@@ -152,13 +158,18 @@ const char *CryProperty::GetProperty(const CryPropertyParser &PropertyName,CrySt
 	{
 		return GetProperty(Result);
 	}
-	else
+/*	else
 	{
 		return CryObject::GetProperty(PropertyName,Result);
 	}
+	*/
 }
 
-
+bool CryProperty::SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue)
+{
+CryString v(PropertyValue);
+	return SetProperty(PropertyName,&v);
+}
 bool CryProperty::SetProperty(const CryPropertyParser &PropertyName,const CryObject* PropertyValue)
 {
 	if (PropertyName==*GetName())
@@ -172,15 +183,23 @@ bool CryProperty::SetProperty(const CryPropertyParser &PropertyName,const CryObj
 		if (CryObject::HasProperty(PropertyName) && PropertyValue->IsA(TCryString))
 			return CryObject::SetProperty(PropertyName,*((CryString *)PropertyValue));
 		else
-			throw CryException(this,ExceptionUnknownProperty,"Unknown Property ",PropertyName.AsPChar());
+		{
+			SetName(PropertyName);
+			Value = PropertyValue->Dup();
+		// normally we throw an exception, but CryProperty is a special case, as it's properties are user definable
+//			throw CryException(this,ExceptionUnknownProperty,"Unknown Property ",PropertyName.AsPChar());
+		}
 	}
 
 }
 
 CryPropertyList *CryProperty::PropertyNames() const
 {
-	CryPropertyList *n = CryObject::PropertyNames();
-	n->AddProperty(GetName()->AsPChar(),GetValue()->Dup());
+//	CryPropertyList *n = CryObject::PropertyNames();
+	// avoid ObjectID as it's not valid for properties
+	CryPropertyList *n = new CryPropertyList();
+	if (GetName()!="")
+		n->AddProperty(GetName()->AsPChar(),GetValue()->Dup());
 	return n;
 }
 

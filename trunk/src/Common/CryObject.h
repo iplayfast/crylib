@@ -170,7 +170,7 @@ public:
         {
             const char *Text;
         };
-        struct  _charp
+		struct  _charp
         {
             char *Text;
         };
@@ -206,7 +206,7 @@ public:
     virtual bool CanDup() const;
 	///copies contents of this to Dest
     virtual void CopyTo(CryObject &Dest) const;
-    /// creates a duplicate of this object (no data so it's easy!)
+	/// creates a duplicate of this object (no data so it's easy!)
     virtual CryObject *Dup() const;
     /// returns the size of an object (in this case 0)
     virtual size_t Size() const;
@@ -278,7 +278,7 @@ public:
     /// returns true if the class in question has the property
     virtual bool HasProperty(const CryPropertyParser &PropertyName) const;
     /*! returns true if the class in question can have the property. Useful for determining if a class can accept dynamic properties */
-    virtual bool CanHaveProperty(const CryPropertyParser &PropertyName) const;
+	virtual bool CanHaveProperty(const CryPropertyParser &PropertyName) const;
     /// The count of the properties a class has
     virtual int GetPropertyCount() const;
 
@@ -298,10 +298,10 @@ public:
 	/*! will create an object of the Type named in Type. In container classes where the Type is the contained object, the Parent must be the appropriete container type or a derived class which can create the object (if the default class can't) */
 	virtual CryObject *Create(const CryPropertyParser &PropertyName,CryObject *Parent=0);
 	/*! will create an object of the Type named in Type. In container classes where the Type is the contained object, the Parent must be the appropriete container type or a derived class which can create the object (if the default class can't) */
-    static CryObject *ClassCreate(const CryPropertyParser &PropertyName,CryObject *Parent=0);
+	static CryObject *ClassCreate(const CryPropertyParser &PropertyName,CryObject *Parent=0);
 
-    virtual bool CanCreate(const CryPropertyParser &PropertyName) const;
-    static bool ClassCanCreate(const CryPropertyParser &PropertyName);
+	virtual bool CanCreate(const CryPropertyParser &PropertyName) const;
+	static bool ClassCanCreate(const CryPropertyParser &PropertyName);
 
     //virtual size_t printf(const char *format,...)= 0;
     //virtual CryStream * sprintf(CryStream *s,const char *format,...)= 0;
@@ -314,7 +314,7 @@ public:
     /*! IteratedFunction is called for each item in the container (from IteratedThroughAll)
      returns false if iteration should stop
      */
-    virtual bool IteratedFunction(EmptyObject *Control,EmptyObject *Item);
+	virtual bool IteratedFunction(EmptyObject *Control,EmptyObject *Item);
 
 	CryObject &operator =(const CryObject &From);
 	CryObject &operator =(const CryObject *From);
@@ -331,7 +331,7 @@ public:
 class CryOwnedObject : public CryObject
 {
 CryObject *Owner;
-	CryOwnedObject(CryOwnedObject &nono);
+	CryOwnedObject(CryOwnedObject &nono);     //not allowed
 public:
 	CryOwnedObject() { Owner =0; }
 	void SetOwner(CryObject *_Owner) { Owner = _Owner; }

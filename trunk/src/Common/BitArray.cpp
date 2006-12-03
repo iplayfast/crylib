@@ -14,11 +14,61 @@ using namespace Crystal;
 
 /*! Default BitArray constructor */
 
+#ifdef VALIDATING
+bool BitArray::Test(bool Verbose,CryObject &Object,bool  (CallBack)(bool Verbose,const char *Result,bool fail))
+{
+
+char Result[200];
+bool Fail = false;
+CryString spn,spv,stemp;
+
+BitArray Copy;
+BitArray *OrgObject = 0;
+	Object.CopyTo(Copy);
+	if (Object.IsA(TBitArray)) {
+		OrgObject=(BitArray *)&Object;
+	}
+	Fail = Copy!=*OrgObject;
+	sprintf(Result,"Copy Constructor");
+	if (!CallBack(Verbose,Result,Fail))
+		return false;
+BitArray Prime;
+	Prime.SetNumBitsInArray(5);
+
+	Prime.SetBit(2,1);
+	for(int i=0;i<4;i++)
+	{
+		Fail |= (Prime.GetBit(i)) && i!=2;
+	}
+	sprintf(Result,"Initialize 0, set and get bit");
+	if (!CallBack(Verbose,Result,Fail))
+		return false;
+
+	try
+	{
+		Prime.GetBit(5);
+		Fail = true;
+		sprintf(Result,"Outof range test");
+		if (!CallBack(Verbose,Result,Fail))
+			return false;
+	}
+	catch(CryException &e)
+	{
+		sprintf(Result,"Outof range test");
+		if (!CallBack(Verbose,Result,Fail))
+			return false;
+
+	}
+	return CryMemStream::Test(Verbose,Object,CallBack);
+}
+
+#endif
 
 //constructor
 BitArray::BitArray()
 {
-    LocIterator = _CreateIterator();
+	LocIterator = _CreateIterator();
+	CryMemStream::Zero();
 }// BitArray
 
 
@@ -152,21 +202,23 @@ bool BitArray::GetItemOwnerShip(const Iterator *I) const
 
 void BitArray::RemoveAtIterator(Iterator *I)
 {
-    return;
+	return;
 }
 
 bool BitArray::GetBit(int BitIndex)
 {
-    const cbyte *b;
-    cbyte Byte;
-    b = GetRaw();
-    Byte = b[BitIndex / 8];
-    return Byte & (1<< (BitIndex & 7));
+	if (BitIndex>=BitCount)
+		throw CryException("Range error");
+
+	cbyte Byte = *this[BitIndex / 8];
+	return Byte & (1<< (BitIndex & 7));
 }
 
 void BitArray::SetBit(int BitIndex,bool Value)
 {
-    cbyte Byte = *this[BitIndex / 8];
+	if (BitIndex>=BitCount)
+		throw CryException("Range error");
+	cbyte Byte = *this[BitIndex / 8];
     if (Value)
         Byte |= (1 << (BitIndex & 7));
     else {

@@ -55,7 +55,8 @@ protected:
     void LookLikeString() const;    // this is really non const, but it affects no data and is more useful as const
     void Pos2DataLength();
     void Pos2Asciiz();
-    char *GetBuffer();
+	char *GetBuffer();
+	void Zero();
 public:
     StdFunctions(CryMemStream,CryStream);
     CryMemStream();

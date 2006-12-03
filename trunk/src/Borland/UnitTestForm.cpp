@@ -14,209 +14,135 @@
 #include "HugeInt.h"
 #include "CrySet.h"
 #include "CryPattern.h"
+#include "BitArray.h"
 
 using namespace Dialogs;
 using namespace Crystal;
 TForm1 *Form1;
 //---------------------------------------------------------------------------
 __fastcall TForm1::TForm1(TComponent* Owner)
-	: TForm(Owner)
-{
-}
+        : TForm(Owner)
+{}
 
 
 bool/* __cdecl */FormCallBack(bool Verbose,const char *Result,bool fail)
 {
-CryString s;
-	s.printf("%s %s",Result,fail ? "Fail" : "Pass");
-	s.Replace("\n","");
-	Form1->Memo1->Lines->Add(s.AsPChar());
-	Application->ProcessMessages();
-  if (fail)
-  {
-  AnsiString s = "Continue?";
-	return MessageDlg(s,mtConfirmation,mbYesNo,0)==mrYes;
-  }
-  return true;
-}
-//---------------------------------------------------------------------------
-void __fastcall TForm1::Button1Click(TObject *Sender)
-{
-Memo1->Clear();
-try
-{
-CryString a;
-	a.Test(true,a,FormCallBack);
-}
-catch(CryException &E)
-{
-CryString s;
-	s ="Exception Caught: ";
-	s += E;
-	ShowMessage(s.AsPChar());
-}
-}
-//---------------------------------------------------------------------------
-void __fastcall TForm1::Button2Click(TObject *Sender)
-{
-Memo1->Clear();
-try
-{
-CryBPNetContainer bp;
-#ifdef VALIDATING
-	bp.Test(true,bp,FormCallBack);
-#endif
-
-}
-catch(CryException &E)
-{
-CryString s;
-	s ="Exception Caught: ";
-	s += E;
-	ShowMessage(s.AsPChar());
-}
-
-}
-//---------------------------------------------------------------------------
-void __fastcall TForm1::Button3Click(TObject *Sender)
-{
-Memo1->Clear();
-try
-{
-CryObject o;
-#ifdef VALIDATING
-	o.Test(true,o,FormCallBack);
-#endif
-
-}
-catch(CryException &E)
-{
-CryString s;
-	s ="Exception Caught: ";
-	s += E;
-	ShowMessage(s.AsPChar());
-}
-
-}
-//---------------------------------------------------------------------------
-void __fastcall TForm1::Button4Click(TObject *Sender)
-{
-Memo1->Clear();
-try
-{
-CryTArray<int> a;
-#ifdef VALIDATING
-	for(int i=10;i<40;i++)
-		a.SetValue(i,i);
-	a.SetValue(5,20);
-	a.SetValue(0,30);
-	a.Test(true,a,FormCallBack);
-#endif
-
-}
-catch(CryException &E)
-{
-CryString s;
-	s ="Exception Caught: ";
-	s += E;
-	ShowMessage(s.AsPChar());
-}
-
-}
-//---------------------------------------------------------------------------
-void __fastcall TForm1::Button5Click(TObject *Sender)
-{
-Memo1->Clear();
-try
-{
-CrySet a;
-#ifdef VALIDATING
-	a.Add(5);
-	a.Add(10);
-	a.Add(8);
-	a.Add(7);
-	a.Add(7);	
-	for(int i=10;i<40;i++)
-		a.SetValue(i,i);
-	a.SetValue(5,20);
-	a.SetValue(0,30);
-	a.Test(true,a,FormCallBack);
-#endif
-
-}
-catch(CryException &E)
-{
-CryString s;
-	s ="Exception Caught: ";
-	s += E;
-	ShowMessage(s.AsPChar());
-}
+    CryString s;
+    s.printf("%s %s",Result,fail ? "Fail" : "Pass");
+    s.Replace("\n","");
+    Form1->Memo1->Lines->Add(s.AsPChar());
+    Application->ProcessMessages();
+    if (fail)
+    {
+        AnsiString s = "Continue?";
+        return MessageDlg(s,mtConfirmation,mbYesNo,0)==mrYes;
+    }
+    return true;
 }
 //---------------------------------------------------------------------------
 
-void __fastcall TForm1::Button6Click(TObject *Sender)
-{
-Memo1->Clear();
-try
-{
-CryList a;
-#ifdef VALIDATING
-	a.Test(true,a,FormCallBack);
-#endif
 
-}
-catch(CryException &E)
-{
-CryString s;
-	s ="Exception Caught: ";
-	s += E;
-	ShowMessage(s.AsPChar());
-}
 
+
+
+void __fastcall TForm1::CheckListBox1Click(TObject *Sender)
+{
+int i = CheckListBox1->ItemIndex;
+bool Fail=true;
+		CheckListBox1->Checked[i]= false;
+
+	Memo1->Clear();
+	try
+	{
+
+		switch(i)
+		{
+		case 0:
+			{
+			CryObject o;
+					Fail = o.Test(true,o,FormCallBack);
+			}
+			break;
+		case 1:
+			{
+				CryTArray<int> a;
+				for (int i=10;i<40;i++)
+					a.SetValue(i,i);
+				a.SetValue(5,20);
+				a.SetValue(0,30);
+				Fail = a.Test(true,a,FormCallBack);
+			}
+			break;
+		case 2:
+			{
+				CryString a;
+				Fail = a.Test(true,a,FormCallBack);
+			}
+			break;
+		case 3:
+			{
+			CrySet a;
+			a.Add(5);
+			a.Add(10);
+			a.Add(8);
+			a.Add(7);
+			a.Add(7);
+			for (int i=10;i<40;i++)
+				a.SetValue(i,i);
+			a.SetValue(5,20);
+			a.SetValue(0,30);
+			Fail = a.Test(true,a,FormCallBack);
+			}
+			break;
+		case 4:
+			{
+				CryList a;
+				Fail = a.Test(true,a,FormCallBack);
+			}
+			break;
+		case 5:
+			{
+				Strategy a;
+				Fail = a.Test(true,a,FormCallBack);
+			}
+			break;
+		case 6:
+			{
+				Observer a;
+				Fail = a.Test(true,a,FormCallBack);
+			}
+			break;
+		case 7:
+			{
+				CryBPNetContainer bp;
+				Fail = bp.Test(true,bp,FormCallBack);
+			}
+			break;
+		case 8:
+			{
+				BitArray a;
+				Fail = a.Test(true,a,FormCallBack);
+			}
+		}
+		CheckListBox1->Checked[i]= Fail;
+	}
+	catch (CryException &E)
+	{
+		CryString s;
+		s ="Exception Caught: ";
+		s += E;
+		ShowMessage(s.AsPChar());
+	}
 }
 //---------------------------------------------------------------------------
 
-void __fastcall TForm1::Button7Click(TObject *Sender)
+void __fastcall TForm1::Button10Click(TObject *Sender)
 {
-Memo1->Clear();
-try
-{
-Strategy a;
-#ifdef VALIDATING
-	a.Test(true,a,FormCallBack);
-#endif
-
-}
-catch(CryException &E)
-{
-CryString s;
-	s ="Exception Caught: ";
-	s += E;
-	ShowMessage(s.AsPChar());
-}
-
-}
-//---------------------------------------------------------------------------
-
-void __fastcall TForm1::Button8Click(TObject *Sender)
-{
-Memo1->Clear();
-try
-{
-Observer a;
-#ifdef VALIDATING
-	a.Test(true,a,FormCallBack);
-#endif
-
-}
-catch(CryException &E)
-{
-CryString s;
-	s ="Exception Caught: ";
-	s += E;
-	ShowMessage(s.AsPChar());
-}
-
+	for(int i=0;i<CheckListBox1->Items->Count;i++)
+	{
+		CheckListBox1->ItemIndex = i;
+    	CheckListBox1Click(Sender);
+	}
 }
 //---------------------------------------------------------------------------
 

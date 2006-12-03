@@ -421,8 +421,13 @@ void Observable::SetChanged()
 #ifdef VALIDATING
 bool Observer::Test(bool Verbose,CryObject &Object,bool  (CallBack)(bool Verbose,const char *Result,bool fail))
 {
-char _Result[100];
-	TestObserver(_Result,Verbose,Object,CallBack);
+char Result[100];
+	TestObserver(Result,Verbose,Object,CallBack);
+bool	Fail = false;
+	sprintf(Result,"Observer inspected test (via debug)");
+	if (!CallBack(Verbose,Result,Fail))
+		return false;
+	return CryObject::Test(Verbose,Object,CallBack);
 }
 
 #include <iostream>
@@ -450,14 +455,17 @@ void TestObserver::CurrentConditions::NotifyObservers(Observable *Observed)
 }
 void TestObserver::CurrentConditions::NotifyObservers(Observable *Observed,int status)
 {}
-
+CryString Output;
 void TestObserver::CurrentConditions::Display()
 {
-    cout << "Current conditions: " << temp << "F degrees and " << humidity << "% humidity";
-    cout << "Hello, world!" << endl;
+
+	Output.printf("Current conditions: %f Fdegrees and %f%% humidity",temp,humidity);
+	cout << "Current conditions: " << temp << "F degrees and " << humidity << "% humidity";
+	cout << "Hello, world!" << endl;
 }
 void TestObserver::Forcast::Display()
 {
+  //	Output << "Current conditions: " << temp << "F degrees and " << humidity << "% humidity";
     cout << "Forcasting.... " << temp << "F degrees and " << humidity << "% humidity";
     cout << "Hello, world!" << endl;
 }

@@ -421,8 +421,16 @@ void CryList::AddListNode(ListNode *Node)
 	}
 	else
 	{
-		Node->Next = Head;
-		Head = Node;
+	// Fifo version
+	Node->Next = 0;
+	ListNode *p = Head;	// add on to the tail of the list
+		while(p->Next)
+			p = p->Next;
+		p->Next = Node;
+		Tail = Node;
+	// LiFo version
+	//	Node->Next = Head;
+	//	Head = Node;
 	}
 }
 
@@ -881,62 +889,7 @@ void CryList::Sort(int CompareType)
 	}
 }
 
-/*			  shit
-void CryList::Sort(int CompareType)
-{
-	if (Items==0)	// nothing in list
-		return;
-	if (Items->Next==Items)
-		return; // only one item in list
 
-	ListNode *LocItems = _FirstNode();
-	Items->Next =0;	// make a normal linked list
-	Items = 0;
-	ListNode *Current,*Prev,*LastAdded,*Test,*PrevTest;
-	LastAdded = 0;
-	while(LocItems)
-	{
-		Current = LocItems;
-		Prev = PrevTest = 0;
-		if (Current->Next == 0) // on last one
-		{
-			LastAdded->Next = Current;  // done
-			Current->Next = Items;	// make back to our looped list
-			Items = Current;
-			return;
-		}
-		// find the lowest one in list
-		Test = Current->Next;
-		while(Test)
-		{
-			int c = Compare2(CompareType,Current,Test);
-			if (c<0)
-			{
-				Prev = PrevTest;
-				Current = Test;
-			}
-			PrevTest = Test;
-			Test = Test->Next;
-		}
-		// Current is lowest in list
-		if (Prev)       // Item before one being unlinked
-			Prev->Next = Current->Next; // Update Next to skip the Current
-		else
-		{
-			if (Current==LocItems)
-				LocItems = LocItems->Next;  // The first in the list is the Current None-before
-			else
-				LocItems->Next = Current->Next;
-		}
-		if (LastAdded)
-			LastAdded->Next = Current;
-		else
-			Items = Current;
-		LastAdded = Current;
-		Current->Next = 0;// not needed?
-	}
-}
-*/
 int CryList::Compare2(int CompareType,const EmptyObject *First,const EmptyObject *Second) const
 {
 	ListNode *f,*s;

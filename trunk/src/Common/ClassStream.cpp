@@ -57,7 +57,7 @@ bool CryStream::Test(bool Verbose,CryObject &Object,bool (CallBack)(bool Verbose
                 return false;
             }
         }
-        catch(CryException &E)
+        catch (CryException &E)
         {
             Fail = true;
             sprintf(Result,"\nException on opening Could not open test.dat");
@@ -227,7 +227,7 @@ bool CryStream::Test(bool Verbose,CryObject &Object,bool (CallBack)(bool Verbose
             s->Close();
 
         }
-        catch(CryException &E)
+        catch (CryException &E)
         {
             s->Close();
             throw E;
@@ -310,11 +310,11 @@ void CryStream::SetMode(StreamMode NewMode)
 CryFunctionDefList *CryStream::GetFunctions(const char *Type) const
 {
 // if a type has been defined and it's not this class, check subclasses for it
-	if (Type && !IsA(Type))
-	   return CryContainer::GetFunctions(Type);
-	// otherwise get any functions in subclasses
-	CryFunctionDefList *l = CryContainer::GetFunctions();
-    
+    if (Type && !IsA(Type))
+        return CryContainer::GetFunctions(Type);
+    // otherwise get any functions in subclasses
+    CryFunctionDefList *l = CryContainer::GetFunctions();
+
     CryString s;
     s += "// Class CryStream;";
     s += "StreamMode GetMode() const;";
@@ -422,14 +422,14 @@ void CryStream::CopyToStream(CryStream &Dest,CopyStyle Style) const
             }
             else
                 throw CryException(this,"CopyToStream unknown copy style");
-        while(OutBuffer==0)
+        while (OutBuffer==0)
         {
             OutBuffer = new char[OutBuffSize];
             if (OutBuffer==0)
                 OutBuffSize /=2;
         }
     }
-    while(InBuffer==0)
+    while (InBuffer==0)
     {
         InBuffer = new char[InBuffSize];
         if (InBuffer==0)
@@ -438,10 +438,10 @@ void CryStream::CopyToStream(CryStream &Dest,CopyStyle Style) const
     // at this point we have appropriate buffers allocated
     CryStream *pDest = &Dest;
 
-    switch(Style)
+    switch (Style)
     {
     case NORMAL:
-        while(OrigSize)
+        while (OrigSize)
         {
             if (InBuffSize>OrigSize)
                 InBuffSize = OrigSize;
@@ -453,7 +453,7 @@ void CryStream::CopyToStream(CryStream &Dest,CopyStyle Style) const
         s->SeekFromStart(OrigPosition);
         return;
     case ZIP:
-        while(OrigSize)
+        while (OrigSize)
         {
             if (InBuffSize>OrigSize)
                 InBuffSize = OrigSize;
@@ -479,7 +479,7 @@ void CryStream::CopyToStream(CryStream &Dest,CopyStyle Style) const
         s->SeekFromStart(OrigPosition);
         return;
     case UNZIP:
-        while(OrigSize)
+        while (OrigSize)
         {
             if (InBuffSize>OrigSize)
                 InBuffSize = OrigSize;
@@ -518,9 +518,9 @@ void CryStream::CopyTo(CryObject &Dest) const
 
 CryPropertyList *CryStream::PropertyNames() const
 {
-	CryPropertyList *n = CryObject::PropertyNames();
-	n->AddPropertyByName("Terminator",this);
-	return n;
+    CryPropertyList *n = CryObject::PropertyNames();
+    n->AddPropertyByName("Terminator",this);
+    return n;
 }
 
 bool CryStream::HasProperty(const CryPropertyParser &PropertyName) const
@@ -546,7 +546,7 @@ bool CryStream::SetProperty(const CryPropertyParser &PropertyName,const char *Pr
     {
         CryString Value;
         Value = PropertyValue;
-        char ch;
+        int ch;
 
         if (Value.strstr("0x"))
             Value.scanf("%x",&ch);
@@ -571,7 +571,7 @@ bool CryStream::Event(EObject EventNumber,Context::UIO &Context)
 {
     Context::UContext In = Context.StreamContext.In;  // In is parameters heading into this function, ie input parameters
     Context::UContext Out = Context.StreamContext.Out;// out is results from event
-    switch(EventNumber)
+    switch (EventNumber)
     {
     case EFirst:
         return CryObject::Event(CryObject::EFirst,Context.ObjectContext);
@@ -717,7 +717,7 @@ size_t CryStream::WriteTE(CryStream *FromBuffer,size_t Size)
     char buff[2];
     char t = FromBuffer->GetTerminator();
     unsigned int i=0;
-    while(i<Size)
+    while (i<Size)
     {
         FromBuffer->Read(buff,1);
         if (buff[0]==t)
@@ -745,7 +745,7 @@ size_t CryStream::WriteNStr(const char *StrBuffer)
 size_t CryStream::ReadStr(char *Buffer,size_t MaxLength) const
 {
     size_t o=0;
-    while(MaxLength)
+    while (MaxLength)
     {
         Read(Buffer,1);
         MaxLength--;
@@ -787,7 +787,7 @@ size_t CryStream::ReadTI(char *ToBuffer,size_t Size) const
 {
     char t = GetTerminator();
     size_t s =0;
-    while(s<Size)
+    while (s<Size)
     {
         Read(ToBuffer+s,1);
         if (ToBuffer[s]==t)
@@ -894,9 +894,9 @@ CryStream::StreamIterator::StreamIterator(const CryContainer *Container) : Itera
 {}
 CryObject *CryStream::StreamIterator::Dup() const
 {
-StreamIterator *it = (StreamIterator *)GetOrigContainer()->_CreateIterator();
-	it->Offset = Offset;
-	return it;
+    StreamIterator *it = (StreamIterator *)GetOrigContainer()->_CreateIterator();
+    it->Offset = Offset;
+    return it;
 }
 
 CryObject *CryStream::Add(CryObject *Item)    // returns Item
