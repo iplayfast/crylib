@@ -26,8 +26,8 @@
 
 namespace Crystal
 {
-#ifndef TPrimInstance
-#define TPrimInstance "PrimInstance"
+#ifndef CPrimInstance
+#define CPrimInstance "PrimInstance"
 
 
 class PrimInstance : public CodeFactory
@@ -37,10 +37,10 @@ class PrimInstance : public CodeFactory
     _eType eType;
     bool IsArrayPointer;
 public:
-StdFunctionsNoDup(PrimInstance,CodeFactory);
+	StdFunctionsNoDup(PrimInstance,CodeFactory);
 	PrimInstance(CodeFactory *Parent);
     PrimInstance(CodeFactory *Parent,const char *PrimType,const char *PrimName,const char *_DefaultValue, int _Count,bool _IsProperty,bool IsPointer,bool IsArrayPointer);
-    virtual CryObject *Create(const CryPropertyParser &PropertyName,CodeFactory *Parent);
+    virtual Object *Create(const CryPropertyParser &PropertyName,CodeFactory *Parent);
     void SetIsArrayPointer(bool _IsArrayPointer);
     bool GetIsArrayPointer() const;
 	void SetType(const char *PrimType);
@@ -48,7 +48,7 @@ StdFunctionsNoDup(PrimInstance,CodeFactory);
 	void SetCount();
 	void SetDefaultValue(const char *_DefaultValue);
         /*! will return a const pointer to the property */
-    virtual CryObject *GetCopyOfPropertyAsObject(const CryPropertyParser &PropertyName) const;
+    virtual Object *GetCopyOfPropertyAsObject(const CryPropertyParser &PropertyName) const;
     /*! will return whether or not the property named in PropertyName is a container */
     virtual bool GetIsPropertyContainer(const CryPropertyParser &PropertyName) const;
     /*! will return the property named in PropertyName in a string format */
@@ -60,15 +60,15 @@ StdFunctionsNoDup(PrimInstance,CodeFactory);
     /*! Make a list of all property names, the function is called from the parent class through each inheritance until it reaches this class, at which point a list is created and filled with any properties on the way back through the inheritance */
 	virtual CryPropertyList* PropertyNames() const;
 	virtual bool SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue);
-	virtual CryObject *Create(const CryPropertyParser &PropertyName,CryObject *Parent)
+	virtual Object *Create(const CryPropertyParser &PropertyName,Object *Parent)
     {
       return CodeFactory::Create(PropertyName,Parent);
     }
-    virtual CryObject *Create(CryStream &FromStream)
+    virtual Object *Create(CryStream &FromStream)
     {
       return CodeFactory::Create(FromStream);
     }
-    virtual CryObject *Create(const char *FactoryName,const CryPropertyParser &PropertyName,CryObject *Parent)
+    virtual Object *Create(const char *FactoryName,const CryPropertyParser &PropertyName,Object *Parent)
     {
       return CodeFactory::Create(FactoryName,PropertyName,Parent);
     }

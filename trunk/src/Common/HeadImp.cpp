@@ -95,22 +95,22 @@ void HeadImp::Clear()
 }
 
 	/// will return a property represented as an object, useful for classes which contain properties that are dynamically allocated, as a property that is dynamic is a CryObject and therefore callable
-CryObject *HeadImp::GetCopyOfPropertyAsObject(const CryPropertyParser &PropertyName) const
+Object *HeadImp::GetCopyOfPropertyAsObject(const CryPropertyParser &PropertyName) const
 {
 	if (PropertyName=="Declaration")
 		return Head->Dup();
 	if (PropertyName=="Implementation")
 		return Imp->Dup();
-	return CryObject::GetCopyOfPropertyAsObject(PropertyName);
+	return Object::GetCopyOfPropertyAsObject(PropertyName);
 }
 	/// will return a pointer to the property if the property is an CryObject (or decendent)
-CryObject *HeadImp::_GetPropertyAsObject(const CryPropertyParser &PropertyName) const
+Object *HeadImp::_GetPropertyAsObject(const CryPropertyParser &PropertyName) const
 {
 	if (PropertyName=="Declaration")
 		return Head;
 	if (PropertyName=="Implementation")
 		return Imp;
-	return CryObject::_GetPropertyAsObject(PropertyName);
+	return Object::_GetPropertyAsObject(PropertyName);
 }
 /*! will return whether or not the property named in PropertyName is a container */
 bool HeadImp::GetIsPropertyContainer(const CryPropertyParser &PropertyName) const
@@ -134,19 +134,19 @@ const char *HeadImp::GetProperty(const CryPropertyParser &PropertyName,CryString
         Result = *Imp;
         return Result.AsPChar();
     }
-    return CryObject::GetProperty(PropertyName,Result);
+    return Object::GetProperty(PropertyName,Result);
 }
 /*! returns true if the class in question has the property */
 bool HeadImp::HasProperty(const CryPropertyParser &PropertyName) const
 {
     return (PropertyName=="Declaration") ||
            (PropertyName=="Implementation") ||
-           CryObject::HasProperty(PropertyName);
+           Object::HasProperty(PropertyName);
 }
 
-void HeadImp::CopyTo(CryObject &Object) const
+void HeadImp::CopyTo(Object &Object) const
 {
-    if (Object.IsA(THeadImp))
+    if (Object.IsA(CHeadImp))
     {
         HeadImp *Dest = (HeadImp *)&Object;
 		CryString::CopyTo(*Dest); // copy base class
@@ -161,12 +161,12 @@ void HeadImp::CopyTo(CryObject &Object) const
 /*! The count of the properties a class has */
 int HeadImp::GetPropertyCount() const
 {
-    return CryObject::GetPropertyCount() + 2;
+    return Object::GetPropertyCount() + 2;
 }
 /*! Make a list of all property names, the function is called from the parent class through each inheritance until it reaches this class, at which point a list is created and filled with any properties on the way back through the inheritance */
 CryPropertyList* HeadImp::PropertyNames() const
 {
-	CryPropertyList *n = CryObject::PropertyNames();
+	CryPropertyList *n = Object::PropertyNames();
 	n->AddPropertyByName("Declaration",this);
 	n->AddPropertyByName("Implementation",this);
 	return n;
@@ -183,7 +183,7 @@ bool HeadImp::SetProperty(const CryPropertyParser &PropertyName,const char *Prop
         SetImp(PropertyValue);
         return true;
     }
-    return CryObject::SetProperty(PropertyName,PropertyValue);
+    return Object::SetProperty(PropertyName,PropertyValue);
 }
 
 //}

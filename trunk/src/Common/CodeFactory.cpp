@@ -60,7 +60,7 @@ CryPropertyList *CodeFactory::DescribeProducts() const
 {
     return Products.PropertyNames();
 }
-CryObject *CodeFactory::Create(const CryPropertyParser &PropertyName,CodeFactory *Parent)
+Object *CodeFactory::Create(const CryPropertyParser &PropertyName,CodeFactory *Parent)
 {
     if (PropertyName=="Clear") {
         HeadImp *hp = (HeadImp *)Products._GetPropertyAsObject(PropertyName);
@@ -71,17 +71,17 @@ CryObject *CodeFactory::Create(const CryPropertyParser &PropertyName,CodeFactory
     //	if (PropertyName=="VarName")
     //		return 0;
     if (CryFactory::GetMaxCount()) {
-        CryObject *c = CryFactory::Create(PropertyName,Parent);   
+        Object *c = CryFactory::Create(PropertyName,Parent);   
         return c;
     } else
         return 0;
 };
 
-void CodeFactory::CopyTo(CryObject &Dest) const  //copies contents of this to Dest
+void CodeFactory::CopyTo(Object &Dest) const  //copies contents of this to Dest
 {
-    if (Dest.IsA(TCodeFactory)) {
+    if (Dest.IsA(CCodeFactory)) {
         CodeFactory *Cast = (CodeFactory *)&Dest;
-        CryObject *p = (CryObject *)&Cast->Products;
+        Object *p = (Object *)&Cast->Products;
         Products.CopyTo(*p);
         Cast->_IsPointer = _IsPointer;
         Cast->_IsProperty = _IsProperty;
@@ -92,13 +92,13 @@ void CodeFactory::CopyTo(CryObject &Dest) const  //copies contents of this to De
     CryFactory::CopyTo(Dest);
 }
 
-CryObject *CodeFactory::Create(const CryPropertyParser &PropertyName,CryObject *Parent)
+Object *CodeFactory::Create(const CryPropertyParser &PropertyName,Object *Parent)
 {
-    if (PropertyName==TCryPropertyList)
-        return (CryObject *)&Products;
-    if (Parent && Parent->IsA(TCodeFactory))
+    if (PropertyName==CCryPropertyList)
+        return (Object *)&Products;
+    if (Parent && Parent->IsA(CCodeFactory))
         return Create(PropertyName,(CodeFactory *)Parent);
-    if (PropertyName==THeadImp) {
+    if (PropertyName==CHeadImp) {
         return new HeadImp();
         
     }
@@ -134,7 +134,7 @@ void CodeFactory::Clear(const CryPropertyParser &PropertyName)
 }
 bool CodeFactory::IsA(const char *ClassName) const    // can the object map to a ClassName
 {
-    return(strcmp(ClassName,TCodeFactory)==0) || (strcmp(ClassName,Name.AsPChar())==0) || CryFactory::IsA(ClassName);
+    return(strcmp(ClassName,CCodeFactory)==0) || (strcmp(ClassName,Name.AsPChar())==0) || CryFactory::IsA(ClassName);
 }
 
 
@@ -270,8 +270,8 @@ const char * CodeFactory::GetProperty(const CryPropertyParser &PropertyName,CryS
 	return CryFactory::GetProperty(PropertyName,Result);
 };
 
-	/// will return a property represented as an object, useful for classes which contain properties that are dynamically allocated, as a property that is dynamic is a CryObject and therefore callable
-CryObject *CodeFactory::GetCopyOfPropertyAsObject(const CryPropertyParser &PropertyName) const
+	/// will return a property represented as an object, useful for classes which contain properties that are dynamically allocated, as a property that is dynamic is a Object and therefore callable
+Object *CodeFactory::GetCopyOfPropertyAsObject(const CryPropertyParser &PropertyName) const
 {
 	if (PropertyName=="Products") {
 		return Products.Dup();
@@ -281,8 +281,8 @@ CryObject *CodeFactory::GetCopyOfPropertyAsObject(const CryPropertyParser &Prope
 	}
 	return _GetPropertyAsObject(PropertyName)->Dup();
 }
-	/// will return a pointer to the property if the property is an CryObject (or decendent)
-CryObject *CodeFactory::_GetPropertyAsObject(const CryPropertyParser &PropertyName) const
+	/// will return a pointer to the property if the property is an Object (or decendent)
+Object *CodeFactory::_GetPropertyAsObject(const CryPropertyParser &PropertyName) const
 {
 	return CryFactory::_GetPropertyAsObject(PropertyName);
 }
@@ -305,8 +305,8 @@ bool  CodeFactory::SetProperty(const CryPropertyParser &PropertyName,const char 
 		SetIsProperty(strcasecmp(PropertyValue,"Yes")==0);
 		if (_IsProperty)
 		{
-			AddProduct(TGetProperty);
-			AddProduct(TSetProperty);
+			AddProduct(CGetProperty);
+			AddProduct(CSetProperty);
 		}
 		return true;
 	}
@@ -339,7 +339,7 @@ bool CodeFactory::GetIsPropertyContainer(const CryPropertyParser &PropertyName) 
 	return CryFactory::GetIsPropertyContainer(PropertyName);
 }
 
-CryObject *CodeFactory::Create(CryStream &FromStream)
+Object *CodeFactory::Create(CryStream &FromStream)
 {
 	throw(CryException("Not Implemented"));
 }

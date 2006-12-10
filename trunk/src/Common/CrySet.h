@@ -8,8 +8,8 @@
 
 
 //Class Instance Includes
-#ifndef TCrySet
-#define TCrySet	"CrySet"
+#ifndef CCrySet
+#define CCrySet	"CrySet"
 //standard files
 #include	<string.h>
 #include	<stdlib.h>
@@ -25,11 +25,11 @@
 namespace Crystal {
 using namespace Crystal;
 
-class CrySet : public CryTArray<int>
+class CrySet : public TArray<int>
 {
 public:
-	CrySet(int SetSize=10) : CryTArray<int>(SetSize) { }
-	StdFunctions(CrySet,CryTArray<int>);
+	CrySet(int SetSize=10) : TArray<int>(SetSize) { }
+	StdFunctions(CrySet,TArray<int>);
 	int Matches(CrySet &s);	// returns number of elements that match
 	int UnMatches(CrySet &s) { return Size() - Matches(s); }
 	void Union(CrySet &s);
@@ -44,14 +44,14 @@ public:
 	{
 		Result = "int";	// values in set stored as int
 	}
-	virtual CryObject *Create(const CryPropertyParser &PropertyName,CryObject *Parent=0)
+	virtual Object *Create(const CryPropertyParser &PropertyName,Object *Parent=0)
 	{
-		if (PropertyName==TCrySet)
+		if (PropertyName==CCrySet)
 			return new CrySet();
 		else
-			return CryTArray<int>::Create(PropertyName,Parent);
+			return TArray<int>::Create(PropertyName,Parent);
 	}
-	static CryObject *ClassCreate(const CryPropertyParser &PropertyName,CryObject *Parent=0)
+	static Object *ClassCreate(const CryPropertyParser &PropertyName,Object *Parent=0)
 	{
 		return new CrySet();
 	}
@@ -62,35 +62,35 @@ public:
 		CryString v = PropertyValue;
 			return LoadAsText((int)Size(),v);
 		}
-		return CryTArray<int>::SetProperty(PropertyName,PropertyValue);
+		return TArray<int>::SetProperty(PropertyName,PropertyValue);
 	}
-	virtual bool SetPropertyAsObject(const CryPropertyParser &PropertyName,CryObject *Value)
+	virtual bool SetPropertyAsObject(const CryPropertyParser &PropertyName,Object *Value)
 	{
-		return CryTArray<int>::SetPropertyAsObject(PropertyName,Value);
+		return TArray<int>::SetPropertyAsObject(PropertyName,Value);
 	}
 	virtual bool SetPropertyAsObject(CryProperty *Value)
 	{
-		return CryTArray<int>::SetPropertyAsObject(Value);
+		return TArray<int>::SetPropertyAsObject(Value);
 	}
 	virtual const char *GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const
 	{
-		return CryTArray<int>::GetProperty(PropertyName,Result);
+		return TArray<int>::GetProperty(PropertyName,Result);
 	}
 	virtual bool HasProperty(const CryPropertyParser &PropertyName)const
 	{
-		return CryTArray<int>::HasProperty(PropertyName);
+		return TArray<int>::HasProperty(PropertyName);
 	}
 	virtual int GetPropertyCount() const
 	{
-		return CryTArray<int>::GetPropertyCount();
+		return TArray<int>::GetPropertyCount();
 	}
 	virtual CryPropertyList* PropertyNames() const
 	{
-		return CryTArray<int>::PropertyNames();
+		return TArray<int>::PropertyNames();
 	}
 
 #ifdef VALIDATING
-	virtual bool Test(bool Verbose,CryObject &Object,bool  (CallBack)(bool Verbose,const char *Result,bool fail));
+	virtual bool Test(bool Verbose,Object &Object,bool  (CallBack)(bool Verbose,const char *Result,bool fail));
 #endif
 
 };

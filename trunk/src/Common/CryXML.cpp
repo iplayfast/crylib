@@ -28,7 +28,7 @@
 using namespace Crystal;
 
 
-void CryXMLNode::SaveTo(CryStream &ToStream) const
+void XMLNode::SaveTo(CryStream &ToStream) const
 {
     for (int i=0;i<ToStream.Tag;i++)	//add some indenting
         ToStream.printf("  ");
@@ -63,12 +63,12 @@ void CryXMLNode::SaveTo(CryStream &ToStream) const
     if (SubNodes.HasItems())// now save any sub trees
     {
         ListIterator *lI = SubNodes.CreateIterator();
-        CryXMLNode *sn;
+        XMLNode *sn;
         ToStream.printf(">\n");	// end of header (need footer)
         if (lI->GotoFirst())
             do
             {
-                sn = (CryXMLNode *) lI->Get();
+                sn = (XMLNode *) lI->Get();
                 ToStream.Tag++;	// indent more
                 sn->SaveTo(ToStream);
                 ToStream.Tag--;	// indent less
@@ -86,7 +86,7 @@ void CryXMLNode::SaveTo(CryStream &ToStream) const
     }
 }
 
-void CryXMLNode::SaveTo(CryObject &ToObject) const
+void XMLNode::SaveTo(Object &ToObject) const
 {
     if (!ToObject.IsA(Type))
     {
@@ -113,12 +113,12 @@ void CryXMLNode::SaveTo(CryObject &ToObject) const
         while (pi->GotoNext());
     }
     _Attributes->DeleteIterator(pi);
-    CryList::ListIterator *li = SubNodes.CreateIterator();
+    List::ListIterator *li = SubNodes.CreateIterator();
     if (li->GotoFirst())
     {
         do
         {
-            CryXMLNode *current = (CryXMLNode *) li->Get();
+            XMLNode *current = (XMLNode *) li->Get();
             if (ToObject.IsContainer())
             {
                 if (current->Type=="")
@@ -139,13 +139,13 @@ void CryXMLNode::SaveTo(CryObject &ToObject) const
 
                 }
                 else
-                    CryObject *o =  // useful when debugging
+                    Object *o =  // useful when debugging
                         current->CreateObjectFromNode(&ToObject);// Object Created goes into the continer ToObject
             }
             else // The object isn't a container so the property must be one
             {
-                CryObject *o = current->CreateObjectFromNode(&ToObject);
-                if (o->IsA(TCryProperty))
+                Object *o = current->CreateObjectFromNode(&ToObject);
+                if (o->IsA(CCryProperty))
                 {
                     ToObject.SetPropertyAsObject((CryProperty *)o);
                     delete o;
@@ -163,7 +163,7 @@ void CryXMLNode::SaveTo(CryObject &ToObject) const
 }
 
 // load this Node and subnodes from the stream
-void CryXMLNode::LoadFrom(const CryStream &FromStream)
+void XMLNode::LoadFrom(const CryStream &FromStream)
 {
     bool	 WithinQuote = false,GettingEndName = false,GettingEquals=false,GettingAttribute = false;
     bool GettingAttributeValue = false,FoundLetter = false,AtStart = true,Escaped = false,AddChar;
@@ -323,7 +323,7 @@ void CryXMLNode::LoadFrom(const CryStream &FromStream)
                         if (GettingEndName)
                             // found SubNode or end name
                         {
-                            CryXMLNode *tempSubNodes = new CryXMLNode();
+                            XMLNode *tempSubNodes = new XMLNode();
                             tempSubNodes->GettingName = true;
                             tempSubNodes->LoadFrom(FromStream);
                             if (strcmp(tempSubNodes->GetName(),"")==0)// subnode got </ and returned
@@ -374,7 +374,7 @@ void CryXMLNode::LoadFrom(const CryStream &FromStream)
     }
 }
 /* TODO : Saving and loading a file will change the implementation */
-void CryXMLNode::LoadFrom(const CryObject &FromObject)
+void XMLNode::LoadFrom(const Object &FromObject)
 {
 	Type = FromObject.ChildClassName();
 	CryPropertyList *pn = FromObject.PropertyNames(); // creates a list of the property names
@@ -401,8 +401,8 @@ if (pn->Sortable())       /* TODO : Need to reimplment this for CryPropertyList 
                     // a distinction needs to be made here. Is property the container, or FromObject the container?
                     if (FromObject.GetIsPropertyContainer(c))
                     { // property is the container
-                        CryXMLNode *n = new CryXMLNode(c);
-                        const CryObject *o = FromObject.GetCopyOfPropertyAsObject(c);
+                        XMLNode *n = new XMLNode(c);
+                        const Object *o = FromObject.GetCopyOfPropertyAsObject(c);
                         //                    n->AddAttribute("Property",c);
                         n->LoadFrom(*o);
                         delete o;
@@ -415,16 +415,16 @@ if (pn->Sortable())       /* TODO : Need to reimplment this for CryPropertyList 
                     {
                         if (FromObject.IsContainer())
 						{
-                            CryContainer *cc = (CryContainer *)&FromObject;
-                            CryContainer::Iterator *I = cc->_CreateIterator();
+                            Container *cc = (Container *)&FromObject;
+                            Container::Iterator *I = cc->_CreateIterator();
 							if (cc->GotoFirst(I))
 								do
 								{
-									CryXMLNode *n = new CryXMLNode(c);
+									XMLNode *n = new XMLNode(c);
 									//                        CryXMLNode *tSubNodes = new CryXMLNode(c);
-									if (I->IsCryObject())
+									if (I->IsObject())
 									{
-										n->LoadFrom(*(CryObject *)I->Get());
+										n->LoadFrom(*(Object *)I->Get());
 									}
 									else
 									{
@@ -451,14 +451,14 @@ if (pn->Sortable())       /* TODO : Need to reimplment this for CryPropertyList 
                         }
                         else    // The object isn't a container so the property must be one
                         {
-							CryXMLNode *n = new CryXMLNode(c);
+							XMLNode *n = new XMLNode(c);
 							CryPropertyParser PropertyName(item->AsPChar());
 							CryProperty *o = FromObject.GetPropertyAsCryProperty(PropertyName);
 							n->LoadFrom(*o);
 							SubNodes.AddOwned(n);
-							if (o->IsA(TCryArray))
+							if (o->IsA(CArray))
 							{
-								((CryArray *) o)->Clear();
+								((Array *) o)->Clear();
 							}
 							delete o;
 						}
@@ -483,10 +483,10 @@ if (pn->Sortable())       /* TODO : Need to reimplment this for CryPropertyList 
 	}
 }
 
-CryObject *CryXMLNode::CreateObjectFromNode(CryObject *Parent)
+Object *XMLNode::CreateObjectFromNode(Object *Parent)
 {
     //    CryObject *f = CryList::FactoryCreate(Type,Parent);
-    CryObject *f;
+    Object *f;
     const char *c = Type;
     const char *ParentType;
     if (Parent)
@@ -550,15 +550,15 @@ CryObject *CryXMLNode::CreateObjectFromNode(CryObject *Parent)
            return f;*/
 }
 
-void CryXMLNode::AddAttribute(const char *Name,const char *Value)
+void XMLNode::AddAttribute(const char *Name,const char *Value)
 {
     _Attributes->AddProperty(Name,Value);
 }
 
 
-CryObject *CryXML::CreateObjectFromNode(CryObject *Parent)
+Object *CryXML::CreateObjectFromNode(Object *Parent)
 {
-    CryXMLNode *head = (CryXMLNode *) FirstNode()->Item;
+    XMLNode *head = (XMLNode *) FirstNode()->Item;
     if (head)
         return head->CreateObjectFromNode(Parent);
     else

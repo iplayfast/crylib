@@ -21,28 +21,25 @@ using namespace Crystal;
 TForm1 *Form1;
 //---------------------------------------------------------------------------
 __fastcall TForm1::TForm1(TComponent* Owner)
-        : TForm(Owner)
+		: TForm(Owner)
 {}
 
 
 bool/* __cdecl */FormCallBack(bool Verbose,const char *Result,bool fail)
 {
-    CryString s;
-    s.printf("%s %s",Result,fail ? "Fail" : "Pass");
-    s.Replace("\n","");
-    Form1->Memo1->Lines->Add(s.AsPChar());
-    Application->ProcessMessages();
-    if (fail)
-    {
-        AnsiString s = "Continue?";
-        return MessageDlg(s,mtConfirmation,mbYesNo,0)==mrYes;
-    }
-    return true;
+	CryString s;
+	s.printf("%s %s",Result,fail ? "Fail" : "Pass");
+	s.Replace("\n","");
+	Form1->Memo1->Lines->Add(s.AsPChar());
+	Application->ProcessMessages();
+	if (fail)
+	{
+		AnsiString s = "Continue?";
+		return MessageDlg(s,mtConfirmation,mbYesNo,0)==mrYes;
+	}
+	return true;
 }
 //---------------------------------------------------------------------------
-
-
-
 
 
 void __fastcall TForm1::CheckListBox1Click(TObject *Sender)
@@ -59,13 +56,13 @@ bool Fail=true;
 		{
 		case 0:
 			{
-			CryObject o;
+			Object o;
 					Fail = o.Test(true,o,FormCallBack);
 			}
 			break;
 		case 1:
 			{
-				CryTArray<int> a;
+				TArray<int> a;
 				for (int i=10;i<40;i++)
 					a.SetValue(i,i);
 				a.SetValue(5,20);
@@ -96,7 +93,7 @@ bool Fail=true;
 			break;
 		case 4:
 			{
-				CryList a;
+				List a;
 				Fail = a.Test(true,a,FormCallBack);
 			}
 			break;
@@ -141,8 +138,10 @@ void __fastcall TForm1::Button10Click(TObject *Sender)
 	for(int i=0;i<CheckListBox1->Items->Count;i++)
 	{
 		CheckListBox1->ItemIndex = i;
-    	CheckListBox1Click(Sender);
+		CheckListBox1Click(Sender);
 	}
 }
 //---------------------------------------------------------------------------
+
+
 

@@ -108,7 +108,7 @@ int SS = s.Size();
 }
 #ifdef VALIDATING
 CrySet *gtest;
-bool CrySet::Test(bool Verbose,CryObject &Object,bool  (CallBack)(bool Verbose,const char *Result,bool fail))
+bool CrySet::Test(bool Verbose,Object &Object,bool  (CallBack)(bool Verbose,const char *Result,bool fail))
 {
 char Result[200];
 bool Fail = false;
@@ -117,7 +117,7 @@ CryString spn,spv,stemp;
 CrySet Copy;
 CrySet *OrgObject = 0;
 	Object.CopyTo(Copy);
-	if (Object.IsA(TCrySet)) {
+	if (Object.IsA(CCrySet)) {
 		OrgObject=(CrySet *)&Object;
 	}
 	Fail = Copy!=*OrgObject;
@@ -166,7 +166,7 @@ CrySet Test(Odd);
 	sprintf(Result,"Add and Sub");
 	if (!CallBack(Verbose,Result,Fail))
 		return false;
-	return CryTArray<int>::Test(Verbose,Object,CallBack);
+	return TArray<int>::Test(Verbose,Object,CallBack);
 }
 #endif
 

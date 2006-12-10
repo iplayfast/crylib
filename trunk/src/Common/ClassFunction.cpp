@@ -31,9 +31,9 @@ using namespace Crystal;
 // CryFunctionDef
 ///----------------------------------------------------------------------------
 
-int CryFunctionDef::CompareLogical(int CompareType,const CryObject *Test) const
+int CryFunctionDef::CompareLogical(int CompareType,const Object *Test) const
 {
-    if (Test->IsA(TCryFunctionDef))
+    if (Test->IsA(CCryFunctionDef))
     {
         CryFunctionDef *f = (CryFunctionDef *)Test;
         if ((CompareType>4) || (CompareType<0))
@@ -87,18 +87,18 @@ CryFunctionDef::~CryFunctionDef()
 	//
 }
 
-bool CryFunctionDef::LessThen(int CompareType,const CryObject *Test) const
+bool CryFunctionDef::LessThen(int CompareType,const Object *Test) const
 {
 	int c = CompareLogical(CompareType,Test);
 	return (c<0);
 }
-bool CryFunctionDef::GreaterThen(int CompareType,const CryObject *Test) const
+bool CryFunctionDef::GreaterThen(int CompareType,const Object *Test) const
 {
 	int c = CompareLogical(CompareType,Test);
 	return (c>0);
 }
 
-bool CryFunctionDef::EqualTo(int CompareType,const CryObject *Test) const
+bool CryFunctionDef::EqualTo(int CompareType,const Object *Test) const
 {
     int c = CompareLogical(CompareType,Test);
     return (c==0);
@@ -369,8 +369,8 @@ void CryFunctionDef::Parse(const char *Name)
 ///----------------------------------------------------------------------------
 void CryFunctionDefList::LoadFromString(const CryString &Source,const char *Separator)
 {
-    CryList *l = Source.ListFromString(Separator);
-    ListIterator *li = (CryList::ListIterator *) l->CreateIterator();
+    List *l = Source.ListFromString(Separator);
+    ListIterator *li = (List::ListIterator *) l->CreateIterator();
 
     if (li->GotoFirst())
     {
@@ -379,7 +379,7 @@ void CryFunctionDefList::LoadFromString(const CryString &Source,const char *Sepa
             CryString *s = (CryString *)li->Get();
             CryFunctionDef *f = new CryFunctionDef(s->AsPChar());
             {
-                ListIterator *li = (CryList::ListIterator *) CreateIterator();
+                ListIterator *li = (List::ListIterator *) CreateIterator();
                 if (li->GotoFirst())
                 {
                     do

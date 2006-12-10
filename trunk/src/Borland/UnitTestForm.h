@@ -17,8 +17,8 @@ __published:	// IDE-managed Components
 	TMemo *Memo1;
 	TCheckListBox *CheckListBox1;
 	TButton *Button10;
-	void __fastcall CheckListBox1Click(TObject *Sender);
 	void __fastcall Button10Click(TObject *Sender);
+	void __fastcall CheckListBox1Click(TObject *Sender);
 private:	// User declarations
 public:		// User declarations
 	__fastcall TForm1(TComponent* Owner);

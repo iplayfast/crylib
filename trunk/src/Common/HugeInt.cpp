@@ -11,10 +11,10 @@ using namespace Crystal;
 
 #define SBS 1024
 #ifdef VALIDATING
-bool HugeInt::Test(bool Verbose,CryObject &Object,bool  (CallBack)(bool Verbose,const char *Result,bool fail))
+bool HugeInt::Test(bool Verbose,Object &ThisObject,bool  (CallBack)(bool Verbose,const char *Result,bool fail))
 {
-    bool fail = false;
-    if (CryObject::Test(Verbose,Object,CallBack))
+	bool fail = false;
+	if (Object::Test(Verbose,ThisObject,CallBack))
         return true;
     HugeInt m,n;
     m.Add(0xffffffff);
@@ -58,15 +58,15 @@ void HugeInt::SetNumDigits(unsigned int n)
     SetFlags();
 }
 
-void HugeInt::CopyTo(CryObject &Dest) const  //copies contents of this to Dest
+void HugeInt::CopyTo(Object &Dest) const  //copies contents of this to Dest
 {
-    if (Dest.IsA(THugeInt))
+    if (Dest.IsA(CHugeInt))
     {
         HugeInt *h = (HugeInt *)&Dest;
         *h = *this;
         return;
     }
-    if (Dest.IsA(TCryStream))
+    if (Dest.IsA(CCryStream))
     {
         SaveTo(*(CryStream *)&Dest);
         return;
@@ -74,7 +74,7 @@ void HugeInt::CopyTo(CryObject &Dest) const  //copies contents of this to Dest
     throw CryException(this,"Can't copy HugeInt to %s",Dest.ChildClassName());
 }
 
-CryObject *HugeInt::Dup() const // creates a duplicate of this object
+Object *HugeInt::Dup() const // creates a duplicate of this object
 {
     HugeInt *h = new HugeInt();
     *h = *this;
@@ -87,22 +87,22 @@ const char *HugeInt::GetProperty(const CryPropertyParser &PropertyName,CryString
     {
         return GetValue(Result);
     }
-    return CryObject::GetProperty(PropertyName,Result);
+    return Object::GetProperty(PropertyName,Result);
 }
 bool HugeInt::HasProperty(const CryPropertyParser &PropertyName)const
 {
-    return (PropertyName=="Value") || CryObject::HasProperty(PropertyName);
+    return (PropertyName=="Value") || Object::HasProperty(PropertyName);
 }
 
 CryPropertyList *HugeInt::PropertyNames() const
 {
-	CryPropertyList *n = CryObject::PropertyNames();
+	CryPropertyList *n = Object::PropertyNames();
 	n->AddPropertyByName("Value",this);
 	return n;
 }
 int HugeInt::GetPropertyCount() const
 {
-    return 1 + CryObject::GetPropertyCount();
+    return 1 + Object::GetPropertyCount();
 }
 bool HugeInt::SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue)
 {
@@ -111,7 +111,7 @@ bool HugeInt::SetProperty(const CryPropertyParser &PropertyName,const char *Prop
         this->SetValue(PropertyValue);
         return true;
     }
-    return CryObject::SetProperty(PropertyName,PropertyValue);
+    return Object::SetProperty(PropertyName,PropertyValue);
 }
 void FindFactor::Step()
 {

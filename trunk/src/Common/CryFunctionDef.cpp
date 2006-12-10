@@ -47,12 +47,12 @@ bool ListFunctionDef::IteratedFunction(ListFunctionDef::IControl *Control,Functi
 }
 FunctionDef* ListFunctionDef::AddOwned(FunctionDef * Item)
 {
-	CryList::AddOwned(Item);
+	List::AddOwned(Item);
 	return Item;
 }
 FunctionDef* ListFunctionDef::Add(FunctionDef * Item)
 {
-	CryList::Add(Item);
+	List::Add(Item);
 	return Item;
 }
 void ListFunctionDef::SetDefaultValues()
@@ -70,9 +70,9 @@ CryFunctionDefList *ListFunctionDef::GetFunctions(const char *Type) const
 {
 // if a type has been defined and it's not this class, check subclasses for it
 	if (Type && !IsA(Type))
-	   return CryList::GetFunctions(Type);
+	   return List::GetFunctions(Type);
 	// otherwise get any functions in subclasses
-	CryFunctionDefList *l = CryList::GetFunctions();
+	CryFunctionDefList *l = List::GetFunctions();
 CryString s;
   s = "\\ Class ListFunctionDef;";
 	s+="const char * GetItems(CryString &Result) const;";

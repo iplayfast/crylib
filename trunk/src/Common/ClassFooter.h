@@ -26,23 +26,23 @@
 
 namespace Crystal
 {
-#ifndef TClassFooterFactory
-#define TClassFooterFactory "ClassFooterFactory"
+#ifndef CClassFooterFactory
+#define CClassFooterFactory "ClassFooterFactory"
 class ClassFooterFactory : public CodeFactory
 {
 public:
      StdFunctionsNoDup(ClassFooterFactory,CodeFactory);
     ClassFooterFactory(CodeFactory *Parent);
-    virtual CryObject *Create(const CryPropertyParser &PropertyName,CodeFactory *Parent);
-    virtual CryObject *Create(const CryPropertyParser &PropertyName,CryObject *Parent)
+    virtual Object *Create(const CryPropertyParser &PropertyName,CodeFactory *Parent);
+    virtual Object *Create(const CryPropertyParser &PropertyName,Object *Parent)
     {
       return CodeFactory::Create(PropertyName,Parent);
     }
-    virtual CryObject *Create(CryStream &FromStream)
+    virtual Object *Create(CryStream &FromStream)
     {
       return CodeFactory::Create(FromStream);
     }
-    virtual CryObject *Create(const char *FactoryName,const CryPropertyParser &PropertyName,CryObject *Parent)
+    virtual Object *Create(const char *FactoryName,const CryPropertyParser &PropertyName,Object *Parent)
     {
       return CodeFactory::Create(FactoryName,PropertyName,Parent);
     }

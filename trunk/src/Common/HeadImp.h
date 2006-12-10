@@ -17,8 +17,8 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef THeadImp
-#define THeadImp "HeadImp"
+#ifndef CHeadImp
+#define CHeadImp "HeadImp"
 
 #include "CryObject.h"
 #include "ClassString.h"
@@ -44,13 +44,13 @@ StdFunctions(HeadImp,CryString);
     void SetHead(const char *v);
     void SetImp(const char *v);
 	void Clear();
-	virtual void CopyTo(CryObject &Object) const;
+	virtual void CopyTo(Object &Object) const;
 	//virtual void CopyToStream(CryStream &Dest,CopyStyle Style = NORMAL) const;
 	virtual bool CanDup() const { return true; }
 	/// will return a property represented as an object, useful for classes which contain properties that are dynamically allocated, as a property that is dynamic is a CryObject and therefore callable
-	virtual CryObject *GetCopyOfPropertyAsObject(const CryPropertyParser &PropertyName) const;
+	virtual Object *GetCopyOfPropertyAsObject(const CryPropertyParser &PropertyName) const;
 	/// will return a pointer to the property if the property is an CryObject (or decendent)
-	virtual CryObject *_GetPropertyAsObject(const CryPropertyParser &PropertyName) const;
+	virtual Object *_GetPropertyAsObject(const CryPropertyParser &PropertyName) const;
 
 /*! will return whether or not the property named in PropertyName is a container */
     virtual bool GetIsPropertyContainer(const CryPropertyParser &PropertyName) const;

@@ -26,22 +26,22 @@
 
 namespace Crystal
 {
-#ifndef TClassHeaderFactory
-#define TClassHeaderFactory "ClassHeaderFactory"
+#ifndef CClassHeaderFactory
+#define CClassHeaderFactory "ClassHeaderFactory"
 
 class ClassHeaderFactory : public CodeFactory
 {
 public:
 StdFunctionsNoDup(ClassHeaderFactory,CodeFactory);
     ClassHeaderFactory(CodeFactory *Parent);
-    virtual CryObject *Create(const CryPropertyParser &PropertyName,CodeFactory *Parent);
-    virtual bool Present(const CryObject *Name);// can be either a function def or variable name
-	virtual CryObject *Create(const CryPropertyParser &PropertyName,CryObject *Parent);
-    virtual CryObject *Create(CryStream &FromStream)
+    virtual Object *Create(const CryPropertyParser &PropertyName,CodeFactory *Parent);
+    virtual bool Present(const Object *Name);// can be either a function def or variable name
+	virtual Object *Create(const CryPropertyParser &PropertyName,Object *Parent);
+    virtual Object *Create(CryStream &FromStream)
     {
       return CodeFactory::Create(FromStream);
     }
-    virtual CryObject *Create(const char *FactoryName,const CryPropertyParser &PropertyName,CryObject *Parent)
+    virtual Object *Create(const char *FactoryName,const CryPropertyParser &PropertyName,Object *Parent)
     {
       return CodeFactory::Create(FactoryName,PropertyName,Parent);
     }

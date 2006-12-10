@@ -29,47 +29,47 @@ using namespace Crystal;
 // CryList
 ///----------------------------------------------------------------------------
 
-CryList::ListIterator::ListIterator(const CryList *container) : Iterator(container)
+List::ListIterator::ListIterator(const List *container) : Iterator(container)
 {
     GotoFirst();
 }
 
 /// creates a duplicate of this object
-CryObject *CryList::ListIterator::Dup() const
+Object *List::ListIterator::Dup() const
 {
 	ListIterator *LI = (ListIterator *)GetOrigContainer()->_CreateIterator();
     LI->p = p;
     return LI;
 }
 
-CryList::CryList()
+List::List()
 {
 	Head = Tail = 0;
 }
 
-void CryList::GetEleType(CryString &Result) const
+void List::GetEleType(CryString &Result) const
 {
 	Result = "CryList::ListNode";
 }
 
-const cbyte* CryList::GetRaw() const
+const cbyte* List::GetRaw() const
 {
 	return (const cbyte *)Head;
 }
 
-CryContainer::Iterator *CryList::_CreateIterator() const
+Container::Iterator *List::_CreateIterator() const
 {
 	ListIterator *LI = new ListIterator(this);
 	LI->p = Head;
 	return LI;
 }
 
-void CryList::DeleteIterator(Iterator *LI) const
+void List::DeleteIterator(Iterator *LI) const
 {
 	delete (ListIterator *)LI;
 }
 
-bool CryList::GotoFirst(Iterator *LI) const
+bool List::GotoFirst(Iterator *LI) const
 {
 	if (Head)
 	{
@@ -78,7 +78,7 @@ bool CryList::GotoFirst(Iterator *LI) const
 	}
 	return false;
 }
-bool CryList::GotoNext(Iterator *LI) const
+bool List::GotoNext(Iterator *LI) const
 {
 	ListIterator *pLI = (ListIterator *)LI;
 	if (Head && pLI->p)
@@ -89,80 +89,80 @@ bool CryList::GotoNext(Iterator *LI) const
 	return false;
 }
 
-EmptyObject* CryList::GetAtIterator(const Iterator *I) const
+EmptyObject* List::GetAtIterator(const Iterator *I) const
 {
 	ListIterator *pLI = (ListIterator *)I;
 	if (pLI->p==0)	// nothing there!
 		throw CryException("Attempt to GetAtIterator where Iterator is pointing to nothing");
 	return pLI->p->Item;
 }
-void CryList::SetAtIterator(const Iterator *I,EmptyObject *Item,bool IsCryObject,bool IsOwned,size_t Size)
+void List::SetAtIterator(const Iterator *I,EmptyObject *Item,bool IsObject,bool IsOwned,size_t Size)
 {
 	ListIterator *pLI = (ListIterator *)I;
 	if (pLI->p==0)	// nothing there!
 		throw CryException("Attempt to SetAtIterator where Iterator is pointing to nothing");
 	DeleteItem(pLI->p); // only deletes if owned
-	pLI->p->IsCryObject = IsCryObject;
+	pLI->p->IsObject = IsObject;
 	pLI->p->IsOwned = IsOwned;
 	pLI->p->Size = Size;
 	pLI->p->Item = Item;
 }
 
-bool CryList::IsEmpty(const Iterator *I) const
+bool List::IsEmpty(const Iterator *I) const
 {
     ListIterator *pLI = (ListIterator *)I;
     return (pLI->p==0);// nothing there!
 }
 
-bool CryList::HasItems() const
+bool List::HasItems() const
 {
     return (Head!=0);
 }
 
-const CryList::ListNode *CryList::FirstNode() const
+const List::ListNode *List::FirstNode() const
 {
 	return Head;
 }
 
-CryList::ListNode *CryList::_FirstNode() const
+List::ListNode *List::_FirstNode() const
 {
 	return Head;
 }
 
 
-const CryList::ListNode *CryList::LastNode() const
+const List::ListNode *List::LastNode() const
 {
 	return Tail;
 }
 
-CryList::ListNode *CryList::_LastNode() const
+List::ListNode *List::_LastNode() const
 {
 	return Tail;
 }
 
-const CryList::ListNode *CryList::NextNode(const ListNode *n) const
+const List::ListNode *List::NextNode(const ListNode *n) const
 {
 	return n->Next;
 }
-CryList::ListNode *CryList::_NextNode(const ListNode *n) const
+List::ListNode *List::_NextNode(const ListNode *n) const
 {
 	return n->Next;
 }
 
-bool CryList::Sortable()const
+bool List::Sortable()const
 {
 	return true;
 }
-bool CryList::IsContainer() const
+bool List::IsContainer() const
 {
 	return true;
 }
 
-EmptyObject *CryList::DupItem(const ListNode *Node) const
+EmptyObject *List::DupItem(const ListNode *Node) const
 {
-	if (Node->IsCryObject)
+	if (Node->IsObject)
 	{
-		return (EmptyObject *)((CryObject *) Node->Item)->Dup();
+		return (EmptyObject *)((Object *) Node->Item)->Dup();
 	}
 	else
 	{
@@ -172,19 +172,19 @@ EmptyObject *CryList::DupItem(const ListNode *Node) const
 		return e;
 	}
 }
-bool CryList::IsCryObject(const Iterator *I) const
+bool List::IsObject(const Iterator *I) const
 {
 	ListIterator *li = (ListIterator *)I;
 	if (Head)
 	{
 		if (li->p==0)
 			li->p = Head;
-		return li->p->IsCryObject;
+		return li->p->IsObject;
 	}
 	else
 		return false;
 }
-size_t CryList::GetItemSize(Iterator *I) const
+size_t List::GetItemSize(Iterator *I) const
 {
 	ListIterator *li = (ListIterator *)I;
 	if (Head)
@@ -197,13 +197,13 @@ size_t CryList::GetItemSize(Iterator *I) const
 		return 0;
 }
 
-CryFunctionDefList *CryList::GetFunctions(const char *Type) const
+CryFunctionDefList *List::GetFunctions(const char *Type) const
 {
 // if a type has been defined and it's not this class, check subclasses for it
 	if (Type && !IsA(Type))
-	   return CryContainer::GetFunctions(Type);
+	   return Container::GetFunctions(Type);
 	// otherwise get any functions in subclasses
-	CryFunctionDefList *l = CryContainer::GetFunctions();
+	CryFunctionDefList *l = Container::GetFunctions();
 	CryString s;
 	s += "// Class CryList;";
 	s += "virtual void GetEleType(CryString &Result) const;";
@@ -233,7 +233,7 @@ CryFunctionDefList *CryList::GetFunctions(const char *Type) const
 	s += "CryObject *AddOwned(CryObject *Item);";
 	s += "void SetItemOwnerShip(EmptyObject  *Item,bool Owned);";
 	s += "bool GetItemOwnerShip(const EmptyObject *Item) const;";
-	s += "bool IsCryObject(const Iterator *I) const;";
+	s += "bool IsObject(const Iterator *I) const;";
 	s += "size_t GetItemSize(Iterator *I) const;";
 	s += "bool LoadAsText(Iterator *I,CryString &FromStream);";
 	s += "bool SaveAsText(Iterator *I,CryString &ToStream) const;";
@@ -256,7 +256,7 @@ CryFunctionDefList *CryList::GetFunctions(const char *Type) const
 	return l;
 }
 
-bool CryList::LoadAsText(Iterator *I,CryString &FromStream)
+bool List::LoadAsText(Iterator *I,CryString &FromStream)
 {
 	size_t Size;
 	FromStream.scanf("%d ",&Size);
@@ -276,13 +276,13 @@ bool CryList::LoadAsText(Iterator *I,CryString &FromStream)
 		li->p = new ListNode();
 		AddListNode(li->p);
 	}
-	li->p->IsCryObject = false;
+	li->p->IsObject = false;
 	li->p->IsOwned = true;
 	li->p->Item = (EmptyObject *) Buffer;
 	li->p->Size = Size;
 	return true;
 }
-bool CryList::SaveAsText(Iterator *I,CryString &ToStream) const
+bool List::SaveAsText(Iterator *I,CryString &ToStream) const
 {
 	ToStream.Clear();
 	ListIterator *li = (ListIterator *)I;
@@ -293,8 +293,8 @@ bool CryList::SaveAsText(Iterator *I,CryString &ToStream) const
 	}
 	else
 		return false;
-	if (li->p->IsCryObject) {
-	CryObject *t = (CryObject *)li->p->Item;
+	if (li->p->IsObject) {
+	Object *t = (Object *)li->p->Item;
 		t->SaveTo(ToStream);
 	}
 	else
@@ -308,13 +308,13 @@ bool CryList::SaveAsText(Iterator *I,CryString &ToStream) const
 
 }
 
-bool CryList::GotoLast(Iterator *LI) const
+bool List::GotoLast(Iterator *LI) const
 {
 	ListIterator *li = (ListIterator *)LI;
 	li->p = Tail;
 	return Tail!=0;
 }
-bool CryList::GotoPrev(Iterator *LI) const
+bool List::GotoPrev(Iterator *LI) const
 {
 	ListIterator *li = (ListIterator *)LI;
 	if (Head)						// something there?
@@ -337,18 +337,18 @@ bool CryList::GotoPrev(Iterator *LI) const
 	}
 	return false;
 }
-void CryList::SetItemOwnerShip(Iterator *I,bool IsOwned)
+void List::SetItemOwnerShip(Iterator *I,bool IsOwned)
 {
 	ListIterator *li = (ListIterator *)I;
 	li->p->IsOwned = IsOwned;
 }
-bool CryList::GetItemOwnerShip(const Iterator *I) const
+bool List::GetItemOwnerShip(const Iterator *I) const
 {
 	ListIterator *li = (ListIterator *)I;
 	return  li->p->IsOwned;
 }
 
-void CryList::RemoveAtIterator(Iterator *LI)
+void List::RemoveAtIterator(Iterator *LI)
 {
 	GotoPrev(LI);
 	ListIterator *li = (ListIterator *)LI;
@@ -359,7 +359,7 @@ void CryList::RemoveAtIterator(Iterator *LI)
 	delete ToDelete;
 	return;
 }
-CryList::CryList(CryList &_List) : CryContainer()
+List::List(List &_List) : Container()
 {
 	const ListNode *p = _List.FirstNode();
 	const ListNode *pl = _List.LastNode();
@@ -375,7 +375,7 @@ CryList::CryList(CryList &_List) : CryContainer()
 	}
 }
 
-CryList::~CryList()
+List::~List()
 {
 	const ListNode *n,*p = Head;
 	Head = Tail = 0;
@@ -383,9 +383,9 @@ CryList::~CryList()
 	{
 		if (p->IsOwned)
 		{
-			if (p->IsCryObject)
+			if (p->IsObject)
 			{
-				CryObject *I = (CryObject *)p->Item;
+				Object *I = (Object *)p->Item;
 				delete I;
 			}
 			else
@@ -397,7 +397,7 @@ CryList::~CryList()
 	}
 };
 
-CryList::CryList(CryList *_List) : CryContainer()
+List::List(List *_List) : Container()
 {
 	const ListNode *p = _List->FirstNode();
 
@@ -412,7 +412,7 @@ CryList::CryList(CryList *_List) : CryContainer()
     }
 }
 
-void CryList::AddListNode(ListNode *Node)
+void List::AddListNode(ListNode *Node)
 {
 	if (Tail==0) {
 		Tail = Head = Node;
@@ -434,12 +434,12 @@ void CryList::AddListNode(ListNode *Node)
 	}
 }
 
-void CryList::DeleteItem(struct ListNode *p)
+void List::DeleteItem(struct ListNode *p)
 {
 	if (p->IsOwned)
 	{
-		if (p->IsCryObject)
-			delete((CryObject *)p->Item);
+		if (p->IsObject)
+			delete((Object *)p->Item);
 		else
 		{
 			char *e = (char *)p->Item;
@@ -448,7 +448,7 @@ void CryList::DeleteItem(struct ListNode *p)
 	}
 }
 
-EmptyObject *CryList::Add(EmptyObject *_Item,bool IsCryObject,bool IsOwned,size_t _Size)
+EmptyObject *List::Add(EmptyObject *_Item,bool IsObject,bool IsOwned,size_t _Size)
 {
 	ListNode *New = new ListNode;
 	if (New==0)
@@ -457,30 +457,30 @@ EmptyObject *CryList::Add(EmptyObject *_Item,bool IsCryObject,bool IsOwned,size_
 	New->Size = _Size;
 	New->Next = 0;
 	New->IsOwned = IsOwned;
-	New->IsCryObject = IsCryObject;
+	New->IsObject = IsObject;
 	AddListNode(New);
 	return _Item;
 }
-CryObject *CryList::Add(CryObject *_Item)
+Object *List::Add(Object *_Item)
 {
 	Add(_Item,true,false);
 	return _Item;
 }
-EmptyObject *CryList::Add(EmptyObject *_Item,size_t _Size)
+EmptyObject *List::Add(EmptyObject *_Item,size_t _Size)
 {
 	return Add(_Item,false,false,_Size);
 };
-CryObject *CryList::AddOwned(CryObject *_Item)   // gives ownership to list
+Object *List::AddOwned(Object *_Item)   // gives ownership to list
 {
 	Add(_Item,true,true);
 	return _Item;
 }
-EmptyObject *CryList::AddOwned(EmptyObject *_Item,size_t _Size)   // gives ownership to list
+EmptyObject *List::AddOwned(EmptyObject *_Item,size_t _Size)   // gives ownership to list
 {
 	return Add(_Item,false,true,_Size);
 }
 
-bool CryList::_Remove(EmptyObject *_Item)
+bool List::_Remove(EmptyObject *_Item)
 {
 ListNode *Prev,*p = Head;
 	if (Head)
@@ -513,30 +513,30 @@ ListNode *Prev,*p = Head;
 	}
 	return false;
 }
-void CryList::Remove(EmptyObject *_Item)
+void List::Remove(EmptyObject *_Item)
 {
 	if (! _Remove(_Item))
 		throw CryException(this,0,(const char *)"Item Not found in list");
 }
-void CryList::Remove(CryObject*_Item)
+void List::Remove(Object*_Item)
 {
 	if (! _Remove(_Item))
 		throw CryException(this,0,_Item->ChildClassName(),(const char *)"Not found in list");
 }
 
 
-void CryList::SetItemOwnerShip(EmptyObject *Item,bool Owned)
+void List::SetItemOwnerShip(EmptyObject *Item,bool Owned)
 {
 	ListNode *n = _FindNode(Item);
 	n->IsOwned = Owned;
 }
-bool CryList::GetItemOwnerShip(const EmptyObject *Item) const
+bool List::GetItemOwnerShip(const EmptyObject *Item) const
 {
 	ListNode *n = _FindNode(Item);
     return n->IsOwned;
 }
 
-void CryList::Clear()
+void List::Clear()
 {
 	while(Head)
 	{
@@ -548,7 +548,7 @@ void CryList::Clear()
 	Tail = 0;
 }
 
-void CryList::SwapListElements(CryList *ToSwap)
+void List::SwapListElements(List *ToSwap)
 {
 	ListNode *n = Head;
 				Head = ToSwap->Head;
@@ -558,7 +558,7 @@ void CryList::SwapListElements(CryList *ToSwap)
 				ToSwap->Tail = n;
 }
 
-size_t CryList::Count() const
+size_t List::Count() const
 {
 	size_t i = 0;
 	if (Head)
@@ -574,7 +574,7 @@ size_t CryList::Count() const
 	return i;
 }
 
-void CryList::SaveItemsTo(CryStream &ToStream) const
+void List::SaveItemsTo(CryStream &ToStream) const
 {
 	const ListNode *f = FirstNode();
 	if (f)
@@ -582,8 +582,8 @@ void CryList::SaveItemsTo(CryStream &ToStream) const
 		StreamMode Mode = ToStream.GetMode();
 		do
 		{
-			if (f->IsCryObject)
-				((CryObject *)f->Item)->SaveTo(ToStream);
+			if (f->IsObject)
+				((Object *)f->Item)->SaveTo(ToStream);
 			else
 			{
 				ToStream.printf("%d ",f->Size);
@@ -598,14 +598,14 @@ void CryList::SaveItemsTo(CryStream &ToStream) const
 	}
 }
 
-bool CryList::InList(CryObject *Needle) const
+bool List::InList(Object *Needle) const
 {
 	if (FindNode(Needle))
 		return true;
 	return false;
 }
 
-const CryList::ListNode *CryList::FindNode(const EmptyObject *Needle) const
+const List::ListNode *List::FindNode(const EmptyObject *Needle) const
 {
 	const ListNode *p = FirstNode();
 	if (p)
@@ -620,12 +620,12 @@ const CryList::ListNode *CryList::FindNode(const EmptyObject *Needle) const
 	return 0;
 }
 
-CryList::ListNode *CryList::_FindNode(const EmptyObject *Needle) const
+List::ListNode *List::_FindNode(const EmptyObject *Needle) const
 {
-	return (CryList::ListNode*) FindNode(Needle);
+	return (List::ListNode*) FindNode(Needle);
 }
 
-void CryList::RemoveNodeValue(const CryMemStream &Needle)   // find a node who's item has the same "value" property
+void List::RemoveNodeValue(const CryMemStream &Needle)   // find a node who's item has the same "value" property
 {
 
 	ListNode *Prev,*p = _FirstNode();
@@ -636,7 +636,7 @@ void CryList::RemoveNodeValue(const CryMemStream &Needle)   // find a node who's
 		CryMemStream *t;
 		do
 		{
-			if ((p->IsCryObject) && (((CryObject *)p->Item)->IsA(TCryMemStream)))
+			if ((p->IsObject) && (((Object *)p->Item)->IsA(CCryMemStream)))
 			{
 				t = (CryMemStream *) p->Item;
 				if ((t->GetLength()==nl) && (*t==Needle))
@@ -662,7 +662,7 @@ void CryList::RemoveNodeValue(const CryMemStream &Needle)   // find a node who's
 }
 
 /// return the index into the list of a value
-int CryList::FindNodeValue(const CryMemStream &Needle) const   // find a node who's item has the same "value" property
+int List::FindNodeValue(const CryMemStream &Needle) const   // find a node who's item has the same "value" property
 {
 int i=0;
 	const ListNode *p = FirstNode();
@@ -672,10 +672,10 @@ int i=0;
 		CryMemStream *t;
 		do
 		{
-			if (p->IsCryObject)
+			if (p->IsObject)
 			{
 
-				if (((CryObject *)p->Item)->IsA(TCryMemStream))
+				if (((Object *)p->Item)->IsA(CCryMemStream))
 				{
 					t = (CryMemStream *) p->Item;
 					if ((t->GetLength()==nl) && (*t==Needle))
@@ -683,7 +683,7 @@ int i=0;
 				}
 				else
 				{
-					if (0==Compare(0,(CryObject *)p->Item,&Needle))
+					if (0==Compare(0,(Object *)p->Item,&Needle))
 						return i;
 				}
 			}
@@ -694,7 +694,7 @@ int i=0;
 	return -1;
 }
 
-EmptyObject *CryList::GetItem(int i) const
+EmptyObject *List::GetItem(int i) const
 {
 	const ListNode *p = FirstNode();
 	if (p)
@@ -711,11 +711,11 @@ EmptyObject *CryList::GetItem(int i) const
 		throw CryException(this,"Item Not found");
 }
 
-void CryList::CopyTo(CryObject &Dest) const //copies contents of this to Dest
+void List::CopyTo(Object &Dest) const //copies contents of this to Dest
 {
-	if (Dest.IsA(TCryList))
+	if (Dest.IsA(CList))
 	{
-		CryList *_Dest = (CryList *) &Dest;
+		List *_Dest = (List *) &Dest;
 		const ListNode *p = FirstNode();
 		if (p)
 		{
@@ -723,15 +723,15 @@ void CryList::CopyTo(CryObject &Dest) const //copies contents of this to Dest
 			{
 				if (p->IsOwned)
 				{
-					if (p->IsCryObject)
-						_Dest->AddOwned((CryObject *)(DupItem(p)));
+					if (p->IsObject)
+						_Dest->AddOwned((Object *)(DupItem(p)));
 					else
 						_Dest->AddOwned(DupItem(p),p->Size);
 				}
 				else
 				{
-					if (p->IsCryObject)
-						_Dest->Add((CryObject *)p->Item );
+					if (p->IsObject)
+						_Dest->Add((Object *)p->Item );
 					else
 						_Dest->Add(p->Item,p->Size);
 				}
@@ -744,7 +744,7 @@ void CryList::CopyTo(CryObject &Dest) const //copies contents of this to Dest
 		throw CryException(this,"Copying from List to object that is not Listable");
 }
 
-size_t CryList::Size() const
+size_t List::Size() const
 {
 	size_t Result = sizeof(int);// for storing count
 	const ListNode *p = FirstNode();
@@ -752,8 +752,8 @@ size_t CryList::Size() const
 	{
 		do
 		{
-			if (p->IsCryObject)
-				Result += ((CryObject *)p->Item)->Size();
+			if (p->IsObject)
+				Result += ((Object *)p->Item)->Size();
 			else
 				Result += p->Size;
 			p = p->Next;
@@ -762,17 +762,17 @@ size_t CryList::Size() const
 	return Result;
 }
 
-int CryList::GetPropertyCount() const
+int List::GetPropertyCount() const
 {
-	return CryContainer::GetPropertyCount() + 1;
+	return Container::GetPropertyCount() + 1;
 }
 
-bool CryList::HasProperty(const CryPropertyParser &PropertyName) const
+bool List::HasProperty(const CryPropertyParser &PropertyName) const
 {
-	return CryContainer::HasProperty(PropertyName);
+	return Container::HasProperty(PropertyName);
 }
 
-const char *CryList::GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const
+const char *List::GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const
 {
 	Result.Clear();
 	if (PropertyName=="Values")   // intercept crycontainer's property for our own
@@ -781,12 +781,12 @@ const char *CryList::GetProperty(const CryPropertyParser &PropertyName,CryString
 		return "*";
 	}
 	else
-		return CryContainer::GetProperty(PropertyName,Result);
+		return Container::GetProperty(PropertyName,Result);
 }
 
-CryPropertyList *CryList::PropertyNames() const
+CryPropertyList *List::PropertyNames() const
 {
-	CryPropertyList *n = CryContainer::PropertyNames();
+	CryPropertyList *n = Container::PropertyNames();
 	return n;
 }/*
  * This is the actual sort function. Notice that it returns the new
@@ -800,7 +800,7 @@ CryPropertyList *CryList::PropertyNames() const
  *
  *     list = listsort(mylist);
  */
-void CryList::Sort(int CompareType)
+void List::Sort(int CompareType)
 {
 	ListNode *p, *q, *e, *tail, *oldhead;
 	int insize, nmerges, psize, qsize, i;
@@ -850,8 +850,8 @@ void CryList::Sort(int CompareType)
 				else
 				{
 				int cr;
-					if (p->IsCryObject && q->IsCryObject)
-						cr = Compare(CompareType,(CryObject *)p->Item,(CryObject *)q->Item);
+					if (p->IsObject && q->IsObject)
+						cr = Compare(CompareType,(Object *)p->Item,(Object *)q->Item);
 					else
 						cr = Compare2(CompareType,p->Item,q->Item);
 					if (cr <= 0)
@@ -890,17 +890,17 @@ void CryList::Sort(int CompareType)
 }
 
 
-int CryList::Compare2(int CompareType,const EmptyObject *First,const EmptyObject *Second) const
+int List::Compare2(int CompareType,const EmptyObject *First,const EmptyObject *Second) const
 {
 	ListNode *f,*s;
 	f = (ListNode *)First;
 	s = (ListNode *)Second;
-	if (f->IsCryObject)
+	if (f->IsObject)
 	{
-		CryObject *F = (CryObject *)f->Item;
-		if (s->IsCryObject)
+		Object *F = (Object *)f->Item;
+		if (s->IsObject)
 		{
-			CryObject *S = (CryObject *)s->Item;
+			Object *S = (Object *)s->Item;
 			return Compare(CompareType,F,S);
 //            return F->CompareLogical(CompareType,S);
 		}
@@ -908,7 +908,7 @@ int CryList::Compare2(int CompareType,const EmptyObject *First,const EmptyObject
 	}
 	else
 	{
-		if (s->IsCryObject)
+		if (s->IsObject)
 		{
 			return 1; // EmptyObjects are alway less then CryObjects
 		}

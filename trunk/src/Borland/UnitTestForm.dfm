@@ -30,7 +30,6 @@ object Form1: TForm1
       Lines.Strings = (
         '')
       TabOrder = 0
-      ExplicitWidth = 644
     end
   end
   object CheckListBox1: TCheckListBox
@@ -40,8 +39,8 @@ object Form1: TForm1
     Height = 286
     ItemHeight = 12
     Items.Strings = (
-      'CryObject'
-      'CryArray'
+      'Object'
+      'Array'
       'CryString'
       'CrySet'
       'CryList'

@@ -33,17 +33,17 @@ using namespace std;
 /*===========================================================================
 // PrimInstance
 ============================================================================*/
-PrimInstance::PrimInstance(CodeFactory *Parent) : CodeFactory(Parent,TPrimInstance)
+PrimInstance::PrimInstance(CodeFactory *Parent) : CodeFactory(Parent,CPrimInstance)
 {
 	eType = Unknown;
-	AddProduct(TCountDefine);
-	AddProduct(TPrimInstance);
-	AddProduct(TDeclaration);
-	AddProduct(TConstructor);
-	AddProduct(TDestructor);
-	AddProduct(TCopyTo);
+	AddProduct(CCountDefine);
+	AddProduct(CPrimInstance);
+	AddProduct(CDeclaration);
+	AddProduct(CConstructor);
+	AddProduct(CDestructor);
+	AddProduct(CCopyTo);
 }
-PrimInstance::PrimInstance(CodeFactory *Parent,const char *PrimType,const char *PrimName,const char *_DefaultValue, int _Count,bool IsProperty,bool IsPointer,bool IsArrayPointer) : CodeFactory(Parent,TPrimInstance)
+PrimInstance::PrimInstance(CodeFactory *Parent,const char *PrimType,const char *PrimName,const char *_DefaultValue, int _Count,bool IsProperty,bool IsPointer,bool IsArrayPointer) : CodeFactory(Parent,CPrimInstance)
 {
 	CryString Type;
 	Type = PrimType;
@@ -58,16 +58,16 @@ PrimInstance::PrimInstance(CodeFactory *Parent,const char *PrimType,const char *
 	SetCount();
 	SetDefaultValue(_DefaultValue);
 	SetIsProperty(IsProperty);
-	AddProduct(TCountDefine);
-	AddProduct(TPrimInstance);
-	AddProduct(TDeclaration);
-	AddProduct(TConstructor);
-	AddProduct(TDestructor);
-	AddProduct(TCopyTo);
+	AddProduct(CCountDefine);
+	AddProduct(CPrimInstance);
+	AddProduct(CDeclaration);
+	AddProduct(CConstructor);
+	AddProduct(CDestructor);
+	AddProduct(CCopyTo);
 	if (IsProperty)
 	{
-		AddProduct(TGetProperty);
-		AddProduct(TSetProperty);
+		AddProduct(CGetProperty);
+		AddProduct(CSetProperty);
 	}
 }
 void PrimInstance::SetDefaultValue(const char *_DefaultValue)
@@ -180,7 +180,7 @@ void PrimInstance::SetType(const char *PrimType)
 		eType = Double;
 }
 /*! will return a const pointer to the property */
-CryObject *PrimInstance::GetCopyOfPropertyAsObject(const CryPropertyParser &PropertyName) const
+Object *PrimInstance::GetCopyOfPropertyAsObject(const CryPropertyParser &PropertyName) const
 {
 	return CodeFactory::GetCopyOfPropertyAsObject(PropertyName);
 }
@@ -395,34 +395,34 @@ const char *PrimInstance::Code_GetProperty(CryString &Result) const
     return Result.AsPChar();
 }
 
-CryObject *PrimInstance::Create(const CryPropertyParser &PropertyName,CodeFactory *Parent)
+Object *PrimInstance::Create(const CryPropertyParser &PropertyName,CodeFactory *Parent)
 {
-    if ((PropertyName==TPrimInstance) && (!Parent->IsA(TClassBuilder)))
-    {
-        return this;
-    }
+	if ((PropertyName==CPrimInstance) && (!Parent->IsA(CClassBuilder)))
+	{
+		return this;
+	}
 
-    if (PropertyName==TCountDefine)
-    {
-        if (GetCount()<2)
-            return 0;
-        CryString s;
-        s.printf("\n#define %s_LEN %d",GetName(),GetCount());
-        SetHead(PropertyName,s.AsPChar());
-        Parent->AppendHead(*GetHead(PropertyName));
-        return 0;
-    }
-    if (PropertyName==TDeclaration)
-    {
-        CryString s;
-        if (GetCount()>1)
-        {
-            //bool * MyBool[MyBool_LEN];
-            s.printf("\n//");
-            if (GetIsArrayPointer())
-                s.printf(" pointer to an");
-            if (GetIsPointer())
-                s.printf(" array of pointers");
+	if (PropertyName==CCountDefine)
+	{
+		if (GetCount()<2)
+			return 0;
+		CryString s;
+		s.printf("\n#define %s_LEN %d",GetName(),GetCount());
+		SetHead(PropertyName,s.AsPChar());
+		Parent->AppendHead(*GetHead(PropertyName));
+		return 0;
+	}
+	if (PropertyName==CDeclaration)
+	{
+		CryString s;
+		if (GetCount()>1)
+		{
+			//bool * MyBool[MyBool_LEN];
+			s.printf("\n//");
+			if (GetIsArrayPointer())
+				s.printf(" pointer to an");
+			if (GetIsPointer())
+				s.printf(" array of pointers");
             else
                 s.printf(" array");
             s.printf(" of %s",GetType());
@@ -441,8 +441,8 @@ CryObject *PrimInstance::Create(const CryPropertyParser &PropertyName,CodeFactor
         SetHead(PropertyName,s.AsPChar());
         Parent->AppendHead(*GetHead(PropertyName));
         return 0;
-    };
-	if (PropertyName==TConstructor)
+	};
+	if (PropertyName==CConstructor)
 	{		// we are construction our variables
 		CryString s;
 		CryString Dummy;
@@ -497,7 +497,7 @@ CryObject *PrimInstance::Create(const CryPropertyParser &PropertyName,CodeFactor
 		Parent->AppendImp(*GetImp(PropertyName));
 		return 0;
 	}
-	if (PropertyName==TDestructor)
+	if (PropertyName==CDestructor)
 	{
 		CryString s;
 		if (GetIsPointer())
@@ -517,7 +517,7 @@ CryObject *PrimInstance::Create(const CryPropertyParser &PropertyName,CodeFactor
 		Parent->AppendImp(*GetImp(PropertyName));
 		return 0;
 	}
-	if (PropertyName==TCopyTo)
+	if (PropertyName==CCopyTo)
 	{
 		CryString s;
 		if (GetIsPointer())
@@ -542,7 +542,7 @@ CryObject *PrimInstance::Create(const CryPropertyParser &PropertyName,CodeFactor
 		Parent->AppendImp(*GetImp(PropertyName));
 		return 0;
 	}
-	if ((PropertyName==TSetProperty) && CanBuildProduct(PropertyName))//Can't build if it isn't a property
+	if ((PropertyName==CSetProperty) && CanBuildProduct(PropertyName))//Can't build if it isn't a property
 	{
 		CryString s;
 		CryFunctionDef Func;
@@ -561,31 +561,31 @@ CryObject *PrimInstance::Create(const CryPropertyParser &PropertyName,CodeFactor
 			Code_SetProperty(temp);
 			s += temp;
 			s += "\n}\n";
-        }
-        else
-        {
-            s.printf("void Set%s(const char *Value);",GetName());
-            Func.Parse(s);
-            s = "\n";
-            s += Func.GetNPDeclaration();
-            SetHead(PropertyName,s.AsPChar());
-            s.Clear();
-            s = Func.GetImplementedDeclaration(Parent->GetName(),true);
-            s.printf("\n{\n\t");
-            CryString Temp;
-            Code_SetProperty(Temp);
-            s += Temp;
-            s += "\n}\n";
-        }
-        SetImp(PropertyName,s);
+		}
+		else
+		{
+			s.printf("void Set%s(const char *Value);",GetName());
+			Func.Parse(s);
+			s = "\n";
+			s += Func.GetNPDeclaration();
+			SetHead(PropertyName,s.AsPChar());
+			s.Clear();
+			s = Func.GetImplementedDeclaration(Parent->GetName(),true);
+			s.printf("\n{\n\t");
+			CryString Temp;
+			Code_SetProperty(Temp);
+			s += Temp;
+			s += "\n}\n";
+		}
+		SetImp(PropertyName,s);
 		Parent->AppendHead(*GetHead(PropertyName));
 		Parent->AppendImp(*GetImp(PropertyName));
 		return 0;
 	}
-	if ((PropertyName==TGetProperty) && CanBuildProduct(PropertyName))//Can't build if it isn't a property
-    {
-        CryString s;
-        CryFunctionDef Func;
+	if ((PropertyName==CGetProperty) && CanBuildProduct(PropertyName))//Can't build if it isn't a property
+	{
+		CryString s;
+		CryFunctionDef Func;
         if (GetCount()>1)
         {
             s.printf("const char *Get%s(int Index,CryString &Result) const;",GetName());
@@ -622,17 +622,17 @@ CryObject *PrimInstance::Create(const CryPropertyParser &PropertyName,CodeFactor
         Parent->AppendHead(*GetHead(PropertyName));
         Parent->AppendImp(*GetImp(PropertyName));
         return 0;
-    }
-    //    if (strcmp("VarName",PropertyName)==0)
-    //{
-    //  return &GetName();
-    //}
-    return 0;
+	}
+	//    if (strcmp("VarName",PropertyName)==0)
+	//{
+	//  return &GetName();
+	//}
+	return 0;
 };
 
 void PrimInstance::SetIsArrayPointer(bool _IsArrayPointer)
 {
-    IsArrayPointer = _IsArrayPointer;
+	IsArrayPointer = _IsArrayPointer;
 }
 bool PrimInstance::GetIsArrayPointer() const
 {

@@ -27,8 +27,8 @@ namespace Crystal
 {
 using namespace std;
 
-#ifndef TTwoStreams 
-#define TTwoStreams "TwoStreams"
+#ifndef CTwoStreams
+#define CTwoStreams "TwoStreams"
 
 
 
@@ -36,7 +36,7 @@ using namespace std;
 	it's a convienence class
 */
 
-class TwoStreams : public CryObject
+class TwoStreams : public Object
 {
     CryStream *Stream1;
     CryStream *Stream2;
@@ -45,7 +45,7 @@ class TwoStreams : public CryObject
         throw CryException("Cannot Dup this class");
     }
 public:
-    StdFunctions(TwoStreams,CryObject);
+    StdFunctions(TwoStreams,Object);
     TwoStreams(CryStream *_Stream1,CryStream *_Stream2);
     CryStream *GetStream1();
     CryStream *GetStream2();

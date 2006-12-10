@@ -70,18 +70,18 @@ If the value >=0 then the value represents the next strategy to be called.
 This way one strategy can invoke another.
 
 */
-#define TStrategy "Strategy"
-	class Strategy : public CryObject {
+#define CStrategy "Strategy"
+	class Strategy : public Object {
 	public:
-		StdFunctions(Strategy,CryObject);
+		StdFunctions(Strategy,Object);
 		virtual int DoStrategy() const;
-		virtual int DoStrategy(CryObject *Sender) const;
+		virtual int DoStrategy(Object *Sender) const;
 #ifdef VALIDATING
-	virtual bool Test(bool Verbose,CryObject &Object,bool  (CallBack)(bool Verbose,const char *Result,bool fail));
+	virtual bool Test(bool Verbose,Object &Object,bool  (CallBack)(bool Verbose,const char *Result,bool fail));
 #endif		
 	};
 
-#define TStrategyHolder "StrategyHolder"
+#define CStrategyHolder "StrategyHolder"
 	class StrategyHolder : public Strategy {
 		const Strategy **Array;
 		unsigned int MaxCount;
@@ -96,18 +96,18 @@ This way one strategy can invoke another.
 		void SetStrategy(unsigned int StrategyIndex,const Strategy *s);
 		const Strategy *GetStrategy(unsigned int StrategyIndex) const;
 		virtual int DoStrategy() const;
-		virtual int DoStrategy(CryObject *o) const;
+		virtual int DoStrategy(Object *o) const;
 		void DoStrategy(int StrategyIndex) const;
 	};
 
-#define TStrategyHolderSender "StrategyHolderSender"
+#define CStrategyHolderSender "StrategyHolderSender"
 	class StrategyHolderSender : public StrategyHolder {
 	public:
 		StdFunctions(StrategyHolderSender,StrategyHolder);
 		StrategyHolderSender(unsigned int NumStrategies=1);
 		virtual int DoStrategy() const;
-		virtual int DoStrategy(CryObject *o) const;
-		void DoStrategy(int StrategyIndex,CryObject *Sender) const;
+		virtual int DoStrategy(Object *o) const;
+		void DoStrategy(int StrategyIndex,Object *Sender) const;
 	};
 
 #ifdef VALIDATING
@@ -116,7 +116,7 @@ This way one strategy can invoke another.
 	char *Result; // array of 100 bytes showing the text of result
 #define _FLY	0
 #define _MOVE	1
-		class Ducks : public CryObject {
+		class Ducks : public Object {
 			bool Sitting;
 		public:
         	Ducks();
@@ -130,40 +130,40 @@ This way one strategy can invoke another.
 		public:
 			DucksFly(char *_Result) { Result = _Result; }
 			int DoStrategy() const;
-			int DoStrategy(CryObject *d) const;
+			int DoStrategy(Object *d) const;
 		};
 		class DucksNoFly : public Strategy {
 		char *Result;
 		public:
 			DucksNoFly(char *_Result) { Result = _Result; }
 			int DoStrategy() const;
-			int DoStrategy(CryObject *) const;
+			int DoStrategy(Object *) const;
 		};
 		class DucksMove : public Strategy {
 		char *Result;
 		public:
 			DucksMove(char *_Result) { Result = _Result; }
 			int DoStrategy() const;
-			int DoStrategy(CryObject *d) const;
+			int DoStrategy(Object *d) const;
 		};
 	public:
-        TestStrategy(char *_Result,bool Verbose,CryObject &Object,bool  (CallBack)(bool Verbose,const char *Result,bool fail));
+        TestStrategy(char *_Result,bool Verbose,Object &Object,bool  (CallBack)(bool Verbose,const char *Result,bool fail));
     };
 #endif
 
 /*! The Observer pattern defines a one to many dependancy between objects so that when one object changes state, all it's dependents are notified ad updated automatically.(From Head First Design Patterns O'reilly 2004)
 */
 
-#define TObserver "Observer"
+#define CObserver "Observer"
 	class Observable;
-	class Observer: public CryObject {
+	class Observer: public Object {
 	public:
 		Observer();
 		~Observer();
 		/// multiple behaviours are possible for one class
 		virtual void NotifyObservers(Observable *Observed,int ObserverID);
 		virtual void NotifyObservers(Observable *Observed);
-		StdFunctions(Observer,CryObject);
+		StdFunctions(Observer,Object);
 		/*virtual bool IsA(const char *ClassName) const    // can the object map to a ClassName
 		{
 			return (strcmp(ClassName,TObserver)==0) ||
@@ -182,12 +182,12 @@ This way one strategy can invoke another.
 		}
 		*/
 #ifdef VALIDATING
-		virtual bool Test(bool Verbose,CryObject &Object,bool  (CallBack)(bool Verbose,const char *Result,bool fail));
+		virtual bool Test(bool Verbose,Object &Object,bool  (CallBack)(bool Verbose,const char *Result,bool fail));
 #endif
 
 	};
-#define TObservable "Observable"
-	class Observable : public CryList {
+#define CObservable "Observable"
+	class Observable : public List {
 		bool Changed;
 		CryString Name;
 	public:
@@ -201,7 +201,7 @@ This way one strategy can invoke another.
 		void SetChanged();
 		void NotifyObservers(int ObserverID);
 		void NotifyObservers();
-		StdFunctions(Observable,CryList);
+		StdFunctions(Observable,List);
 		/*/// returns a pointer to a string stating the current class Name, EG CryObject (not CryString)
 		const char* ClassName() const
 		{
@@ -251,19 +251,19 @@ This way one strategy can invoke another.
 		};
 	public:
 		
-		TestObserver(char *_Result,bool Verbose,CryObject &Object,bool  (CallBack)(bool Verbose,const char *Result,bool fail));
+		TestObserver(char *_Result,bool Verbose,Object &Object,bool  (CallBack)(bool Verbose,const char *Result,bool fail));
 	};
 #endif
 
 /*! The Decorator pattern attaches additional responibilities to an object dynamically. Decorators provide a flexible alternative to subclassing for extending functionality.
- 
+
 Decorator patterns are normally implemented as a base class and then many virtual classes which all have a common function.
 They can be created by initialization code. See example below
 */
 
 
-#define TDecorator	"Decorator"
-    class Decorator : public CryObject {
+#define CDecorator	"Decorator"
+	class Decorator : public Object {
         Decorator *Next;
     public:
         Decorator()
@@ -273,7 +273,7 @@ They can be created by initialization code. See example below
         Decorator(Decorator *n);
         ~Decorator();
         virtual void Decorate();
-        StdFunctions(Decorator,CryObject);
+        StdFunctions(Decorator,Object);
         /*virtual bool IsA(const char *ClassName) const    // can the object map to a ClassName
         {
             return (strcmp(ClassName,TDecorator)==0) ||
@@ -291,27 +291,27 @@ They can be created by initialization code. See example below
             return TDecorator;
         }
         */
-    };
+	};
 
 
 #ifdef VALIDATING
-    class TestDecorator {
-        class Animal : public Decorator {
-            CryString Name;
-        public:
-            Animal(char *_Name);
-            virtual void Decorate();
-        };
-        class Sleeping : public Decorator {
-        public:
-            Sleeping(Decorator *n);
-            virtual void Decorate();
-        };
-        class Running : public Decorator {
-        public:
-            Running(Decorator *n);
-            virtual void Decorate();
-        };
+	class TestDecorator {
+		class Animal : public Decorator {
+			CryString Name;
+		public:
+			Animal(char *_Name);
+			virtual void Decorate();
+		};
+		class Sleeping : public Decorator {
+		public:
+			Sleeping(Decorator *n);
+			virtual void Decorate();
+		};
+		class Running : public Decorator {
+		public:
+			Running(Decorator *n);
+			virtual void Decorate();
+		};
         class Panting : public Running {
         public:
             Panting(Decorator *n);
@@ -364,19 +364,19 @@ our things will always be CryObjects
 
 */
 
-#define TCryFactory	"CryFactory"
-	class CryFactory : public CryContainer {
+#define CCryFactory	"CryFactory"
+	class CryFactory : public Container {
 		CryFactory **Array;
 		int MaxCount;
 		class FactoryIterator : public Iterator {
 			friend class CryFactory;
 			int Index;
 		public:
-			FactoryIterator(const CryContainer *oc) : Iterator(oc)
+			FactoryIterator(const Container *oc) : Iterator(oc)
 			{
 				Index = 0;
 			}
-			virtual CryObject *Dup() const
+			virtual Object *Dup() const
 			{
 				FactoryIterator *it = (FactoryIterator *)GetOrigContainer()->_CreateIterator();
 				it->Index = Index;
@@ -386,12 +386,12 @@ our things will always be CryObjects
 
 		};
 	public:
-		StdFunctions(CryFactory,CryContainer);
+		StdFunctions(CryFactory,Container);
 		virtual EmptyObject *GetAtIterator(const Iterator *I) const;
-		virtual void SetAtIterator(const Iterator *I,EmptyObject *Item,bool IsCryObject,bool IsOwned,size_t Size = 0);
+		virtual void SetAtIterator(const Iterator *I,EmptyObject *Item,bool IsObject,bool IsOwned,size_t Size = 0);
 		virtual CryPropertyList* PropertyNames() const;
 		virtual int GetPropertyCount() const;
-		virtual CryObject *GetCopyOfPropertyAsObject(const CryPropertyParser &PropertyName) const;
+		virtual Object *GetCopyOfPropertyAsObject(const CryPropertyParser &PropertyName) const;
 
 		virtual const char * GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const;
 		virtual bool  SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue);
@@ -415,12 +415,12 @@ our things will always be CryObjects
 		{
 			return 0;
 		};
-		virtual CryObject *Add(CryObject *Item)
+		virtual Object *Add(Object *Item)
 		{
 			return 0;
 		}
 		;    // returns Item
-		virtual CryObject *AddOwned(CryObject *Item)
+		virtual Object *AddOwned(Object *Item)
 		{
 			return 0;
 		}
@@ -459,17 +459,17 @@ our things will always be CryObjects
 		}
 	public:
 		// The factory part
-		virtual CryObject *Create(const CryPropertyParser &PropertyName,CryObject *Parent);
-		virtual CryList *GetProducts() const;
+		virtual Object *Create(const CryPropertyParser &PropertyName,Object *Parent);
+		virtual List *GetProducts() const;
 		//void AddFactory(Factory *f);
 		virtual const char *Describe() const
 		{
-			return TCryFactory;
+			return CCryFactory;
 		}
 		virtual bool CanCreate(const CryPropertyParser &PropertyName) const;
 		virtual void GetEleType(CryString &Result) const
 		{
-			Result = TCryFactory;
+			Result = CCryFactory;
 		}
 		// The Factory Holder part
 		int GetMaxCount() const
@@ -487,14 +487,14 @@ our things will always be CryObjects
 		~CryFactory();
 		/// Newest factory is always added as the first
 		void AddFactory(CryFactory *f);
-		virtual CryObject *Create(const char *FactoryName,const CryPropertyParser &PropertyName,CryObject *Parent=0);
-		virtual CryObject *Create(CryStream &s)
+		virtual Object *Create(const char *FactoryName,const CryPropertyParser &PropertyName,Object *Parent=0);
+		virtual Object *Create(CryStream &s)
 		{
-			return CryObject::Create(s);
+			return Object::Create(s);
 		}
 		virtual const char *Describe(const char *FactoryName) const
 		{
-			return TCryFactory;
+			return CCryFactory;
 		}
 		// Crystal Stuff
 		virtual Iterator *_CreateIterator() const
@@ -556,7 +556,7 @@ our things will always be CryObjects
 		{
 			return MaxCount < 1;
 		}
-		virtual bool IsCryObject(const Iterator *I) const
+		virtual bool IsObject(const Iterator *I) const
 		{
 			return MaxCount!=0;
 		}
@@ -567,42 +567,42 @@ our things will always be CryObjects
 
 /*! CryOFactory will attempt to create CryObject classes if other classes aren't able to fit the bill*/
 
-#define TCryOFactory "CryOFactory"
+#define CCryOFactory "CryOFactory"
 	class CryOFactory : public CryFactory {
 	public:
 		StdFunctions(CryOFactory,CryFactory);
 
-		virtual CryObject *Create(const char *FactoryName,const CryPropertyParser &PropertyName,CryObject *Parent=0);
-		virtual CryObject *Create(const CryPropertyParser &PropertyName,CryObject *Parent);
-        virtual CryObject *Create(CryStream &s)
+		virtual Object *Create(const char *FactoryName,const CryPropertyParser &PropertyName,Object *Parent=0);
+		virtual Object *Create(const CryPropertyParser &PropertyName,Object *Parent);
+        virtual Object *Create(CryStream &s)
         {
             return CryFactory::Create(s);
         }
 
-    };
+	};
 
-    class FactoryHolder;
+	class FactoryHolder;
 /*class Factory : public CryObject
 {
 public:
-    virtual CryObject *Create(const CryPropertyParser &PropertyName,CryObject *Parent);
-    virtual CryObject *Create(CryStream &s)
-    {
-        return CryObject::Create(s);
-    }
-    virtual CryObject *Create(const CryPropertyParser &PropertyName,CryObject *o)
-    {
-        return CryObject::Create(s,o);
-    }
-    virtual const char *Describe() const
-    {
-        return TCryObject;
-    }
-    virtual bool CanCreate(const CryPropertyParser &PropertyName) const
-    {
-        return CryObject::CanCreate(PropertyName);
-    };
-    virtual void GetEleType(CryString &Result) const
+	virtual CryObject *Create(const CryPropertyParser &PropertyName,CryObject *Parent);
+	virtual CryObject *Create(CryStream &s)
+	{
+		return CryObject::Create(s);
+	}
+	virtual CryObject *Create(const CryPropertyParser &PropertyName,CryObject *o)
+	{
+		return CryObject::Create(s,o);
+	}
+	virtual const char *Describe() const
+	{
+		return TCryObject;
+	}
+	virtual bool CanCreate(const CryPropertyParser &PropertyName) const
+	{
+		return CryObject::CanCreate(PropertyName);
+	};
+	virtual void GetEleType(CryString &Result) const
     {
         Result = TFactory;
     }
@@ -629,7 +629,7 @@ public:
     void DeleteFactoryDescribed(const char *Description);
     void DeleteHeldFactories();
     ~FactoryHolder();
-    /// Newest factory is always added as the first
+	/// Newest factory is always added as the first
     void AddFactory(Factory *f);
 //    virtual CryObject *Create(const CryPropertyParser &PropertyName,CryObject *Parent=0);
     /// returns a CryObject or 0
@@ -654,9 +654,9 @@ public:
 };
 */
 #ifdef VALIDATING
-    class Ingredients : public CryObject {
+    class Ingredients : public Object {
     public:
-        virtual int Cost()
+		virtual int Cost()
         {
             return 0;
         }
@@ -683,7 +683,7 @@ public:
             return 10;
         }
         virtual const char *Describe() const
-        {
+		{
             return "fresh Clams";
         }
     };
@@ -710,7 +710,7 @@ public:
         }
     };
 
-    class Sause : public Ingredients {
+	class Sause : public Ingredients {
     public:
         virtual int Cost()
         {
@@ -737,7 +737,7 @@ public:
     public:
         virtual int Cost()
         {
-            return 30;
+			return 30;
         }
         virtual const char *Describe() const
         {
@@ -747,7 +747,7 @@ public:
 
     class ThickCrustFactory: public CryFactory {
     public:
-        virtual CryObject *Create(const CryPropertyParser &PropertyName,CryObject *Parent=0)
+        virtual Object *Create(const CryPropertyParser &PropertyName,Object *Parent=0)
         {
             return new ThickCrust;
         }
@@ -756,7 +756,7 @@ public:
 
     class ThinCrustFactory: public CryFactory {
     public:
-        virtual CryObject *Create(const CryPropertyParser &PropertyName,CryObject *Parent=0)
+        virtual Object *Create(const CryPropertyParser &PropertyName,Object *Parent=0)
         {
             return new ThinCrust;
         }
@@ -764,7 +764,7 @@ public:
 
     class CrustFactory : public CryFactory {
     public:
-        CrustFactory()
+		CrustFactory()
         {
             AddFactory(new ThinCrustFactory);
             AddFactory(new ThickCrustFactory);
@@ -777,21 +777,21 @@ public:
 
     class PizzaIngredientFactory : public CryFactory {
     public:
-        virtual CryObject *Create(const CryPropertyParser &PropertyName,CryObject *Parent)=0;
+        virtual Object *Create(const CryPropertyParser &PropertyName,Object *Parent)=0;
     };
 
 #define NEWYORK "New York Style\n"
 #define CHICAGO "Chicago Style\n"
     class NYIngredientFactory : public PizzaIngredientFactory {
     public:
-        virtual CryObject *Create(const CryPropertyParser &PropertyName,CryObject *Parent)
+        virtual Object *Create(const CryPropertyParser &PropertyName,Object *Parent)
         {
             if (strcmp(PropertyName,"Cheese")==0)
                 return new MotCheese;
             if (strcmp(PropertyName,"Clams")==0)
                 return new FreshClams;
             if (strcmp(PropertyName,"Sause")==0)
-                return new Sause;
+				return new Sause;
             return 0;
         };
         virtual const char *Describe() const
@@ -813,12 +813,12 @@ public:
 
     class ChicagoIngredientFactory : public PizzaIngredientFactory {
     public:
-        virtual CryObject *Create(const CryPropertyParser &PropertyName,CryObject *Parent)
+        virtual Object *Create(const CryPropertyParser &PropertyName,Object *Parent)
         {
             if (strcmp(PropertyName,"Cheese")==0)
                 return new FetaCheese;
             if (strcmp(PropertyName,"Clams")==0)
-                return new FrozenClams;
+				return new FrozenClams;
             if (strcmp(PropertyName,"Sause")==0)
                 return new Sause;
             return 0;
@@ -1014,7 +1014,7 @@ queue or log requests, and support undoable operations
 Implemented in the same manner as StrategyHolderSender with CommandHolder for none ObjectPassing, and CommandHolderSender 
 for object passing.
 */
-#define TCommandHolder	"CommandHolder"
+#define CCommandHolder	"CommandHolder"
     class CommandHolder : public StrategyHolder {
         StrategyHolder *Undo;
         int *UndoList;
@@ -1066,7 +1066,7 @@ for object passing.
         {
             return StrategyHolder::DoStrategy();
         }
-        virtual int DoStrategy(CryObject *Sender) const
+        virtual int DoStrategy(Object *Sender) const
         {
             return StrategyHolder::DoStrategy(Sender);
         }
@@ -1101,7 +1101,7 @@ for object passing.
         }
     };
 
-#define TCommandHolderSender "CommandHolderSender"
+#define CCommandHolderSender "CommandHolderSender"
     class CommandHolderSender : public StrategyHolderSender {
         StrategyHolderSender *Undo;
         int *UndoList;
@@ -1143,7 +1143,7 @@ for object passing.
                 Undo->SetStrategy(StrategyIndex,this);// do nothing
 
         }
-        void DoMacro(int MacroLength,int *MacroList,CryObject *o)
+        void DoMacro(int MacroLength,int *MacroList,Object *o)
         {
             for (int i=0;i<MacroLength;i++)
                 DoStrategy(MacroList[i],o);
@@ -1152,12 +1152,12 @@ for object passing.
         {
             return StrategyHolderSender::DoStrategy();
         }
-        virtual int DoStrategy(CryObject *Sender) const
+        virtual int DoStrategy(Object *Sender) const
         {
             return StrategyHolderSender::DoStrategy(Sender);
         }
 
-        void DoStrategy(int StrategyIndex,CryObject *o)
+        void DoStrategy(int StrategyIndex,Object *o)
         {
             StrategyHolderSender::DoStrategy(StrategyIndex,o);
             if (UndoIndex<UndoLength) {
@@ -1170,7 +1170,7 @@ for object passing.
                 UndoList[UndoIndex-1] = StrategyIndex;
             }
         }
-        void UndoStrategy(CryObject *o)
+        void UndoStrategy(Object *o)
         {
             if (UndoIndex) {
                 UndoIndex--;
@@ -1178,7 +1178,7 @@ for object passing.
             } else
                 throw CryException("At end of Undo list");
         }
-        void RedoStrategy(CryObject *o)
+        void RedoStrategy(Object *o)
         {
             if (UndoIndex<UsedLength) {
                 StrategyHolderSender::DoStrategy(UndoList[UndoIndex],o);
@@ -1186,16 +1186,16 @@ for object passing.
             } else
                 throw CryException("At end of Redo list");
         }
-    };
+	};
 
 #ifdef VALIDATING
 
-    class TestCommand {
+	class TestCommand {
         CommandHolderSender ch;
     public:
         static int TestValue;
 
-        class CryInt : public CryObject {
+        class CryInt : public Object {
             int i;
         public:
             CryInt()
@@ -1218,7 +1218,7 @@ for object passing.
 
         class Add : public Strategy {
         public:
-            virtual int DoStrategy(CryObject *Sender) const
+            virtual int DoStrategy(Object *Sender) const
             {
                 TestValue += ((CryInt *)Sender)->Get();
                 printf(" + %d = %d\n",((CryInt *)Sender)->Get(),TestValue);
@@ -1228,7 +1228,7 @@ for object passing.
 
         class Sub : public Strategy {
         public:
-            virtual int DoStrategy(CryObject *Sender) const
+            virtual int DoStrategy(Object *Sender) const
             {
                 TestValue -= ((CryInt *)Sender)->Get();
                 printf(" - %d = %d\n",((CryInt *)Sender)->Get(),TestValue);
@@ -1237,7 +1237,7 @@ for object passing.
         };
         class Mult : public Strategy {
         public:
-            virtual int DoStrategy(CryObject *Sender) const
+            virtual int DoStrategy(Object *Sender) const
             {
                 TestValue *= ((CryInt *)Sender)->Get();
                 printf(" * %d = %d\n",((CryInt *)Sender)->Get(),TestValue);
@@ -1246,7 +1246,7 @@ for object passing.
         };
         class Div : public Strategy {
         public:
-            virtual int DoStrategy(CryObject *Sender) const
+            virtual int DoStrategy(Object *Sender) const
             {
                 TestValue /= ((CryInt *)Sender)->Get();
                 printf(" / %d = %d\n",((CryInt *)Sender)->Get(),TestValue);
@@ -1331,11 +1331,11 @@ for object passing.
     will return false for IsObject())
     Visited Containers will be the first item found when going in either direction (Next or Prev)
 */
-#define TCompositeIterator "CompositeIterator"
-    class CompositeIterator : public CryContainer::Iterator {
-        struct LittleStack {
+#define CCompositeIterator "CompositeIterator"
+	class CompositeIterator : public Container::Iterator {
+		struct LittleStack {
             LittleStack *Next;
-            CryContainer::Iterator *I;
+            Container::Iterator *I;
         };
         LittleStack *Stack;
         bool VisitContainer;
@@ -1343,16 +1343,16 @@ for object passing.
         bool PushIfContainer();
         bool PopIfContainer();
     public:
-        StdFunctionsNoDup(CompositeIterator,CryContainer::Iterator);
-        virtual CryObject *Dup() const
+        StdFunctionsNoDup(CompositeIterator,Container::Iterator);
+        virtual Object *Dup() const
         {
 			throw CryException("Dup not implemented for CompositeIterator");
         } // creates a duplicate of this object
 
-        CompositeIterator(const CryContainer *oc );
+        CompositeIterator(const Container *oc );
         ~CompositeIterator();
         int GetCurrentLevel() const;
-        const CryContainer *GetLevelContainer(int i) const;
+        const Container *GetLevelContainer(int i) const;
         void SetVisitContainer(bool _Visit) { VisitContainer = _Visit;}
         bool GetVisitContainer() const { return VisitContainer;}
         bool GotoPrev();
@@ -1360,26 +1360,26 @@ for object passing.
         bool GotoFirst();
         bool GotoLast();
         virtual EmptyObject *GetAtIterator() const;
-//	virtual void SetAtIterator(const Iterator *I,EmptyObject *Item,bool IsCryObject,bool IsOwned,size_t Size = 0) const;
+//	virtual void SetAtIterator(const Iterator *I,EmptyObject *Item,bool IsObject,bool IsOwned,size_t Size = 0) const;
 
-        const CryContainer::Iterator *GetIterator() const;
-        bool IsCryObject() const;
+        const Container::Iterator *GetIterator() const;
+        bool IsObject() const;
         bool IsEmpty() const;
         bool IsOwned() const;
         EmptyObject *Get();
         size_t GetItemSize();
         //bool LoadAsText(CryString *FromStream) { return OrigContainer->LoadAsText(this,FromStream); }
         bool SaveAsText(CryString &ToStream);
-        const CryContainer *GetOrigContainer() const;
+        const Container *GetOrigContainer() const;
         /// return the type of structure used to control this list (ie listnode eleptr, etc)
         void GetEleType(CryString &Result) const;
-    };
+	};
 #ifdef VALIDATING
-    class TestCompositeIterator {
-        class Menu : public CryList {
-        public:
-            CryString Name;
-            Menu(const char *_Name) { Name = _Name;}
+	class TestCompositeIterator {
+		class Menu : public List {
+		public:
+			CryString Name;
+			Menu(const char *_Name) { Name = _Name;}
 
         };
 
@@ -1397,16 +1397,16 @@ The object will appeer to change it's class.
  
 This has been implmented by allowing different strategys to represent the states. The State class can own the Strategies.
 */
-#define TState	"State"
-    class State : public StrategyHolderSender {
+#define CState	"State"
+	class State : public StrategyHolderSender {
 #define NOSTATECHANGE -1
-        const Strategy *ActiveState;
-    public:
-        StdFunctions(State,StrategyHolderSender);
+		const Strategy *ActiveState;
+	public:
+		StdFunctions(State,StrategyHolderSender);
 
-        State(unsigned int TotalNumOfStates=10) : StrategyHolderSender(TotalNumOfStates)
-        {
-            ActiveState = 0;
+		State(unsigned int TotalNumOfStates=10) : StrategyHolderSender(TotalNumOfStates)
+		{
+			ActiveState = 0;
             SetOwnsStrategies(false);
         }
         ~State()
@@ -1425,38 +1425,38 @@ This has been implmented by allowing different strategys to represent the states
         {
             return ActiveState;
         }
-    };
+	};
 #ifdef VALIDATING
 
-    class StateTest {
+	class StateTest {
 
-        class _GumBallState : public State {
-        public:
-            enum GumBallStates {
-                SOLD_OUT=0,NO_QUARTER,HAS_QUARTER,GUMBALL_SOLD
-            };
-            _GumBallState(int NumStates=0) : State(NumStates)
-            {}
-            virtual int InsertQuarter() const
-            {
-                printf("Don't want quarter right now\n");
-                return NOSTATECHANGE;
-            }
-            virtual int EjectQuarter() const
-            {
-                printf("Can't Eject Quarter right now\n");
-                return NOSTATECHANGE;
-            }
-            virtual int TurnCrank() const
-            {
-                printf("Can't turn crank right now\n");
-                return NOSTATECHANGE;
-            }
-            virtual int Dispense(int *Inventory) const
-            {
-                printf("Can't dispense gumball right now\n");
-                return NOSTATECHANGE;
-            }
+		class _GumBallState : public State {
+		public:
+			enum GumBallStates {
+				SOLD_OUT=0,NO_QUARTER,HAS_QUARTER,GUMBALL_SOLD
+			};
+			_GumBallState(int NumStates=0) : State(NumStates)
+			{}
+			virtual int InsertQuarter() const
+			{
+				printf("Don't want quarter right now\n");
+				return NOSTATECHANGE;
+			}
+			virtual int EjectQuarter() const
+			{
+				printf("Can't Eject Quarter right now\n");
+				return NOSTATECHANGE;
+			}
+			virtual int TurnCrank() const
+			{
+				printf("Can't turn crank right now\n");
+				return NOSTATECHANGE;
+			}
+			virtual int Dispense(int *Inventory) const
+			{
+				printf("Can't dispense gumball right now\n");
+				return NOSTATECHANGE;
+			}
             virtual int FillMachine() const
             {
                 printf("Can't fill gumball machine right now\n");
@@ -1483,7 +1483,7 @@ This has been implmented by allowing different strategys to represent the states
                 const _GumBallState *s = (_GumBallState *)GetActiveState();
                 SetActiveState(s->InsertQuarter());
                 return NOSTATECHANGE;
-            }
+			}
             virtual int EjectQuarter()
             {
                 const _GumBallState *s = (_GumBallState *)GetActiveState();
@@ -1537,7 +1537,7 @@ This has been implmented by allowing different strategys to represent the states
             {
                 printf("Turning Crank\n");
                 return(int) GUMBALL_SOLD;
-            }
+			}
             int EjectQuarter() const
             {
                 printf("Ejecting Quarter\n");
@@ -1564,7 +1564,7 @@ This has been implmented by allowing different strategys to represent the states
             state.EjectQuarter();
             state.InsertQuarter();
             state.TurnCrank();
-            state.EjectQuarter();
+			state.EjectQuarter();
             state.Dispense(&Inventory);
             state.EjectQuarter();
             state.InsertQuarter();
@@ -1591,14 +1591,14 @@ This has been implmented by allowing different strategys to represent the states
             state.TurnCrank();
             state.EjectQuarter();
             state.Dispense(&Inventory);
-            state.EjectQuarter();
+			state.EjectQuarter();
             state.InsertQuarter();
             state.TurnCrank();
             state.EjectQuarter();
             state.Dispense(&Inventory);
             state.EjectQuarter();
         }
-    };
+	};
 #endif
 };
 #endif
