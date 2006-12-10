@@ -35,11 +35,11 @@ using namespace Crystal;
 //-------------------------------------------------------------------
 
 #ifdef VALIDATING
-bool CryString::Test(bool Verbose,CryObject &Object,bool (CallBack)(bool Verbose,const char *Result,bool fail))
+bool CryString::Test(bool Verbose,Object &Object,bool (CallBack)(bool Verbose,const char *Result,bool fail))
 {
     bool fail = false;
     // don't do any substream tests since crystring acts differently then other streams. (size doesn't include the asciiz)
-    if (CryObject::Test(Verbose,Object,CallBack))	// if failed
+    if (Object::Test(Verbose,Object,CallBack))	// if failed
         return true;
     {
         char Result[200];
@@ -48,7 +48,7 @@ bool CryString::Test(bool Verbose,CryObject &Object,bool (CallBack)(bool Verbose
         if (!CallBack(Verbose,Result,fail))
             return false;
     }
-    if (Object.IsA(TCryString))
+    if (Object.IsA(CCryString))
     {
 
         /*
@@ -473,12 +473,12 @@ void CryString::Sort(int CompareType)
     }
     return;
 }
-int CryString::CompareLogical(int CompareType,const CryObject *Test) const
+int CryString::CompareLogical(int CompareType,const Object *Test) const
 {
     if ((CompareType>1) || (CompareType<0))
         throw CryException("Unexpected Value for Sorting CryFunctionDef");
 
-    if (Test->IsA(TCryString))
+    if (Test->IsA(CCryString))
     {
         CryString *t = (CryString *)Test;
         switch(CompareType)
@@ -491,17 +491,17 @@ int CryString::CompareLogical(int CompareType,const CryObject *Test) const
     }
     return 0;
 }
-bool CryString::LessThen(int CompareType,const CryObject *Test) const
+bool CryString::LessThen(int CompareType,const Object *Test) const
 {
 	int i = CompareLogical(CompareType,Test);
 	return (i<0);
 }
-bool CryString::GreaterThen(int CompareType,const CryObject *Test)const
+bool CryString::GreaterThen(int CompareType,const Object *Test)const
 {
 	int i = CompareLogical(CompareType,Test);
 	return (i>0);
 }
-bool CryString::EqualTo(int CompareType,const CryObject *Test)const
+bool CryString::EqualTo(int CompareType,const Object *Test)const
 {
     int i = CompareLogical(CompareType,Test);
     return (i==0);
@@ -881,7 +881,7 @@ CryString::CryString(const char *FormatStr,...)
 
 CryPropertyList *CryString::PropertyNames() const
 {   // bypass stream property names because we aren't interested inthe Terminator
-	CryPropertyList *n = CryObject::PropertyNames();
+	CryPropertyList *n = Object::PropertyNames();
 	n->AddPropertyByName("Value",this);
     return n;
 }
@@ -1119,15 +1119,15 @@ size_t CryString::Write(const char *FromBuffer,size_t t)
 /*! returns a list of CryStrings made up from String separated by Separater (eg convert text with \n to list of strings)
 The CryStrings do not contain the separator
 */
-CryList *CryString::ListFromString(const char *Separator) const
+List *CryString::ListFromString(const char *Separator) const
 {
-    CryList *l = new CryList();
+    List *l = new List();
     return LoadListFromString(Separator,l);
 }
-CryList *CryString::LoadListFromString(const char *Separator,CryList *ListToLoad) const
+List *CryString::LoadListFromString(const char *Separator,List *ListToLoad) const
 {
     const char *String = this->AsPChar();
-    CryList *l = ListToLoad;
+    List *l = ListToLoad;
     int seplen = strlen(Separator);
     while(strlen(String))
     {

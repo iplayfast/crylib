@@ -24,9 +24,9 @@
 namespace Crystal {
 
 using namespace Crystal;
-#ifndef THugeDouble
-#define THugeDouble "HugeDouble"
-#define THugeFraction "HugeFraction"
+#ifndef CHugeDouble
+#define CHugeDouble "HugeDouble"
+#define CHugeFraction "HugeFraction"
 
 
 class HugeFraction : private HugeInt
@@ -88,8 +88,8 @@ void Normalize(const HugeDouble &ExpToMatch);
 public:
 StdFunctionsNoDup(HugeDouble,HugeInt);
 // CryObject virtuals
-virtual void CopyTo(CryObject &Dest) const;  //copies contents of this to Dest
-virtual CryObject *Dup() const; // creates a duplicate of this object
+virtual void CopyTo(Object &Dest) const;  //copies contents of this to Dest
+virtual Object *Dup() const; // creates a duplicate of this object
 virtual const char *GetProperty(CryPropertyParser &PropertyName,CryString &Result) const;
 virtual bool HasProperty(CryPropertyParser &PropertyName)const;
 virtual int GetPropertyCount() const;
@@ -192,7 +192,7 @@ const char *GetAsStr(unsigned int Base=10)const;
 const char *GetAsStr(const HugeDouble &base)const;
 void Huge2Str(char *b);
 #ifdef VALIDATING
-virtual bool Test(bool Verbose,CryObject &Object,bool  (CallBack)(bool Verbose,const char *Result,bool fail));
+virtual bool Test(bool Verbose,Object &Object,bool  (CallBack)(bool Verbose,const char *Result,bool fail));
 #endif
 
 };

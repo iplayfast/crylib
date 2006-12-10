@@ -28,7 +28,7 @@ int Strategy::DoStrategy() const
 {
     return -1;
 }
-int Strategy::DoStrategy(CryObject *Sender) const
+int Strategy::DoStrategy(Object *Sender) const
 {
     return -1;
 }
@@ -101,7 +101,7 @@ int StrategyHolder::DoStrategy() const
     return Strategy::DoStrategy();
 }
 
-int StrategyHolder::DoStrategy(CryObject *o) const
+int StrategyHolder::DoStrategy(Object *o) const
 {
     return Strategy::DoStrategy(o);
 }
@@ -136,12 +136,12 @@ int StrategyHolderSender::DoStrategy() const
 {
     return StrategyHolder::DoStrategy();
 }
-int StrategyHolderSender::DoStrategy(CryObject *o) const
+int StrategyHolderSender::DoStrategy(Object *o) const
 {
     return StrategyHolder::DoStrategy(o);
 }
 
-void StrategyHolderSender::DoStrategy(int StrategyIndex,CryObject *Sender) const
+void StrategyHolderSender::DoStrategy(int StrategyIndex,Object *Sender) const
 {
 #ifdef RangeChecking
     if ((StrategyIndex<0) || (StrategyIndex>=GetMaxCount()))
@@ -191,7 +191,7 @@ int TestStrategy::DucksFly::DoStrategy() const
 	sprintf(Result,"I'm Flying!\n");
 	return -1;
 }
-int TestStrategy::DucksFly::DoStrategy(CryObject *d) const
+int TestStrategy::DucksFly::DoStrategy(Object *d) const
 {
 	sprintf(Result,"I'm Flying!\n");
 	return -1;
@@ -202,7 +202,7 @@ int TestStrategy::DucksNoFly::DoStrategy() const
 	sprintf(Result,"I can't fly!\n");
 	return -1;
 }
-int TestStrategy::DucksNoFly::DoStrategy(CryObject *) const
+int TestStrategy::DucksNoFly::DoStrategy(Object *) const
 {
 	return DoStrategy();
 }
@@ -212,7 +212,7 @@ int TestStrategy::DucksMove::DoStrategy() const
 //	sprintf(Result,"I'm moving in some fashion\n");
 	return -1;
 }
-int TestStrategy::DucksMove::DoStrategy(CryObject *d) const
+int TestStrategy::DucksMove::DoStrategy(Object *d) const
 {
 	if (d->IsA("Duck"))
 	{
@@ -225,17 +225,17 @@ int TestStrategy::DucksMove::DoStrategy(CryObject *d) const
 	return -1;
 }
 
-bool Strategy::Test(bool Verbose,CryObject &Object,bool  (CallBack)(bool Verbose,const char *Result,bool fail))
+bool Strategy::Test(bool Verbose,Object &ThisObject,bool  (CallBack)(bool Verbose,const char *Result,bool fail))
 {
 char _Result[100];
-	TestStrategy a(_Result,Verbose,Object,CallBack);
+	TestStrategy a(_Result,Verbose,ThisObject,CallBack);
 	if (_Result[0]=='F') {
 		return false;
 	}
-	return CryObject::Test(Verbose,Object,CallBack);
+	return Object::Test(Verbose,ThisObject,CallBack);
 }
 
-TestStrategy::TestStrategy(char *_Result,bool Verbose,CryObject &Object,bool  (CallBack)(bool Verbose,const char *Result,bool fail))
+TestStrategy::TestStrategy(char *_Result,bool Verbose,Object &ThisObject,bool  (CallBack)(bool Verbose,const char *Result,bool fail))
 {
 Result = _Result;
 	StrategyHolder h(2);
@@ -419,35 +419,35 @@ void Observable::SetChanged()
 }
 
 #ifdef VALIDATING
-bool Observer::Test(bool Verbose,CryObject &Object,bool  (CallBack)(bool Verbose,const char *Result,bool fail))
+bool Observer::Test(bool Verbose,Object &ThisObject,bool  (CallBack)(bool Verbose,const char *Result,bool fail))
 {
 char Result[100];
-	TestObserver(Result,Verbose,Object,CallBack);
+	TestObserver(Result,Verbose,ThisObject,CallBack);
 bool	Fail = false;
 	sprintf(Result,"Observer inspected test (via debug)");
 	if (!CallBack(Verbose,Result,Fail))
 		return false;
-	return CryObject::Test(Verbose,Object,CallBack);
+	return Object::Test(Verbose,ThisObject,CallBack);
 }
 
 #include <iostream>
 #include <cstdlib>
-TestObserver::TestObserver(char *_Result,bool Verbose,CryObject &Object,bool  (CallBack)(bool Verbose,const char *Result,bool fail))
+TestObserver::TestObserver(char *_Result,bool Verbose,Object &ThisObject,bool  (CallBack)(bool Verbose,const char *Result,bool fail))
 {
 	Weather w;
 	w.SetName("Weather");
-    w.RegisterObserver(new Forcast(),true);
-    w.RegisterObserver(new CurrentConditions(),true);
-    w.setMeasurements(4.4,24.5,22.5);
-    w.setMeasurements(1.4,24.5,32.5);
+	w.RegisterObserver(new Forcast(),true);
+	w.RegisterObserver(new CurrentConditions(),true);
+	w.setMeasurements(4.4,24.5,22.5);
+	w.setMeasurements(1.4,24.5,32.5);
 
 }
 void TestObserver::CurrentConditions::NotifyObservers(Observable *Observed)
 {
-    if (Observed->IsName("Weather"))
-    {
-        Weather *w = (Weather *)Observed;
-        temp = w->getTemp();
+	if (Observed->IsName("Weather"))
+	{
+		Weather *w = (Weather *)Observed;
+		temp = w->getTemp();
         humidity = w->getHumidity();
         pressure = w->getPressure();
         Display();
@@ -574,13 +574,13 @@ TestDecorator::TestDecorator()
 
 
 
-/*CryObject *Factory::Create(const CryPropertyParser &PropertyName,CryObject *Parent)
+/*Object *Factory::Create(const CryPropertyParser &PropertyName,Object *Parent)
 {
     if (PropertyName==0)
         return 0;  // Create nothing
-    // basic Cryobject creation
-    if (CryObject::CanCreate(PropertyName))
-        return CryObject::Create(PropertyName,Parent);
+    // basic Object creation
+    if (Object::CanCreate(PropertyName))
+        return Object::Create(PropertyName,Parent);
     if (Parent && Parent->CanCreate(PropertyName))
         return Parent->Create(PropertyName,Parent);
     return 0;
@@ -622,8 +622,8 @@ EmptyObject *CryFactory::GetAtIterator(const Iterator *I) const
 	return cf->Array[fI->Index];
 };
 
-// IsCryObject, IsOwned and Size are not used
-void CryFactory::SetAtIterator(const Iterator *I,EmptyObject *Item,bool IsCryObject,bool IsOwned,size_t Size) 
+// IsObject, IsOwned and Size are not used
+void CryFactory::SetAtIterator(const Iterator *I,EmptyObject *Item,bool IsObject,bool IsOwned,size_t Size) 
 {
 	FactoryIterator *fI = (FactoryIterator *)I;
 	CryFactory *cf = (CryFactory *) fI->GetOrigContainer();
@@ -655,13 +655,13 @@ void CryFactory::AddFactory(CryFactory *f)
     //      Array[i]->Describe();
 }
 
-CryObject *CryFactory::Create(const CryPropertyParser &PropertyName,CryObject *Parent)
+Object *CryFactory::Create(const CryPropertyParser &PropertyName,Object *Parent)
 {
     // first Factory that can create what the thing matches returns thing
     for(int i=0;i<MaxCount;i++)
     {
         //    const char *describe = Array[i]->Describe();
-        CryObject *Return = Array[i]->Create(PropertyName,Parent);
+        Object *Return = Array[i]->Create(PropertyName,Parent);
         if (Return)
             return Return;
     }
@@ -669,19 +669,19 @@ CryObject *CryFactory::Create(const CryPropertyParser &PropertyName,CryObject *P
 };
 CryPropertyList *CryFactory::PropertyNames() const
 {
-    CryPropertyList *pn = CryContainer::PropertyNames();
+    CryPropertyList *pn = Container::PropertyNames();
     return pn;
     //  pn->AddOwned(new CryString("Values"));
 };
 
 int CryFactory::GetPropertyCount() const
 {
-    return CryContainer::GetPropertyCount();
+    return Container::GetPropertyCount();
 };
 
-CryObject *CryFactory::GetCopyOfPropertyAsObject(const CryPropertyParser &PropertyName) const
+Object *CryFactory::GetCopyOfPropertyAsObject(const CryPropertyParser &PropertyName) const
 {
-    return CryContainer::GetCopyOfPropertyAsObject(PropertyName);
+    return Container::GetCopyOfPropertyAsObject(PropertyName);
 }
 void CryFactory::Sort(int CompareType)
 {
@@ -712,48 +712,48 @@ const char * CryFactory::GetProperty(const CryPropertyParser &PropertyName,CrySt
         return "*";
     }
     else
-        return CryContainer::GetProperty(PropertyName,Result);
+        return Container::GetProperty(PropertyName,Result);
 };
 bool  CryFactory::SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue)
 {
-	return CryContainer::SetProperty(PropertyName,PropertyValue);
+	return Container::SetProperty(PropertyName,PropertyValue);
 };
 
-CryObject *CryOFactory::Create(const CryPropertyParser &PropertyName,CryObject *Parent)
+Object *CryOFactory::Create(const CryPropertyParser &PropertyName,Object *Parent)
 {
-    CryObject *Return = CryFactory::Create(PropertyName,Parent);
+    Object *Return = CryFactory::Create(PropertyName,Parent);
     if (!Return)
-        return CryObject::Create(PropertyName,Parent);
+        return Object::Create(PropertyName,Parent);
     else
         return Return;
 };
 
-CryList *CryFactory::GetProducts() const
+List *CryFactory::GetProducts() const
 {
     CryString s;
-    CryList *l = new CryList();
+    List *l = new List();
     for(int i=0;i<MaxCount;i++)
     {
         s += Array[i]->Describe();
         s += "|";
 
-        if (Array[i]->IsA(TCryFactory))
+        if (Array[i]->IsA(CCryFactory))
             l->AddOwned(Array[i]->GetProducts());
     }
     s.LoadListFromString("|",l);
     return l;
 };
 
-CryObject *CryOFactory::Create(const char *FactoryName,const CryPropertyParser &PropertyName,CryObject *Parent)
+Object *CryOFactory::Create(const char *FactoryName,const CryPropertyParser &PropertyName,Object *Parent)
 {
     return CryFactory::Create(FactoryName,PropertyName,Parent);
 }
 
 
-/// returns a CryObject or 0
-CryObject *CryFactory::Create(const char *FactoryName,const CryPropertyParser &PropertyName,CryObject *Parent)
+/// returns a Object or 0
+Object *CryFactory::Create(const char *FactoryName,const CryPropertyParser &PropertyName,Object *Parent)
 {
-    CryObject *Return;
+    Object *Return;
     if (PropertyName=="")
         return 0;  // Create nothing
     /// first try the different held factories to see if their description matches the Factory Name we are looking for
@@ -783,8 +783,8 @@ bool CompositeIterator::PushIfContainer()
 {
 	if (Stack->I->IsContainer())
 	{
-		CryContainer *c = (CryContainer *) Stack->I->Get();
-		CryContainer::Iterator *I = c->_CreateIterator();
+		Container *c = (Container *) Stack->I->Get();
+		Container::Iterator *I = c->_CreateIterator();
 		LittleStack *s = new LittleStack;
 		s->I = I;
 		s->Next = Stack;
@@ -807,11 +807,11 @@ bool CompositeIterator::PopIfContainer()
     return false;
 }
 
-CompositeIterator::CompositeIterator(const CryContainer *oc ) : CryContainer::Iterator(oc)
+CompositeIterator::CompositeIterator(const Container *oc ) : Container::Iterator(oc)
 {
 	VisitingContainer = true;
 	VisitContainer = true;
-	CryContainer::Iterator *I = oc->_CreateIterator();
+	Container::Iterator *I = oc->_CreateIterator();
 	LittleStack *s = new LittleStack;
 	s->I = I;
 	s->Next = 0;
@@ -949,24 +949,24 @@ bool CompositeIterator::GotoFirst()
 
 EmptyObject *CompositeIterator::GetAtIterator() const
 {
-	const CryContainer *oc = Stack->I->GetOrigContainer();
+	const Container *oc = Stack->I->GetOrigContainer();
 	if (VisitingContainer) return (EmptyObject *)oc;
 	return oc->GetAtIterator(Stack->I);
 }
-/*void CompositeIterator::SetAtIterator(const Iterator *I,EmptyObject *Item,bool IsCryObject,bool IsOwned,size_t Size) const
+/*void CompositeIterator::SetAtIterator(const Iterator *I,EmptyObject *Item,bool IsObject,bool IsOwned,size_t Size) const
 {
-	const CryContainer *oc = Stack->I->GetOrigContainer();
+	const Container *oc = Stack->I->GetOrigContainer();
 	if (VisitingContainer) oc = Item;
-	oc->SetAtIterator(Stack->I,Item,IsCryObject,IsOwned,Size);
+	oc->SetAtIterator(Stack->I,Item,IsObject,IsOwned,Size);
 } */
 
-const CryContainer::Iterator *CompositeIterator::GetIterator() const
+const Container::Iterator *CompositeIterator::GetIterator() const
 {
 	return Stack->I;
 }
-bool CompositeIterator::IsCryObject() const
+bool CompositeIterator::IsObject() const
 {
-	return Stack->I->IsCryObject();
+	return Stack->I->IsObject();
 }
 bool CompositeIterator::IsEmpty() const
 {
@@ -991,7 +991,7 @@ bool CompositeIterator::SaveAsText(CryString &ToStream)
 {
     return Stack->I->SaveAsText(ToStream);
 }
-const CryContainer *CompositeIterator::GetOrigContainer() const
+const Container *CompositeIterator::GetOrigContainer() const
 {
     return Stack->I->GetOrigContainer();
 }
@@ -1013,7 +1013,7 @@ int CompositeIterator::GetCurrentLevel() const
     return Result;
 }
 
-const CryContainer *CompositeIterator::GetLevelContainer(int i) const
+const Container *CompositeIterator::GetLevelContainer(int i) const
 {
     LittleStack *p = Stack;
     int j = i;
@@ -1069,10 +1069,10 @@ void TestCompositeIterator::DoTest()
 		{
 			if (!ci.IsEmpty())
 			{
-				if (ci.IsCryObject())
+				if (ci.IsObject())
 				{
-					CryObject *o  = (CryObject *) ci.Get();
-					if (o->IsA(TCryString))
+					Object *o  = (Object *) ci.Get();
+					if (o->IsA(CCryString))
 					{
 			int i = ci.GetCurrentLevel();
 			Menu *m = (TestCompositeIterator::Menu *) ci.GetLevelContainer(i);
@@ -1103,10 +1103,10 @@ void TestCompositeIterator::DoTest()
 	{
 		do
 		{
-			if (ci.IsCryObject())
+			if (ci.IsObject())
 			{
-				CryObject *o  = (CryObject *) ci.Get();
-				if (o->IsA(TCryString))
+				Object *o  = (Object *) ci.Get();
+				if (o->IsA(CCryString))
 				{
 					const char *c = ((CryString *)o)->AsPChar();
 					printf("%s\n",c);

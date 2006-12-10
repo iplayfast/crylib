@@ -29,25 +29,25 @@ namespace Crystal
 
 using namespace std;
 
-#ifndef TCryContainer
-#define TCryContainer "CryContainer"
+#ifndef CContainer
+#define CContainer "Container"
 
 /// This class is a container of some sort, (either a linked list or an array of some type)
 /*!
 	Containers are named classes
 	CryObjects are able to Iterate through a container class, calling IteratedFunction for each item contained
 */
-class CryContainer : public CryOwnedObject	//abstract
+class Container : public OwnedObject	//abstract
 {
 	bool _IsContainer;
 	// don't allow copyclass
-    CryContainer(CryContainer &NoNO);
+    Container(Container &NoNO);
 public:
-	StdFunctionsAbstract(CryContainer,CryObject);
+	StdFunctionsAbstract(Container,Object);
     class Iterator;
-    CryContainer();
+    Container();
     /// will return the original owner of the Iterator
-    const CryContainer *GetOwner(Iterator *I) const;
+    const Container *GetOwner(Iterator *I) const;
     /// returns true
     virtual bool IsContainer() const;
 	virtual void SetIsContainer(bool Enabled);
@@ -73,7 +73,7 @@ public:
 	/// will return whatever is located at the Current Iterator
 	virtual EmptyObject *GetAtIterator(const Iterator *I) const = 0;
 	/// will set a value to the container[Iterator]
-	virtual void SetAtIterator(const Iterator *I,EmptyObject *Item,bool IsCryObject,bool IsOwned,size_t Size = 0) = 0;
+	virtual void SetAtIterator(const Iterator *I,EmptyObject *Item,bool IsObject,bool IsOwned,size_t Size = 0) = 0;
 
 	/// abstract function used by subclasses to remove the item this iterator points at (iterator is still valid)
 	virtual void RemoveAtIterator(Iterator *I) = 0;
@@ -86,12 +86,12 @@ public:
 	virtual CryFunctionDefList *GetFunctions(const char *Type=0) const;
 	virtual EmptyObject *Add(EmptyObject *Item,size_t Size)  = 0;
 	virtual EmptyObject *AddOwned(EmptyObject *Item,size_t Size) = 0;
-	virtual CryObject *Add(CryObject *Item) = 0;    // returns Item
-	virtual CryObject *AddOwned(CryObject *Item) = 0;   // gives ownership to list
+	virtual Object *Add(Object *Item) = 0;    // returns Item
+	virtual Object *AddOwned(Object *Item) = 0;   // gives ownership to list
 	virtual void SetItemOwnerShip(Iterator *I,bool Owned) = 0;
 	virtual bool GetItemOwnerShip(const Iterator *I) const = 0;
 	virtual size_t GetItemSize(Iterator *I) const = 0;
-	virtual bool IsCryObject(const Iterator *I) const = 0;
+	virtual bool IsObject(const Iterator *I) const = 0;
 	virtual bool LoadAsText(Iterator *I,CryString &FromStream) = 0;
 	virtual bool SaveAsText(Iterator *I,CryString &ToStream) const = 0;
 	bool IterateThroughAll(EmptyObject *Control); // for each item, will call bool (*FunctionToCall)(EmptyObject *); (unless 0)
@@ -100,7 +100,7 @@ public:
 	virtual bool IteratedFunction(EmptyObject *Control,EmptyObject *Item);
 	virtual bool SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue);
 	virtual const char *GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const;
-	virtual CryObject *GetCopyOfPropertyAsObject(const CryPropertyParser &PropertyName) const;
+	virtual Object *GetCopyOfPropertyAsObject(const CryPropertyParser &PropertyName) const;
 	virtual bool HasProperty(const CryPropertyParser &PropertyName) const;
 	virtual int GetPropertyCount() const;
 	//    virtual const char* ChildClassName() const;
@@ -110,31 +110,31 @@ public:
 	//! Compare the contained items (Used in sorting)
 	virtual int Compare2(int CompareType,const EmptyObject *First,const EmptyObject *Second) const;
 	// Compare to another Object
-	virtual int CompareLogical(int CompareType,const CryObject *Test) const;
-	virtual bool LessThen(int CompareType,const CryObject *Test) const;
-	virtual bool GreaterThen(int CompareType,const CryObject *Test) const;
-	virtual bool EqualTo(int CompareType,const CryObject *Test) const;
+	virtual int CompareLogical(int CompareType,const Object *Test) const;
+	virtual bool LessThen(int CompareType,const Object *Test) const;
+	virtual bool GreaterThen(int CompareType,const Object *Test) const;
+	virtual bool EqualTo(int CompareType,const Object *Test) const;
 #ifdef VALIDATING
 
-	virtual bool Test(bool Verbose,CryObject &Object,bool  (CallBack)(bool Verbose,const char *Result,bool fail));
+	virtual bool Test(bool Verbose,Object &Object,bool  (CallBack)(bool Verbose,const char *Result,bool fail));
 #endif
 	/*! This class derives from EmptyObject and is used to traverse the container, Containers may be used in a generic way by using iterators
 	*/
 #define TIterator "Iterator"
-class Iterator : public CryObject//EmptyObject
+class Iterator : public Object//EmptyObject
 	{
 	private:
-		const CryContainer *OrigContainer; /* TODO : Add checks to see if interator is still with original container */
+		const Container *OrigContainer; /* TODO : Add checks to see if interator is still with original container */
 	public:
-		Iterator(const CryContainer *oc );
+		Iterator(const Container *oc );
 		/// creates a duplicate of this object, is defined as pure in order to force derived classes to handle this.
-		virtual CryObject *Dup() const=0;
+		virtual Object *Dup() const=0;
 		bool IsContainer() const; // true if item is an object and is a container and is currently set as a container (believes it is a container)
-		bool IsCryObject() const;
+		bool IsObject() const;
 		bool IsOwned() const;
 		bool IsEmpty() const;
 		EmptyObject *Get() const;
-		//void Set(EmptyObject *Item,bool IsCryObject,bool IsOwned,size_t Size = 0);
+		//void Set(EmptyObject *Item,bool IsObject,bool IsOwned,size_t Size = 0);
 
 		bool GotoFirst();
 		bool GotoPrev();
@@ -145,7 +145,7 @@ class Iterator : public CryObject//EmptyObject
 		size_t GetItemSize();
 		//bool LoadAsText(CryString *FromStream) { return OrigContainer->LoadAsText(this,FromStream); }
 		bool SaveAsText(CryString &ToStream);
-		const CryContainer *GetOrigContainer() const;
+		const Container *GetOrigContainer() const;
 		/// return the type of structure used to control this list (ie listnode eleptr, etc)
 		void GetEleType(CryString &Result) const;
 		virtual bool IsA(const char *ClassName) const    // can the object map to a ClassName

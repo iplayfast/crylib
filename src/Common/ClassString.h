@@ -22,8 +22,8 @@
 namespace Crystal
 {
 using namespace std;
-#ifndef TCryString
-#define TCryString  "CryString"
+#ifndef CCryString
+#define CCryString  "CryString"
 #ifdef __BORLANDC__
 #define strcasecmp stricmp
 #endif
@@ -126,17 +126,17 @@ virtual int GetPropertyCount() const;
     virtual const char *GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const;
 #ifdef VALIDATING
 
-    virtual bool Test(bool Verbose,CryObject &Object,bool (CallBack)(bool Verbose,const char *Result,bool fail));
+    virtual bool Test(bool Verbose,Object &Object,bool (CallBack)(bool Verbose,const char *Result,bool fail));
 #endif
 
-    CryList *ListFromString(const char *Separator) const;
-    CryList *LoadListFromString(const char *Separator,CryList *ListToLoad) const;
+    List *ListFromString(const char *Separator) const;
+    List *LoadListFromString(const char *Separator,List *ListToLoad) const;
     /* TODO : Impliment */
     virtual void Sort(int CompareType=0);
-    virtual int CompareLogical(int CompareType,const CryObject *Test) const;
-    virtual bool LessThen(int CompareType,const CryObject *Test) const;
-	virtual bool GreaterThen(int CompareType,const CryObject *Test)const;
-	virtual bool EqualTo(int CompareType,const CryObject *Test)const;
+    virtual int CompareLogical(int CompareType,const Object *Test) const;
+    virtual bool LessThen(int CompareType,const Object *Test) const;
+	virtual bool GreaterThen(int CompareType,const Object *Test)const;
+	virtual bool EqualTo(int CompareType,const Object *Test)const;
 	virtual int HashValue()const;
 }
 ;//CryString

@@ -109,7 +109,7 @@ void CryMemStream::RemoveAtIterator(Iterator *I)
     throw CryException("Cannot remove at iterator in CryMemoryStream");
 }
 
-CryMemStream::MemStreamIterator::MemStreamIterator(const CryContainer *container): StreamIterator(container)
+CryMemStream::MemStreamIterator::MemStreamIterator(const Container *container): StreamIterator(container)
 {
     GotoFirst();
 }
@@ -245,7 +245,7 @@ void CryMemStream::Flush()
 {}
 ;
 
-CryContainer::Iterator *CryMemStream::_CreateIterator() const
+Container::Iterator *CryMemStream::_CreateIterator() const
 {
     return new MemStreamIterator(this);
 };
@@ -284,12 +284,12 @@ EmptyObject *CryMemStream::AddOwned(EmptyObject *Item,size_t Size)
     return Item;
 }
 
-CryObject *CryMemStream::Add(CryObject *Item)
+Object *CryMemStream::Add(Object *Item)
 {
     return CryStream::Add(Item);
 }    // returns Item
 
-CryObject *CryMemStream::AddOwned(CryObject *Item)
+Object *CryMemStream::AddOwned(Object *Item)
 {
     return CryStream::AddOwned(Item);
 }   // gives ownership to list
@@ -472,9 +472,9 @@ int CryMemStream::vsprintf(const char *format, va_list ap)
     return DataLength = strlen(Buffer) + 1;	// Memory includes the asciiz in length
 }
 
-void CryMemStream::CopyTo(CryObject &Dest) const
+void CryMemStream::CopyTo(Object &Dest) const
 {
-    if (Dest.IsA(TCryStream))
+    if (Dest.IsA(CCryStream))
         CopyToStream(*(CryMemStream *)&Dest);
     else
         CryStream::CopyTo(Dest);    // see if any base class can handle it
@@ -515,9 +515,9 @@ bool CryMemStream::operator !=(const char *s)
         return true;
 }
 
-int CryMemStream::CompareLogical(int CompareType,const CryObject *Test) const
+int CryMemStream::CompareLogical(int CompareType,const Object *Test) const
 {
-    if (Test->IsA(TCryMemStream))
+    if (Test->IsA(CCryMemStream))
     {
         switch(CompareType)
         {
@@ -607,7 +607,7 @@ size_t CryMemStream::ReadTI(char *ToBuffer,size_t Size) const
 // read until terminator or Size (inclusive)
 size_t CryMemStream::ReadTI(CryStream *ToBuffer,size_t Size) const
 {
-    if (ToBuffer->IsA(TCryMemStream))
+    if (ToBuffer->IsA(CCryMemStream))
     {
         CryMemStream *mToBuffer = (CryMemStream *)ToBuffer;
         if (mToBuffer->Length < Size)
@@ -623,7 +623,7 @@ size_t CryMemStream::ReadTI(CryStream *ToBuffer,size_t Size) const
 // write until terminator or size (inclusive)
 size_t CryMemStream::WriteTI(CryStream *FromBuffer,size_t Size)
 {
-    if (FromBuffer->IsA(TCryMemStream))
+    if (FromBuffer->IsA(CCryMemStream))
     {
         CryMemStream *mFromBuffer = (CryMemStream *)FromBuffer;
         if (mFromBuffer->Length < Size)

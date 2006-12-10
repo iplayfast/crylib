@@ -23,8 +23,8 @@
 namespace Crystal
 {
 using namespace std;
-#ifndef TCryFileString
-#define TCryFileStream "CryFileStream"
+#ifndef CCryFileString
+#define CCryFileStream "CryFileStream"
 
 /// File Handling stream
 class CryFileStream : public CryStream
@@ -48,7 +48,7 @@ class FileStreamIterator : public StreamIterator
     CryFileStream(CryFileStream &nono);
 public:
     StdFunctionsNoDup(CryFileStream,CryStream);
-    virtual CryObject *Dup() const; // creates a duplicate of this object
+    virtual Object *Dup() const; // creates a duplicate of this object
     virtual const cbyte* GetRaw() const;
     virtual CryFunctionDefList *GetFunctions(const char *Type=0) const;
     //    const char* ClassName() const;
@@ -109,8 +109,8 @@ public:
 
     virtual EmptyObject *Add(EmptyObject *Item,size_t Size);
     virtual EmptyObject *AddOwned(EmptyObject *Item,size_t Size);
-    virtual CryObject *Add(CryObject *Item);
-    virtual CryObject *AddOwned(CryObject *Item);
+    virtual Object *Add(Object *Item);
+    virtual Object *AddOwned(Object *Item);
 }
 ;  // CryFileStream
 #endif //TCryFileStream

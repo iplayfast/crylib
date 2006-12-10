@@ -18,14 +18,15 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef THugeInt
+#ifndef CHugeInt
+#define CHugeInt "HugeInt"
 #include "CryObject.h"
 
 
 namespace Crystal {
 using namespace Crystal;
 
-#define THugeInt "HugeInt"
+
 
 #ifdef __BORLANDC__
 #include <mem.h>
@@ -47,7 +48,7 @@ using namespace Crystal;
 #define ISMOSTLYZERO 16
 
 
-class HugeInt : public CryObject
+class HugeInt : public Object
 {
 HugeInt *p;
 unsigned int NumDigits;
@@ -82,11 +83,11 @@ bool SetFlags()
 void SetLastDigitFlags() { SetFlags(Number[NumDigits-1]); }
 void SetNumDigits(unsigned int n);
 public:
-StdFunctionsNoDup(HugeInt,CryObject);
+StdFunctionsNoDup(HugeInt,Object);
 ~HugeInt() { if (NumDigits) delete[]Number; }
-// CryObject virtuals
-virtual void CopyTo(CryObject &Dest) const;  //copies contents of this to Dest
-virtual CryObject *Dup() const; // creates a duplicate of this object
+// Object virtuals
+virtual void CopyTo(Object &Dest) const;  //copies contents of this to Dest
+virtual Object *Dup() const; // creates a duplicate of this object
 virtual const char *GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const;
 virtual bool HasProperty(const CryPropertyParser &PropertyName)const;
 virtual int GetPropertyCount() const;
@@ -218,7 +219,7 @@ const char *GetAsStr(unsigned int Base=10)const;
 unsigned int GetAsLong()const { return Number[NumDigits-1];}
 void Huge2Str(char *b);
 #ifdef VALIDATING
-virtual bool Test(bool Verbose,CryObject &Object,bool  (CallBack)(bool Verbose,const char *Result,bool fail));
+virtual bool Test(bool Verbose,Object &Object,bool  (CallBack)(bool Verbose,const char *Result,bool fail));
 #endif
 };
 

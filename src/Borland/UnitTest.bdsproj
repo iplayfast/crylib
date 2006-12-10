@@ -31,7 +31,7 @@
         <property category="build.node" name="lastconfig" value="Debug_Build"/>
         <property category="build.node" name="name" value="UnitTest.exe"/>
         <property category="build.node" name="packages" value="vcl;vclx;dbrtl;Rave65VCL;bdertl;rtl;vcldb;adortl;dbxcds;dbexpress;vclib;ibxpress;xmlrtl;vclactnband;inet;IntrawebDB_80_100;Intraweb_80_100;vclie;inetdbbde;inetdbxpress;IndyCore;IndySystem;bcbsmp;soaprtl;dsnap;IndyProtocols;bcbie;teeui;teedb;tee;vcldbx"/>
-        <property category="build.node" name="sparelibs" value="rtl.lib vcl.lib"/>
+        <property category="build.node" name="sparelibs" value="rtl.lib vcl.lib vclx.lib"/>
         <property category="build.node" name="use_packages" value="1"/>
         <property category="build.platform" name="active" value="win32"/>
         <property category="build.platform" name="win32.Debug_Build.toolset" value="win32b"/>
@@ -276,6 +276,7 @@
         <FILE FILENAME="..\Common\zlib\trees.c" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="trees" FORMNAME="" DESIGNCLASS=""/>
         <FILE FILENAME="..\Common\zlib\uncompr.c" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="uncompr" FORMNAME="" DESIGNCLASS=""/>
         <FILE FILENAME="..\Common\zlib\zutil.c" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="zutil" FORMNAME="" DESIGNCLASS=""/>
+        <FILE FILENAME="..\Common\PrimInstance.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="PrimInstance" FORMNAME="" DESIGNCLASS=""/>
       </FILELIST>
       <IDEOPTIONS>
         <VersionInfo>

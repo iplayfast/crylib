@@ -84,21 +84,21 @@ const char *HugeFraction::GetAsStr(HugeFraction Base) const
 }
 
 
-void HugeDouble::CopyTo(CryObject &Dest) const  //copies contents of this to Dest
+void HugeDouble::CopyTo(Object &Dest) const  //copies contents of this to Dest
 {
-    if (Dest.IsA(THugeDouble))
+    if (Dest.IsA(CHugeDouble))
     {
     HugeDouble *h = (HugeDouble *)&Dest;
         *h = *this;
         return;
     }
-    if (Dest.IsA(THugeInt))
+    if (Dest.IsA(CHugeInt))
     {
     HugeInt *h = (HugeInt *) &Dest;
     	*h = *this;
 	return;
     }
-    if (Dest.IsA(TCryStream))
+    if (Dest.IsA(CCryStream))
     {
         SaveTo(*(CryStream *)&Dest);
         return;
@@ -106,10 +106,10 @@ void HugeDouble::CopyTo(CryObject &Dest) const  //copies contents of this to Des
     throw CryException(this,"Can't copy HugeDouble to %s",Dest.ChildClassName());
 }
 #ifdef VALIDATING
-bool HugeDouble::Test(bool Verbose,CryObject &Object,bool  (CallBack)(bool Verbose,const char *Result,bool fail))
+bool HugeDouble::Test(bool Verbose,Object &Object,bool  (CallBack)(bool Verbose,const char *Result,bool fail))
 {
 bool fail = false;
-    if (CryObject::Test(Verbose,Object,CallBack))
+    if (Object::Test(Verbose,Object,CallBack))
         return true;
   HugeDouble m,n;
   	m.Add(0xffffffff);
@@ -128,7 +128,7 @@ bool fail = false;
 }
 #endif
 
-CryObject *HugeDouble::Dup() const // creates a duplicate of this object
+Object *HugeDouble::Dup() const // creates a duplicate of this object
 {
 HugeDouble *h = new HugeDouble();
     *h = *this;
@@ -142,22 +142,22 @@ const char *HugeDouble::GetProperty(CryPropertyParser &PropertyName,CryString &R
         CopyTo(Result);
         return Result;
     }
-    return CryObject::GetProperty(PropertyName,Result);
+    return Object::GetProperty(PropertyName,Result);
 }
 bool HugeDouble::HasProperty(CryPropertyParser &PropertyName)const
 {
-    return (PropertyName=="Value") || CryObject::HasProperty(PropertyName);
+    return (PropertyName=="Value") || Object::HasProperty(PropertyName);
 }
 
 CryPropertyList *HugeDouble::PropertyNames() const
 {
-	CryPropertyList *n = CryObject::PropertyNames();
+	CryPropertyList *n = Object::PropertyNames();
 	n->AddPropertyByName("Value",this);
 	return n;
 }
 int HugeDouble::GetPropertyCount() const
 {
-    return 1 + CryObject::GetPropertyCount();
+    return 1 + Object::GetPropertyCount();
 }
 bool HugeDouble::SetProperty(CryPropertyParser &PropertyName,const char *PropertyValue)
 {
@@ -166,7 +166,7 @@ bool HugeDouble::SetProperty(CryPropertyParser &PropertyName,const char *Propert
         this->SetValue(PropertyValue);
         return true;
     }
-    return CryObject::SetProperty(PropertyName,PropertyValue);
+    return Object::SetProperty(PropertyName,PropertyValue);
 }
 
 extern char StrBuffer[SBS];

@@ -32,7 +32,7 @@
 namespace Crystal   {
 using namespace std;
 
-#define TCryFuzzy    "CryFuzzy"
+#define CCryFuzzy    "CryFuzzy"
 
 
 struct VC
@@ -42,7 +42,7 @@ struct VC
 };
 
 /// A Fuzzy Logic Implimenation
-class CryFuzzy : public CryArray
+class CryFuzzy : public Array
 {
 struct TFuzzyXY : public EmptyObject
 {
@@ -53,12 +53,12 @@ struct TFuzzyXY : public EmptyObject
  void SetValueXY(int i,float x, float y ); //Sets a point in a fuzzy table at index i
 protected:
     TFuzzyXY *Index(int i) const { return (TFuzzyXY *) this->GetItem(i);}
-    virtual void DestroyArrayItem(CryArray *Owner,EmptyObject *Item);	//derived class object destructor
-    virtual EmptyObject *CreateArrayItem(CryArray *Owner,bool *IsCryObject);			//derived class object creator
+    virtual void DestroyArrayItem(Array *Owner,EmptyObject *Item);	//derived class object destructor
+    virtual EmptyObject *CreateArrayItem(Array *Owner,bool *IsCryObject);			//derived class object creator
 
 public:
-StdFunctionsNoDup(CryFuzzy,CryArray);
-virtual CryObject *Dup()const;
+StdFunctionsNoDup(CryFuzzy,Array);
+virtual Object *Dup()const;
     CryFuzzy();
 	CryFuzzy(const CryFuzzy &c);
     CryFuzzy(const CryFuzzy *p);
@@ -97,32 +97,32 @@ virtual CryObject *Dup()const;
    virtual bool SaveAsText(int i,CryString &ToStream) const;
    virtual bool LoadAsText(Iterator *i,CryString &FromStream)
    {
-	return CryArray::LoadAsText(i,FromStream);
+	return Array::LoadAsText(i,FromStream);
    }
    virtual bool SaveAsText(Iterator *i,CryString &ToStream) const
    {
-	return CryArray::SaveAsText(i,ToStream);
+	return Array::SaveAsText(i,ToStream);
    }
 	void print(ostream &os);
 //    friend ostream &operator<<( ostream &os, CryFuzzy& f );
 
-  virtual CryObject *CreateItemType(const CryPropertyParser &PropertyName);
+  virtual Object *CreateItemType(const CryPropertyParser &PropertyName);
 // derived class will handle the display in CryStream the objects contained in array (text assumed)
-    virtual void SaveItemTo(const CryArray *Owner,EmptyObject *FromItem,CryStream &ToStream) const;
+    virtual void SaveItemTo(const Array *Owner,EmptyObject *FromItem,CryStream &ToStream) const;
 // derived class will handle the Creation of an Object from the stream
-    virtual EmptyObject *LoadItemFrom(CryArray *Owner,EmptyObject *ToItem,CryStream &FromStream);
+    virtual EmptyObject *LoadItemFrom(Array *Owner,EmptyObject *ToItem,CryStream &FromStream);
 
     bool SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue);
     virtual const char *GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const;
     virtual bool HasProperty(const CryPropertyParser &PropertyName)const;
 	virtual int GetPropertyCount() const;
 	virtual CryPropertyList* PropertyNames() const;
-   virtual void CopyTo(CryArray &Dest) const { CryArray::CopyTo(Dest);  } //copies contents of this to Dest
-    virtual void CopyTo(CryObject &Dest) const { CryArray::CopyTo(Dest);  }  //copies contents of this to Dest
+   virtual void CopyTo(Array &Dest) const { Array::CopyTo(Dest);  } //copies contents of this to Dest
+    virtual void CopyTo(Object &Dest) const { Array::CopyTo(Dest);  }  //copies contents of this to Dest
     virtual void GetEleType(CryString &Result) const { Result = "TFuzzyXY"; }
 
 #ifdef VALIDATING
-virtual bool Test(bool Verbose,CryObject &Object,bool (CallBack)(bool Verbose,const char *Result,bool fail));
+virtual bool Test(bool Verbose,Object &Object,bool (CallBack)(bool Verbose,const char *Result,bool fail));
 #endif
 	virtual CryFunctionDefList *GetFunctions(const char *Type=0) const;
 

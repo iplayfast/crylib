@@ -24,15 +24,15 @@ namespace Crystal
 {
 using namespace std;
 
-#ifndef TCryMemStream
-#define TCryMemStream "CryMemStream"
+#ifndef CCryMemStream
+#define CCryMemStream "CryMemStream"
 /// A stream that is contained within memory
 class CryMemStream : public CryStream
 {
 class MemStreamIterator : public StreamIterator
     {
     public:
-        MemStreamIterator(const CryContainer *container);
+        MemStreamIterator(const Container *container);
     };
 
     char *Buffer;   // where the actual data is held
@@ -96,7 +96,7 @@ public:
     virtual int SeekFromEnd(int Offset=0) const;
     virtual CryMemStream &MemDelete(unsigned int start,int amount);
     virtual size_t Size() const;
-    virtual void CopyTo(CryObject &Dest) const;
+    virtual void CopyTo(Object &Dest) const;
     //    virtual void CopyTo(CryStream *Dest) const;
     //    virtual CryObject *Dup() const; // creates a duplicate of this object
     // read until terminator or Size (inclusive)
@@ -116,7 +116,7 @@ public:
     virtual size_t Write(const CryStream *FromStream);
     virtual size_t Tell() const;
     virtual bool Eof() const;
-    virtual int CompareLogical(int CompareType,const CryObject *Test) const;
+    virtual int CompareLogical(int CompareType,const Object *Test) const;
 	virtual int Compare(const CryMemStream *MemStream) const;
 
     virtual bool IsOpen()  const;
@@ -143,7 +143,7 @@ public:
     }
 	virtual EmptyObject *GetAtIterator(const Iterator *I) const;
 		/// will set a value to the container[Iterator]
-	virtual void SetAtIterator(const Iterator *I,EmptyObject *Item,bool IsCryObject,bool IsOwned,size_t Size = 0) ;
+	virtual void SetAtIterator(const Iterator *I,EmptyObject *Item,bool IsObject,bool IsOwned,size_t Size = 0) ;
     /// abstract function used by subclasses to remove the item this iterator points at (iterator is still valid)
     /// if is not owned then is returned, else is deleted and null is returned
     virtual void RemoveAtIterator(Iterator *I);
@@ -151,8 +151,8 @@ public:
     virtual size_t Count() const;
     virtual EmptyObject *Add(EmptyObject *Item,size_t Size);
     virtual EmptyObject *AddOwned(EmptyObject *Item,size_t Size);
-    virtual CryObject *Add(CryObject *Item);
-    virtual CryObject *AddOwned(CryObject *Item);
+    virtual Object *Add(Object *Item);
+    virtual Object *AddOwned(Object *Item);
 }
 ;  // CryMemStream
 #endif // TCryMemSteam

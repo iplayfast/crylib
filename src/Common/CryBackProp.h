@@ -34,14 +34,14 @@
 namespace Crystal   {
 using namespace std;
 
-#define TCryBPNetContainer "CryBPNetContainer"
-#define TBackPropagateLayer "BackPropagateLayer"
-#define TCryBPNet	"CryBPNet"
+#define CCryBPNetContainer "CryBPNetContainer"
+#define CBackPropagateLayer "BackPropagateLayer"
+#define CCryBPNet	"CryBPNet"
 
 class CryBPNet;
 /// a layer class for use within the CryBackpropagation Class
 /*! The layer of the backpropagation net Weights are stored elsewhere, this class just stores the offsets into the weights array*/
-class BackPropagateLayer : public CryObject
+class BackPropagateLayer : public Object
 {
                      /* A Layer OF A NET:                     */
 	int id;
@@ -57,14 +57,14 @@ public:
 	int		dWeightStart;	// delta weights for momentum
 	CryBPNet *Owner;
 public:
-StdFunctionsNoDup(BackPropagateLayer,CryObject);
+StdFunctionsNoDup(BackPropagateLayer,Object);
 
 virtual CryFunctionDefList *GetFunctions(const char *Type=0) const;
 
 BackPropagateLayer(CryBPNet *_Owner);
 void SetID(int i);
 int  GetID() const { return id; }
-virtual void CopyTo(CryObject &Object) const;
+virtual void CopyTo(Object &Object) const;
 virtual bool HasProperty(const CryPropertyParser &PropertyName)const;
 virtual int GetPropertyCount() const;
 virtual CryPropertyList* PropertyNames() const;
@@ -75,7 +75,7 @@ virtual bool SetProperty(const CryPropertyParser &PropertyName,const char *Prope
 };
 
 /// low level backpropagation array class
-class CryBPNet : public CryArray
+class CryBPNet : public Array
 {
 public:// shit remove atfter testing
 double *AllWeights;
@@ -86,29 +86,29 @@ protected:
     void CopyToWeights(double *Dest,int length) const;
     int GetAllWeightsSize() const { return AllWeightsSize; }
 public:
-StdFunctions(CryBPNet,CryArray);
+StdFunctions(CryBPNet,Array);
     virtual CryFunctionDefList *GetFunctions(const char *Type=0) const;
 
 	void SetAllWeights();	/// gets' called just before the network is trained, or as it is loaded
 	double *GetAllWeights() const { return AllWeights; }
 /// derived class will handle the destruction of objects contained in array
-	virtual void DestroyArrayItem(CryArray *Owner,EmptyObject *Layer) ;
+	virtual void DestroyArrayItem(Array *Owner,EmptyObject *Layer) ;
 /// derived class will handle the creation of objects contained in array
-	virtual EmptyObject *CreateArrayItem(CryArray *Owner,bool *IsCryObject) ;
+	virtual EmptyObject *CreateArrayItem(Array *Owner,bool *IsCryObject) ;
 /// derived class will handle the display in CryStream the objects contained in array (text assumed)
-	virtual void SaveItemTo(const CryArray *Owner,EmptyObject *FromItem,CryStream &ToStream) const;
+	virtual void SaveItemTo(const Array *Owner,EmptyObject *FromItem,CryStream &ToStream) const;
 /// derived class will handle the loading of an Object from the stream, objectmust have already been created
-	virtual EmptyObject *LoadItemFrom(CryArray *Owner,EmptyObject *ToItem,CryStream &FromStream);
+	virtual EmptyObject *LoadItemFrom(Array *Owner,EmptyObject *ToItem,CryStream &FromStream);
 	virtual bool LoadAsText(int i,CryString &FromStream) ;
 
     virtual bool LoadAsText(Iterator *I,CryString &FromStream)
     {
-        return CryArray::LoadAsText(I,FromStream);
+        return Array::LoadAsText(I,FromStream);
     }
    	virtual bool SaveAsText(int i,CryString &ToStream) const;
     virtual bool SaveAsText(Iterator *I,CryString &ToStream) const
     {
-        return CryArray::SaveAsText(I,ToStream);
+        return Array::SaveAsText(I,ToStream);
 	}
 	BackPropagateLayer *SetLayerSize(int i,int Size);
 	int GetLayerSize(int i) const;
@@ -120,10 +120,10 @@ StdFunctions(CryBPNet,CryArray);
     BackPropagateLayer * AddLayer(int Size);
     void SetLockLevel(int n) { LockLevel = n; } // if retraining a new layer lock the old ones
     int GetLockLevel() { return LockLevel; }
-    CryBPNet() : CryArray()	{	AllWeights = 0; LockLevel = 1; }
+    CryBPNet() : Array()	{	AllWeights = 0; LockLevel = 1; }
     ~CryBPNet()  	{	Clear(); delete []AllWeights;	}
-   virtual void CopyTo(CryArray &Dest) const { CryArray::CopyTo(Dest);  } //copies contents of this to Dest
-    virtual void CopyTo(CryObject &Dest) const { CryArray::CopyTo(Dest);  }  //copies contents of this to Dest
+   virtual void CopyTo(Array &Dest) const { Array::CopyTo(Dest);  } //copies contents of this to Dest
+    virtual void CopyTo(Object &Dest) const { Array::CopyTo(Dest);  }  //copies contents of this to Dest
     virtual void GetEleType(CryString &Result) const;
 };
 
@@ -149,7 +149,7 @@ StdFunctions(CryBPNetContainer,CryBPNet);
 // functions needed by CryObject
 	virtual CryFunctionDefList *GetFunctions(const char *Type=0) const;
 
-   virtual void CopyTo(CryObject &Dest) const;  //copies contents of this to Dest
+   virtual void CopyTo(Object &Dest) const;  //copies contents of this to Dest
 // functions needed by CryNamedObject
 	virtual bool HasProperty(const CryPropertyParser &PropertyName)const;
 	virtual int GetPropertyCount() const;
@@ -159,7 +159,7 @@ StdFunctions(CryBPNetContainer,CryBPNet);
 	// if all is well returns true
 	virtual bool SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue);
 	/*! will create an object of the Type named in Type. In container classes where the Type is the contained object, the Parent must be the appropriete container type or a derived class which can create the object (if the default class can't) */
-	virtual CryObject *Create(const CryPropertyParser &PropertyName,CryObject *Parent=0);
+	virtual Object *Create(const CryPropertyParser &PropertyName,Object *Parent=0);
 
 // functions if multithreaded
 const char *GetStatus() const { return Status.AsPChar(); }
@@ -199,13 +199,13 @@ void printWeights();
    virtual bool IsCryObject(Iterator *I) const;
    virtual bool LoadAsText(Iterator *I,CryString *FromStream);
    virtual bool SaveAsText(Iterator *I,CryString *ToStream) const;*/
-   virtual void CopyTo(CryArray &Dest) const { CryArray::CopyTo(Dest);  } //copies contents of this to Dest
-   virtual void CopyTo(CryBPNetContainer &Dest) const { CryObject *n = &Dest; CopyTo(*n); }
+   virtual void CopyTo(Array &Dest) const { Array::CopyTo(Dest);  } //copies contents of this to Dest
+   virtual void CopyTo(CryBPNetContainer &Dest) const { Object *n = &Dest; CopyTo(*n); }
    void SetSize(size_t n); // set the number currently in use (either grow or shrink)
 // Actual class stuff
     CryBPNetContainer();
  #ifdef VALIDATING
-virtual bool Test(bool Verbose,CryObject &Object,bool (CallBack)(bool Verbose,const char *Result,bool fail));
+virtual bool Test(bool Verbose,Object &Object,bool (CallBack)(bool Verbose,const char *Result,bool fail));
 #endif
 
 };

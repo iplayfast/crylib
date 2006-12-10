@@ -4,9 +4,9 @@
 namespace Crystal {
 
 using namespace std;
-#ifndef TFunctionDef
-#define TFunctionDef	"FunctionDef"
-#define TListFunctionDef	"ListFunctionDef"
+#ifndef CFunctionDef
+#define CFunctionDef	"FunctionDef"
+#define CListFunctionDef	"ListFunctionDef"
 
 class FunctionDef : public CryString
 {
@@ -55,9 +55,9 @@ StdFunctions(FunctionDef,CryString);
 //virtual bool SetPropertyAsObject(CryProperty *Value);
 //virtual void SaveTo(CryStream &ToStream) const;
 //virtual void LoadFrom(CryStream &FromStream);
-CryObject *FactoryCreate(CryStream &FromStream);
-CryObject *FactoryCreate(const CryString &Type,CryObject *Parent=0);
-bool IterateThroughAll(CryContainer *Container,EmptyObject *Control);
+Object *FactoryCreate(CryStream &FromStream);
+Object *FactoryCreate(const CryString &Type,Object *Parent=0);
+bool IterateThroughAll(Container *Container,EmptyObject *Control);
 //virtual bool IteratedFunction(EmptyObject *Control,EmptyObject *Item);
 //virtual bool Test(bool Verbose,CryObject &Object,bool  (CallBack)(bool Verbose,const char *Result,bool fail));
 
@@ -185,11 +185,11 @@ void SetDefaultValues();
 
 //////////////////////
 
-class ListFunctionDef : public CryList
+class ListFunctionDef : public List
 {
-CryContainer::Iterator *LocIterator;
+Container::Iterator *LocIterator;
 public:
-StdFunctions(ListFunctionDef,CryList);
+StdFunctions(ListFunctionDef,List);
 	ListFunctionDef()
 	{
 		LocIterator = _CreateIterator();
@@ -242,7 +242,7 @@ virtual FunctionDef* Add(FunctionDef * Item);
 // Iterator functions available because this is a container class
 
 /*! If thing at current location is in CryObject */
-	bool I_IsCryObject() { return LocIterator->IsCryObject(); }
+	bool I_IsObject() { return LocIterator->IsObject(); }
 
 /*! If thing at current location is owned by the Container (ie the container delete's it */
 	bool I_IsOwned() { return LocIterator->IsOwned(); }
@@ -259,7 +259,7 @@ virtual FunctionDef* Add(FunctionDef * Item);
 	bool I_GotoLast() { return LocIterator->GotoLast(); }
 	size_t I_GetItemSize() { return LocIterator->GetItemSize(); }
 	bool I_SaveAsText(CryString &ToBody) { return  LocIterator->SaveAsText(ToBody); }
-	const CryContainer *I_GetOrigContainer() const  { return LocIterator->GetOrigContainer(); }
+	const Container *I_GetOrigContainer() const  { return LocIterator->GetOrigContainer(); }
 
 /*!*************************************************
 // Inherited Functions
@@ -339,7 +339,7 @@ CryObject *Add(CryObject *Item);
 CryObject *AddOwned(CryObject *Item);
 void SetItemOwnerShip(EmptyObject  *Item,bool Owned);
 bool GetItemOwnerShip(EmptyObject *Item) const;
-bool IsCryObject(Iterator *I) const;
+bool IsObject(Iterator *I) const;
 size_t GetItemSize(Iterator *I) const;
 bool LoadAsText(Iterator *I,CryString &FromStream);
 bool SaveAsText(Iterator *I,CryString &ToStream) const;

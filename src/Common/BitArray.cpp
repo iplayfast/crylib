@@ -15,7 +15,7 @@ using namespace Crystal;
 /*! Default BitArray constructor */
 
 #ifdef VALIDATING
-bool BitArray::Test(bool Verbose,CryObject &Object,bool  (CallBack)(bool Verbose,const char *Result,bool fail))
+bool BitArray::Test(bool Verbose,Object &ThisObject,bool  (CallBack)(bool Verbose,const char *Result,bool fail))
 {
 
 char Result[200];
@@ -24,9 +24,9 @@ CryString spn,spv,stemp;
 
 BitArray Copy;
 BitArray *OrgObject = 0;
-	Object.CopyTo(Copy);
-	if (Object.IsA(TBitArray)) {
-		OrgObject=(BitArray *)&Object;
+	ThisObject.CopyTo(Copy);
+	if (ThisObject.IsA(CBitArray)) {
+		OrgObject=(BitArray *)&ThisObject;
 	}
 	Fail = Copy!=*OrgObject;
 	sprintf(Result,"Copy Constructor");
@@ -59,7 +59,7 @@ BitArray Prime;
 			return false;
 
 	}
-	return CryMemStream::Test(Verbose,Object,CallBack);
+	return CryMemStream::Test(Verbose,ThisObject,CallBack);
 }
 
 #endif
@@ -96,7 +96,7 @@ void BitArray::DeleteIterator(Iterator *I) const
 }
 
 /*!Copy this class and any parts of it to Dest*/
-void BitArray::CopyTo(CryObject &Dest) const
+void BitArray::CopyTo(Object &Dest) const
 {
     /* If any data is added to this class uncomment this and add the data accordingly
      
@@ -152,7 +152,7 @@ bool BitArray::LoadAsText(Iterator *I,CryString &FromStream)
 {
     return CryMemStream::LoadAsText(I,FromStream);
 }
-bool BitArray::IsCryObject(const Iterator *I) const
+bool BitArray::IsObject(const Iterator *I) const
 {
     return false;
 }
@@ -243,18 +243,18 @@ EmptyObject *BitArray::Add(EmptyObject *Item,size_t Size)
     throw CryException("Cannot Add EmptyObject * to BitArray");
 }
 
-CryObject *BitArray::Dup() const
+Object *BitArray::Dup() const
 {
     BitArray *New = new BitArray();
     CopyTo(*New);
     return New;
 }
 
-CryObject *BitArray::AddOwned(CryObject *Item)
+Object *BitArray::AddOwned(Object *Item)
 {
     throw CryException("Cannot Add EmptyObject * to BitArray");
 }
-CryObject *BitArray::Add(CryObject *Item)
+Object *BitArray::Add(Object *Item)
 {
     throw CryException("Cannot Add EmptyObject * to BitArray");
 }
@@ -270,14 +270,14 @@ CryFunctionDefList *BitArray::GetFunctions(const char *Type) const
     s += "virtual void SetItemOwnerShip(Iterator *I,bool Owned);";
     s += "virtual void GetEleType(CryString &Result) const;";
     s += "virtual void DeleteIterator(Iterator *I) const;";
-    s += "virtual void CopyTo(CryObject &Dest) const;";
-    s += "virtual void Clear();";
-    s += "virtual size_t Size() const;";
-    s += "virtual size_t GetItemSize(Iterator *I) const;";
-    s += "virtual size_t Count() const;";
-    s += "virtual bool SaveAsText(Iterator *I,CryString &ToStream) const;";
-    s += "virtual bool LoadAsText(Iterator *I,CryString &FromStream);";
-    s += "virtual bool IsCryObject(Iterator *I) const;";
+    s += "virtual void CopyTo(Object &Dest) const;";
+	s += "virtual void Clear();";
+	s += "virtual size_t Size() const;";
+	s += "virtual size_t GetItemSize(Iterator *I) const;";
+	s += "virtual size_t Count() const;";
+	s += "virtual bool SaveAsText(Iterator *I,CryString &ToStream) const;";
+	s += "virtual bool LoadAsText(Iterator *I,CryString &FromStream);";
+	s += "virtual bool IsObject(Iterator *I) const;";
     s += "virtual bool GotoPrev(Iterator *I) const;";
     s += "virtual bool GotoNext(Iterator *I) const;";
     s += "virtual bool GotoLast(Iterator *Iterator) const;";
@@ -287,16 +287,16 @@ CryFunctionDefList *BitArray::GetFunctions(const char *Type) const
     s += "virtual EmptyObject *GetAtIterator(Iterator *I) const;";
     s += "virtual EmptyObject *AddOwned(EmptyObject *Item,size_t Size);";
     s += "virtual EmptyObject *Add(EmptyObject *Item,size_t Size);";
-    s += "virtual CryObject *Dup() const;";
-    s += "virtual CryObject *AddOwned(CryObject *Item);";
-    s += "virtual CryObject *Add(CryObject *Item);";
-    s += "virtual CryFunctionDefList *GetFunctions(const char *Type=0) const;";
+    s += "virtual Object *Dup() const;";
+	s += "virtual Object *AddOwned(Object *Item);";
+	s += "virtual Object *Add(Object *Item);";
+	s += "virtual CryFunctionDefList *GetFunctions(const char *Type=0) const;";
     s +="virtual const char *GetProperty(const CryPropertyParser &PropertyName,CryString &Result)const ;";
     s +="virtual bool SetProperty(const char *PropertyName,CryString &PropertyValue);";
     s +="virtual const char *ChildClassName()const ;";
     s +="virtual bool IsA(const char *GetName)const ;";
-    s +="virtual CryObject *Dup()const ;";
-    s +="virtual void CopyTo(CryObject &Dest)const ;";
+    s +="virtual Object *Dup()const ;";
+    s +="virtual void CopyTo(Object &Dest)const ;";
     s +="size_t BitArray:: Size()const ;";
     l->LoadFromString(s,";");
     return l;

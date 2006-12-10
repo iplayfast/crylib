@@ -80,8 +80,8 @@ CryFuzzy f;
     f.AddPoint(400.0,-500.0);
 
 {
-CryList list;
-CryList *l1 = new CryList;
+List list;
+List *l1 = new List;
     list.AddOwned(l1);
     l1->Add(&f);
 CryFileStream fs;
@@ -94,7 +94,7 @@ CryXML x("obj");
 
 try
 {
-CryList l;
+List l;
 CryFileStream fs;
 #ifdef VALIDATING
 fs.Test(false,fs,CallBack);
@@ -463,11 +463,11 @@ char *teststr = "Hello, Hello world. This is a test of the emerging broad corpin
   return 0;
   //CreateAINETXML();
   ClassBuilder cb;
-  cb.SetBaseClass(TCryFuzzy,true,true,"MyFuzzy");
+  cb.SetBaseClass(CCryFuzzy,true,true,"MyFuzzy");
 //  cb.SetBaseClass(TCryBPNetContainer);
 //  cb.SetName("ListFunctionDef");
   cb.SetFilename("CryTestDef");
-  cb.AddClassInstance(TCryFuzzy,"MyFuzzy",10,true,true,true,true,"0");
+  cb.AddClassInstance(CCryFuzzy,"MyFuzzy",10,true,true,true,true,"0");
   cb.SaveSource();
   {
   CryFileStream std;

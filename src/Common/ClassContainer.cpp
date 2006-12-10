@@ -33,13 +33,13 @@ using namespace std;
 
 
 #ifdef VALIDATING
-bool CryContainer::Test(bool Verbose,CryObject &Object, bool (CallBack)(bool Verbose,const char *Result,bool Fail))
+bool Container::Test(bool Verbose,Object &Object, bool (CallBack)(bool Verbose,const char *Result,bool Fail))
 {
     bool Fail = false;
     if (Object.IsContainer())
     {
         char Result[200];
-        CryContainer *c = (CryContainer *)&Object;
+        Container *c = (Container *)&Object;
         sprintf(Result,"\nCryContainer Testing:\nObject ClassName %s,ChildClassName %s",
                 c->ClassName(),c->ChildClassName());
         if (!CallBack(Verbose,Result,Fail))
@@ -134,11 +134,11 @@ bool CryContainer::Test(bool Verbose,CryObject &Object, bool (CallBack)(bool Ver
         }
         c->DeleteIterator(I);
     }
-    return CryObject::Test(Verbose,Object,CallBack);
+    return Object::Test(Verbose,Object,CallBack);
 }
 #endif
 
-bool CryContainer::SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue)
+bool Container::SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue)
 {
     bool result = false;
     if (PropertyName=="Values")
@@ -156,15 +156,15 @@ bool CryContainer::SetProperty(const CryPropertyParser &PropertyName,const char 
         }
     }
     else
-        return CryObject::SetProperty(PropertyName,PropertyValue);
+        return Object::SetProperty(PropertyName,PropertyValue);
     return result;
 }
-CryObject *CryContainer::GetCopyOfPropertyAsObject(const CryPropertyParser &PropertyName) const
+Object *Container::GetCopyOfPropertyAsObject(const CryPropertyParser &PropertyName) const
 {
-    return CryObject::GetCopyOfPropertyAsObject(PropertyName);
+    return Object::GetCopyOfPropertyAsObject(PropertyName);
 }
 
-const char *CryContainer::GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const
+const char *Container::GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const
 {
     if (PropertyName=="Values")	// this is handled on an individual basis instead of passing the array flag back because strings are also containers, and as such would be huge lists of single letters.
     {
@@ -184,32 +184,32 @@ const char *CryContainer::GetProperty(const CryPropertyParser &PropertyName,CryS
         delete i;
         return Result.AsPChar();
 	}
-    return CryObject::GetProperty(PropertyName,Result);
+    return Object::GetProperty(PropertyName,Result);
 }
-bool CryContainer::HasProperty(const CryPropertyParser &PropertyName) const
+bool Container::HasProperty(const CryPropertyParser &PropertyName) const
 {
     if (PropertyName=="Values")
         return true;
-    return CryObject::HasProperty(PropertyName);
+    return Object::HasProperty(PropertyName);
 }
-int CryContainer::GetPropertyCount() const
+int Container::GetPropertyCount() const
 {
-    return CryObject::GetPropertyCount() + 1;
+    return Object::GetPropertyCount() + 1;
 }
-CryPropertyList *CryContainer::PropertyNames() const
+CryPropertyList *Container::PropertyNames() const
 {
-	CryPropertyList *n = CryObject::PropertyNames();
+	CryPropertyList *n = Object::PropertyNames();
 	n->AddPropertyByName("Values",this);
 	return n;
 }
 
-CryFunctionDefList *CryContainer::GetFunctions(const char *Type) const
+CryFunctionDefList *Container::GetFunctions(const char *Type) const
 {
 // if a type has been defined and it's not this class, check subclasses for it
 	if (Type && !IsA(Type))
-	   return CryObject::GetFunctions(Type);
+	   return Object::GetFunctions(Type);
 	// otherwise get any functions in subclasses
-   CryFunctionDefList *l = CryObject::GetFunctions();
+   CryFunctionDefList *l = Object::GetFunctions();
     CryString s;
     s += "//Class CryContainer;";
     s += "virtual void GetEleType(CryString &Result) const = 0;";
@@ -232,7 +232,7 @@ CryFunctionDefList *CryContainer::GetFunctions(const char *Type) const
     s += "virtual void SetItemOwnerShip(Iterator *I,bool Owned) = 0;";
     s += "virtual bool GetItemOwnerShip(const Iterator *I) const = 0;";
     s += "virtual size_t GetItemSize(Iterator *I) const = 0;";
-    s += "virtual bool IsCryObject(const Iterator *I) const = 0;";
+    s += "virtual bool IsObject(const Iterator *I) const = 0;";
     s += "virtual bool LoadAsText(Iterator *I,CryString &FromStream) = 0;";
     s += "virtual bool SaveAsText(Iterator *I,CryString &ToStream) const = 0;";
     s += "bool IterateThroughAll(EmptyObject *Control);";
@@ -254,17 +254,17 @@ CryFunctionDefList *CryContainer::GetFunctions(const char *Type) const
 }
 
 // private function not allowed
-CryContainer::CryContainer(CryContainer &NoNO) : CryOwnedObject()
+Container::Container(Container &NoNO) : OwnedObject()
 {
 	_IsContainer = true;
 }
 
-CryContainer::CryContainer()
+Container::Container()
 {
 	_IsContainer = true;
 }
 
-bool CryContainer::GotoN(Iterator *Iterator,int n) const // returns true if success
+bool Container::GotoN(Iterator *Iterator,int n) const // returns true if success
 {
 	if (Iterator->GotoFirst())
 	{
@@ -278,142 +278,142 @@ bool CryContainer::GotoN(Iterator *Iterator,int n) const // returns true if succ
 	}
 	return false;
 }
-bool CryContainer::IteratedFunction(EmptyObject *Control,EmptyObject *Item)
+bool Container::IteratedFunction(EmptyObject *Control,EmptyObject *Item)
 {
     return true;
 }
 
-bool CryContainer::Sortable() const
+bool Container::Sortable() const
 {
     return false;
 }
-void CryContainer::Sort(int CompareType)
+void Container::Sort(int CompareType)
 {
     return ;
 }
 //! Compare the contained items (Used in sorting)
-int CryContainer::Compare2(int CompareType,const EmptyObject *First,const EmptyObject *Second) const
+int Container::Compare2(int CompareType,const EmptyObject *First,const EmptyObject *Second) const
 {
     return 0;
 }
 // Compare to another Object
-int CryContainer::CompareLogical(int CompareType,const CryObject *Test) const
+int Container::CompareLogical(int CompareType,const Object *Test) const
 {
     return 0;
 }
-bool CryContainer::LessThen(int CompareType,const CryObject *Test) const
+bool Container::LessThen(int CompareType,const Object *Test) const
 {
 	return false;
 }
-bool CryContainer::GreaterThen(int CompareType,const CryObject *Test) const
+bool Container::GreaterThen(int CompareType,const Object *Test) const
 {
 	return false;
 }
-bool CryContainer::EqualTo(int CompareType,const CryObject *Test) const
+bool Container::EqualTo(int CompareType,const Object *Test) const
 {
     return true;
 }
 
 
-const CryContainer *CryContainer::GetOwner(Iterator *I) const
+const Container *Container::GetOwner(Iterator *I) const
 {
     return I->GetOrigContainer();
 }
 
-void CryContainer::SetIsContainer(bool Enabled)
+void Container::SetIsContainer(bool Enabled)
 {
 	 _IsContainer = Enabled; 
 }
 
-bool CryContainer::IsContainer() const
+bool Container::IsContainer() const
 {
     return _IsContainer;
 }
 
-CryContainer::Iterator::Iterator(const CryContainer *oc )
+Container::Iterator::Iterator(const Container *oc )
 {
     OrigContainer = oc;
 }
 
-bool CryContainer::Iterator::IsCryObject() const
+bool Container::Iterator::IsObject() const
 {
-    return OrigContainer->IsCryObject(this);
+    return OrigContainer->IsObject(this);
 }
 
-bool CryContainer::Iterator::IsOwned() const
+bool Container::Iterator::IsOwned() const
 {
     return OrigContainer->GetItemOwnerShip(this);
 }
 
-bool CryContainer::Iterator::IsEmpty() const
+bool Container::Iterator::IsEmpty() const
 {
     return OrigContainer->IsEmpty(this);
 }
  // true if item is an object and is a container and is currently set as a container (believes it is a container)
-bool CryContainer::Iterator::IsContainer() const
+bool Container::Iterator::IsContainer() const
 {
-	if (IsCryObject())
+	if (IsObject())
 	{
-		CryObject *o = (CryObject *) OrigContainer->GetAtIterator(this);
+		Object *o = (Object *) OrigContainer->GetAtIterator(this);
 #ifdef DEBUG
 		const char *type = o->ChildClassName();
 #endif
 // even though it's a container type, it may not currently be a container (eg string defaults to being a non-container)
-		return (o && o->IsA(TCryContainer) && o->IsContainer());
+		return (o && o->IsA(CContainer) && o->IsContainer());
 	}
 	return false; // not an object so not a container
 }
-EmptyObject *CryContainer::Iterator::Get() const
+EmptyObject *Container::Iterator::Get() const
 {
 	return OrigContainer->GetAtIterator(this);
 }
 
-//void CryContainer::Iterator::Set(EmptyObject *Item,bool IsCryObject,bool IsOwned,size_t Size) 
+//void CryContainer::Iterator::Set(EmptyObject *Item,bool IsObject,bool IsOwned,size_t Size) 
 //{
-//	OrigContainer->SetAtIterator(this,Item,IsCryObject,IsOwned,Size );
+//	OrigContainer->SetAtIterator(this,Item,IsObject,IsOwned,Size );
 //}
-bool CryContainer::Iterator::GotoN(int n) // returns true if success
+bool Container::Iterator::GotoN(int n) // returns true if success
 {
     return OrigContainer->GotoN(this,n);
 }
-bool CryContainer::Iterator::GotoFirst()
+bool Container::Iterator::GotoFirst()
 {
     return OrigContainer->GotoFirst(this);
 }
 
-bool CryContainer::Iterator::GotoPrev()
+bool Container::Iterator::GotoPrev()
 {
     return OrigContainer->GotoPrev(this);
 }
 
-bool CryContainer::Iterator::GotoNext()
+bool Container::Iterator::GotoNext()
 {
     return OrigContainer->GotoNext(this);
 }
 
-bool CryContainer::Iterator::GotoLast()
+bool Container::Iterator::GotoLast()
 {
     return OrigContainer->GotoLast(this);
 }
 
-size_t CryContainer::Iterator::GetItemSize()
+size_t Container::Iterator::GetItemSize()
 {
     return OrigContainer->GetItemSize(this);
 }
 
 //bool LoadAsText(CryString *FromStream) { return OrigContainer->LoadAsText(this,FromStream); }
-bool CryContainer::Iterator::SaveAsText(CryString &ToStream)
+bool Container::Iterator::SaveAsText(CryString &ToStream)
 {
     return OrigContainer->SaveAsText(this,ToStream);
 }
 
-const CryContainer *CryContainer::Iterator::GetOrigContainer() const
+const Container *Container::Iterator::GetOrigContainer() const
 {
     return OrigContainer;
 }
 
 /// return the type of structure used to control this list (ie listnode eleptr, etc)
-void CryContainer::Iterator::GetEleType(CryString &Result) const
+void Container::Iterator::GetEleType(CryString &Result) const
 {
     OrigContainer->GetEleType(Result);
 }
@@ -421,7 +421,7 @@ void CryContainer::Iterator::GetEleType(CryString &Result) const
 
 
 /// returns true if all contained things where iterated through, FunctionToCall returns false if iteration should stop
-bool CryContainer::IterateThroughAll(EmptyObject *Control)
+bool Container::IterateThroughAll(EmptyObject *Control)
 {
-    return CryObject::IterateThroughAll(this,Control);
+    return Object::IterateThroughAll(this,Control);
 }

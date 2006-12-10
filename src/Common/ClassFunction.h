@@ -24,9 +24,9 @@
 namespace Crystal
 {
 using namespace std;
-#ifndef TCryFunctionDef 
-#define TCryFunctionDef "CryFunctionDef"
-#define TCryFunctionDefList "CryFunctionDefList"
+#ifndef CCryFunctionDef
+#define CCryFunctionDef "CryFunctionDef"
+#define CCryFunctionDefList "CryFunctionDefList"
 
 /*! contains all the info to describe a function definition, used when autobuilding classes
 */
@@ -49,10 +49,10 @@ public:
 	~CryFunctionDef();
     void Parse(const char *Name);
     CryFunctionDef(const char *_ReturnType, const char *_FunctionName,bool _IsConst = false,bool _IsVirtual = false,bool _IsPure = false);
-    virtual int CompareLogical(int CompareType,const CryObject *Test) const;
-    virtual bool LessThen(int CompareType,const CryObject *Test)const;
-	virtual bool GreaterThen(int CompareType,const CryObject *Test)const;
-	virtual bool EqualTo(int CompareType,const CryObject *Test)const;
+    virtual int CompareLogical(int CompareType,const Object *Test) const;
+    virtual bool LessThen(int CompareType,const Object *Test)const;
+	virtual bool GreaterThen(int CompareType,const Object *Test)const;
+	virtual bool EqualTo(int CompareType,const Object *Test)const;
     virtual int GetPropertyCount() const;
 	virtual bool HasProperty(const CryPropertyParser &PropertyName) const;
 	virtual CryPropertyList* PropertyNames() const;
@@ -69,10 +69,10 @@ public:
 }
 ;  //CryFunctionDef
 
-class CryFunctionDefList : public CryList
+class CryFunctionDefList : public List
 {
 public:
-    StdFunctions(CryFunctionDefList,CryList);
+    StdFunctions(CryFunctionDefList,List);
     void LoadFromString(const CryString &Source,const char *Separator);
 };
 

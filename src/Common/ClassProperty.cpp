@@ -72,7 +72,7 @@ void CryProperty::SetValue(const char *_Value)
 	delete Value;
 	Value = new CryString(_Value);
 }
-void CryProperty::SetValue(const CryObject *_Value)
+void CryProperty::SetValue(const Object *_Value)
 {
 	delete Value;
 	Value = _Value->Dup();
@@ -82,20 +82,20 @@ void CryProperty::SetName(const char *_Name)
 	*Name = _Name;
 }
 
-const CryObject *CryProperty::GetValue() const
+const Object *CryProperty::GetValue() const
 {
 	return Value;
 }
 const char *CryProperty::GetValue(CryString &Result) const	// return string value or Object name if not CryString
 {
-	if (Value->IsA(TCryString)) {
+	if (Value->IsA(CCryString)) {
 		Result = *(CryString *) Value;
 	}
 	else
 		Result = Value->ChildClassName();
 	return Result.AsPChar();
 }
-CryObject *CryProperty::_GetValue() const
+Object *CryProperty::_GetValue() const
 {
 	return Value;
 }
@@ -112,16 +112,16 @@ bool CryProperty::HasProperty(const CryPropertyParser &PropertyName) const
 #endif
 	if (*GetName()=="NoName")
 		return true;	// Properties can have any one Property, none has been assigned yet so go for it
-    return (PropertyName==*GetName()) || CryObject::HasProperty(PropertyName);
+    return (PropertyName==*GetName()) || Object::HasProperty(PropertyName);
 }
 
 CryFunctionDefList *CryProperty::GetFunctions(const char *Type) const
 {
     // if a type has been defined and it's not this class, check subclasses for it
     if (Type && !IsA(Type))
-        return CryObject::GetFunctions(Type);
+        return Object::GetFunctions(Type);
     // otherwise get any functions in subclasses
-    CryFunctionDefList *l = CryObject::GetFunctions();
+    CryFunctionDefList *l = Object::GetFunctions();
     CryString s;
     s += "//  Class CryProperty;";
 	s += "virtual CryString *GetFunctions() const;";
@@ -143,7 +143,7 @@ CryFunctionDefList *CryProperty::GetFunctions(const char *Type) const
 
 const char *CryProperty::GetProperty(CryString &Result) const
 {
-	if (Value->IsA(TCryString))
+	if (Value->IsA(CCryString))
 	{
 		Result = (CryString *)Value;
 		return Result.AsPChar();
@@ -170,7 +170,7 @@ bool CryProperty::SetProperty(const CryPropertyParser &PropertyName,const char *
 CryString v(PropertyValue);
 	return SetProperty(PropertyName,&v);
 }
-bool CryProperty::SetProperty(const CryPropertyParser &PropertyName,const CryObject* PropertyValue)
+bool CryProperty::SetProperty(const CryPropertyParser &PropertyName,const Object* PropertyValue)
 {
 	if (PropertyName==*GetName())
 	{
@@ -180,8 +180,8 @@ bool CryProperty::SetProperty(const CryPropertyParser &PropertyName,const CryObj
 	}
 	else
 	{
-		if (CryObject::HasProperty(PropertyName) && PropertyValue->IsA(TCryString))
-			return CryObject::SetProperty(PropertyName,*((CryString *)PropertyValue));
+		if (Object::HasProperty(PropertyName) && PropertyValue->IsA(CCryString))
+			return Object::SetProperty(PropertyName,*((CryString *)PropertyValue));
 		else
 		{
 			SetName(PropertyName);
@@ -203,9 +203,9 @@ CryPropertyList *CryProperty::PropertyNames() const
 	return n;
 }
 
-void CryProperty::CopyTo(CryObject &Dest) const   //copies contents of this to Dest
+void CryProperty::CopyTo(Object &Dest) const   //copies contents of this to Dest
 {
-	if (Dest.IsA(TCryProperty))
+	if (Dest.IsA(CCryProperty))
 	{
 	CryProperty *Cast = (CryProperty *)&Dest;
 		Cast->SetProperty(Name->AsPChar(),Value);
@@ -217,10 +217,10 @@ void CryProperty::CopyTo(CryObject &Dest) const   //copies contents of this to D
 
 const CryString *CryProperty::GetName() const
 {
-    return Name;
+	return Name;
 }
 
-CryObject *CryProperty::Dup() const  /// creates a duplicate of this object
+Object *CryProperty::Dup() const  /// creates a duplicate of this object
 {
     CryProperty *n = new CryProperty(GetName()->AsPChar());
     n->SetValue(Value);
@@ -242,16 +242,16 @@ CryPropertyList::~CryPropertyList()
 }
 
 CryPropertyList::PropertyIterator::PropertyIterator(const CryPropertyList *container)
-		: CryList::ListIterator((CryList *)container)
+		: List::ListIterator((List *)container)
 {
 };
 
-void CryPropertyList::PropertyIterator::CopyTo(CryObject &Dest) const
+void CryPropertyList::PropertyIterator::CopyTo(Object &Dest) const
 {
-	if (!Dest.IsA(TPropertyIterator))
-		CryList::ListIterator::CopyTo(Dest);
+	if (!Dest.IsA(CPropertyIterator))
+		List::ListIterator::CopyTo(Dest);
 }
-CryObject *CryPropertyList::PropertyIterator::Dup() const
+Object *CryPropertyList::PropertyIterator::Dup() const
 {
 CryPropertyList *l =(CryPropertyList *)this->GetOrigContainer();
 
@@ -263,19 +263,19 @@ CryPropertyList *l =(CryPropertyList *)this->GetOrigContainer();
 
 bool CryPropertyList::PropertyIterator::GotoFirst()
 {
-	return	CryList::ListIterator::GotoFirst();
+	return	List::ListIterator::GotoFirst();
 }
 bool CryPropertyList::PropertyIterator::GotoPrev()
 {
-	return CryList::ListIterator::GotoPrev();
+	return List::ListIterator::GotoPrev();
 }
 bool CryPropertyList::PropertyIterator::GotoNext()
 {
-	return CryList::ListIterator::GotoNext();
+	return List::ListIterator::GotoNext();
 }
 bool CryPropertyList::PropertyIterator::GotoLast()
 {
-	return CryList::ListIterator::GotoLast();
+	return List::ListIterator::GotoLast();
 }
 size_t CryPropertyList::PropertyIterator::GetItemSize()
 {
@@ -320,7 +320,7 @@ CryPropertyList::PropertyIterator *CryPropertyList::CreateIterator() const
 	return (PropertyIterator *)_CreateIterator();
 }
 
-CryContainer::Iterator *CryPropertyList::_CreateIterator() const
+Container::Iterator *CryPropertyList::_CreateIterator() const
 {
 	return new PropertyIterator(this);
 }
@@ -341,13 +341,13 @@ size_t size = 0;
 	}
 	return size;
 }
-int CryPropertyList::Compare(int CompareType,const CryObject *Test1,const CryObject *Test2) const
+int CryPropertyList::Compare(int CompareType,const Object *Test1,const Object *Test2) const
 {
 	if (CompareType==0) {
-		if(Test2->IsA(TCryMemStream))
+		if(Test2->IsA(CCryMemStream))
 		{
 		CryMemStream *t2 = (CryMemStream *)Test2;
-			if (Test1->IsA(TCryProperty))
+			if (Test1->IsA(CCryProperty))
 			{
 			CryProperty *p = (CryProperty *)Test1;
 				return (p->GetName()->EqualTo(CompareType,t2));
@@ -355,9 +355,9 @@ int CryPropertyList::Compare(int CompareType,const CryObject *Test1,const CryObj
 		}
 		else
 		{
-			if (Test2->IsA(TCryProperty)) {
+			if (Test2->IsA(CCryProperty)) {
 			const CryString *Name = ((CryProperty *)Test2)->GetName();
-			if (Test1->IsA(TCryProperty))
+			if (Test1->IsA(CCryProperty))
 			{
 			CryProperty *p = (CryProperty *)Test1;
 				return (p->GetName()->EqualTo(CompareType,Name));
@@ -391,12 +391,12 @@ int n = FindNodeValue(Needle);
 		}
 	}
 }
-void CryPropertyList::CopyTo(CryObject &Dest) const
+void CryPropertyList::CopyTo(Object &Dest) const
 {
-	if (Dest.IsA(TCryPropertyList))
+	if (Dest.IsA(CCryPropertyList))
 	{
 		CryPropertyList *Cast = (CryPropertyList *)&Dest;
-		CryList::CopyTo(*Cast);
+		List::CopyTo(*Cast);
 	}
 	else
 	throw CryException(this,"Copying from CryPropertyList to object that is not a PropertyList");
@@ -406,7 +406,7 @@ void CryPropertyList::CopyTo(CryObject &Dest) const
 
 void CryPropertyList::RemoveAtIterator(Iterator *LI)
 {
-	if (LI->IsA(TPropertyIterator))
+	if (LI->IsA(CPropertyIterator))
 	{
 	PropertyIterator  *pi = (CryPropertyList::PropertyIterator *)LI;
 	CryList *l = (CryList *)	ni->GetOrigContainer();
@@ -419,12 +419,12 @@ void CryPropertyList::RemoveAtIterator(Iterator *LI)
 } */
 
 
-CryPropertyList::CryPropertyList() : CryList()
+CryPropertyList::CryPropertyList() : List()
 {
 }
 
 // Set the Target Object's properties with values held here
-void CryPropertyList::Set(CryObject *Target)
+void CryPropertyList::Set(Object *Target)
 {
 PropertyIterator *pi = (CryPropertyList::PropertyIterator *)_CreateIterator();
 CryString r;
@@ -440,7 +440,7 @@ CryString r;
 	DeleteIterator(pi);
 }
 /// Get the Source's Properties (loose any currently held)
-void CryPropertyList::Get(CryObject *Source)
+void CryPropertyList::Get(Object *Source)
 {
 	Clear();
 	CryPropertyList *Properties = Source->PropertyNames();
@@ -493,17 +493,17 @@ const char *CryPropertyList::GetProperty(const CryPropertyParser &PropertyName,C
 			return "*";
 		return Result.AsPChar();
 	}
-	return CryList::GetProperty(PropertyName,Result);
+	return List::GetProperty(PropertyName,Result);
 }
 
 /*! will return whether or not the property named in PropertyName is a container */
 bool CryPropertyList::GetIsPropertyContainer(const CryPropertyParser &PropertyName) const
 {
-	const CryObject *v = _GetPropertyAsObject(PropertyName);
+	const Object *v = _GetPropertyAsObject(PropertyName);
 	return v->IsContainer();
 }
 
-CryObject *CryPropertyList::GetCopyOfPropertyAsObject(const CryPropertyParser &PropertyName) const
+Object *CryPropertyList::GetCopyOfPropertyAsObject(const CryPropertyParser &PropertyName) const
 {
 PropertyIterator *pi = CreateIterator();
 	if (pi->GotoFirst()) {
@@ -512,7 +512,7 @@ PropertyIterator *pi = CreateIterator();
 		CryProperty *p = pi->_Get();
 			if (*p->GetName()==PropertyName)
 			{
-			const CryObject *Item = p->GetValue();
+			const Object *Item = p->GetValue();
 				DeleteIterator(pi);
 				return Item->Dup();
 			}
@@ -522,7 +522,7 @@ PropertyIterator *pi = CreateIterator();
 	throw(CryException("Property %s not present in PropertyList",PropertyName.AsPChar()));
 }
 
-CryObject *CryPropertyList::_GetPropertyAsObject(const CryPropertyParser &PropertyName) const
+Object *CryPropertyList::_GetPropertyAsObject(const CryPropertyParser &PropertyName) const
 {                                       /* TODO : CryList::ListNode and helper functions should be hidden and anything that currently uses them should use common functions */
 PropertyIterator *pi = CreateIterator();
 	if (pi->GotoFirst()) {
@@ -531,7 +531,7 @@ PropertyIterator *pi = CreateIterator();
 		CryProperty *p = pi->_Get();
 			if (*p->GetName()==PropertyName)
 			{
-			CryObject *Item = p->_GetValue();
+			Object *Item = p->_GetValue();
 				DeleteIterator(pi);
 				return Item;
 			}
@@ -542,7 +542,7 @@ PropertyIterator *pi = CreateIterator();
 }
 
 /// add a new property to the list, by giving the name and object that it came from. (Object is asked for Property value)
-void CryPropertyList::AddPropertyByName(const char *Name,const CryObject *object)
+void CryPropertyList::AddPropertyByName(const char *Name,const Object *object)
 {
 CryString *v = new CryString();
 	object->GetProperty(Name,*v);
@@ -556,7 +556,7 @@ void CryPropertyList::AddProperty(const char *PropertyName,const char *Value)
 	CryProperty *p = new CryProperty(PropertyName,Value);
 	AddOwned(p);
 }
-void CryPropertyList::AddProperty(const char *Name,CryObject *Value)
+void CryPropertyList::AddProperty(const char *Name,Object *Value)
 {
 	if (HasProperty(Name))
 		throw(CryException("Property %s already present in PropertyList",Name));
@@ -582,9 +582,9 @@ CryPropertyList *CryPropertyList::PropertyNames() const
 	return l;
 }
 
-void CryPropertyList::Load(const CryObject *o)
+void CryPropertyList::Load(const Object *o)
 {
-CryList *PropertyNames = o->PropertyNames();
+List *PropertyNames = o->PropertyNames();
 ListIterator *li= PropertyNames->CreateIterator();
 	if (li->GotoFirst())
 	{
@@ -598,7 +598,7 @@ ListIterator *li= PropertyNames->CreateIterator();
 	}
 }
 
-CryPropertyList *CryPropertyList::Boolean(const CryObject *O2,BOperation B)
+CryPropertyList *CryPropertyList::Boolean(const Object *O2,BOperation B)
 {	// and and or operations implemented
 PropertyIterator *pi = CreateIterator();
 CryPropertyList *n = new CryPropertyList();
@@ -689,7 +689,7 @@ PropertyIterator *pi = CreateIterator();
 
 void CryPropertyList::Sort(int CompareType)
 {
-	CryList::Sort(CompareType);
+	List::Sort(CompareType);
 }
 
 

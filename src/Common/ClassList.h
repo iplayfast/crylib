@@ -23,15 +23,15 @@ namespace Crystal
 {
 using namespace std;
 
-#ifndef TCryList
-#define TCryList "CryList"
+#ifndef CList
+#define CList "List"
 
 
 
 /// a list class. It tracks whether the object in the list is an CryObject, and if the list "owns" the object, (ie responsible for deleting)
 /*!	This class uses the Iterator functions as well as it's own
 */
-class CryList : public CryContainer
+class List : public Container
 {
 //public:
 struct ListNode : public EmptyObject
@@ -40,20 +40,20 @@ struct ListNode : public EmptyObject
 		EmptyObject *Item;
 		size_t Size;		// only used if Item is not a CryObject
 		bool IsOwned;
-		bool IsCryObject;
+		bool IsObject;
 	};
 public:
 struct ListIterator : public Iterator
 	{
 		ListNode *p;
-		ListIterator(const CryList *container);
-		virtual CryObject *Dup() const;
+		ListIterator(const List *container);
+		virtual Object *Dup() const;
 
 	};
 private:
 	ListNode *Head;
 	ListNode *Tail;
-	EmptyObject *Add(EmptyObject *Item,bool IsCryObject,bool IsOwned,size_t Size = 0);
+	EmptyObject *Add(EmptyObject *Item,bool IsObject,bool IsOwned,size_t Size = 0);
 	EmptyObject *DupItem(const ListNode *Node) const;
 	void DeleteItem(struct ListNode *n);
 	ListNode *_FirstNode() const;
@@ -65,14 +65,14 @@ private:
 protected:
 	void AddListNode (ListNode *Node);
 public:
-	StdFunctions(CryList,CryContainer);
-	CryList();
-	CryList(CryList &List);
-	CryList(CryList *List);
+	StdFunctions(List,Container);
+	List();
+	List(List &List);
+	List(List *List);
 	virtual void GetEleType(CryString &Result) const;
 	void SaveItemsTo(CryStream &ToStream) const;
 	virtual CryFunctionDefList *GetFunctions(const char *Type=0) const;
-	virtual ~CryList();
+	virtual ~List();
 	virtual const cbyte* GetRaw() const;
 	virtual Iterator *_CreateIterator() const;
 	ListIterator *CreateIterator() const { return (ListIterator *)_CreateIterator(); }
@@ -86,7 +86,7 @@ public:
 	virtual void Sort(int CompareType=0);
 	virtual int Compare2(int CompareType,const EmptyObject *First,const EmptyObject *Second)const;
 	virtual EmptyObject* GetAtIterator(const Iterator *I) const;
-	virtual void SetAtIterator(const Iterator *I,EmptyObject *Item,bool IsCryObject,bool IsOwned,size_t Size = 0);
+	virtual void SetAtIterator(const Iterator *I,EmptyObject *Item,bool IsObject,bool IsOwned,size_t Size = 0);
 
 	virtual bool IsEmpty(const Iterator *I) const;
 	virtual bool GotoLast(Iterator *LI) const;
@@ -102,25 +102,25 @@ public:
 	const ListNode *NextNode(const ListNode *n) const;
 	EmptyObject *Add(EmptyObject *Item,size_t Size);
 	EmptyObject *AddOwned(EmptyObject *Item,size_t Size);
-	CryObject *Add(CryObject *Item);    // returns Item
-	CryObject *AddOwned(CryObject *Item);   // gives ownership to list
+	Object *Add(Object *Item);    // returns Item
+	Object *AddOwned(Object *Item);   // gives ownership to list
 	void SetItemOwnerShip(EmptyObject  *Item,bool Owned);
 	bool GetItemOwnerShip(const EmptyObject *Item) const;
-	bool IsCryObject(const Iterator *I) const;
+	bool IsObject(const Iterator *I) const;
 	size_t GetItemSize(Iterator *I) const;
 	bool LoadAsText(Iterator *I,CryString &FromStream) ;
 	bool SaveAsText(Iterator *I,CryString &ToStream) const;
 
 	virtual void SetItemOwnerShip(Iterator  *I,bool Owned);
 	virtual bool GetItemOwnerShip(const Iterator *I) const;
-	bool InList(CryObject *Needle) const;
+	bool InList(Object *Needle) const;
 	EmptyObject *GetItem(int i) const;
 	virtual bool IsContainer() const;
 /// throws exception if Item not found
 	void Remove(EmptyObject *Item);
-	void Remove(CryObject*Item);
+	void Remove(Object*Item);
 
-	void Copy(CryList *List);
+	void Copy(List *List);
 	// if this class contains the property name, it will attempt to load it
 	// if all is well returns true
 	//virtual bool SetProperty(CryString *PropertyName,CryString *PropertyValue);
@@ -129,9 +129,9 @@ public:
 	virtual int GetPropertyCount() const;
 	virtual CryPropertyList* PropertyNames() const;
 ///copies contents of this to Dest
-	virtual void CopyTo(CryObject &Dest) const;
+	virtual void CopyTo(Object &Dest) const;
 	virtual size_t Size() const;
-	void SwapListElements(CryList *ToSwap);
+	void SwapListElements(List *ToSwap);
 
 }
 ;  // CryList

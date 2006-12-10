@@ -14,8 +14,8 @@
 
 namespace Crystal {
 using namespace Crystal;
-#ifndef TBitArray
-#define TBitArray	"BitArray"
+#ifndef CBitArray
+#define CBitArray	"BitArray"
 
 class BitArray : public CryMemStream
 {
@@ -25,8 +25,8 @@ class BitIterator: public Iterator
 int BitIndex;
 int Index;
 public:
-	BitIterator(const CryContainer *Parent) : Iterator(Parent) { Index = BitIndex = 0; }
-	virtual CryObject *Dup() const
+	BitIterator(const Container *Parent) : Iterator(Parent) { Index = BitIndex = 0; }
+	virtual Object *Dup() const
 {
 BitIterator *it = (BitIterator *)GetOrigContainer()->CreateIterator();
 	it->BitIndex = BitIndex;
@@ -56,7 +56,7 @@ public:
 // Iterator functions available because this is a container class
 // **************************************************************
 
-CryContainer::Iterator *LocIterator;
+Container::Iterator *LocIterator;
 
 
 // ***********************************************************************
@@ -65,12 +65,12 @@ CryContainer::Iterator *LocIterator;
 
 	virtual const char *ChildClassName() const
 	{
-		return TBitArray;
+		return CBitArray;
 	}
 
 	virtual bool IsA(const char *GetName) const
 	{
-		return (::strcmp(GetName,TBitArray)==0) ||
+		return (::strcmp(GetName,CBitArray)==0) ||
 		 CryMemStream::IsA(GetName);
 	}
 
@@ -82,7 +82,7 @@ virtual void DeleteIterator(Iterator *I) const;
 virtual bool GetBit(int BitIndex);
 virtual void SetBit(int BitIndex,bool Value);
 virtual void SetNumBitsInArray(int Length) { BitCount = Length; SetLength(Length / 8 + 1); }
-virtual void CopyTo(CryObject &Dest) const;
+virtual void CopyTo(Object &Dest) const;
 virtual void Clear();
 virtual void Clear(int amount); // 0 == all, 1.. from start, -1..-N from end
 virtual size_t Size() const;
@@ -90,7 +90,7 @@ virtual size_t GetItemSize(Iterator *I) const;
 virtual size_t Count() const;
 virtual bool SaveAsText(Iterator *I,CryString &ToStream) const;
 virtual bool LoadAsText(Iterator *I,CryString &FromStream);
-virtual bool IsCryObject(const Iterator *I) const;
+virtual bool IsObject(const Iterator *I) const;
 virtual bool GotoPrev(Iterator *I) const;
 virtual bool GotoNext(Iterator *I) const;
 virtual bool GotoLast(Iterator *Iterator) const;
@@ -105,9 +105,9 @@ BitIterator *CreateIterator() const { return new BitIterator(this); }
 virtual EmptyObject *GetAtIterator(const Iterator *I) const;
 virtual EmptyObject *AddOwned(EmptyObject *Item,size_t Size);
 virtual EmptyObject *Add(EmptyObject *Item,size_t Size);
-virtual CryObject *Dup() const;
-virtual CryObject *AddOwned(CryObject *Item);
-virtual CryObject *Add(CryObject *Item);
+virtual Object *Dup() const;
+virtual Object *AddOwned(Object *Item);
+virtual Object *Add(Object *Item);
 virtual CryFunctionDefList *GetFunctions(const char *Type=0) const;
 
 // ***********************************************************************
@@ -124,7 +124,7 @@ virtual CryFunctionDefList *GetFunctions(const char *Type=0) const;
 virtual const char *GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const;
 virtual bool SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue);
 #ifdef VALIDATING
-	virtual bool Test(bool Verbose,CryObject &Object,bool  (CallBack)(bool Verbose,const char *Result,bool fail));
+	virtual bool Test(bool Verbose,Object &ThisObject,bool  (CallBack)(bool Verbose,const char *Result,bool fail));
 #endif
 
 }; // class BitArray

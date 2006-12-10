@@ -33,24 +33,24 @@ using namespace std;
 // CrySimpleArray
 //
 
-void CrySimpleArray::CopyTo(CryObject &Dest) const ///copies contents of this to Dest
+void SimpleArray::CopyTo(Object &Dest) const ///copies contents of this to Dest
 {
-    if (Dest.IsA(TCrySimpleArray))
-		CopyTo(*(CryArray *)&Dest);
-    if (Dest.IsA(TCryMemStream))
+	if (Dest.IsA(CSimpleArray))
+		CopyTo(*(Array *)&Dest);
+    if (Dest.IsA(CCryMemStream))
     {
         CryMemStream *mDest = (CryMemStream *) &Dest;
 		mDest->Resize(MaxCount * ElementSize);
         mDest->SetRaw(0,GetRaw(),(size_t)MaxCount * ElementSize);
     }
 }
-CryFunctionDefList *CrySimpleArray::GetFunctions(const char *Type) const
+CryFunctionDefList *SimpleArray::GetFunctions(const char *Type) const
 {
     // if a type has been defined and it's not this class, check subclasses for it
     if (Type && !IsA(Type))
-		return CryContainer::GetFunctions(Type);
+		return Container::GetFunctions(Type);
 	// otherwise get any functions in subclasses
-	CryFunctionDefList *l = CryContainer::GetFunctions();
+	CryFunctionDefList *l = Container::GetFunctions();
 	CryString s;
 	char *search;
 	s += "// Class CrySimpleArray;";
@@ -90,18 +90,18 @@ CryFunctionDefList *CrySimpleArray::GetFunctions(const char *Type) const
 	l->LoadFromString(s,";");
 	return l;
 }
-void CrySimpleArray::SetMax(size_t m)
+void SimpleArray::SetMax(size_t m)
 {
 	MaxCount = m;
 }
 	/// will set a value to the container[Iterator]
-void CrySimpleArray::SetAtIterator(const Iterator *I,EmptyObject *Item,bool IsCryObject,bool IsOwned,size_t Size)
+void SimpleArray::SetAtIterator(const Iterator *I,EmptyObject *Item,bool IsObject,bool IsOwned,size_t Size)
 {
 unsigned i = IteratorValue(I);
-	SetItem(i,Item,IsCryObject,IsOwned,Size);
+	SetItem(i,Item,IsObject,IsOwned,Size);
 }
 
-bool CrySimpleArray::SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue)
+bool SimpleArray::SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue)
 {
 /*	if (PropertyName=="CurrentCount")
 	{
@@ -123,22 +123,22 @@ bool CrySimpleArray::SetProperty(const CryPropertyParser &PropertyName,const cha
 		AllowResize = strcasecmp(PropertyValue,"Yes")==0;
 		return true;
 	}
-	return CryContainer::SetProperty(PropertyName,PropertyValue);
+	return Container::SetProperty(PropertyName,PropertyValue);
 }
 
-bool CrySimpleArray::SetPropertyAsObject(const CryPropertyParser &PropertyName,CryObject *Value)
+bool SimpleArray::SetPropertyAsObject(const CryPropertyParser &PropertyName,Object *Value)
 {
-	if (Value->IsA(TCryString))
-		return CrySimpleArray::SetProperty(PropertyName,*(CryString *)Value);
+	if (Value->IsA(CCryString))
+		return SimpleArray::SetProperty(PropertyName,*(CryString *)Value);
 	return false;
 }
 
-bool CrySimpleArray::SetPropertyAsObject(CryProperty *Value)
+bool SimpleArray::SetPropertyAsObject(CryProperty *Value)
 {
-	return CryContainer::SetPropertyAsObject(Value);
+	return Container::SetPropertyAsObject(Value);
 }
 
-const char *CrySimpleArray::GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const
+const char *SimpleArray::GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const
 {
 	Result.Clear();
 /*	if (PropertyName=="CurrentCount")
@@ -162,21 +162,21 @@ const char *CrySimpleArray::GetProperty(const CryPropertyParser &PropertyName,Cr
 		Result.printf("%s",AllowResize ? "Yes" : "No");
 		return Result;
 	}
-	return CryContainer::GetProperty(PropertyName,Result);
+	return Container::GetProperty(PropertyName,Result);
 }
 
-bool CrySimpleArray::HasProperty(const CryPropertyParser &PropertyName)const
+bool SimpleArray::HasProperty(const CryPropertyParser &PropertyName)const
 {
 	return (//(PropertyName=="CurrentCount") ||
 		(PropertyName=="MaxCount") ||
 		(PropertyName=="ElementSize") ||
 		(PropertyName=="AllowResize") ||
-		CryContainer::HasProperty(PropertyName));
+		Container::HasProperty(PropertyName));
 }
 
-CryPropertyList* CrySimpleArray::PropertyNames() const
+CryPropertyList* SimpleArray::PropertyNames() const
 {
-	CryPropertyList *n = CryContainer::PropertyNames();
+	CryPropertyList *n = Container::PropertyNames();
 //	n->AddPropertyByName("CurrentCount",this);	//current number of objects in the array
 	n->AddPropertyByName("MaxCount",this);	// maximum number of objects that can be contained in the array
 	n->AddPropertyByName("ElementSize",this);
@@ -186,7 +186,7 @@ CryPropertyList* CrySimpleArray::PropertyNames() const
 
 
 #ifdef VALIDATING
-bool CrySimpleArray::Test(bool Verbose,CryObject &Object,bool (CallBack)(bool Verbose,const char *Result,bool fail))
+bool SimpleArray::Test(bool Verbose,Object &Object,bool (CallBack)(bool Verbose,const char *Result,bool fail))
 {
 /* need to create a test for the following functions
 StdFunctionsNoDup(CrySimpleArray,CryContainer);
@@ -276,8 +276,8 @@ StdFunctionsNoDup(CrySimpleArray,CryContainer);
 	// this class may be used for other things, so this is not used
 	virtual EmptyObject *GetAtIterator(const Iterator *I) const = 0;
 	/// will set a value to the container[Iterator]
-	virtual void SetAtIterator(const Iterator *I,EmptyObject *Item,bool IsCryObject,bool IsOwned,size_t Size = 0);
-	virtual void SetItem(unsigned int i,EmptyObject *Item,bool IsCryObject,bool IsOwned,size_t Size = 0) = 0;
+	virtual void SetAtIterator(const Iterator *I,EmptyObject *Item,bool IsObject,bool IsOwned,size_t Size = 0);
+	virtual void SetItem(unsigned int i,EmptyObject *Item,bool IsObject,bool IsOwned,size_t Size = 0) = 0;
 	virtual void RemoveAtIterator(Iterator *LI) = 0;
 	virtual bool IsEmpty(const Iterator *I) const { return GetAtIterator(I)==0; }
 	virtual void Clear() = 0;
@@ -348,7 +348,7 @@ bool CryTemplateArray<int>::Test(bool Verbose,CryObject &Object,bool (CallBack)(
 	virtual void RemoveAtIterator(Iterator *LI);
 	virtual bool LoadAsText(int i,CryString &FromStream);
 	virtual bool SaveAsText(int i,CryString &ToStream) const;
-	void SetItem(unsigned int i,EmptyObject *Item,bool IsCryObject,bool IsOwned,size_t Size)
+	void SetItem(unsigned int i,EmptyObject *Item,bool IsObject,bool IsOwned,size_t Size)
 	{
 		SetValue(i,*(T*)Item);
 	}
@@ -411,31 +411,31 @@ CryTArray<T> &CryTArray<T>::Delete(int start,int amount)
 //
 // CryArray
 //
-CryArray::CryArray(unsigned int ElementSize) : CrySimpleArray(ElementSize)
+Array::Array(unsigned int ElementSize) : SimpleArray(ElementSize)
 {
 	pPtr = 0;
 	AllowResize = true;
 }
 
-CryArray::~CryArray()
+Array::~Array()
 {
 	if (Count()!=0)
 		throw CryException(this, "deleting CryArray, while still having some elements! (Call Clear() first)");
 
     delete []pPtr;
 }
-CryFunctionDefList *CryArray::GetFunctions(const char *Type) const
+CryFunctionDefList *Array::GetFunctions(const char *Type) const
 {
     // if a type has been defined and it's not this class, check subclasses for it
 	if (Type && !IsA(Type))
-        return CrySimpleArray::GetFunctions(Type);
+        return SimpleArray::GetFunctions(Type);
     // otherwise get any functions in subclasses
-    CryFunctionDefList *l = CrySimpleArray::GetFunctions();
+    CryFunctionDefList *l = SimpleArray::GetFunctions();
     CryString s;
     s += "//  Class CryArray;";
     char *search;
     s +="virtual void DestroyArrayItem(CryArray *Owner,EmptyObject *Item) = 0;";
-    s +="virtual EmptyObject *CreateArrayItem(CryArray *Owner,bool *IsCryObject) = 0;";
+    s +="virtual EmptyObject *CreateArrayItem(CryArray *Owner,bool *IsObject) = 0;";
     s +="virtual void SaveItemTo(const CryArray *Owner,EmptyObject *FromItem,CryStream &ToStream) const = 0;";
     s +="virtual EmptyObject *LoadItemFrom(CryArray *Owner,EmptyObject *ToItem,CryStream &FromStream) = 0;";
     s +="virtual CryString *GetFunctions() const;";
@@ -476,14 +476,14 @@ CryFunctionDefList *CryArray::GetFunctions(const char *Type) const
     s +="virtual bool IsEmpty(const Iterator *I) const;";
     s +="virtual void SetItemOwnerShip(Iterator *I,bool Owned);";
     s +="virtual bool GetItemOwnerShip(const Iterator *I) const;";
-    s +="virtual bool IsCryObject(const Iterator *I) const;";
-    s +="virtual void SetIsCryObject(Iterator *I,bool IsCO);";
+    s +="virtual bool IsObject(const Iterator *I) const;";
+    s +="virtual void SetIsObject(Iterator *I,bool IsCO);";
     s +="size_t GetItemSize(Iterator *I) const;";
     s +="virtual void Clear();";
     l->LoadFromString(s,";");
     return l;
 }
-void CryArray::Clear()
+void Array::Clear()
 {
     int i,j;
     j = Count();
@@ -495,7 +495,7 @@ void CryArray::Clear()
     CurrentCount = 0;
 }
 
-void CryArray::DeleteItemOffset(unsigned int i)
+void Array::DeleteItemOffset(unsigned int i)
 {
     while(i<Count()-1)
     {
@@ -506,14 +506,14 @@ void CryArray::DeleteItemOffset(unsigned int i)
 }
 
 
-int CryArray::DeleteItem(unsigned int i)
+int Array::DeleteItem(unsigned int i)
 {
 	EmptyObject *item = GetItem(i);
 	DestroyArrayItem(this,item);
 	DeleteItemOffset(i);
 	return CurrentCount;
 }
-void CryArray::RemoveAtIterator(Iterator *LI)
+void Array::RemoveAtIterator(Iterator *LI)
 {
 //	EmptyObject *r;
 	int i = IteratorValue(LI);
@@ -532,7 +532,7 @@ void CryArray::RemoveAtIterator(Iterator *LI)
 }
 
 
-void CryArray::SetMax(size_t m)
+void Array::SetMax(size_t m)
 {
     ElePtr *NewPtr = new ElePtr[m];
 	size_t i;
@@ -546,14 +546,14 @@ void CryArray::SetMax(size_t m)
         MaxCount = m;
     for(i=0;i<MaxCount;i++)
         NewPtr[i].Item = pPtr[i].Item;
-    CrySimpleArray::SetMax(m);
+    SimpleArray::SetMax(m);
     if (CurrentCount>MaxCount)
         CurrentCount = MaxCount;
     delete pPtr;
     pPtr = NewPtr;
 }
 
-void CryArray::SetSize(size_t n) // set the number currently in use (either grow or shrink)
+void Array::SetSize(size_t n) // set the number currently in use (either grow or shrink)
 {
     if (n>MaxCount)
     {
@@ -579,54 +579,54 @@ void CryArray::SetSize(size_t n) // set the number currently in use (either grow
 
     while(CurrentCount<n)
     {
-        bool IsCryObject;
-        pPtr[CurrentCount].Item = CreateArrayItem(this,&IsCryObject);
+        bool IsObject;
+        pPtr[CurrentCount].Item = CreateArrayItem(this,&IsObject);
         pPtr[CurrentCount].IsOwned = true;
         pPtr[CurrentCount].IsAutoCreated = true;
-        pPtr[CurrentCount].IsCryObject = IsCryObject;
+        pPtr[CurrentCount].IsObject = IsObject;
         pPtr[CurrentCount].Size = 0;			// not used if IsAutoCreated
         CurrentCount++;
     }
 }
-bool CryArray::IsEmpty(const Iterator *I) const
+bool Array::IsEmpty(const Iterator *I) const
 {
     int i = IteratorValue(I);
     return pPtr[i].Item==0;
 }
-bool CryArray::IsCryObject(const Iterator *I) const
+bool Array::IsObject(const Iterator *I) const
 {
     int i = IteratorValue(I);
-    return pPtr[i].IsCryObject;
+    return pPtr[i].IsObject;
 }
-void CryArray::SetIsCryObject(Iterator *I,bool IsCO)
+void Array::SetIsObject(Iterator *I,bool IsCO)
 {
     int i = IteratorValue(I);
-    pPtr[i].IsCryObject = IsCO;
+    pPtr[i].IsObject = IsCO;
 }
-size_t CryArray::GetItemSize(Iterator *I) const
+size_t Array::GetItemSize(Iterator *I) const
 {
     int i = IteratorValue(I);
     return pPtr[i].Size;
 }
 
-void CryArray::GetEleType(CryString &Result) const
+void Array::GetEleType(CryString &Result) const
 {
     Result = "CryArray::Eleptr";
 }
 
-void CryArray::SetItemOwnerShip(Iterator *I,bool IsOwned)
+void Array::SetItemOwnerShip(Iterator *I,bool IsOwned)
 {
     int i = IteratorValue(I);
     pPtr[i].IsOwned = IsOwned;
 }
 
-bool CryArray::GetItemOwnerShip(const Iterator *I) const
+bool Array::GetItemOwnerShip(const Iterator *I) const
 {
     int i = IteratorValue(I);
     return pPtr[i].IsOwned;
 }
 
-EmptyObject *CryArray::Add(EmptyObject *Item,bool IsCryObject,bool IsOwned,size_t Size)
+EmptyObject *Array::Add(EmptyObject *Item,bool IsObject,bool IsOwned,size_t Size)
 {
 	if (Item==0)
 		throw CryException(this,"AddOwned Null ptr added");
@@ -644,13 +644,13 @@ EmptyObject *CryArray::Add(EmptyObject *Item,bool IsCryObject,bool IsOwned,size_
 	pPtr[CurrentCount].Item = Item;
 	pPtr[CurrentCount].Size = Size;
 	pPtr[CurrentCount].IsOwned = IsOwned;
-	pPtr[CurrentCount].IsCryObject = IsCryObject;
+	pPtr[CurrentCount].IsObject = IsObject;
 	pPtr[CurrentCount].IsAutoCreated = false;
 	CurrentCount = n;
 	return Item;
 }
 
-EmptyObject *CryArray::GetItem(unsigned int i)const //indexed from 0
+EmptyObject *Array::GetItem(unsigned int i)const //indexed from 0
 {
 	if (i>=CurrentCount)
 	{
@@ -662,13 +662,13 @@ EmptyObject *CryArray::GetItem(unsigned int i)const //indexed from 0
 	return pPtr[i].Item;
 }
 
-void CryArray::SetAtIterator(const Iterator *I,EmptyObject *Item,bool IsCryObject,bool IsOwned,size_t Size)
+void Array::SetAtIterator(const Iterator *I,EmptyObject *Item,bool IsObject,bool IsOwned,size_t Size)
 {
 unsigned i = IteratorValue(I);
-	SetItem(i,Item,IsCryObject,IsOwned,Size);
+	SetItem(i,Item,IsObject,IsOwned,Size);
 }
 
-void CryArray::SetItem(unsigned int i,EmptyObject *Item,bool IsCryObject,bool IsOwned,size_t Size)
+void Array::SetItem(unsigned int i,EmptyObject *Item,bool IsObject,bool IsOwned,size_t Size)
 {
 	if (i>=CurrentCount)
 	{
@@ -690,20 +690,20 @@ void CryArray::SetItem(unsigned int i,EmptyObject *Item,bool IsCryObject,bool Is
 	pPtr[i].Item = Item;
 	pPtr[i].Size = Size;
 	pPtr[i].IsOwned = IsOwned;
-	pPtr[i].IsCryObject = IsCryObject;
+	pPtr[i].IsObject = IsObject;
 	pPtr[i].IsAutoCreated = false;
 }
 
-void CryArray::Sort(int (*Compare) (const void *ele1,const void *ele2))
+void Array::Sort(int (*Compare) (const void *ele1,const void *ele2))
 {
     qsort(pPtr,CurrentCount,sizeof(void *),Compare);
 }
 
-EmptyObject *CryArray::DupItem(const CryArray::ElePtr  *Node) const
+EmptyObject *Array::DupItem(const Array::ElePtr  *Node) const
 {
-    if (Node->IsCryObject)
+    if (Node->IsObject)
     {
-        return (EmptyObject *)((CryObject *) Node->Item)->Dup();
+        return (EmptyObject *)((Object *) Node->Item)->Dup();
     }
     else
     {
@@ -715,7 +715,7 @@ EmptyObject *CryArray::DupItem(const CryArray::ElePtr  *Node) const
 }
 
 
-void CryArray::CopyTo(CryArray &Dest) const ///copies contents of this to Dest
+void Array::CopyTo(Array &Dest) const ///copies contents of this to Dest
 {
     if (Dest.ElementSize!=ElementSize)
         throw(CryException("CopyTo: Destination Element size different then source"));
@@ -734,11 +734,11 @@ void CryArray::CopyTo(CryArray &Dest) const ///copies contents of this to Dest
     }
     Dest.CurrentCount = CurrentCount;
 }
-void CryArray::CopyTo(CryObject &Dest) const ///copies contents of this to Dest
+void Array::CopyTo(Object &Dest) const ///copies contents of this to Dest
 {
-    if (Dest.IsA(TCryArray))
-        CopyTo(*(CryArray *)&Dest);
-	if (Dest.IsA(TCryMemStream))
+	if (Dest.IsA(CArray))
+		CopyTo(*(Array *)&Dest);
+	if (Dest.IsA(CCryMemStream))
     {
         CryMemStream *mDest = (CryMemStream *) &Dest;
         mDest->Resize(MaxCount * ElementSize);
@@ -746,13 +746,13 @@ void CryArray::CopyTo(CryObject &Dest) const ///copies contents of this to Dest
     }
 }
 
-CryPropertyList *CryArray::PropertyNames() const
+CryPropertyList *Array::PropertyNames() const
 {
-	CryPropertyList *n = CryContainer::PropertyNames();
+	CryPropertyList *n = Container::PropertyNames();
 	n->AddPropertyByName("Size",this);
 	return n;
 }
-bool CryArray::HasProperty(const CryPropertyParser &PropertyName) const
+bool Array::HasProperty(const CryPropertyParser &PropertyName) const
 {
 	/*    const char *name = ChildClassName();
 		int l = strlen(name);
@@ -762,10 +762,10 @@ bool CryArray::HasProperty(const CryPropertyParser &PropertyName) const
 		if (PropertyName=="Size")
 			return true;
 	}
-    return CryContainer::HasProperty(PropertyName);
+    return Container::HasProperty(PropertyName);
 }
 
-const char *CryArray::GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const
+const char *Array::GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const
 {
 	Result.Clear();
 	if (PropertyName=="Size")
@@ -773,22 +773,22 @@ const char *CryArray::GetProperty(const CryPropertyParser &PropertyName,CryStrin
 		Result.printf("%d",Count());
 		return Result;
 	}
-	return CryContainer::GetProperty(PropertyName,Result);
+	return Container::GetProperty(PropertyName,Result);
 }
 
-bool CryArray::SetPropertyAsObject(const CryPropertyParser &PropertyName,CryObject *Value)
+bool Array::SetPropertyAsObject(const CryPropertyParser &PropertyName,Object *Value)
 {
-	if (Value->IsA(TCryString))
-		return CrySimpleArray::SetProperty(PropertyName,*(CryString *)Value);
+	if (Value->IsA(CCryString))
+		return SimpleArray::SetProperty(PropertyName,*(CryString *)Value);
 	return false;
 }
 
-bool CryArray::SetPropertyAsObject(CryProperty *Value)
+bool Array::SetPropertyAsObject(CryProperty *Value)
 {
-	return CrySimpleArray::SetPropertyAsObject(Value);
+	return SimpleArray::SetPropertyAsObject(Value);
 }
 
-bool CryArray::SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue)
+bool Array::SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue)
 {
 	if (PropertyName=="Size")
 	{
@@ -805,33 +805,33 @@ bool CryArray::SetProperty(const CryPropertyParser &PropertyName,const char *Pro
 		//        this->SaveItemTo(this,NULL,PropertyValue);
 		return true;
 	}
-	if (CryContainer::SetProperty(PropertyName,PropertyValue))
+	if (Container::SetProperty(PropertyName,PropertyValue))
 		return true;
 	return false;
 }
 
 
 #ifdef VALIDATING
-bool CryArray::Test(bool Verbose,CryObject &Object,bool (CallBack)(bool Verbose,const char *Result,bool fail))
+bool Array::Test(bool Verbose,Object &Object,bool (CallBack)(bool Verbose,const char *Result,bool fail))
 {
-	return CryContainer::Test(Verbose,Object,CallBack);
+	return Container::Test(Verbose,Object,CallBack);
 }
 #endif
 
 
 
 //
-// CryIntArray
+// IntArray
 //
 //Constructor/Destructor Functions
 
-CryIntArray::CryIntArray(int _SetSize) : CrySimpleArray(sizeof(int))
+IntArray::IntArray(int _SetSize) : SimpleArray(sizeof(int))
 {
 	Values = new int[_SetSize];
 	SetMax(_SetSize);
 	SetSize(_SetSize);
 }
-void CryIntArray::SetSize(size_t _Size) // set the number currently in use (either grow or shrink)
+void IntArray::SetSize(size_t _Size) // set the number currently in use (either grow or shrink)
 {
 int *n = new int[_Size];
 	SetMax(_Size);
@@ -849,7 +849,7 @@ int *n = new int[_Size];
 
 
 
-CryIntArray::~CryIntArray()
+IntArray::~IntArray()
 {
 		delete [] Values;
 }
@@ -857,21 +857,21 @@ CryIntArray::~CryIntArray()
 
 
 //Inherited Functions
-void CryIntArray::DestroyArrayItem(CryArray *Owner,EmptyObject *Item)
+void IntArray::DestroyArrayItem(Array *Owner,EmptyObject *Item)
 {
 	delete Item;
 }
 
-EmptyObject *CryIntArray::CreateArrayItem(CryArray *Owner,bool *IsCryObject)
+EmptyObject *IntArray::CreateArrayItem(Array *Owner,bool *IsObject)
 {
-	if (IsCryObject) {
+	if (IsObject) {
 		throw CryException(this,"Cannot create CryObject for Set");
 	}
 	return (EmptyObject *)new int;
 }
 
 
-bool CryIntArray::LoadAsText(int i,CryString &FromStream)
+bool IntArray::LoadAsText(int i,CryString &FromStream)
 {
 	int v;
 	FromStream.scanf("%d ",&v);
@@ -879,67 +879,67 @@ bool CryIntArray::LoadAsText(int i,CryString &FromStream)
 	return true;
 }
 
-bool CryIntArray::SaveAsText(int i,CryString &ToStream) const
+bool IntArray::SaveAsText(int i,CryString &ToStream) const
 {
 	ToStream.printf("%d ",Values[i]);
 	return true;
 }
 
-void CryIntArray::GetEleType(CryString &Result) const
+void IntArray::GetEleType(CryString &Result) const
 {
 	Result = "int";
 }
 
 
-EmptyObject *CryIntArray::GetAtIterator(const Iterator *I) const
+EmptyObject *IntArray::GetAtIterator(const Iterator *I) const
 {
 		return NULL;
 }
-void CryIntArray::SetAtIterator(const Iterator *I,EmptyObject *Item,bool IsCryObject,bool IsOwned,size_t Size)
+void IntArray::SetAtIterator(const Iterator *I,EmptyObject *Item,bool IsObject,bool IsOwned,size_t Size)
 {
 unsigned i = IteratorValue(I);
-	SetItem(i,Item,IsCryObject,IsOwned,Size);
+	SetItem(i,Item,IsObject,IsOwned,Size);
 }
 
-void CryIntArray::SetItem(unsigned int i,EmptyObject *Item,bool IsCryObject,bool IsOwned,size_t Size)
+void IntArray::SetItem(unsigned int i,EmptyObject *Item,bool IsObject,bool IsOwned,size_t Size)
 {
 		SetValue(i,*(int*)Item);
 }
 
-void CryIntArray::RemoveAtIterator(Iterator *LI)
+void IntArray::RemoveAtIterator(Iterator *LI)
 {
 
 }
 
-void CryIntArray::Clear()
+void IntArray::Clear()
 {
 
 }
-EmptyObject *CryIntArray::Add(EmptyObject *Item,size_t Size)
+EmptyObject *IntArray::Add(EmptyObject *Item,size_t Size)
 {
  return 0;	// to do fill in the stub
 }
-EmptyObject *CryIntArray::AddOwned(EmptyObject *Item,size_t Size)
+EmptyObject *IntArray::AddOwned(EmptyObject *Item,size_t Size)
 {
  return 0;	// to do fill in the stub
 }
-CryObject *CryIntArray::Add(CryObject *Item)    // returns Item
+Object *IntArray::Add(Object *Item)    // returns Item
 {
  return 0;	// to do fill in the stub
 }
-CryObject *CryIntArray::AddOwned(CryObject *Item)   // gives ownership to list
+Object *IntArray::AddOwned(Object *Item)   // gives ownership to list
 {
  return 0;	// to do fill in the stub
 }
-void CryIntArray::SetItemOwnerShip(Iterator *I,bool Owned)
+void IntArray::SetItemOwnerShip(Iterator *I,bool Owned)
 {
 
 }
-bool CryIntArray::GetItemOwnerShip(const Iterator *I) const
+bool IntArray::GetItemOwnerShip(const Iterator *I) const
 {
  return false;	// to do fill in the stub
 }
-bool CryIntArray::IsCryObject(const Iterator *I) const
+bool IntArray::IsObject(const Iterator *I) const
 {
  return false;	// to do fill in the stub
 }
@@ -947,10 +947,10 @@ bool CryIntArray::IsCryObject(const Iterator *I) const
 //bool SaveAsText(Iterator *I,CryString &ToStream) const = 0;
 
 /*!Get the names of all properties of this class*/
-CryPropertyList *CryIntArray::PropertyNames() const
+CryPropertyList *IntArray::PropertyNames() const
 {
 // get base class's properties
-CryPropertyList *Names = CrySimpleArray::PropertyNames();
+CryPropertyList *Names = SimpleArray::PropertyNames();
 // now add our own properties (if any)
 	Names->AddPropertyByName("Size",this);
 // properties that are local to this class
@@ -958,22 +958,22 @@ CryPropertyList *Names = CrySimpleArray::PropertyNames();
 }
 
 
-void CryIntArray::CopyTo(CryObject &Dest) const
+void IntArray::CopyTo(Object &Dest) const
 {
 
-	if (Dest.IsA(TCryIntArray))
+	if (Dest.IsA(CIntArray))
 	{
 		// Copy this classes variables first
 //		CryIntArray *CastDest = (CryIntArray *)&Dest;
 
 	}
 //Now copy the base class
-	CrySimpleArray::CopyTo(Dest);
+	SimpleArray::CopyTo(Dest);
 
 }//CryIntArray
 
 
-bool CryIntArray::SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue)
+bool IntArray::SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue)
 {
 	if (PropertyName=="Size")
 	{
@@ -983,43 +983,43 @@ bool CryIntArray::SetProperty(const CryPropertyParser &PropertyName,const char *
 		SetSize(s);
 		return true;
 	}
-	if (CrySimpleArray::SetProperty(PropertyName,PropertyValue))
+	if (SimpleArray::SetProperty(PropertyName,PropertyValue))
 		return true;
 	return false;
 }
 
 
-const char *CryIntArray::GetProperty(const char *PropertyName,CryString &Result) const
+const char *IntArray::GetProperty(const char *PropertyName,CryString &Result) const
 {
  return 0;	// to do fill in the stub
 }
 
 
 //
-//	CryDoubleArray
+//	DoubleArray
 //
-	void CryDoubleArray::GetEleType(CryString &Result) const
+	void DoubleArray::GetEleType(CryString &Result) const
 	{
 		Result = "double";
 	};
 
-CryObject * CryDoubleArray::Dup() const
+Object * DoubleArray::Dup() const
 {
 	int i, m = GetMax();
-	CryDoubleArray *n = new CryDoubleArray(m);
+	DoubleArray *n = new DoubleArray(m);
 	for(i=0;i<m;i++)
 		n->Values[i] = Values[i];
 	return n;
 }
 
 	/// will set a value to the container[Iterator]
-void CryDoubleArray::SetAtIterator(const Iterator *I,EmptyObject *Item,bool IsCryObject,bool IsOwned,size_t Size)
+void DoubleArray::SetAtIterator(const Iterator *I,EmptyObject *Item,bool IsObject,bool IsOwned,size_t Size)
 {
 unsigned i = IteratorValue(I);
-	SetItem(i,Item,IsCryObject,IsOwned,Size);
+	SetItem(i,Item,IsObject,IsOwned,Size);
 }
 
-bool CryDoubleArray::LoadAsText(int i,CryString &FromStream)
+bool DoubleArray::LoadAsText(int i,CryString &FromStream)
 {
 	double v;
 	FromStream.scanf("%f ",&v);
@@ -1033,13 +1033,13 @@ bool CryDoubleArray::LoadAsText(int i,CryString &FromStream)
 	}
 	return false;
 }
-bool CryDoubleArray::SaveAsText(int i,CryString &ToStream) const
+bool DoubleArray::SaveAsText(int i,CryString &ToStream) const
 {
 	ToStream.printf("%f ",Values[i]);
 	return true;
 }
 
-void CryDoubleArray::SetSize(size_t _Size)
+void DoubleArray::SetSize(size_t _Size)
 {
 	double *n = new double[_Size];
 	SetMax(_Size);
@@ -1054,19 +1054,19 @@ void CryDoubleArray::SetSize(size_t _Size)
 	CurrentCount = _Size;
 	Values = n;
 }
-bool CryDoubleArray::SetPropertyAsObject(const CryPropertyParser &PropertyName,CryObject *Value)
+bool DoubleArray::SetPropertyAsObject(const CryPropertyParser &PropertyName,Object *Value)
 {
-	if (Value->IsA(TCryString))
-		return CrySimpleArray::SetProperty(PropertyName,*(CryString *)Value);
+	if (Value->IsA(CCryString))
+		return SimpleArray::SetProperty(PropertyName,*(CryString *)Value);
 	return false;
 }
-CryFunctionDefList *CryDoubleArray::GetFunctions(const char *Type) const
+CryFunctionDefList *DoubleArray::GetFunctions(const char *Type) const
 {
 	// if a type has been defined and it's not this class, check subclasses for it
 	if (Type && !IsA(Type))
-		return CrySimpleArray::GetFunctions(Type);
+		return SimpleArray::GetFunctions(Type);
 	// otherwise get any functions in subclasses
-	CryFunctionDefList *l = CrySimpleArray::GetFunctions();
+	CryFunctionDefList *l = SimpleArray::GetFunctions();
 	CryString s;
 	s += "// Class CryDoubleArray;";
 	char *search;
@@ -1074,7 +1074,7 @@ CryFunctionDefList *CryDoubleArray::GetFunctions(const char *Type) const
 	s +="CryString *GetFunctions() const;";
 	s +="virtual CryObject *Dup()const;";
 	s +="virtual void DestroyArrayItem(CryArray *Owner,EmptyObject *Item);";
-	s +="virtual EmptyObject *CreateArrayItem(CryArray *Owner,bool *IsCryObject);";
+	s +="virtual EmptyObject *CreateArrayItem(CryArray *Owner,bool *IsObject);";
 	s +="virtual bool LoadAsText(int i,CryString &FromStream);";
 	s +="virtual bool SaveAsText(int i,CryString &ToStream) const;";
 	s +="virtual bool LoadAsText(Iterator *I,CryString &FromStream);";
@@ -1098,7 +1098,7 @@ CryFunctionDefList *CryDoubleArray::GetFunctions(const char *Type) const
 
 // if this class contains the property name, it will attempt to load it
 // if all is well returns true
-bool CryDoubleArray::SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue)
+bool DoubleArray::SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue)
 {
 	if (PropertyName=="Size")
 	{
@@ -1108,12 +1108,12 @@ bool CryDoubleArray::SetProperty(const CryPropertyParser &PropertyName,const cha
 		SetSize(s);
 		return true;
 	}
-	if (CrySimpleArray::SetProperty(PropertyName,PropertyValue))
+	if (SimpleArray::SetProperty(PropertyName,PropertyValue))
 		return true;
 	return false;
 }
 
-void CryDoubleArray::RemoveAtIterator(Iterator *LI)
+void DoubleArray::RemoveAtIterator(Iterator *LI)
 {
 	unsigned int i = IteratorValue(LI);
 	for(;i<CurrentCount-1;i++)
@@ -1123,7 +1123,7 @@ void CryDoubleArray::RemoveAtIterator(Iterator *LI)
 	return;
 }
 
-const char *CryDoubleArray::GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const
+const char *DoubleArray::GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const
 {
 	if (PropertyName=="Size")
 	{
@@ -1134,23 +1134,23 @@ const char *CryDoubleArray::GetProperty(const CryPropertyParser &PropertyName,Cr
 	{
 
 	}*/
-	return CrySimpleArray::GetProperty(PropertyName,Result);
+	return SimpleArray::GetProperty(PropertyName,Result);
 }
-bool CryDoubleArray::HasProperty(const CryPropertyParser &PropertyName)const
+bool DoubleArray::HasProperty(const CryPropertyParser &PropertyName)const
 {
 	if (PropertyName=="Size")
 		return true;
-	return CrySimpleArray::HasProperty(PropertyName);
+	return SimpleArray::HasProperty(PropertyName);
 }
 
-int CryDoubleArray::GetPropertyCount() const
+int DoubleArray::GetPropertyCount() const
 {
-	return CrySimpleArray::GetPropertyCount() + 1;
+	return SimpleArray::GetPropertyCount() + 1;
 }
 
-CryPropertyList *CryDoubleArray::PropertyNames() const
+CryPropertyList *DoubleArray::PropertyNames() const
 {
-	CryPropertyList *n = CrySimpleArray::PropertyNames();
+	CryPropertyList *n = SimpleArray::PropertyNames();
 	n->AddPropertyByName("Size",this);
 	return n;
 }

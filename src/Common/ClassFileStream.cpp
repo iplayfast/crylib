@@ -74,12 +74,12 @@ bool CryFileStream::IsEmpty(const Iterator *I) const
     return Size()==0;
 }
 
-CryObject *CryFileStream::Add(CryObject *Item)
+Object *CryFileStream::Add(Object *Item)
 {
     return CryStream::Add(Item);
 }    // returns Item
 
-CryObject *CryFileStream::AddOwned(CryObject *Item)
+Object *CryFileStream::AddOwned(Object *Item)
 {
     return CryStream::AddOwned(Item);
 }   // gives ownership to list
@@ -104,7 +104,7 @@ size_t CryFileStream::Tell() const
         throw CryException(this,"Stream Not Open");
 }
 
-CryObject *CryFileStream::Dup() const // creates a duplicate of this object
+Object *CryFileStream::Dup() const // creates a duplicate of this object
 {
     if (!IsOpen())
         throw CryException(this,"Stream Not Open");
@@ -317,7 +317,7 @@ bool CryFileStream::GotoNext(Iterator *I) const    // returns true if success
     return false;
 }
 
-CryContainer::Iterator *CryFileStream::_CreateIterator() const
+Container::Iterator *CryFileStream::_CreateIterator() const
 {
     if (IsOpen())
     {

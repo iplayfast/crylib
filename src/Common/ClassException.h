@@ -36,13 +36,13 @@ class CryException
 public:
     CryException(const CryException &E);
     CryException(const char *FormatStr,...);
-    CryException(const CryObject *Object,const char *FormatStr,...);
-    CryException(const CryObject *Object,const CryException &E);
+    CryException(const Object *Object,const char *FormatStr,...);
+    CryException(const Object *Object,const CryException &E);
     //    CryException(const CryObject *Object,const CryException &E1,const CryException &E2);
     operator const char *() const;
-    CryException(const CryObject *Object,int ErrorNumber,const char *FormatStr,...);
-    CryException(const CryObject *Object,const char *sError,const long value);
-    CryException(const CryObject *Object,const char *sError,const long value,const char *sError2);
+    CryException(const Object *Object,int ErrorNumber,const char *FormatStr,...);
+    CryException(const Object *Object,const char *sError,const long value);
+    CryException(const Object *Object,const char *sError,const long value,const char *sError2);
     ~CryException();
     void SetErrno(int ErrorNumber);
     int GetErrno() const;

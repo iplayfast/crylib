@@ -34,17 +34,17 @@ using namespace std;
 // ClassFooterFactory
 ============================================================================*/
 
-ClassFooterFactory::ClassFooterFactory(CodeFactory *Parent) : CodeFactory(Parent,TClassFooterFactory)
+ClassFooterFactory::ClassFooterFactory(CodeFactory *Parent) : CodeFactory(Parent,CClassFooterFactory)
 {
     SetSortValue(MAXINT-200);
-    AddProduct(TClassFooterFactory);
+    AddProduct(CClassFooterFactory);
 }
 
-CryObject *ClassFooterFactory::Create(const CryPropertyParser &PropertyName,CodeFactory *Parent)
+Object *ClassFooterFactory::Create(const CryPropertyParser &PropertyName,CodeFactory *Parent)
 {
-    if (PropertyName==TClassFooterFactory)
+    if (PropertyName==CClassFooterFactory)
     {
-        if (!Parent->IsA(TClassBuilder))
+        if (!Parent->IsA(CClassBuilder))
             return this;
 
 

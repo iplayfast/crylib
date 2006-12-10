@@ -43,7 +43,7 @@ CryException::CryException(const char *FormatStr,...)
     Error[size] = '\0';
 }
 
-CryException::CryException(const CryObject *Object,const char *FormatStr,...)
+CryException::CryException(const Object *Object,const char *FormatStr,...)
 {
     char Buffer[1024];
     va_list argptr;
@@ -94,14 +94,14 @@ int CryException::GetErrno() const
     if (E2.errno!=-1)
         errno = E2.errno;
 } */
-CryException::CryException(const CryObject *Object,const CryException &E)
+CryException::CryException(const Object *Object,const CryException &E)
 {
     Error = new char[strlen(E)+1];
     errno = E.GetErrno();
     strcpy(Error,E);
 }
 
-CryException::CryException(const CryObject *Object,int ErrorNumber,const char *FormatStr,...)
+CryException::CryException(const Object *Object,int ErrorNumber,const char *FormatStr,...)
 {
     errno = ErrorNumber;
     char Buffer[1024];
@@ -119,7 +119,7 @@ CryException::CryException(const CryObject *Object,int ErrorNumber,const char *F
 
 }
 
-CryException::CryException(const CryObject *Object,const char *sError,const long value)
+CryException::CryException(const Object *Object,const char *sError,const long value)
 {
     char sv[40];
     errno = -1;
@@ -128,7 +128,7 @@ CryException::CryException(const CryObject *Object,const char *sError,const long
     strcpy(Error,sError);
     strcat(Error,sv);
 }
-CryException::CryException(const CryObject *Object,const char *sError1,const long value,const char *sError2)
+CryException::CryException(const Object *Object,const char *sError1,const long value,const char *sError2)
 {
     char sv[40];
     errno = -1;

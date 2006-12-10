@@ -96,14 +96,14 @@ TFuzzyXY *t;
 }
 
 // derived class will handle the display in CryStream the objects contained in array (text assumed)
-void CryFuzzy::SaveItemTo(const CryArray *Owner,EmptyObject *FromItem,CryStream &ToStream) const
+void CryFuzzy::SaveItemTo(const Array *Owner,EmptyObject *FromItem,CryStream &ToStream) const
 {
 TFuzzyXY *t = (TFuzzyXY *)FromItem;
     ToStream.printf("%f,%f",t->x,t->y);
 }
 
 // derived class will handle the Creation of an Object from the stream
-EmptyObject *CryFuzzy::LoadItemFrom(CryArray *Owner,EmptyObject *Item,CryStream &FromStream)
+EmptyObject *CryFuzzy::LoadItemFrom(Array *Owner,EmptyObject *Item,CryStream &FromStream)
 {
 TFuzzyXY *t = (TFuzzyXY *)Item;
     t->x = t->y = 0.0;
@@ -111,11 +111,11 @@ TFuzzyXY *t = (TFuzzyXY *)Item;
     return t;
 }
 
-void CryFuzzy::DestroyArrayItem(CryArray *Owner,EmptyObject *Item)
+void CryFuzzy::DestroyArrayItem(Array *Owner,EmptyObject *Item)
 {
     delete Item;
 }
-EmptyObject *CryFuzzy::CreateArrayItem(CryArray *Owner,bool *IsCryObject)
+EmptyObject *CryFuzzy::CreateArrayItem(Array *Owner,bool *IsCryObject)
 {
 TFuzzyXY *t = new TFuzzyXY;
     t->x = t->y = 0.0;
@@ -538,46 +538,46 @@ float CryFuzzy::Not(float v) const
     return 1.0 - Value(v);
 }
 
-CryObject *CryFuzzy::Dup()const // creates a duplicate of this object
+Object *CryFuzzy::Dup()const // creates a duplicate of this object
 {
 CryFuzzy *n = new CryFuzzy(this);
-    return (CryObject *)n;
+    return (Object *)n;
 }
 
-CryObject *CryFuzzy::CreateItemType(const CryPropertyParser &PropertyName)
+Object *CryFuzzy::CreateItemType(const CryPropertyParser &PropertyName)
 {
-    if (PropertyName==TCryFuzzy)
+    if (PropertyName==CCryFuzzy)
         return new CryFuzzy();
-    else return CryArray::CreateItemType(PropertyName);
+    else return Array::CreateItemType(PropertyName);
 
 }
 CryPropertyList *CryFuzzy::PropertyNames() const
 {
-    CryPropertyList *n = CryContainer::PropertyNames();// Skip Array class to avoid Size (Fuzzy takes care of that)
+    CryPropertyList *n = Container::PropertyNames();// Skip Array class to avoid Size (Fuzzy takes care of that)
     return n;
 }
 
 bool CryFuzzy::SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue)
 {
-    return CryArray::SetProperty(PropertyName,PropertyValue);
+    return Array::SetProperty(PropertyName,PropertyValue);
 }
 const char *CryFuzzy::GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const
 {
-    return CryArray::GetProperty(PropertyName,Result);
+    return Array::GetProperty(PropertyName,Result);
 }
 bool CryFuzzy::HasProperty(const CryPropertyParser &PropertyName)const
 {
-    return CryArray::HasProperty(PropertyName); // pass it to base class, see if it knows anything about it
+    return Array::HasProperty(PropertyName); // pass it to base class, see if it knows anything about it
 }
-int CryFuzzy::GetPropertyCount() const { return CryContainer::GetPropertyCount()  + 1; }    // Value is a property
+int CryFuzzy::GetPropertyCount() const { return Container::GetPropertyCount()  + 1; }    // Value is a property
 
 CryFunctionDefList *CryFuzzy::GetFunctions(const char *Type) const
 {
 // if a type has been defined and it's not this class, check subclasses for it
 	if (Type && !IsA(Type))
-	   return CryArray::GetFunctions(Type);
+	   return Array::GetFunctions(Type);
 	// otherwise get any functions in subclasses
-	CryFunctionDefList *l = CryArray::GetFunctions();
+	CryFunctionDefList *l = Array::GetFunctions();
 
     CryString s;
     s += "// Class CryFuzzy;";
@@ -633,9 +633,9 @@ CryFunctionDefList *CryFuzzy::GetFunctions(const char *Type) const
 };
 
 #ifdef VALIDATING
-bool CryFuzzy::Test(bool Verbose,CryObject &Object,bool (CallBack)(bool Verbose,const char *Result,bool fail))
+bool CryFuzzy::Test(bool Verbose,Object &Object,bool (CallBack)(bool Verbose,const char *Result,bool fail))
 {
-    return CryArray::Test(Verbose,Object,CallBack);
+    return Array::Test(Verbose,Object,CallBack);
 }
 #endif
 

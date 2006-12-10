@@ -17,8 +17,8 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef CRYOBJECT
-#define CRYOBJECT
+#ifndef OBJECT
+#define OBJECT
 #include <stdio.h>
 #include <string.h>
 #ifdef __BORLANDC__
@@ -38,29 +38,29 @@ extern "C" bool CallBack(const char *Result,bool fail);
 // IsA(const char *name)
 // { return strcmp(name,ChildClassName()) || BaseClass->IsA(name); }
 
-/*! The following defines create the following functions (using for example, CryContainer and CryObject as the class and base)
+/*! The following defines create the following functions (using for example, CryContainer and Object as the class and base)
  
  
 const char *ClassName() const { return TCryContainer; }
 virtual const char *ChildClassName() const { return TCryContainer; }
-virtual bool IsA(const char *Name) const { return ::strcmp(Name,TCryContainer)==0) || CryObject::IsA(Name); }
+virtual bool IsA(const char *Name) const { return ::strcmp(Name,TCryContainer)==0) || Object::IsA(Name); }
  
 // for non-abstract
-virtual CryObject *Dup() const { CryContainer *New = new CryContainer(); CopyTo(New); return New; }
+virtual Object *Dup() const { CryContainer *New = new CryContainer(); CopyTo(New); return New; }
 bool IsAbstract() const { return false; }
  
 // for abstract
-virtual CryObject *Dup() const = 0;
+virtual Object *Dup() const = 0;
 bool IsAbstract() const { return true; }
  
 */
 
 
-#define StdFunctionsClassName(_ClassName)	const char* ClassName() const { return T##_ClassName; }
-#define StdFunctionsChildClassName(_ClassName)	virtual const char* ChildClassName() const { return T##_ClassName; }
-#define StdFunctionsIsA(ClassName,BaseClass)	virtual bool IsA(const char *Name) const { return (::strcmp(Name,T##ClassName)==0) || BaseClass::IsA(Name); }
-#define StdFunctionsDup(ClassName)	virtual CryObject *Dup() const { ClassName *New = new ClassName(); CopyTo(*New); return New; }
-#define StdFunctionsDupA(ClassName)	virtual CryObject *Dup() const = 0;
+#define StdFunctionsClassName(_ClassName)	const char* ClassName() const { return C##_ClassName; }
+#define StdFunctionsChildClassName(_ClassName)	virtual const char* ChildClassName() const { return C##_ClassName; }
+#define StdFunctionsIsA(ClassName,BaseClass)	virtual bool IsA(const char *Name) const { return (::strcmp(Name,C##ClassName)==0) || BaseClass::IsA(Name); }
+#define StdFunctionsDup(ClassName)	virtual Object *Dup() const { ClassName *New = new ClassName(); CopyTo(*New); return New; }
+#define StdFunctionsDupA(ClassName)	virtual Object *Dup() const = 0;
 #define StdFunctionsIsAbstractTrue()	bool IsAbstract() const { return true; }
 #define StdFunctionsIsAbstractFalse()	bool IsAbstract() const { return false; }
 
@@ -87,7 +87,7 @@ using namespace std;
 #define TMaxClassNameSize 100
 
 #define TEmpyObject "EmptyObject"
-#define TCryObject "CryObject"
+#define CObject "Object"
 
 #define ExceptionUnknownProperty 100
 #define ExceptionSaveToDifferentType 101
@@ -99,7 +99,7 @@ using namespace std;
 #ifndef cbyte
 #define cbyte unsigned char
 #endif
-class CryObject;
+class Object;
 class CryNamedObject;
 class CryStream;
 class CryString;
@@ -107,9 +107,9 @@ class CryException;
 class CryStdStream;
 class CryProperty;
 class CryFunctionDef;
-class CryList;
+class List;
 class CryFunctionDefList;
-class CryContainer;
+class Container;
 class CryPropertyParser;
 class CryPropertyList;
 
@@ -119,21 +119,21 @@ struct EmptyObject
 ;
 
 
-/// All classes within this library are derived from CryObject.
-/*!	Through the use of virtual functions, CryObject can save/load streams
+/// All classes within this library are derived from Object.
+/*!	Through the use of virtual functions, Object can save/load streams
 	Duplicate itself, copy itself and create any of the subclasses in the library
 	It can also build a list of properties that the dirived classes use.
 */
 
 
-class CryObject : public EmptyObject    // functions only, no data (abstract)
+class Object : public EmptyObject    // functions only, no data (abstract)
 {
 #ifdef DEBUG
 public:
 int ObjectID;
 private:
 #endif
-	CryObject (CryObject &nono);	// made private to prevent derived copy constructors, this might not be necessary
+	Object (Object &nono);	// made private to prevent derived copy constructors, this might not be necessary
 public:
 	enum BOperation { And,Or,Xor,Not,Nor,Nand};
 
@@ -149,9 +149,9 @@ public:
 		{
 			CryStream *FromStream;
 		};
-		struct _CryObject
+		struct _Object
 		{
-			CryObject *Object;
+			Object *Object;
 		};
 		struct _int
 		{
@@ -179,9 +179,9 @@ public:
 		{
             struct _InTo      InSave;
             struct _InLoad      InLoad;
-            struct _CryObject   InCopyTo;
+            struct _Object   InCopyTo;
             struct _int         OutSize;
-            struct _CryObject   OutDup;
+            struct _Object   OutDup;
             struct _cCharp      OutClassName;
             struct _cCharp      InIsa;
             struct _bool        OutIsa;
@@ -200,22 +200,22 @@ public:
     /// will interpert an EObject and act upon the Context
     virtual bool Event(EObject EventNumber,Context::IO &Context);
 
-    CryObject();
-    virtual ~CryObject();
+    Object();
+    virtual ~Object();
     /// can this function duplicate itself? This is useful for sub-classes which may not be able to duplicate. eg a file stream class.
     virtual bool CanDup() const;
 	///copies contents of this to Dest
-    virtual void CopyTo(CryObject &Dest) const;
+    virtual void CopyTo(Object &Dest) const;
 	/// creates a duplicate of this object (no data so it's easy!)
-    virtual CryObject *Dup() const;
+    virtual Object *Dup() const;
     /// returns the size of an object (in this case 0)
     virtual size_t Size() const;
     /// will attempt to create an object of the type specified in PropertyName
-    virtual CryObject *CreateItemType(const CryPropertyParser &PropertyName);
+    virtual Object *CreateItemType(const CryPropertyParser &PropertyName);
 
-    /// returns a pointer to a string stating the current class Name, Eg CryObject (not CryString which would be a child class)
+    /// returns a pointer to a string stating the current class Name, Eg Object (not CryString which would be a child class)
     const char* ClassName() const;
-    /// returns a pointer to a string stating the ChildClassName, EG CryString (not CryObject which is the base class)
+    /// returns a pointer to a string stating the ChildClassName, EG CryString (not Object which is the base class)
     virtual const char *ChildClassName() const;
     /// attempt to return the class's main data type as a cbyte *
     virtual const cbyte* GetRaw() const;
@@ -223,12 +223,12 @@ public:
     virtual const char *AsPChar() const;
 
 	/*! returns true if the object can map to the class name.
-    for example TCryString is true for CryObject, CryStream,CryMemStream and CryString*/
+    for example TCryString is true for Object, CryStream,CryMemStream and CryString*/
     virtual bool IsA(const char *ClassName) const;    // can the object map to a ClassName
 
     virtual bool IsAbstract() const;
     // not used?  fixme
-    //CryObject *LoadItem(CryStream &FromStream);
+    //Object *LoadItem(CryStream &FromStream);
     /// returns a list of public functions for a class (including the abstract ones)
     virtual CryFunctionDefList *GetFunctions(const char *Type=0) const;
 
@@ -239,17 +239,17 @@ public:
     	functions  */
     virtual CryFunctionDefList *GetAbstractFunctions(const char *Type) const;
 
-	virtual int Compare(int CompareType,const CryObject *Test1,const CryObject *Test2) const;
+	virtual int Compare(int CompareType,const Object *Test1,const Object *Test2) const;
 	/*! will return a value showing a comparison result using CompareType. Used by derived classes
 		in order to have comparisons which makes sense to the class.  CompareType is used to allow different types of comparisons within a class
 	*/
-	virtual int CompareLogical(int CompareType,const CryObject *Test) const;
+	virtual int CompareLogical(int CompareType,const Object *Test) const;
     /// returns bool value of LessThen as determined by CompareLogical
-    virtual bool LessThen(int CompareType,const CryObject *Test) const;
+    virtual bool LessThen(int CompareType,const Object *Test) const;
 	/// returns bool value of GreaterThen as determined by CompareLogical
-	virtual bool GreaterThen(int CompareType,const CryObject *Test) const;
+	virtual bool GreaterThen(int CompareType,const Object *Test) const;
 	/// returns bool value of EqualTo as determined by CompareLogical
-	virtual bool EqualTo(int CompareType,const CryObject *Test) const;
+	virtual bool EqualTo(int CompareType,const Object *Test) const;
 
 	/*! IsContainer is true when the object in question can contain
      accessable instances of data or objects
@@ -258,10 +258,10 @@ public:
     virtual bool IsContainer() const;
 	/// will return the value of a property, or if the property is an array, a text string representing the array
 	virtual CryProperty *GetPropertyAsCryProperty(const CryPropertyParser &PropertyName) const;
-	/// will return a property represented as an object, useful for classes which contain properties that are dynamically allocated, as a property that is dynamic is a CryObject and therefore callable
-	virtual CryObject *GetCopyOfPropertyAsObject(const CryPropertyParser &PropertyName) const;
-	/// will return a pointer to the property if the property is an CryObject (or decendent)
-	virtual CryObject *_GetPropertyAsObject(const CryPropertyParser &PropertyName) const;
+	/// will return a property represented as an object, useful for classes which contain properties that are dynamically allocated, as a property that is dynamic is a Object and therefore callable
+	virtual Object *GetCopyOfPropertyAsObject(const CryPropertyParser &PropertyName) const;
+	/// will return a pointer to the property if the property is an Object (or decendent)
+	virtual Object *_GetPropertyAsObject(const CryPropertyParser &PropertyName) const;
 	/// will return whether or not the property named in PropertyName is a container
     virtual bool GetIsPropertyContainer(const CryPropertyParser &PropertyName) const;
 
@@ -293,12 +293,12 @@ public:
     /// load a previously saved (in xml format) stream
     virtual void LoadFrom(const CryStream &FromStream); // xml load
 	/// create an object (or container of objects) from the stream
-	virtual CryObject *Create(CryStream &FromStream);
+	virtual Object *Create(CryStream &FromStream);
 
 	/*! will create an object of the Type named in Type. In container classes where the Type is the contained object, the Parent must be the appropriete container type or a derived class which can create the object (if the default class can't) */
-	virtual CryObject *Create(const CryPropertyParser &PropertyName,CryObject *Parent=0);
+	virtual Object *Create(const CryPropertyParser &PropertyName,Object *Parent=0);
 	/*! will create an object of the Type named in Type. In container classes where the Type is the contained object, the Parent must be the appropriete container type or a derived class which can create the object (if the default class can't) */
-	static CryObject *ClassCreate(const CryPropertyParser &PropertyName,CryObject *Parent=0);
+	static Object *ClassCreate(const CryPropertyParser &PropertyName,Object *Parent=0);
 
 	virtual bool CanCreate(const CryPropertyParser &PropertyName) const;
 	static bool ClassCanCreate(const CryPropertyParser &PropertyName);
@@ -309,42 +309,42 @@ public:
     /*!  Will call "IteratedFunction" for each item in the container class, passing Control
     to each item. Returns false if the iteration was aborted early
     */
-    bool IterateThroughAll(CryContainer *Container,EmptyObject *Control);
+    bool IterateThroughAll(Container *Container,EmptyObject *Control);
 
     /*! IteratedFunction is called for each item in the container (from IteratedThroughAll)
      returns false if iteration should stop
      */
 	virtual bool IteratedFunction(EmptyObject *Control,EmptyObject *Item);
 
-	CryObject &operator =(const CryObject &From);
-	CryObject &operator =(const CryObject *From);
+	Object &operator =(const Object &From);
+	Object &operator =(const Object *From);
 	virtual bool Sortable() const { return false;}
 	virtual void Sort(int CompareType=0) { };
 
 #ifdef VALIDATING
 
-	virtual bool Test(bool Verbose,CryObject &Object,bool  (CallBack)(bool Verbose,const char *Result,bool fail));
+	virtual bool Test(bool Verbose,Object &Object,bool  (CallBack)(bool Verbose,const char *Result,bool fail));
 #endif
 }
-;  // CryObject
+;  // Object
 
-class CryOwnedObject : public CryObject
+class OwnedObject : public Object
 {
-CryObject *Owner;
-	CryOwnedObject(CryOwnedObject &nono);     //not allowed
+Object *Owner;
+	OwnedObject(OwnedObject &nono);     //not allowed
 public:
-	CryOwnedObject() { Owner =0; }
-	void SetOwner(CryObject *_Owner) { Owner = _Owner; }
-	CryObject *GetOwner() const { return Owner; }
+	OwnedObject() { Owner =0; }
+	void SetOwner(Object *_Owner) { Owner = _Owner; }
+	Object *GetOwner() const { return Owner; }
 /*! will create an object of the Type named in Type. In container classes where the Type is the contained object, the
 	Parent must be the appropriete container type or a derived class which can create the object (if the default class can't) */
-	virtual CryObject *Create(const CryPropertyParser &PropertyName,CryObject *Parent=0);
-	virtual CryObject *Create(CryStream &e) { return CryObject::Create(e); }
+	virtual Object *Create(const CryPropertyParser &PropertyName,Object *Parent=0);
+	virtual Object *Create(CryStream &e) { return Object::Create(e); }
 };
 
 
 }	//namespace Crystal
 
 
-#endif  // CRYOBJECT
+#endif  // OBJECT
 

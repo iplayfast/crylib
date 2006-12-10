@@ -24,13 +24,13 @@ namespace Crystal
 {
 using namespace std;
 
-#ifndef TCryStream
-#define TCryStream "CryStream"
+#ifndef CCryStream
+#define CCryStream "CryStream"
 /*! CryStream is the base for all streaming within the library
   All functions are const, as even though internal (to the class)data is modified, the
   the data that the stream is dealing with is not modified.
 */
-class CryStream : public CryContainer //abstract
+class CryStream : public Container //abstract
 {
 protected:
     ////////////////
@@ -44,8 +44,8 @@ class StreamIterator : public Iterator
     {
     public:
         unsigned int Offset;
-        StreamIterator(const CryContainer *Container);
-        virtual CryObject *Dup() const;
+        StreamIterator(const Container *Container);
+        virtual Object *Dup() const;
     };
 private:
     char Terminator[2];
@@ -59,7 +59,7 @@ public:
     void SetMode(StreamMode NewMode);
     enum CopyStyle { NORMAL,ZIP,UNZIP };
 
-struct Context : public CryObject::Context
+struct Context : public Object::Context
     {
         struct  _BuffInt
         {
@@ -99,7 +99,7 @@ struct Context : public CryObject::Context
         };
         union   UContext
         {
-            CryObject::Context::UContext _CryObject;
+            Object::Context::UContext _CryObject;
             _intint Seek;
             _int    SeekFromStart;
             _int    SeekFromCurrent;
@@ -110,7 +110,7 @@ struct Context : public CryObject::Context
             _BuffInt InWrite;
             _CryFromStream InLoadItem;
             _CryFromStream OutLoadItem;
-            CryObject::Context::UContext InLoadItemType;
+            Object::Context::UContext InLoadItemType;
             _char   InSetTerminator;
             _char   OutGetTerminator;
             _size_t OutReadT;
@@ -142,12 +142,12 @@ struct Context : public CryObject::Context
         union UIO
         {
             struct IO   StreamContext;
-            CryObject::Context::IO ObjectContext;
+            Object::Context::IO ObjectContext;
         };
     }
     ;  // Context
 
-    enum EObject {EFirst=CryObject::ELast+1,
+    enum EObject {EFirst=Object::ELast+1,
                   ESeek,ESeekFromStart,ESeekFromCurrent,ESeekFromEnd,ERead,EWrite,
                   ELoadItem,ELoadItemType,
                   ESetTerminator,EGetTerminator,EReadT,EWriteT,
@@ -156,7 +156,7 @@ struct Context : public CryObject::Context
                   EWriteStr,EReadStr,
                   ETell,EEof,EOpen,EClose,
                   ELast};
-    StdFunctionsAbstract(CryStream,CryContainer);
+    StdFunctionsAbstract(CryStream,Container);
     //    const char* ClassName() const;
     //virtual const char *ChildClassName() const;
     virtual int Seek(int offset,int whence) const= 0;
@@ -168,7 +168,7 @@ struct Context : public CryObject::Context
     virtual void SetTag(int i) const;
     virtual size_t Read(char *ToBuffer,size_t Size) const = 0;
     virtual size_t Write(const char *FromBuffer,size_t Size)= 0;
-    virtual void CopyTo(CryObject &Object) const;
+    virtual void CopyTo(Object &Object) const;
     virtual void CopyToStream(CryStream &Dest,CopyStyle Style = NORMAL) const;
     virtual bool CanDup() const;
     //    virtual CryObject *Dup() const = 0; // creates a duplicate of this object
@@ -209,7 +209,7 @@ struct Context : public CryObject::Context
     virtual void Close(bool ExceptOnError=true)= 0;
     virtual bool IsOpen() const = 0;
     virtual void Flush() = 0;
-    virtual bool Event(CryObject::EObject EventNumber,CryObject::Context::IO &Context);
+    virtual bool Event(Object::EObject EventNumber,Object::Context::IO &Context);
     virtual bool Event(EObject EventNumber,Context::UIO &Context);
     virtual int scanf(const char *format,...) const = 0;
     virtual size_t printf(const char *format,...)= 0;
@@ -224,17 +224,17 @@ struct Context : public CryObject::Context
 
 #ifdef VALIDATING
 
-    virtual bool Test(bool Verbose,CryObject &Object,bool (CallBack)(bool Verbose,const char *Result,bool fail));
+    virtual bool Test(bool Verbose,Object &Object,bool (CallBack)(bool Verbose,const char *Result,bool fail));
 #endif
 
     void GetEleType(CryString &Result) const;
     /// Container fucntions
-    virtual CryObject *Add(CryObject *Item);    // returns Item
-    virtual CryObject *AddOwned(CryObject *Item);   // gives ownership to list
+    virtual Object *Add(Object *Item);    // returns Item
+    virtual Object *AddOwned(Object *Item);   // gives ownership to list
     virtual void SetItemOwnerShip(Iterator *I,bool Owned);
     virtual bool GetItemOwnerShip(const Iterator *I) const;
     virtual size_t GetItemSize(Iterator *I) const;
-    virtual bool IsCryObject(const Iterator *I) const;
+    virtual bool IsObject(const Iterator *I) const;
     virtual bool LoadAsText(Iterator *I,CryString &FromStream);
     virtual bool SaveAsText(Iterator *I,CryString &ToStream) const;
 }

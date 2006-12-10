@@ -30,14 +30,14 @@ using namespace Crystal;
 //-------------------------------------------------------------------
 
 #ifdef VALIDATING
-bool CryStream::Test(bool Verbose,CryObject &Object,bool (CallBack)(bool Verbose, const char *Result,bool fail))
+bool CryStream::Test(bool Verbose,Object &Object,bool (CallBack)(bool Verbose, const char *Result,bool fail))
 {
     char Result[200];
     bool Fail = false;
 //    CryMemStream *DebugViewMemStream = (CryMemStream *)&Object;
-    bool IsString=Object.IsA(TCryString);	// some tests have different results for strings
+    bool IsString=Object.IsA(CCryString);	// some tests have different results for strings
     size_t t;
-    if (Object.IsA(TCryStream))
+    if (Object.IsA(CCryStream))
     {
         CryStream *s = (CryStream *)&Object;
         sprintf(Result,"\nCryStream Testing:\nObject UnNamed of ClassName %s,ChildClassName %s",
@@ -159,7 +159,7 @@ bool CryStream::Test(bool Verbose,CryObject &Object,bool (CallBack)(bool Verbose
             s->SeekFromEnd(0);
             {
                 unsigned int start = 50 + strlen(test) + sizeof(size_t);	// for files and memory
-                if (IsA(TCryString))
+                if (IsA(CCryString))
                     start = 22; // strings see the 0 and mark as end of str
                 if ((r=s->Tell())!=(unsigned)(start ))
                 {
@@ -234,7 +234,7 @@ bool CryStream::Test(bool Verbose,CryObject &Object,bool (CallBack)(bool Verbose
         }
     }
 
-    return CryObject::Test(Verbose,Object,CallBack);
+    return Object::Test(Verbose,Object,CallBack);
 
     /*
         virtual void CopyTo(CryObject *Object) const;
@@ -311,9 +311,9 @@ CryFunctionDefList *CryStream::GetFunctions(const char *Type) const
 {
 // if a type has been defined and it's not this class, check subclasses for it
     if (Type && !IsA(Type))
-        return CryContainer::GetFunctions(Type);
+        return Container::GetFunctions(Type);
     // otherwise get any functions in subclasses
-    CryFunctionDefList *l = CryContainer::GetFunctions();
+    CryFunctionDefList *l = Container::GetFunctions();
 
     CryString s;
     s += "// Class CryStream;";
@@ -411,13 +411,13 @@ void CryStream::CopyToStream(CryStream &Dest,CopyStyle Style) const
     {
         if (Style==ZIP)
         {
-            if (Dest.IsA(TCryString))
+            if (Dest.IsA(CCryString))
                 CryException(this,"Cannot compress into a CryString as there may be zeros in compressed data");
         }
         else
             if (Style==UNZIP)
             {
-                if (IsA(TCryString))
+                if (IsA(CCryString))
                     CryException(this,"Cannot decompress from a CryString as there may be zeros in compressed data");
             }
             else
@@ -508,9 +508,9 @@ void CryStream::CopyToStream(CryStream &Dest,CopyStyle Style) const
     return; // should never get here
 }
 
-void CryStream::CopyTo(CryObject &Dest) const
+void CryStream::CopyTo(Object &Dest) const
 {
-    if (Dest.IsA(TCryStream))
+    if (Dest.IsA(CCryStream))
         CopyToStream(*(CryStream *)&Dest);
     else
         throw CryException(this,"Copying from stream to object that is not streamable");
@@ -518,7 +518,7 @@ void CryStream::CopyTo(CryObject &Dest) const
 
 CryPropertyList *CryStream::PropertyNames() const
 {
-    CryPropertyList *n = CryObject::PropertyNames();
+    CryPropertyList *n = Object::PropertyNames();
     n->AddPropertyByName("Terminator",this);
     return n;
 }
@@ -527,7 +527,7 @@ bool CryStream::HasProperty(const CryPropertyParser &PropertyName) const
 {
     if (PropertyName=="Terminator")
         return true;
-    return CryObject::HasProperty(PropertyName);
+    return Object::HasProperty(PropertyName);
 }
 
 const char *CryStream::GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const
@@ -537,7 +537,7 @@ const char *CryStream::GetProperty(const CryPropertyParser &PropertyName,CryStri
         Result.printf("0x%02x",Terminator[0]);
         return Result;
     }
-    return CryObject::GetProperty(PropertyName,Result);
+    return Object::GetProperty(PropertyName,Result);
 }
 
 bool CryStream::SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue)
@@ -555,15 +555,15 @@ bool CryStream::SetProperty(const CryPropertyParser &PropertyName,const char *Pr
         SetTerminator(ch);
         return true;
     }
-    if (CryObject::SetProperty(PropertyName,PropertyValue))
+    if (Object::SetProperty(PropertyName,PropertyValue))
         return true;
 
     return false;
 }
 //
-bool CryStream::Event(CryObject::EObject EventNumber,CryObject::Context::IO &Context)
+bool CryStream::Event(Object::EObject EventNumber,Object::Context::IO &Context)
 {
-    return CryObject::Event(EventNumber,Context);
+    return Object::Event(EventNumber,Context);
 }
 
 // returns true if handled
@@ -574,7 +574,7 @@ bool CryStream::Event(EObject EventNumber,Context::UIO &Context)
     switch (EventNumber)
     {
     case EFirst:
-        return CryObject::Event(CryObject::EFirst,Context.ObjectContext);
+        return Object::Event(Object::EFirst,Context.ObjectContext);
     case ESeek:
         Seek(In.Seek.i1,In.Seek.i2);
         return true;
@@ -636,12 +636,12 @@ bool CryStream::Event(EObject EventNumber,Context::UIO &Context)
         Close(In.InClose.Result);
         return true;
     case ELast:
-        return CryObject::Event(CryObject::ELast,Context.ObjectContext);
+        return Object::Event(Object::ELast,Context.ObjectContext);
     }
     if (EventNumber < EFirst)
     {
-        CryObject::EObject coEventNumber = (CryObject::EObject ) EventNumber;
-        return CryObject::Event(coEventNumber,Context.ObjectContext);
+        Object::EObject coEventNumber = (Object::EObject ) EventNumber;
+        return Object::Event(coEventNumber,Context.ObjectContext);
     }
     return false;
 }
@@ -832,7 +832,7 @@ bool CryStream::CanDup() const
     return IsOpen();
 }
 
-CryObject::StreamMode CryStream::GetMode() const
+Object::StreamMode CryStream::GetMode() const
 {
     return _Mode.Mode;
 }
@@ -874,14 +874,14 @@ size_t CryStream::GetItemSize(Iterator *I) const
 {
     return 1;
 }
-bool CryStream::IsCryObject(const Iterator *I) const
+bool CryStream::IsObject(const Iterator *I) const
 {
     return false;
 }
 
 int CryStream::GetPropertyCount() const
 {
-    return CryObject::GetPropertyCount() + 2;
+    return Object::GetPropertyCount() + 2;
 }
 
 int CryStream::SeekToStart() const
@@ -890,23 +890,23 @@ int CryStream::SeekToStart() const
 }
 
 
-CryStream::StreamIterator::StreamIterator(const CryContainer *Container) : Iterator(Container)
+CryStream::StreamIterator::StreamIterator(const Container *Container) : Iterator(Container)
 {}
-CryObject *CryStream::StreamIterator::Dup() const
+Object *CryStream::StreamIterator::Dup() const
 {
     StreamIterator *it = (StreamIterator *)GetOrigContainer()->_CreateIterator();
     it->Offset = Offset;
     return it;
 }
 
-CryObject *CryStream::Add(CryObject *Item)    // returns Item
+Object *CryStream::Add(Object *Item)    // returns Item
 {
     CryString s;
     Item->SaveTo(s);
     Write(s.AsPChar(),s.GetLength());
     return Item;
 }
-CryObject *CryStream::AddOwned(CryObject *Item)   // gives ownership to list
+Object *CryStream::AddOwned(Object *Item)   // gives ownership to list
 {
     delete Add(Item); // So we add the text equivilent and then delete it
     return 0;

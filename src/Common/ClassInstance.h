@@ -23,8 +23,8 @@
 
 namespace Crystal {
 
-#ifndef TClassInstance
-#define TClassInstance "ClassInstance"
+#ifndef CClassInstance
+#define CClassInstance "ClassInstance"
 
 class ClassBuilder;
 
@@ -36,16 +36,16 @@ When designing a new class this class will represent internal instances of class
 class ClassInstance : public PrimInstance
 {
     CryString Type;// TODO Handle Instance as pointer
-    CryObject *p;	// one instance so we can figure out includes and abstract
+    Object *p;	// one instance so we can figure out includes and abstract
 /// checks for file preexisting, and if not and p->IsA(Type) then adds it.
 	bool HasDefault;	// set to true if a default property is set, 
 public:
 StdFunctionsNoDup(ClassInstance,CodeFactory);
 	ClassInstance(CodeFactory *Parent) : PrimInstance(Parent) { p = 0; HasDefault = false;}
 //	ClassInstance(CodeFactory *Parent,const char *ClassType,const char *ClassName,int count,bool IsProperty,bool IsPointer,bool IsArrayPointer,const char *DefaultValue);
-    virtual CryObject *Create(const CryPropertyParser &PropertyName,CodeFactory *Parent);
+    virtual Object *Create(const CryPropertyParser &PropertyName,CodeFactory *Parent);
     virtual const char *GetType() const;
-	const CryObject *Getp() const { return p; }
+	const Object *Getp() const { return p; }
 	virtual bool SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue);
     virtual bool HasProperty(const CryPropertyParser &PropertyName) const;
     /*! The count of the properties a class has */
@@ -59,15 +59,15 @@ StdFunctionsNoDup(ClassInstance,CodeFactory);
     //bool GetIsProperty() const;
     //void SetIsArrayPointer(bool _IsArrayPointer);
     //bool GetIsArrayPointer() const;
-    virtual CryObject *Create(const CryPropertyParser &PropertyName,CryObject *Parent)
+    virtual Object *Create(const CryPropertyParser &PropertyName,Object *Parent)
     {
       return CodeFactory::Create(PropertyName,Parent);
     }
-    virtual CryObject *Create(CryStream &FromStream)
+    virtual Object *Create(CryStream &FromStream)
     {
       return CodeFactory::Create(FromStream);
     }
-    virtual CryObject *Create(const char *FactoryName,const CryPropertyParser &PropertyName,CryObject *Parent)
+    virtual Object *Create(const char *FactoryName,const CryPropertyParser &PropertyName,Object *Parent)
     {
       return PrimInstance::Create(FactoryName,PropertyName,Parent);
     }
