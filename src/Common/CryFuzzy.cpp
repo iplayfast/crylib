@@ -96,14 +96,14 @@ TFuzzyXY *t;
 }
 
 // derived class will handle the display in CryStream the objects contained in array (text assumed)
-void CryFuzzy::SaveItemTo(const Array *Owner,EmptyObject *FromItem,CryStream &ToStream) const
+void CryFuzzy::SaveItemTo(const Array *Owner,EmptyObject *FromItem,Stream &ToStream) const
 {
 TFuzzyXY *t = (TFuzzyXY *)FromItem;
     ToStream.printf("%f,%f",t->x,t->y);
 }
 
 // derived class will handle the Creation of an Object from the stream
-EmptyObject *CryFuzzy::LoadItemFrom(Array *Owner,EmptyObject *Item,CryStream &FromStream)
+EmptyObject *CryFuzzy::LoadItemFrom(Array *Owner,EmptyObject *Item,Stream &FromStream)
 {
 TFuzzyXY *t = (TFuzzyXY *)Item;
     t->x = t->y = 0.0;
@@ -345,7 +345,7 @@ float	x1,x2,y;
     }
 }
 // write 1 datapoint to the stream
-void CryFuzzy::SaveFuzzToStream(int i,CryStream *ToStream) const
+void CryFuzzy::SaveFuzzToStream(int i,Stream *ToStream) const
 {
 int l;
 float x,y;
@@ -362,13 +362,13 @@ float x,y;
         break;
     }
 }
-bool CryFuzzy::LoadAsText(int i,CryString &FromStream)
+bool CryFuzzy::LoadAsText(int i,String &FromStream)
 {
 float x,y;	// i is ignored as Fuzzy sorts input values and figures out the index itself
 	FromStream.scanf("%f %f ",&x,&y);
 	return SetValueAt(x,y);
 }
-bool CryFuzzy::SaveAsText(int i,CryString &ToStream) const
+bool CryFuzzy::SaveAsText(int i,String &ToStream) const
 {
 float x,y;
    	x = Index(i)->x;
@@ -378,7 +378,7 @@ float x,y;
 }
 
 
-void CryFuzzy::AppendFromStream(CryStream &FromStream)
+void CryFuzzy::AppendFromStream(Stream &FromStream)
 {
 int l,i,c;
     switch(FromStream.GetMode())
@@ -394,7 +394,7 @@ int l,i,c;
 	    AppendFuzzFromStream(FromStream);
 }
 
-int CryFuzzy::AppendFuzzFromStream(CryStream &FromStream)
+int CryFuzzy::AppendFuzzFromStream(Stream &FromStream)
 {
 float x,y;
     switch(FromStream.GetMode())
@@ -544,7 +544,7 @@ CryFuzzy *n = new CryFuzzy(this);
     return (Object *)n;
 }
 
-Object *CryFuzzy::CreateItemType(const CryPropertyParser &PropertyName)
+Object *CryFuzzy::CreateItemType(const PropertyParser &PropertyName)
 {
     if (PropertyName==CCryFuzzy)
         return new CryFuzzy();
@@ -557,29 +557,29 @@ CryPropertyList *CryFuzzy::PropertyNames() const
     return n;
 }
 
-bool CryFuzzy::SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue)
+bool CryFuzzy::SetProperty(const PropertyParser &PropertyName,const char *PropertyValue)
 {
     return Array::SetProperty(PropertyName,PropertyValue);
 }
-const char *CryFuzzy::GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const
+const char *CryFuzzy::GetProperty(const PropertyParser &PropertyName,String &Result) const
 {
     return Array::GetProperty(PropertyName,Result);
 }
-bool CryFuzzy::HasProperty(const CryPropertyParser &PropertyName)const
+bool CryFuzzy::HasProperty(const PropertyParser &PropertyName)const
 {
     return Array::HasProperty(PropertyName); // pass it to base class, see if it knows anything about it
 }
 int CryFuzzy::GetPropertyCount() const { return Container::GetPropertyCount()  + 1; }    // Value is a property
 
-CryFunctionDefList *CryFuzzy::GetFunctions(const char *Type) const
+FunctionDefList *CryFuzzy::GetFunctions(const char *Type) const
 {
 // if a type has been defined and it's not this class, check subclasses for it
 	if (Type && !IsA(Type))
 	   return Array::GetFunctions(Type);
 	// otherwise get any functions in subclasses
-	CryFunctionDefList *l = Array::GetFunctions();
+	FunctionDefList *l = Array::GetFunctions();
 
-    CryString s;
+    String s;
     s += "// Class CryFuzzy;";
     s += "virtual bool IsA(const char *ClassName) const;";
     s += "int AddPoint(float x,float y);";

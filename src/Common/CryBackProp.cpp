@@ -37,14 +37,14 @@ BackPropagateLayer::BackPropagateLayer(CryBPNet *_Owner)
     Owner = _Owner;
     //id = -1;
 }
-CryFunctionDefList *BackPropagateLayer::GetFunctions(const char *Type) const
+FunctionDefList *BackPropagateLayer::GetFunctions(const char *Type) const
 {
 // if a type has been defined and it's not this class, check subclasses for it
 	if (Type && !IsA(Type))
 	   return Object::GetFunctions(Type);
 	// otherwise get any functions in subclasses
-	CryFunctionDefList *l = Object::GetFunctions();
-CryString s;
+	FunctionDefList *l = Object::GetFunctions();
+String s;
 	s += "\n\n//BackPropagateLayer;";
 	s +="CryString *GetFunctions() const;";
 	s +="BackPropagateLayer(CryBPNet *_Owner);";
@@ -71,7 +71,7 @@ CryPropertyList *BackPropagateLayer::PropertyNames() const
 	return n;
 }
 
-bool BackPropagateLayer::HasProperty(const CryPropertyParser &PropertyName) const
+bool BackPropagateLayer::HasProperty(const PropertyParser &PropertyName) const
 {
 	return (PropertyName=="Size") ||
 			((GetID()!=0) && (PropertyName=="Weights")) ||
@@ -84,7 +84,7 @@ int BackPropagateLayer::GetPropertyCount() const
 		i = 1;	// except if LayerNumber 0
 	return Object::GetPropertyCount()+i;
 }
-const char *BackPropagateLayer::GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const
+const char *BackPropagateLayer::GetProperty(const PropertyParser &PropertyName,String &Result) const
 {
 	if (PropertyName=="Size")
 	{
@@ -107,33 +107,18 @@ const char *BackPropagateLayer::GetProperty(const CryPropertyParser &PropertyNam
 	}
 	return Object::GetProperty(PropertyName,Result);
 }
-/*CryObject *BackPropagateLayer::GetPropertyAsCryProperty(const char *PropertyName) const
-{
-	if (strcmp(PropertyName,"Weights")==0)
-	{
-	CryDoubleArray *d = new CryDoubleArray(LayerSize);//sizeof(double));
-		d->SetName("Weights");
-		//d->SetSize(LayerSize);
-	double *w = Owner->GetAllWeights() +WeightStart;
 
-		for(int i=0;i<LayerSize;i++)
-		d->SetValue(i,*w++);
-	return d;
-	}
-	return CryNamedObject::GetPropertyAsCryProperty(PropertyName);
-}
-*/
 // if this class contains the property name, it will attempt to load it
 // if all is well returns true
-bool BackPropagateLayer::SetProperty(const CryPropertyParser &PropertyName,const char *_PropertyValue)
+bool BackPropagateLayer::SetProperty(const PropertyParser &PropertyName,const char *_PropertyValue)
 {
-CryString PropertyValue;
+String PropertyValue;
 	PropertyValue = _PropertyValue;
 	if (PropertyName=="Weights")
 	{
 		Owner->SetAllWeights();	// make sure there is enough memory
 		if (GetID()==0)
-			throw CryException(this,"Assigning Weights to input layer");
+			throw Exception(this,"Assigning Weights to input layer");
 		double *w = Owner->GetAllWeights() +WeightStart;
 
 		PropertyValue.SeekFromStart(0);
@@ -159,23 +144,6 @@ CryString PropertyValue;
 		return Object::SetProperty(PropertyName,PropertyValue);
 }
 
-/*bool BackPropagateLayer::SetPropertyAsObject(const CryPropertyParser &PropertyName,CryObject *Value)
-{
-	if ((strcmp(PropertyName,TBackPropagateLayer)==0) && (Value->IsA(TCryDoubleArray)))
-	{
-	CryDoubleArray *d = (CryDoubleArray *)Value;
-		this->LayerSize = d->Size();
-		Owner->SetAllWeights();
-		double *w = Owner->GetAllWeights()+WeightStart;
-		for(int i=0;i<d->Size();i++)
-		{
-			*w++ = d->GetValue(i);
-		}
-		return true;
-	}
-	return CryNamedObject::SetPropertyAsObject(PropertyName,Value);
-}
-*/
 
 void BackPropagateLayer::SetID(int i)
 {
@@ -196,7 +164,7 @@ void BackPropagateLayer::CopyTo(Object &Object) const
         b->dWeightStart = dWeightStart;
     }
     else
-        throw CryException(this,"Cannot CopyTo %s from %s",Object.ClassName(),ClassName());
+        throw Exception(this,"Cannot CopyTo %s from %s",Object.ClassName(),ClassName());
 }
 
 BackPropagateLayer * CryBPNet::AddLayer(int Size)
@@ -222,19 +190,19 @@ BackPropagateLayer *b = 0;
 	SetAllWeights();
     return b;
 }
-void CryBPNet::GetEleType(CryString &Result) const
+void CryBPNet::GetEleType(String &Result) const
 {
 	Result = CBackPropagateLayer;
 }
 
-CryFunctionDefList *CryBPNet::GetFunctions(const char *Type) const
+FunctionDefList *CryBPNet::GetFunctions(const char *Type) const
 {
 // if a type has been defined and it's not this class, check subclasses for it
 	if (Type && !IsA(Type))
 	   return Array::GetFunctions(Type);
 	// otherwise get any functions in subclasses
-	CryFunctionDefList *l = Array::GetFunctions();
-CryString s;
+	FunctionDefList *l = Array::GetFunctions();
+String s;
     s += "\n\n//CryBPNet;";
     s +="CryString *GetFunctions() const;";
     s +="void SetAllWeights();";
@@ -327,7 +295,7 @@ EmptyObject *CryBPNet::CreateArrayItem(Array *Owner,bool *IsCryObject)
 }
 
 // derived class will handle the display in CryStream the objects contained in array (text assumed)
-void CryBPNet::SaveItemTo(const Array *Owner,EmptyObject *FromItem,CryStream &ToStream) const
+void CryBPNet::SaveItemTo(const Array *Owner,EmptyObject *FromItem,Stream &ToStream) const
 {
     BackPropagateLayer *l =(BackPropagateLayer *)FromItem;
   //  CryMemStream *ms = (CryMemStream *)ToStream;
@@ -354,7 +322,7 @@ void CryBPNet::SaveItemTo(const Array *Owner,EmptyObject *FromItem,CryStream &To
         ToStream.printf("Uninitialized");
 }
 // derived class will handle the loading of an Object from the stream, objectmust have already been created
-EmptyObject *CryBPNet::LoadItemFrom(Array *Owner,EmptyObject *ToItem,CryStream &FromStream)
+EmptyObject *CryBPNet::LoadItemFrom(Array *Owner,EmptyObject *ToItem,Stream &FromStream)
 {
     BackPropagateLayer  *l = (BackPropagateLayer *)ToItem;
     int LayerNumber=-1,LayerSize;
@@ -363,7 +331,7 @@ EmptyObject *CryBPNet::LoadItemFrom(Array *Owner,EmptyObject *ToItem,CryStream &
         return ToItem;	// uninitialized
     l->LayerSize = LayerSize;
     /*    if (ToItem != Owner->GetItem(LayerNumber))
-            CryException(this,"Loading from a different layer then it was saved from");
+            Exception(this,"Loading from a different layer then it was saved from");
             if (l->id>0)     // Input layer doesn't have weights
             {
     	double *dw = AllWeights + l->dWeightStart;
@@ -381,16 +349,16 @@ EmptyObject *CryBPNet::LoadItemFrom(Array *Owner,EmptyObject *ToItem,CryStream &
     return l;
 }
 
-bool CryBPNet::LoadAsText(int i,CryString &FromStream)
+bool CryBPNet::LoadAsText(int i,String &FromStream)
 {
 
     LoadItemFrom(this,GetItem(i),FromStream);
     return true;
 }
 
-bool CryBPNet::SaveAsText(int i,CryString &ToStream) const
+bool CryBPNet::SaveAsText(int i,String &ToStream) const
 {
-    CryMemStream e;
+    MemStream e;
     SaveItemTo(this,GetItem(i),e);
     e.CopyToStream(ToStream);
     return true;
@@ -436,14 +404,14 @@ void CryBPNet::Propagate(int _From,int _To,double Gain)
     }
 }
 
-CryFunctionDefList *CryBPNetContainer::GetFunctions(const char *Type) const
+FunctionDefList *CryBPNetContainer::GetFunctions(const char *Type) const
 {
 // if a type has been defined and it's not this class, check subclasses for it
 	if (Type && !IsA(Type))
 	   return CryBPNetContainer::GetFunctions(Type);
 	// otherwise get any functions in subclasses
-	CryFunctionDefList *l = CryBPNetContainer::GetFunctions();
-CryString s;
+	FunctionDefList *l = CryBPNetContainer::GetFunctions();
+String s;
     s = "\n\n//CryBPNetContainer;";
 	s +="void SetAlpha(double a);";
     s +="void SetEta(double e);";
@@ -632,8 +600,8 @@ void CryBPNetContainer::RandomWeights()
         CryBPNet::RandomWeights(l);
 }
 
-// functions needed by CryNamedObject
-bool CryBPNetContainer::HasProperty(const CryPropertyParser &PropertyName) const
+
+bool CryBPNetContainer::HasProperty(const PropertyParser &PropertyName) const
 {
     if (PropertyName=="Layer_Count")
         return true;
@@ -670,7 +638,7 @@ CryPropertyList *CryBPNetContainer::PropertyNames() const
 	//n->AddOwned(new CryString("dWeights"));
 	return n;
 }
-const char *CryBPNetContainer::GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const
+const char *CryBPNetContainer::GetProperty(const PropertyParser &PropertyName,String &Result) const
 {
 	if (PropertyName=="Layer_Count")
 	{
@@ -738,9 +706,9 @@ const char *CryBPNetContainer::GetProperty(const CryPropertyParser &PropertyName
 
 // if this class contains the property name, it will attempt to load it
 // if all is well returns true
-bool CryBPNetContainer::SetProperty(const CryPropertyParser &PropertyName,const char *_PropertyValue)
+bool CryBPNetContainer::SetProperty(const PropertyParser &PropertyName,const char *_PropertyValue)
 {
-CryString PropertyValue;
+String PropertyValue;
 	PropertyValue = _PropertyValue;
     if (PropertyName=="Layer_Count")
     {
@@ -807,79 +775,79 @@ CryString PropertyValue;
 // functions needed by CryContainer
 CryBPNetContainer::Iterator *CryBPNetContainer::_CreateIterator() const
 {
-	throw CryException(this,"Create Iterator not implemented");
+	throw Exception(this,"Create Iterator not implemented");
 }
 void CryBPNetContainer::DeleteIterator(Iterator *I) const
 {
-	throw CryException(this,"not implemented");
+	throw Exception(this,"not implemented");
 }
 bool CryBPNetContainer::GotoFirst(Iterator *I) const   // returns true if success
 {
-	throw CryException(this,"GotoFirst not implemented");
+	throw Exception(this,"GotoFirst not implemented");
 }
 bool CryBPNetContainer::GotoPrev(Iterator *I) const   // returns true if success
 {
-	throw CryException(this,"GotoPrev not implemented");
+	throw Exception(this,"GotoPrev not implemented");
 }
 bool CryBPNetContainer::GotoNext(Iterator *I) const    // returns true if success
 {
-	throw CryException(this,"GotoNext not implemented");
+	throw Exception(this,"GotoNext not implemented");
 }
 bool CryBPNetContainer::GotoLast(Iterator *Iterator) const    // returns true if success
 {
-	throw CryException(this,"GotoLast not implemented");
+	throw Exception(this,"GotoLast not implemented");
 }
 EmptyObject *CryBPNetContainer::GetAtIterator(Iterator *I) const
 {
-	throw CryException(this,"GetAtIterator not implemented");
+	throw Exception(this,"GetAtIterator not implemented");
 }
 size_t CryBPNetContainer::Count() const
 {
-	throw CryException(this,"Count() not implemented");
+	throw Exception(this,"Count() not implemented");
 }
 void CryBPNetContainer::Clear()
 {
-	throw CryException(this,"Clear( not implemented");
+	throw Exception(this,"Clear( not implemented");
 }
 EmptyObject *CryBPNetContainer::Add(EmptyObject *Item,size_t Size)
 {
-	throw CryException(this,"Add not implemented");
+	throw Exception(this,"Add not implemented");
 }
 EmptyObject *CryBPNetContainer::AddOwned(EmptyObject *Item,size_t Size)
 {
-	throw CryException(this,"AddOwned not implemented");
+	throw Exception(this,"AddOwned not implemented");
 }
 CryObject *CryBPNetContainer::Add(CryObject *Item)    // returns Item
 {
-	throw CryException(this,"Add not implemented");
+	throw Exception(this,"Add not implemented");
 }
 CryObject *CryBPNetContainer::AddOwned(CryObject *Item)   // gives ownership to list
 {
-	throw CryException(this,"AddOwned not implemented");
+	throw Exception(this,"AddOwned not implemented");
 }
 void CryBPNetContainer::SetItemOwnerShip(Iterator *I,bool Owned)
 {
-	throw CryException(this,"SetItemOwnerShip not implemented");
+	throw Exception(this,"SetItemOwnerShip not implemented");
 }
 bool CryBPNetContainer::GetItemOwnerShip(Iterator *I) const
 {
-	throw CryException(this,"GetItemOwnerShip not implemented");
+	throw Exception(this,"GetItemOwnerShip not implemented");
 }
 size_t CryBPNetContainer::GetItemSize(Iterator *I) const
 {
-	throw CryException(this,"GetItemSize not implemented");
+	throw Exception(this,"GetItemSize not implemented");
 }
 bool CryBPNetContainer::IsCryObject(Iterator *I) const
 {
-	throw CryException(this,"IsCryObject not implemented");
+	throw Exception(this,"IsCryObject not implemented");
 }
 bool CryBPNetContainer::LoadAsText(Iterator *I,CryString *FromStream)
 {
-	throw CryException(this,"LoadAsText not implemented");
+	throw Exception(this,"LoadAsText not implemented");
 }
 bool CryBPNetContainer::SaveAsText(Iterator *I,CryString *ToStream) const
 {
-	throw CryException(this,"SaveAsText not implemented");
+	throw Exception(this,"SaveAsText not implemented");
 }
 */
 CryBPNetContainer::CryBPNetContainer()
@@ -890,7 +858,7 @@ CryBPNetContainer::CryBPNetContainer()
     TestError = TrainError = MAX_DOUBLE;
 }
 	/*! will create an object of the Type named in Type. In container classes where the Type is the contained object, the Parent must be the appropriete container type or a derived class which can create the object (if the default class can't) */
-Object *CryBPNetContainer::Create(const CryPropertyParser &PropertyName,Object *Parent)
+Object *CryBPNetContainer::Create(const PropertyParser &PropertyName,Object *Parent)
 {
 
 	if (PropertyName==CCryBPNetContainer)
@@ -902,7 +870,7 @@ Object *CryBPNetContainer::Create(const CryPropertyParser &PropertyName,Object *
 			return ((CryBPNet *)Parent)->AddLayer(0);
 		}
 		else
-			throw CryException("Cannot Create BackPropagateLayer, Must have a parent of %s (or a decendent)",CCryBPNet);
+			throw Exception("Cannot Create BackPropagateLayer, Must have a parent of %s (or a decendent)",CCryBPNet);
 	}
 	return CryBPNet::ClassCreate(PropertyName,Parent);
 }
@@ -1025,7 +993,7 @@ void CryBPNetContainer::printWeights()
     for(unsigned int i=0;i<Size();i++)
     {
 		BackPropagateLayer *pLayer = (BackPropagateLayer *) GetItem(i);
-		CryString s;
+		String s;
 		s.printf("Layer %d Size is %d ",i,pLayer->LayerSize);
 		if (i)
 		{
@@ -1116,7 +1084,7 @@ bool CryBPNetContainer::Test(bool Verbose,Object &Object,bool (CallBack)(bool Ve
 
     bool Fail = false;
 
-    CryString spn,spv,stemp;
+    String spn,spv,stemp;
 
     sprintf(Result,"\nCryBPNetContainer Testing:\nObject of ClassName %s,ChildClassName %s",
             Object.ClassName(),Object.ChildClassName());
@@ -1160,7 +1128,7 @@ bool CryBPNetContainer::Test(bool Verbose,Object &Object,bool (CallBack)(bool Ve
         	bp->AllWeights[i] = i+0.5;
 		}
 		CryXML x,x1;
-		CryString s1,s2;
+		String s1,s2;
 		CryBPNetContainer *npb;
 			x.LoadFrom(*bp);
 			x.SaveTo(s1);
@@ -1227,7 +1195,7 @@ bool CryBPNetContainer::Test(bool Verbose,Object &Object,bool (CallBack)(bool Ve
             }
             if ((Verbose) && (!CallBack(Verbose,"\nSaving to CryXML",Fail)))
 				return false;
-			CryMemStream fs;
+			MemStream fs;
 			{
 				CryXML x;
 				x.LoadFrom(*bp);
@@ -1250,7 +1218,7 @@ bool CryBPNetContainer::Test(bool Verbose,Object &Object,bool (CallBack)(bool Ve
 				CryBPNetContainer *bp1 = (CryBPNetContainer *) x.CreateObjectFromNode(this);
 				{
 					CryXML y;
-					CryMemStream fs1;
+					MemStream fs1;
 					y.LoadFrom(*bp1);
 					y.SaveTo(fs1);
 					if (fs!=fs1)
@@ -1277,7 +1245,7 @@ bool CryBPNetContainer::Test(bool Verbose,Object &Object,bool (CallBack)(bool Ve
             }
 		}
 	}
-	catch(CryException &E)
+	catch(Exception &E)
 	{
 
         sprintf(Result,"\nException Caught: %s\n",(const char *)E);

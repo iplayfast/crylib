@@ -24,10 +24,10 @@ namespace Crystal
 {
 using namespace std;
 
-#ifndef CCryMemStream
-#define CCryMemStream "CryMemStream"
+#ifndef CMemStream
+#define CMemStream "MemStream"
 /// A stream that is contained within memory
-class CryMemStream : public CryStream
+class MemStream : public Stream
 {
 class MemStreamIterator : public StreamIterator
     {
@@ -58,16 +58,16 @@ protected:
 	char *GetBuffer();
 	void Zero();
 public:
-    StdFunctions(CryMemStream,CryStream);
-    CryMemStream();
-    virtual ~CryMemStream();
+    StdFunctions(MemStream,Stream);
+    MemStream();
+    virtual ~MemStream();
     size_t Resize(size_t s);
     virtual void Clear();
     virtual void Clear(int amount); // 0 == all, 1.. from start, -1..-N from end
-    CryMemStream(const CryMemStream *E);
-    CryMemStream(const CryMemStream &E);
+    MemStream(const MemStream *E);
+    MemStream(const MemStream &E);
     //    const char* ClassName() const;
-    virtual CryFunctionDefList *GetFunctions(const char *Type=0) const;
+    virtual FunctionDefList *GetFunctions(const char *Type=0) const;
     //    virtual const char *ChildClassName() const;
     virtual const cbyte* GetRaw() const;
     /// Return a non-const reference to the ith character
@@ -83,10 +83,10 @@ public:
     //    virtual bool IsAbstract() const;
     void Compress();
     void Decompress();
-    bool operator ==(const CryMemStream &s);
-    bool operator !=(const CryMemStream &s);
-    bool operator ==(const CryMemStream *s);
-    bool operator !=(const CryMemStream *s);
+    bool operator ==(const MemStream &s);
+    bool operator !=(const MemStream &s);
+    bool operator ==(const MemStream *s);
+    bool operator !=(const MemStream *s);
     bool operator ==(const char *s);
     bool operator !=(const char *s);
     virtual int Seek(int offset,int whence) const;
@@ -94,30 +94,30 @@ public:
     virtual int SeekFromStart(int Offset=0) const;
     virtual int SeekFromCurrent(int Offset) const;
     virtual int SeekFromEnd(int Offset=0) const;
-    virtual CryMemStream &MemDelete(unsigned int start,int amount);
+    virtual MemStream &MemDelete(unsigned int start,int amount);
     virtual size_t Size() const;
     virtual void CopyTo(Object &Dest) const;
-    //    virtual void CopyTo(CryStream *Dest) const;
+    //    virtual void CopyTo(Stream *Dest) const;
     //    virtual CryObject *Dup() const; // creates a duplicate of this object
     // read until terminator or Size (inclusive)
     virtual size_t ReadTI(char *ToBuffer,size_t Size) const;
     // write until terminator or size (inclusive)
     virtual size_t WriteTI(const char *FromBuffer,size_t Size);
     // read until terminator or Size (inclusive)
-    virtual size_t ReadTI(CryStream *ToBuffer,size_t Size) const;
+    virtual size_t ReadTI(Stream *ToBuffer,size_t Size) const;
     // write until terminator or size (inclusive)
-    virtual size_t WriteTI(CryStream *FromBuffer,size_t Size);
+    virtual size_t WriteTI(Stream *FromBuffer,size_t Size);
 
     virtual size_t Read(char *ToBuffer,size_t Size) const;
     virtual size_t Write(const char *FromBuffer,size_t Size);
-    virtual size_t Read(CryStream *ToStream,size_t Size) const;
-    virtual size_t Write(const CryStream *FromStream,size_t Size);
-    virtual size_t Read(CryStream *ToStream) const;
-    virtual size_t Write(const CryStream *FromStream);
+    virtual size_t Read(Stream *ToStream,size_t Size) const;
+    virtual size_t Write(const Stream *FromStream,size_t Size);
+    virtual size_t Read(Stream *ToStream) const;
+    virtual size_t Write(const Stream *FromStream);
     virtual size_t Tell() const;
     virtual bool Eof() const;
     virtual int CompareLogical(int CompareType,const Object *Test) const;
-	virtual int Compare(const CryMemStream *MemStream) const;
+	virtual int Compare(const MemStream *MemStream) const;
 
     virtual bool IsOpen()  const;
     virtual bool Open(const char *Name,const char *Operation,bool ExceptOnError=true);

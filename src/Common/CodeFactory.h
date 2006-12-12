@@ -43,7 +43,7 @@ class CodeFactory : public CryFactory
     void AddFactory(CryFactory *f)
     {}
 	
-    CryString Name;
+    String Name;
     CodeFactory *Parent;
     CodeFactory()
     {} // no no, only used for dup which immediatly does a copyto 
@@ -65,40 +65,40 @@ StdFunctionsIsAbstractFalse();
     virtual bool IsA(const char *Name) const ;
     ~CodeFactory();
     CryPropertyList *DescribeProducts() const;
-    virtual Object *Create(const CryPropertyParser &PropertyName,CodeFactory *Parent);
-    virtual Object *Create(const CryPropertyParser &PropertyName,Object *Parent);
+    virtual Object *Create(const PropertyParser &PropertyName,CodeFactory *Parent);
+    virtual Object *Create(const PropertyParser &PropertyName,Object *Parent);
     const char *GetName() const;
     void SetName(const char *_Name);
-    void AddProduct(const CryPropertyParser &PropertyName);
+    void AddProduct(const PropertyParser &PropertyName);
     void AddFactory(CodeFactory *f);
-    bool CanBuildProduct(const CryPropertyParser &PropertyName);
-    void Clear(const CryPropertyParser &PropertyName);
+    bool CanBuildProduct(const PropertyParser &PropertyName);
+    void Clear(const PropertyParser &PropertyName);
     virtual void Sort(int SortType=0);
     void SetSortValue(int v);
     int GetSortValue() const;
-    void SetHead(const CryPropertyParser &PropertyName,const char *NewHead);
-    void SetImp(const CryPropertyParser &PropertyName,const char *NewImp);
+    void SetHead(const PropertyParser &PropertyName,const char *NewHead);
+    void SetImp(const PropertyParser &PropertyName,const char *NewImp);
     void AppendHead(const char *Name);
     void AppendImp(const char *Name);
     void AppendHeadImp(const char *s);
 
-    const CryString *GetHead(const CryPropertyParser &PropertyName) const;
-    const CryString *GetImp(const CryPropertyParser &PropertyName) const;
-    void SetHeadImp(const CryPropertyParser &PropertyName,const char *s);
+    const String *GetHead(const PropertyParser &PropertyName) const;
+    const String *GetImp(const PropertyParser &PropertyName) const;
+    void SetHeadImp(const PropertyParser &PropertyName,const char *s);
 	int GetPropertyCount() const;
 		/// will return a property represented as an object, useful for classes which contain properties that are dynamically allocated, as a property that is dynamic is a CryObject and therefore callable
-	virtual Object *GetCopyOfPropertyAsObject(const CryPropertyParser &PropertyName) const;
+	virtual Object *GetCopyOfPropertyAsObject(const PropertyParser &PropertyName) const;
 	/// will return a pointer to the property if the property is an CryObject (or decendent)
-	virtual Object *_GetPropertyAsObject(const CryPropertyParser &PropertyName) const;
+	virtual Object *_GetPropertyAsObject(const PropertyParser &PropertyName) const;
 
-	virtual bool  SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue);
-    virtual bool GetIsPropertyContainer(const CryPropertyParser &PropertyName) const;
-	virtual const char * GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const;
+	virtual bool  SetProperty(const PropertyParser &PropertyName,const char *PropertyValue);
+    virtual bool GetIsPropertyContainer(const PropertyParser &PropertyName) const;
+	virtual const char * GetProperty(const PropertyParser &PropertyName,String &Result) const;
 	virtual CryPropertyList* PropertyNames() const;
-	virtual bool HasProperty(const CryPropertyParser &PropertyName) const;
+	virtual bool HasProperty(const PropertyParser &PropertyName) const;
     virtual void Clear()   {};
-    virtual Object *Create(CryStream &FromStream);
-    virtual Object *Create(const char *FactoryName,const CryPropertyParser &PropertyName,Object *Parent=0)
+    virtual Object *Create(Stream &FromStream);
+    virtual Object *Create(const char *FactoryName,const PropertyParser &PropertyName,Object *Parent=0)
     {
       return CryFactory::Create(FactoryName,PropertyName,Parent);
     }

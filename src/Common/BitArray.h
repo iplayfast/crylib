@@ -17,7 +17,7 @@ using namespace Crystal;
 #ifndef CBitArray
 #define CBitArray	"BitArray"
 
-class BitArray : public CryMemStream
+class BitArray : public MemStream
 {
 int BitCount;	// number of bits we are dealing with
 class BitIterator: public Iterator
@@ -71,12 +71,12 @@ Container::Iterator *LocIterator;
 	virtual bool IsA(const char *GetName) const
 	{
 		return (::strcmp(GetName,CBitArray)==0) ||
-		 CryMemStream::IsA(GetName);
+		 MemStream::IsA(GetName);
 	}
 
 
 virtual void SetItemOwnerShip(Iterator *I,bool Owned);
-virtual void GetEleType(CryString &Result) const;
+virtual void GetEleType(String &Result) const;
 virtual void DeleteIterator(Iterator *I) const;
 	/*!Copy this class and any parts of it to Dest*/
 virtual bool GetBit(int BitIndex);
@@ -88,8 +88,8 @@ virtual void Clear(int amount); // 0 == all, 1.. from start, -1..-N from end
 virtual size_t Size() const;
 virtual size_t GetItemSize(Iterator *I) const;
 virtual size_t Count() const;
-virtual bool SaveAsText(Iterator *I,CryString &ToStream) const;
-virtual bool LoadAsText(Iterator *I,CryString &FromStream);
+virtual bool SaveAsText(Iterator *I,String &ToStream) const;
+virtual bool LoadAsText(Iterator *I,String &FromStream);
 virtual bool IsObject(const Iterator *I) const;
 virtual bool GotoPrev(Iterator *I) const;
 virtual bool GotoNext(Iterator *I) const;
@@ -108,7 +108,7 @@ virtual EmptyObject *Add(EmptyObject *Item,size_t Size);
 virtual Object *Dup() const;
 virtual Object *AddOwned(Object *Item);
 virtual Object *Add(Object *Item);
-virtual CryFunctionDefList *GetFunctions(const char *Type=0) const;
+virtual FunctionDefList *GetFunctions(const char *Type=0) const;
 
 // ***********************************************************************
 // Inherited Properties
@@ -121,8 +121,8 @@ virtual CryFunctionDefList *GetFunctions(const char *Type=0) const;
 // (usually a container class)
 
 
-virtual const char *GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const;
-virtual bool SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue);
+virtual const char *GetProperty(const PropertyParser &PropertyName,String &Result) const;
+virtual bool SetProperty(const PropertyParser &PropertyName,const char *PropertyValue);
 #ifdef VALIDATING
 	virtual bool Test(bool Verbose,Object &ThisObject,bool  (CallBack)(bool Verbose,const char *Result,bool fail));
 #endif

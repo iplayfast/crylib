@@ -1,6 +1,6 @@
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+//#ifdef HAVE_CONFIG_H
+//#include <config.h>
+//#endif
 
 #include <iostream>
 #include <cstdlib>
@@ -42,7 +42,7 @@ try
 {
 CryBPNetContainer bp;
 #ifdef VALIDATING
-CryString a;
+String a;
 //	a.Test(true,&a,CallBack);
 	a.Test(true,a,CallBack);
 	bp.Test(true,bp,CallBack);
@@ -53,7 +53,7 @@ HugeInt h;
 
 	
 }
-catch(CryException &E)
+catch(Exception &E)
 {
 	printf("\nException Caught: %s\n",(const char *)E);
 }
@@ -102,7 +102,7 @@ l.Test(true,l,CallBack);
 f.Test(true,f,CallBack);
 #endif
 }
-catch(CryException &E)
+catch(Exception &E)
 {
     printf("\nException Caught: %s\n",(const char *)E);
     return 0;
@@ -452,13 +452,13 @@ char *teststr = "Hello, Hello world. This is a test of the emerging broad corpin
   try
   {
 
-  CryString s;
-  CryMemStream d;
+  String s;
+  MemStream d;
     s = "Hello, Hello world. This is a test of the emerging broad corping castration. If this had been an actual castration you would have been incorporated";
-    s.CopyToStream(d,CryStream::ZIP);
+    s.CopyToStream(d,Stream::ZIP);
     
-  CryString u;
-    d.CopyToStream(u,CryStream::UNZIP);
+  String u;
+    d.CopyToStream(u,Stream::UNZIP);
     printf("s length = %d, zipped length = %d, unzipped length = %d",s.Size(),d.Size(),u.Size());
   return 0;
   //CreateAINETXML();
@@ -477,7 +477,7 @@ char *teststr = "Hello, Hello world. This is a test of the emerging broad corpin
   //cb.Event(CryObject::ESaveStream,context);
   }
   }
-  catch(CryException &e)
+  catch(Exception &e)
   {
   	cout << e << endl;
   }

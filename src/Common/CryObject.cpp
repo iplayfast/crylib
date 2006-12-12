@@ -59,7 +59,7 @@ bool Object::Test(bool Verbose,Object &ThisObject, bool (CallBack)(bool Verbose,
 {
     char Result[200];
     bool Fail = false;
-	CryString spn,spv,stemp;
+	String spn,spv,stemp;
 	sprintf(Result,"\nObject Testing:\nObject of ClassName %s,ChildClassName %s",
             ThisObject.ClassName(),ThisObject.ChildClassName());
 
@@ -88,10 +88,10 @@ bool Object::Test(bool Verbose,Object &ThisObject, bool (CallBack)(bool Verbose,
                 do
                 {
                     count++;
-                    CryString value;
+                    String value;
 
                     const
-                    CryString *item =  i->GetName();
+                    String *item =  i->GetName();
 
                     i->GetValue(value);
 
@@ -109,7 +109,7 @@ bool Object::Test(bool Verbose,Object &ThisObject, bool (CallBack)(bool Verbose,
 
         try
         {
-            CryString t;
+            String t;
             ThisObject.GetProperty("BADVALUE",t);
             Fail = true;
 
@@ -118,7 +118,7 @@ bool Object::Test(bool Verbose,Object &ThisObject, bool (CallBack)(bool Verbose,
 
         }
 
-        catch (CryException &e)
+        catch (Exception &e)
         {
             if (!CallBack(Verbose,"Exception thrown on \"BADVALUE\"",Fail))
                 return false;
@@ -128,7 +128,7 @@ bool Object::Test(bool Verbose,Object &ThisObject, bool (CallBack)(bool Verbose,
 
     if (ThisObject.CanDup())
     {
-        CryString spn,stemp;
+        String spn,stemp;
         char Result[200];
 
         try
@@ -141,7 +141,7 @@ bool Object::Test(bool Verbose,Object &ThisObject, bool (CallBack)(bool Verbose,
             }
         }
 
-        catch (CryException &e)
+        catch (Exception &e)
         {
             Fail=true;
 
@@ -166,7 +166,7 @@ bool Object::Test(bool Verbose,Object &ThisObject, bool (CallBack)(bool Verbose,
                     }
                 }
 
-                catch (CryException &e)
+                catch (Exception &e)
                 {
                     Fail=true;
 
@@ -182,9 +182,9 @@ bool Object::Test(bool Verbose,Object &ThisObject, bool (CallBack)(bool Verbose,
 					co = x.CreateObjectFromNode();
 				}
 
-				catch (CryException &e)
+				catch (Exception &e)
 				{
-					CryString s;
+					String s;
 					Fail = true;
 
 					s.printf("Exception thrown on CreateObjectFromNode \"%s\" continue to attempt using object as parent",(const
@@ -192,15 +192,15 @@ bool Object::Test(bool Verbose,Object &ThisObject, bool (CallBack)(bool Verbose,
 
 					try
 					{
-					CryString str;
+					String str;
 						x.SaveTo(str);
 						Fail = false;	// above failure may be valid (as designed)
 						co = x.CreateObjectFromNode(&ThisObject);
 					}
 
-					catch (CryException &e)
+					catch (Exception &e)
 					{
-						CryString s;
+						String s;
 						Fail = true;
 
 						s.printf("Failed to CreateObjectFromNode \"%s\" (including using object as parent)",(const
@@ -220,7 +220,7 @@ bool Object::Test(bool Verbose,Object &ThisObject, bool (CallBack)(bool Verbose,
 				if (!CallBack(Verbose,"CreateObjectFromNode",Fail))
                 	return false;
 
-				CryString factorystring;
+				String factorystring;
 				co->SaveTo(factorystring);
 
 				if (factorystring!=spn)
@@ -366,7 +366,7 @@ bool Object::IsContainer() const
 
 /*! returns true if the class in question has the property    */
 bool Object::HasProperty(const
-                            CryPropertyParser &PropertyName) const
+                            PropertyParser &PropertyName) const
 {
 #ifdef DEBUG
     return PropertyName=="ObjectID";
@@ -377,7 +377,7 @@ bool Object::HasProperty(const
 
 /*! returns true if the class in question can have the property    */
 bool Object::CanHaveProperty(const
-                                CryPropertyParser &PropertyName) const
+                                PropertyParser &PropertyName) const
 {
     return HasProperty(PropertyName);
 }
@@ -394,14 +394,14 @@ int Object::GetPropertyCount() const
 
 bool Object::SetProperty(const
 
-                            CryPropertyParser &PropertyName,const
+                            PropertyParser &PropertyName,const
                             char *PropertyValue)
 {
 #ifdef DEBUG
 
     if (PropertyName=="ObjectID")
     {
-        CryString s;
+        String s;
         s = PropertyValue;
         s.scanf("%d",&ObjectID);
         return true;
@@ -413,14 +413,14 @@ bool Object::SetProperty(const
 
 /*! will create an object of the Type named in Type. In container classes where the Type is the contained object, the Parent must be the appropriete container type */
 Object *Object::Create(const
-                             CryPropertyParser &PropertyName,Object *Parent)
+                             PropertyParser &PropertyName,Object *Parent)
 {
     return ClassCreate(PropertyName,Parent);
 }
 
 bool Object::CanCreate(const
 
-                          CryPropertyParser &PropertyName) const
+                          PropertyParser &PropertyName) const
 {
     return ClassCanCreate(PropertyName);
 }
@@ -434,14 +434,14 @@ bool Object::IteratedFunction(EmptyObject *Control,EmptyObject *Item)
 }
 
 
-CryFunctionDefList *Object::GetFunctions(const
+FunctionDefList *Object::GetFunctions(const
 
         char *Type) const
 {
     if (Type && !IsA(Type))
-        throw CryException("Cannot GetFunctions for type %s",Type);
+        throw Exception("Cannot GetFunctions for type %s",Type);
 
-    CryString s;
+    String s;
 
     s+= "//Class Object;";
 
@@ -504,38 +504,38 @@ CryFunctionDefList *Object::GetFunctions(const
 
 #endif
 
-    CryFunctionDefList *l = new CryFunctionDefList();
+    FunctionDefList *l = new FunctionDefList();
 
     l->LoadFromString(s,";");
 
     return l;
 }
 
-CryFunctionDefList *Object::GetAbstractFunctions(const
+FunctionDefList *Object::GetAbstractFunctions(const
 
         char *Type) const
 {
     // pure and abstract mean the same thing
     // first get all the functions (from the derived childclass)
-    CryFunctionDefList *l = GetFunctions(Type);
-    CryFunctionDefList::ListIterator	*it =(CryFunctionDefList::ListIterator *) l->_CreateIterator();
-    CryFunctionDefList *Return = new CryFunctionDefList();
-    CryFunctionDef *s,*s1;
+    FunctionDefList *l = GetFunctions(Type);
+    FunctionDefList::ListIterator	*it =(FunctionDefList::ListIterator *) l->_CreateIterator();
+    FunctionDefList *Return = new FunctionDefList();
+    FunctionDef *s,*s1;
 
     if (it->GotoFirst())
         do
         {
-            s = (CryFunctionDef *)it->Get();
+            s = (FunctionDef *)it->Get();
 
             if (!s->IsPure)	// found one that isn't pure, change any pure ones following to non-pure
             {
-                CryFunctionDefList::ListIterator *it1 =
-                    (CryFunctionDefList::ListIterator *)it->Dup();
+                FunctionDefList::ListIterator *it1 =
+                    (FunctionDefList::ListIterator *)it->Dup();
 
                 if (it1->GotoNext()) // check all functions following
                     do
                     {
-                        s1 = (CryFunctionDef *)it1->Get();
+                        s1 = (FunctionDef *)it1->Get();
 
                         if (s1->GetNPDeclaration()==s->GetNPDeclaration())	// same function def
                             s1->IsPure = false;
@@ -554,11 +554,11 @@ CryFunctionDefList *Object::GetAbstractFunctions(const
         do
         {
 
-            s = (CryFunctionDef *)it->Get();
+            s = (FunctionDef *)it->Get();
 
             if (s->IsPure)
             {
-                CryFunctionDef *n = new CryFunctionDef(*s);
+                FunctionDef *n = new FunctionDef(*s);
                 Return->AddOwned(n);
             }
         }
@@ -577,28 +577,28 @@ CryFunctionDefList *Object::GetAbstractFunctions(const
 const
 cbyte* Object::GetRaw() const
 {
-    throw CryException(this,"Cannot GetRaw from Object");
+    throw Exception(this,"Cannot GetRaw from Object");
 }
 
 bool Object::GetIsPropertyContainer(const
 
-                                       CryPropertyParser &PropertyName) const
+                                       PropertyParser &PropertyName) const
 {
     if (HasProperty(PropertyName))
         return false; // generally properties are strings containing values, special case needs to be handled specially
 
-    throw CryException(this,ExceptionUnknownProperty,"Unknown Property \"%s\"",PropertyName.AsPChar());
+    throw Exception(this,ExceptionUnknownProperty,"Unknown Property \"%s\"",PropertyName.AsPChar());
 }
 
 /// Get a property
 Object *Object::GetCopyOfPropertyAsObject(const
-        CryPropertyParser &PropertyName) const
+        PropertyParser &PropertyName) const
 {
 #ifdef DEBUG
 
     if (PropertyName=="ObjectID")
     {
-        CryString *s = new CryString();
+        String *s = new String();
         s->printf("%d",ObjectID);
         return s;
     }
@@ -606,40 +606,40 @@ Object *Object::GetCopyOfPropertyAsObject(const
 #endif
     if (HasProperty(PropertyName))
     {
-        throw CryException(this,ExceptionNotImplemented,"\"%s\" has not implemented GetCopyOfPropertyAsObject for Property \"%s\"",
+        throw Exception(this,ExceptionNotImplemented,"\"%s\" has not implemented GetCopyOfPropertyAsObject for Property \"%s\"",
                            ChildClassName(),PropertyName.AsPChar());
     }
 
     else
-        throw CryException(this,ExceptionUnknownProperty,"Unknown Property \"%s\"",PropertyName.AsPChar());
+        throw Exception(this,ExceptionUnknownProperty,"Unknown Property \"%s\"",PropertyName.AsPChar());
 }
 
 /// Get a property
 Object *Object::_GetPropertyAsObject(const
-        CryPropertyParser &PropertyName) const
+        PropertyParser &PropertyName) const
 {
     if (HasProperty(PropertyName))
     {
-        throw CryException(this,ExceptionNotImplemented,"\"%s\" has not implemented _GetPropertyAsObject for Property \"%s\"",
+        throw Exception(this,ExceptionNotImplemented,"\"%s\" has not implemented _GetPropertyAsObject for Property \"%s\"",
                            ChildClassName(),PropertyName.AsPChar());
     }
 
     else
-        throw CryException(this,ExceptionUnknownProperty,"Unknown Property \"%s\"",PropertyName.AsPChar());
+        throw Exception(this,ExceptionUnknownProperty,"Unknown Property \"%s\"",PropertyName.AsPChar());
 }
 
 const
 char *Object::GetProperty(const
-                             char *PropertyName,CryString &Result) const
+                             char *PropertyName,String &Result) const
 {
-    CryPropertyParser pp(PropertyName);
+    PropertyParser pp(PropertyName);
     return GetProperty(pp,Result);
 
 }
 
 const
 char *Object::GetProperty(const
-                             CryPropertyParser &PropertyName,CryString &Result) const
+                             PropertyParser &PropertyName,String &Result) const
 {
 #ifdef DEBUG
 
@@ -652,19 +652,19 @@ char *Object::GetProperty(const
     }
 
 #endif
-    throw CryException(this,ExceptionUnknownProperty,"Unknown Property \"%s\"",PropertyName.AsPChar());
+    throw Exception(this,ExceptionUnknownProperty,"Unknown Property \"%s\"",PropertyName.AsPChar());
 }
 
-bool Object::SetPropertyAsObject(CryProperty *Value)
+bool Object::SetPropertyAsObject(Property *Value)
 
 {
-    CryString Result;
+    String Result;
     return SetProperty(Value->GetName()->AsPChar(),Value->GetValue(Result));
 }
 
 /*Object *Object::Dup() const
 {
-    throw CryException(this,"Cannot Dup a Object");
+    throw Exception(this,"Cannot Dup a Object");
 } */
 
 
@@ -756,19 +756,19 @@ ELast:
 
 bool Object::ClassCanCreate(const
 
-                               CryPropertyParser &PropertyName)
+                               PropertyParser &PropertyName)
 {
-	return (PropertyName==CCryMemStream) ||
+	return (PropertyName==CMemStream) ||
 		   (PropertyName==CXML) ||
 		   (PropertyName==CXMLNode) ||
 		   (PropertyName==CCryFileStream) ||
-		   (PropertyName==CCryString) ||
-		   (PropertyName==CCryProperty) ||
+		   (PropertyName==CString) ||
+		   (PropertyName==CProperty) ||
 		   (PropertyName==CList) ||
 		   (PropertyName==CCryPropertyList) ||
 		   (PropertyName==CDoubleArray) ||
-		   (PropertyName==CCryFunctionDef) ||
-		   (PropertyName==CCryFunctionDefList) ||
+		   (PropertyName==CFunctionDef) ||
+		   (PropertyName==CFunctionDefList) ||
 		   (PropertyName==CCryFuzzy) ||
 		   (PropertyName==CBitArray) ||
 		   (PropertyName==CCryBPNetContainer) ||
@@ -779,7 +779,7 @@ bool Object::ClassCanCreate(const
 
 /*!
 	Create can create
-	CryMemStream,
+	MemStream,
 	CryFileStream,
 	CryString,
 	CryProperty,
@@ -792,35 +792,35 @@ bool Object::ClassCanCreate(const
 	HugeInt
 */
 Object *Object::ClassCreate(const
-                                  CryPropertyParser &PropertyName,Object *Parent)
+                                  PropertyParser &PropertyName,Object *Parent)
 {
     Object *NewObject = 0;
     // first create the object
 
 	if (PropertyName==CObject)
 		return new Object();
-	if (PropertyName==CCryMemStream)
-		return (Object *) new CryMemStream();
+	if (PropertyName==CMemStream)
+		return (Object *) new MemStream();
 	if (PropertyName==CXML)
 		return (Object *)new CryXML();
 	if (PropertyName==CXMLNode)
 		return (Object *)new XMLNode();
 	if (PropertyName==CCryFileStream)
 		return (Object *)new CryFileStream();
-	if (PropertyName==CCryString)
-		return (Object *)new CryString();
-	if (PropertyName==CCryProperty)
-		return (Object *)new CryProperty("NoName");
+	if (PropertyName==CString)
+		return (Object *)new String();
+	if (PropertyName==CProperty)
+		return (Object *)new Property("NoName");
 	if (PropertyName==CList)
 		return (Object *)new List();
 	if (PropertyName==CCryPropertyList)
 		return (Object *)new CryPropertyList();
 	if (PropertyName==CDoubleArray)
 		return (Object *)new DoubleArray();
-	if (PropertyName==CCryFunctionDef)
-		return (CryFunctionDef *)new CryFunctionDef();
-	if (PropertyName==CCryFunctionDefList)
-		return (CryFunctionDefList *) new CryFunctionDefList();
+	if (PropertyName==CFunctionDef)
+		return (FunctionDef *)new FunctionDef();
+	if (PropertyName==CFunctionDefList)
+		return (FunctionDefList *) new FunctionDefList();
 	if (PropertyName==CCryFuzzy)
 		return (Object *)new CryFuzzy();
 	if (PropertyName==CBitArray)
@@ -863,19 +863,19 @@ Object *Object::ClassCreate(const
 			return ((CryBPNet *)Parent)->AddLayer(0);
 		}
 		else
-			throw CryException("Cannot Create BackPropagateLayer, Must have a parent of %s (or a decendent)",TCryBPNet);
+			throw Exception("Cannot Create BackPropagateLayer, Must have a parent of %s (or a decendent)",TCryBPNet);
 	}
 */
 	if (PropertyName==CHugeInt)
 		return (Object *)new HugeInt();
 	if (Parent)
 		return Parent->Create(PropertyName,0);
-	throw CryException("Could not Create Class %s (maybe abstract?)",(const char *)PropertyName);
+	throw Exception("Could not Create Class %s (maybe abstract?)",(const char *)PropertyName);
 }
 
 
 
-void Object::SaveTo(CryStream &ToStream) const
+void Object::SaveTo(Stream &ToStream) const
 
 {
 	CryXML xml;
@@ -886,9 +886,9 @@ void Object::SaveTo(CryStream &ToStream) const
 				SObject:
 			// zlib compression of xml class
 			{
-				CryString w;
+				String w;
 				xml.SaveTo(w);
-				CryMemStream c;
+				MemStream c;
 				int wl = w.GetLength();
 				c.SetLength(w.GetLength()+ 100);    // safty range of size
 				//        zlibcompress(w,c);
@@ -907,7 +907,7 @@ void Object::SaveTo(CryStream &ToStream) const
 	}
 }
 
-void Object::LoadFrom(const CryStream &FromStream)
+void Object::LoadFrom(const Stream &FromStream)
 {
 	CryXML xml;
 	switch (FromStream.GetMode())
@@ -919,11 +919,11 @@ void Object::LoadFrom(const CryStream &FromStream)
 				int l;
 				FromStream.Read((char *)&l,sizeof(l));
 				if (l!=0)   // get marker
-					throw CryException(this,"Compressed Read from non-compressed format");
+					throw Exception(this,"Compressed Read from non-compressed format");
 				FromStream.Read((char *)&l,sizeof(l));  // original length
-				CryString w;
+				String w;
 				w.SetLength(l);
-				CryMemStream c;
+				MemStream c;
 				FromStream.Read((char *)&l,sizeof(l));
 				c.SetLength(l);
 				c.Write(&FromStream,l);
@@ -939,7 +939,7 @@ void Object::LoadFrom(const CryStream &FromStream)
     return xml.SaveTo(*this);
 }
 
-Object *Object::Create(CryStream &FromStream)
+Object *Object::Create(Stream &FromStream)
 
 {
     CryXML xml;
@@ -954,11 +954,11 @@ Object *Object::Create(CryStream &FromStream)
 				int l;
 				FromStream.Read((char *)&l,sizeof(l));
 				if (l!=0)   // get marker
-					throw CryException(this,"Compressed Read from non-compressed format");
+					throw Exception(this,"Compressed Read from non-compressed format");
 				FromStream.Read((char *)&l,sizeof(l));  // original length
-				CryString w;
+				String w;
 				w.SetLength(l);
-				CryMemStream c;
+				MemStream c;
 				FromStream.Read((char *)&l,sizeof(l));
 				c.SetLength(l);
 				c.Write(&FromStream,l);
@@ -982,14 +982,14 @@ CryPropertyList *Object::PropertyNames() const
 	return n;
 }
 
-CryProperty *Object::GetPropertyAsCryProperty(const
+Property *Object::GetPropertyAsCryProperty(const
 
-		CryPropertyParser &PropertyName) const
+		PropertyParser &PropertyName) const
 {
 	if (HasProperty(PropertyName))
 	{
-		CryProperty *o = new CryProperty(PropertyName);
-		CryString s;
+		Property *o = new Property(PropertyName);
+		String s;
 
 		const
 		char *c =GetProperty(PropertyName,s);
@@ -1007,7 +1007,7 @@ CryProperty *Object::GetPropertyAsCryProperty(const
 		return o;
 	}
 
-	throw CryException(this,ExceptionUnknownProperty,"Unknown Property \"%s\"",PropertyName.AsPChar());
+	throw Exception(this,ExceptionUnknownProperty,"Unknown Property \"%s\"",PropertyName.AsPChar());
 }
 
 
@@ -1035,7 +1035,7 @@ bool Object::IterateThroughAll(Container *Container,EmptyObject *Control) // for
 }
 
 Object *Object::CreateItemType(const
-									 CryPropertyParser &PropertyName)
+									 PropertyParser &PropertyName)
 {
 	Object *NewObject;
 
@@ -1043,10 +1043,10 @@ Object *Object::CreateItemType(const
 		return new List();
 	if (PropertyName==CCryFileStream)
 		return new CryFileStream();
-	if (PropertyName==CCryMemStream)
-		return new CryMemStream();
-	if (PropertyName==CCryString)
-		return new CryString();
+	if (PropertyName==CMemStream)
+		return new MemStream();
+	if (PropertyName==CString)
+		return new String();
 	if (PropertyName==CStrategy)
 		return new Strategy();
 	if (PropertyName==CStrategyHolder)
@@ -1071,14 +1071,14 @@ Object *Object::CreateItemType(const
 		return new CompositeIterator(0);
 	if (PropertyName==CState)
 		NewObject = new State(1);
-	throw CryException(this,"Trying to create instance of Unknown or Abstract Class %s",PropertyName.AsPChar());
+	throw Exception(this,"Trying to create instance of Unknown or Abstract Class %s",PropertyName.AsPChar());
 }
 
 
 
 Object *OwnedObject::Create(const
 
-                                  CryPropertyParser &PropertyName,Object *Parent)
+                                  PropertyParser &PropertyName,Object *Parent)
 {
     try
     {
@@ -1086,7 +1086,7 @@ Object *OwnedObject::Create(const
         return o;
     }
 
-    catch (CryException &e)
+    catch (Exception &e)
     {
         if (Owner)
         {

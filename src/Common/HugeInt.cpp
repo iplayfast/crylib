@@ -44,7 +44,7 @@ void HugeInt::SetNumDigits(unsigned int n)
   }
     unsigned *nn = new unsigned [n];
     if (!nn)
-        throw CryException(this,"Out of memory Creating HugeInt");
+        throw Exception(this,"Out of memory Creating HugeInt");
     for (unsigned int i=0;i<n-NumDigits;i++)
         nn[i] = 0;
     for(unsigned int j=0,i=n-NumDigits;i<n;i++,j++)
@@ -66,12 +66,12 @@ void HugeInt::CopyTo(Object &Dest) const  //copies contents of this to Dest
         *h = *this;
         return;
     }
-    if (Dest.IsA(CCryStream))
+    if (Dest.IsA(CStream))
     {
-        SaveTo(*(CryStream *)&Dest);
+        SaveTo(*(Stream *)&Dest);
         return;
     }
-    throw CryException(this,"Can't copy HugeInt to %s",Dest.ChildClassName());
+    throw Exception(this,"Can't copy HugeInt to %s",Dest.ChildClassName());
 }
 
 Object *HugeInt::Dup() const // creates a duplicate of this object
@@ -81,7 +81,7 @@ Object *HugeInt::Dup() const // creates a duplicate of this object
     return h;
 }
 
-const char *HugeInt::GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const
+const char *HugeInt::GetProperty(const CryPropertyParser &PropertyName,String &Result) const
 {
     if (PropertyName=="Value")
     {
@@ -300,7 +300,7 @@ bool Pool::InPool(HugeInt &Value1,HugeInt &Value2,HugeInt &Value3)
 
 //================================================================================
 
-CryString &HugeInt::GetValue(CryString &Result) const
+String &HugeInt::GetValue(String &Result) const
 {
     Result.Clear();
     HugeInt Divisor,Quotient,Remainder,Temp = *this;

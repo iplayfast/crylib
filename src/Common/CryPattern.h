@@ -189,7 +189,7 @@ This way one strategy can invoke another.
 #define CObservable "Observable"
 	class Observable : public List {
 		bool Changed;
-		CryString Name;
+		String Name;
 	public:
 		Observable();
 		void SetName(const char *_Name);
@@ -297,7 +297,7 @@ They can be created by initialization code. See example below
 #ifdef VALIDATING
 	class TestDecorator {
 		class Animal : public Decorator {
-			CryString Name;
+			String Name;
 		public:
 			Animal(char *_Name);
 			virtual void Decorate();
@@ -318,7 +318,7 @@ They can be created by initialization code. See example below
             virtual void Decorate();
         };
         class Eating : public Decorator {
-            CryString *What;
+            String *What;
         public:
             Eating(char *_What,Decorator *n);
             ~Eating();
@@ -391,10 +391,10 @@ our things will always be CryObjects
 		virtual void SetAtIterator(const Iterator *I,EmptyObject *Item,bool IsObject,bool IsOwned,size_t Size = 0);
 		virtual CryPropertyList* PropertyNames() const;
 		virtual int GetPropertyCount() const;
-		virtual Object *GetCopyOfPropertyAsObject(const CryPropertyParser &PropertyName) const;
+		virtual Object *GetCopyOfPropertyAsObject(const PropertyParser &PropertyName) const;
 
-		virtual const char * GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const;
-		virtual bool  SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue);
+		virtual const char * GetProperty(const PropertyParser &PropertyName,String &Result) const;
+		virtual bool  SetProperty(const PropertyParser &PropertyName,const char *PropertyValue);
 
 		virtual void RemoveAtIterator(Iterator *I)
 		{
@@ -436,11 +436,11 @@ our things will always be CryObjects
 		{
 			return 0;
 		};
-		virtual bool LoadAsText(Iterator *I,CryString &FromStream)
+		virtual bool LoadAsText(Iterator *I,String &FromStream)
 		{
 			return false;
 		};
-		virtual bool SaveAsText(Iterator *I,CryString &ToStream) const
+		virtual bool SaveAsText(Iterator *I,String &ToStream) const
 		{
 			return false;
 		};
@@ -450,7 +450,7 @@ our things will always be CryObjects
 			if (n<MaxCount)
 				return Array[n];
 			else
-				throw CryException("Out of range");
+				throw Exception("Out of range");
 		}
 		void SetFactory(int n,CryFactory *f) const
 		{
@@ -459,15 +459,15 @@ our things will always be CryObjects
 		}
 	public:
 		// The factory part
-		virtual Object *Create(const CryPropertyParser &PropertyName,Object *Parent);
+		virtual Object *Create(const PropertyParser &PropertyName,Object *Parent);
 		virtual List *GetProducts() const;
 		//void AddFactory(Factory *f);
 		virtual const char *Describe() const
 		{
 			return CCryFactory;
 		}
-		virtual bool CanCreate(const CryPropertyParser &PropertyName) const;
-		virtual void GetEleType(CryString &Result) const
+		virtual bool CanCreate(const PropertyParser &PropertyName) const;
+		virtual void GetEleType(String &Result) const
 		{
 			Result = CCryFactory;
 		}
@@ -487,8 +487,8 @@ our things will always be CryObjects
 		~CryFactory();
 		/// Newest factory is always added as the first
 		void AddFactory(CryFactory *f);
-		virtual Object *Create(const char *FactoryName,const CryPropertyParser &PropertyName,Object *Parent=0);
-		virtual Object *Create(CryStream &s)
+		virtual Object *Create(const char *FactoryName,const PropertyParser &PropertyName,Object *Parent=0);
+		virtual Object *Create(Stream &s)
 		{
 			return Object::Create(s);
 		}
@@ -514,7 +514,7 @@ our things will always be CryObjects
 		{
 			FactoryIterator *fi = (FactoryIterator *)I;
 			if (fi->Index<0 || fi->Index>=MaxCount)
-				throw CryException("Range Error");
+				throw Exception("Range Error");
 			return Array[fi->Index];
 		};
 
@@ -572,9 +572,9 @@ our things will always be CryObjects
 	public:
 		StdFunctions(CryOFactory,CryFactory);
 
-		virtual Object *Create(const char *FactoryName,const CryPropertyParser &PropertyName,Object *Parent=0);
-		virtual Object *Create(const CryPropertyParser &PropertyName,Object *Parent);
-        virtual Object *Create(CryStream &s)
+		virtual Object *Create(const char *FactoryName,const PropertyParser &PropertyName,Object *Parent=0);
+		virtual Object *Create(const PropertyParser &PropertyName,Object *Parent);
+        virtual Object *Create(Stream &s)
         {
             return CryFactory::Create(s);
         }
@@ -747,7 +747,7 @@ public:
 
     class ThickCrustFactory: public CryFactory {
     public:
-        virtual Object *Create(const CryPropertyParser &PropertyName,Object *Parent=0)
+        virtual Object *Create(const PropertyParser &PropertyName,Object *Parent=0)
         {
             return new ThickCrust;
         }
@@ -756,7 +756,7 @@ public:
 
     class ThinCrustFactory: public CryFactory {
     public:
-        virtual Object *Create(const CryPropertyParser &PropertyName,Object *Parent=0)
+        virtual Object *Create(const PropertyParser &PropertyName,Object *Parent=0)
         {
             return new ThinCrust;
         }
@@ -777,14 +777,14 @@ public:
 
     class PizzaIngredientFactory : public CryFactory {
     public:
-        virtual Object *Create(const CryPropertyParser &PropertyName,Object *Parent)=0;
+        virtual Object *Create(const PropertyParser &PropertyName,Object *Parent)=0;
     };
 
 #define NEWYORK "New York Style\n"
 #define CHICAGO "Chicago Style\n"
     class NYIngredientFactory : public PizzaIngredientFactory {
     public:
-        virtual Object *Create(const CryPropertyParser &PropertyName,Object *Parent)
+        virtual Object *Create(const PropertyParser &PropertyName,Object *Parent)
         {
             if (strcmp(PropertyName,"Cheese")==0)
                 return new MotCheese;
@@ -798,7 +798,7 @@ public:
         {
             return NEWYORK;
         }
-        virtual bool CanCreate(const CryPropertyParser &PropertyName) const
+        virtual bool CanCreate(const PropertyParser &PropertyName) const
         {
             if (strcmp(PropertyName,"Cheese")==0)
                 return true;
@@ -813,7 +813,7 @@ public:
 
     class ChicagoIngredientFactory : public PizzaIngredientFactory {
     public:
-        virtual Object *Create(const CryPropertyParser &PropertyName,Object *Parent)
+        virtual Object *Create(const PropertyParser &PropertyName,Object *Parent)
         {
             if (strcmp(PropertyName,"Cheese")==0)
                 return new FetaCheese;
@@ -827,7 +827,7 @@ public:
         {
             return CHICAGO;
         }
-        virtual bool CanCreate(const CryPropertyParser &PropertyName) const
+        virtual bool CanCreate(const PropertyParser &PropertyName) const
         {
             if (strcmp(PropertyName,"Cheese")==0)
                 return true;
@@ -942,7 +942,7 @@ public:
                 Instance = new T;
             Busy--;
             if (Instance==0)
-                throw CryException("Initial Singleton Instance could not be created");
+                throw Exception("Initial Singleton Instance could not be created");
             References++;
             return Instance;
         }
@@ -1031,13 +1031,13 @@ for object passing.
         {
             Undo = new StrategyHolder(NumStrategies);
             if (!Undo)
-                throw CryException("Error creating CommandHolder");
+                throw Exception("Error creating CommandHolder");
             UndoLength = _UndoLength;
             UndoList = new int[UndoLength];
             if (!UndoList) {
                 delete Undo;
                 Undo = 0;
-                throw CryException("Error creating CommandHolder");
+                throw Exception("Error creating CommandHolder");
             }
             UndoIndex = 0;
             UsedLength = 0;
@@ -1090,7 +1090,7 @@ for object passing.
                 UndoIndex--;
                 Undo->DoStrategy(UndoList[UndoIndex]);
             } else
-                throw CryException("At end of Undo list");
+                throw Exception("At end of Undo list");
         }
         void RedoStrategy()
         {
@@ -1118,13 +1118,13 @@ for object passing.
         {
             Undo = new StrategyHolderSender(NumStrategies);
             if (!Undo)
-                throw CryException("Error creating CommandHolderSender");
+                throw Exception("Error creating CommandHolderSender");
             UndoLength = _UndoLength;
             UndoList = new int[UndoLength];
             if (!UndoList) {
                 delete Undo;
                 Undo = 0;
-                throw CryException("Error creating CommandHolderSender");
+                throw Exception("Error creating CommandHolderSender");
             }
             UndoIndex = 0;
             UsedLength = 0;
@@ -1176,7 +1176,7 @@ for object passing.
                 UndoIndex--;
                 Undo->DoStrategy(UndoList[UndoIndex],o);
             } else
-                throw CryException("At end of Undo list");
+                throw Exception("At end of Undo list");
         }
         void RedoStrategy(Object *o)
         {
@@ -1184,7 +1184,7 @@ for object passing.
                 StrategyHolderSender::DoStrategy(UndoList[UndoIndex],o);
                 UndoIndex++;
             } else
-                throw CryException("At end of Redo list");
+                throw Exception("At end of Redo list");
         }
 	};
 
@@ -1274,7 +1274,7 @@ for object passing.
                 printf("%d\n Try to undo with nothing to undo (should cause error)",TestValue);
                 try {
                     ch.UndoStrategy(&Operand); // should fail
-                } catch (CryException &e) {
+                } catch (Exception &e) {
                     printf("\n%s\n",(const char *)e);
                 }
 
@@ -1300,14 +1300,14 @@ for object passing.
                 try {
                     printf("an extra redo should give an error\n");
                     ch.RedoStrategy(&Operand);
-                } catch (CryException &e) {
+                } catch (Exception &e) {
                     printf("\nexception occured, %s\n",(const char *)e);
                 }
                 printf("Doing a macro of add,add,mult,mult\n");
                 int Macro[4] = { 0,0,2,2};
                 ch.DoMacro(4,Macro,&Operand);
 
-            } catch (CryException &e) {
+            } catch (Exception &e) {
 				printf("\nunexpected exception, %s\n",(const char *)e);
             }
         };
@@ -1346,7 +1346,7 @@ for object passing.
         StdFunctionsNoDup(CompositeIterator,Container::Iterator);
         virtual Object *Dup() const
         {
-			throw CryException("Dup not implemented for CompositeIterator");
+			throw Exception("Dup not implemented for CompositeIterator");
         } // creates a duplicate of this object
 
         CompositeIterator(const Container *oc );
@@ -1369,16 +1369,16 @@ for object passing.
         EmptyObject *Get();
         size_t GetItemSize();
         //bool LoadAsText(CryString *FromStream) { return OrigContainer->LoadAsText(this,FromStream); }
-        bool SaveAsText(CryString &ToStream);
+        bool SaveAsText(String &ToStream);
         const Container *GetOrigContainer() const;
         /// return the type of structure used to control this list (ie listnode eleptr, etc)
-        void GetEleType(CryString &Result) const;
+        void GetEleType(String &Result) const;
 	};
 #ifdef VALIDATING
 	class TestCompositeIterator {
 		class Menu : public List {
 		public:
-			CryString Name;
+			String Name;
 			Menu(const char *_Name) { Name = _Name;}
 
         };

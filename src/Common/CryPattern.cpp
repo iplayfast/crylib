@@ -76,7 +76,7 @@ void StrategyHolder::SetStrategy(unsigned int StrategyIndex,const Strategy *s)
 {
 #ifdef RangeChecking
     if (/*(StrategyIndex<0) || */(StrategyIndex>=MaxCount))
-        throw CryException("Out of Range of StrategyHolder");
+        throw Exception("Out of Range of StrategyHolder");
 #endif
 
     if (s)
@@ -90,7 +90,7 @@ const Strategy *StrategyHolder::GetStrategy(unsigned int StrategyIndex) const
 {
 #ifdef RangeChecking
     if (/*(StrategyIndex<0) || */(StrategyIndex>=MaxCount))
-		throw CryException("Out of Range of StrategyHolder");
+		throw Exception("Out of Range of StrategyHolder");
 #endif
 
     return Array[StrategyIndex];
@@ -110,7 +110,7 @@ void StrategyHolder::DoStrategy(int StrategyIndex) const
 {
 #ifdef RangeChecking
     if ((StrategyIndex<0) || ((unsigned int)StrategyIndex>=MaxCount))
-        throw CryException("Out of Range of StrategyHolder");
+        throw Exception("Out of Range of StrategyHolder");
 #endif
 
     do
@@ -119,7 +119,7 @@ void StrategyHolder::DoStrategy(int StrategyIndex) const
 #ifdef RangeChecking
 
         if ((unsigned int)StrategyIndex>=MaxCount)
-            throw CryException("Out of Range of StrategyHolder");
+            throw Exception("Out of Range of StrategyHolder");
 #endif
 
     }
@@ -145,7 +145,7 @@ void StrategyHolderSender::DoStrategy(int StrategyIndex,Object *Sender) const
 {
 #ifdef RangeChecking
     if ((StrategyIndex<0) || (StrategyIndex>=GetMaxCount()))
-        throw CryException("Out of Range of StrategyHolderSender");
+        throw Exception("Out of Range of StrategyHolderSender");
 #endif
 
     do
@@ -154,7 +154,7 @@ void StrategyHolderSender::DoStrategy(int StrategyIndex,Object *Sender) const
 #ifdef RangeChecking
 
         if (StrategyIndex>=GetMaxCount())
-            throw CryException("Out of Range of StrategyHolderSender");
+            throw Exception("Out of Range of StrategyHolderSender");
 #endif
 
     }
@@ -455,7 +455,7 @@ void TestObserver::CurrentConditions::NotifyObservers(Observable *Observed)
 }
 void TestObserver::CurrentConditions::NotifyObservers(Observable *Observed,int status)
 {}
-CryString Output;
+String Output;
 void TestObserver::CurrentConditions::Display()
 {
 
@@ -551,7 +551,7 @@ void TestDecorator::Panting::Decorate()
 }
 TestDecorator::Eating::Eating(char *_What,Decorator *n) : Decorator(n)
 {
-    What = new CryString(_What);
+    What = new String(_What);
 }
 TestDecorator::Eating::~Eating()
 {
@@ -703,7 +703,7 @@ bool finished=false;	// simple bubble sort, re-implement a better sort when I ha
 	}
 }
 
-const char * CryFactory::GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const
+const char * CryFactory::GetProperty(const CryPropertyParser &PropertyName,String &Result) const
 {
     Result.Clear();
     if (PropertyName=="Values")   // intercept crycontainer's property for our own
@@ -730,7 +730,7 @@ Object *CryOFactory::Create(const CryPropertyParser &PropertyName,Object *Parent
 
 List *CryFactory::GetProducts() const
 {
-    CryString s;
+    String s;
     List *l = new List();
     for(int i=0;i<MaxCount;i++)
     {
@@ -987,7 +987,7 @@ size_t CompositeIterator::GetItemSize()
     return Stack->I->GetItemSize();
 }
 //bool LoadAsText(CryString *FromStream) { return OrigContainer->LoadAsText(this,FromStream); }
-bool CompositeIterator::SaveAsText(CryString &ToStream)
+bool CompositeIterator::SaveAsText(String &ToStream)
 {
     return Stack->I->SaveAsText(ToStream);
 }
@@ -996,18 +996,18 @@ const Container *CompositeIterator::GetOrigContainer() const
     return Stack->I->GetOrigContainer();
 }
 /// return the type of structure used to control this list (ie listnode eleptr, etc)
-void CompositeIterator::GetEleType(CryString &Result) const
+void CompositeIterator::GetEleType(String &Result) const
 {
-    Stack->I->GetEleType(Result);
+	Stack->I->GetEleType(Result);
 }
 
 int CompositeIterator::GetCurrentLevel() const
 {
-    LittleStack *p = Stack;
-    int Result = 0;
-    while(p->Next)
-    {
-        Result++;
+	LittleStack *p = Stack;
+	int Result = 0;
+	while(p->Next)
+	{
+		Result++;
         p = p->Next;
     }
     return Result;
@@ -1020,9 +1020,9 @@ const Container *CompositeIterator::GetLevelContainer(int i) const
 	i = i - GetCurrentLevel();
 	if (i<0)
 	{
-            CryString s;
+			String s;
             s.printf("Level %d is out of range",j);
-            throw CryException(s.AsPChar());
+            throw Exception(s.AsPChar());
 	}
     while(i)
     {
@@ -1038,10 +1038,10 @@ void TestCompositeIterator::AddMenuItems(TestCompositeIterator::Menu *l,char *te
 {
     for(int i=0;i<n;i++)
     {
-        CryString *s = new CryString();
-        s->printf("%s %d of %d",text,i+1,n);
-        l->AddOwned(s);
-    }
+		String *s = new String();
+		s->printf("%s %d of %d",text,i+1,n);
+		l->AddOwned(s);
+	}
 }
 TestCompositeIterator::Menu *TestCompositeIterator::AddSubMenu(TestCompositeIterator::Menu *Parent,char *text,int n)
 {
@@ -1072,7 +1072,7 @@ void TestCompositeIterator::DoTest()
 				if (ci.IsObject())
 				{
 					Object *o  = (Object *) ci.Get();
-					if (o->IsA(CCryString))
+					if (o->IsA(CString))
 					{
 			int i = ci.GetCurrentLevel();
 			Menu *m = (TestCompositeIterator::Menu *) ci.GetLevelContainer(i);
@@ -1081,18 +1081,18 @@ void TestCompositeIterator::DoTest()
 				printf("____");
 			}
 			printf("%s_",m->Name.AsPChar());
-						const char *c = ((CryString *)o)->AsPChar();
+						const char *c = ((String *)o)->AsPChar();
 						printf("%s\n",c);
 					}
 					else
 					{
-						throw CryException("Shouldn't get here!");
+						throw Exception("Shouldn't get here!");
 					}
 				}
 				else
 				{// should never get here in this example
 //					EmptyObject *e = ci.Get();
-					throw CryException("Shouldn't get here!");
+					throw Exception("Shouldn't get here!");
 				}
 			}
 		}
@@ -1106,13 +1106,13 @@ void TestCompositeIterator::DoTest()
 			if (ci.IsObject())
 			{
 				Object *o  = (Object *) ci.Get();
-				if (o->IsA(CCryString))
+				if (o->IsA(CString))
 				{
-					const char *c = ((CryString *)o)->AsPChar();
+					const char *c = ((String *)o)->AsPChar();
 					printf("%s\n",c);
 				}
 				else
-					throw CryException("Shouldn't get here!");
+					throw Exception("Shouldn't get here!");
 			}
 		}
 		while(ci.GotoPrev());

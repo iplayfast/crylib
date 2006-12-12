@@ -50,13 +50,13 @@ ClassHeaderFactory::ClassHeaderFactory(CodeFactory *Parent) : CodeFactory(Parent
 	AddFactory(new ClassFooterFactory(this));
 }
 
-Object *ClassHeaderFactory::Create(const CryPropertyParser &PropertyName,CodeFactory *Parent)
+Object *ClassHeaderFactory::Create(const PropertyParser &PropertyName,CodeFactory *Parent)
 {
 	if (!Parent->IsA(CClassBuilder))
 	{
 		if (strcmp(PropertyName,CInheritedFactory)==0)
 		{
-            CryFunctionDef dummy("void foo()");
+            FunctionDef dummy("void foo()");
             InheritedFactory *i = new InheritedFactory(this,dummy);
             AddFactory(i);
             return i;
@@ -75,7 +75,7 @@ Object *ClassHeaderFactory::Create(const CryPropertyParser &PropertyName,CodeFac
 			if (Parent->IsA(CClassBuilder))
 			{
 				ClassBuilder *cbParent = (ClassBuilder *)Parent;
-				CryString s;
+				String s;
 				s.printf("namespace Crystal {\nusing namespace Crystal;\n\nclass %s : public %s\n{\n",
 						 cbParent->GetName(),cbParent->GetInheritType());
 				SetHead(PropertyName,s);
@@ -107,7 +107,7 @@ Object *ClassHeaderFactory::Create(const CryPropertyParser &PropertyName,CodeFac
 		}
 		if (strcmp(PropertyName,CConstructorStart)==0)
 		{
-			CryString s;
+			String s;
 			s.printf("\t%s();",Parent->GetName());   // eg. Myclass();
 			SetHead(PropertyName,s);                 // put it in the header
 			Parent->AppendHead(*GetHead(PropertyName));
@@ -119,7 +119,7 @@ Object *ClassHeaderFactory::Create(const CryPropertyParser &PropertyName,CodeFac
 		}
 		if (strcmp(PropertyName,CConstructorEnd)==0)
 		{
-			CryString s;
+			String s;
 			s = "\n}\n\n";
 			SetImp(PropertyName,s);
 			Parent->AppendImp(*GetImp(PropertyName));
@@ -128,7 +128,7 @@ Object *ClassHeaderFactory::Create(const CryPropertyParser &PropertyName,CodeFac
 
 		if (strcmp(PropertyName,CDestructorStart)==0)
 		{
-			CryString s;
+			String s;
 			s.printf("\t~%s();",Parent->GetName());
 			SetHead(PropertyName,s);
 			Parent->AppendHead(*GetHead(PropertyName));
@@ -140,7 +140,7 @@ Object *ClassHeaderFactory::Create(const CryPropertyParser &PropertyName,CodeFac
 		}
 		if (strcmp(PropertyName,CDestructorEnd)==0)
 		{
-			CryString s;
+			String s;
 			s = "\n}\n";
 			SetImp(PropertyName,s);
 			Parent->AppendImp(*GetImp(PropertyName));
@@ -149,7 +149,7 @@ Object *ClassHeaderFactory::Create(const CryPropertyParser &PropertyName,CodeFac
 	}
 	return CodeFactory::Create(PropertyName,Parent);
 }
-Object *ClassHeaderFactory::Create(const CryPropertyParser &PropertyName,Object *Parent)
+Object *ClassHeaderFactory::Create(const PropertyParser &PropertyName,Object *Parent)
 {
 	if (PropertyName=="ClassInstance")
 	{
@@ -163,17 +163,17 @@ Object *ClassHeaderFactory::Create(const CryPropertyParser &PropertyName,Object 
 bool ClassHeaderFactory::Present(const Object *Name)// can be either a function def or variable name
 {
 	List::Iterator *i = _CreateIterator();
-	CryString *sName = 0;
-	CryString Def;
-	CryFunctionDef *fdName = 0;
-	if (Name->IsA(CCryFunctionDef))
+	String *sName = 0;
+	String Def;
+	FunctionDef *fdName = 0;
+	if (Name->IsA(CFunctionDef))
 	{
-		fdName = (CryFunctionDef *)Name;
+		fdName = (FunctionDef *)Name;
 		fdName->GetNPDeclaration(Def);
 	}
 	else
-		if (Name->IsA(CCryString))
-			sName = (CryString *)Name;
+		if (Name->IsA(CString))
+			sName = (String *)Name;
 		else
 			return false;
 	if (i->GotoFirst())
@@ -183,7 +183,7 @@ bool ClassHeaderFactory::Present(const Object *Name)// can be either a function 
 			CodeFactory *cf = (CodeFactory *)i->Get();
 			if (fdName && (cf->IsA(CInheritedFactory)))
 			{
-				CryString lDec;
+				String lDec;
 				InheritedFactory *If = (InheritedFactory *)cf;
 				If->GetFunc()->GetNPDeclaration(lDec);
 				if (lDec==Def)

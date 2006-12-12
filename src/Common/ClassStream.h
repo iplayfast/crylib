@@ -24,13 +24,13 @@ namespace Crystal
 {
 using namespace std;
 
-#ifndef CCryStream
-#define CCryStream "CryStream"
+#ifndef CStream
+#define CStream "Stream"
 /*! CryStream is the base for all streaming within the library
   All functions are const, as even though internal (to the class)data is modified, the
   the data that the stream is dealing with is not modified.
 */
-class CryStream : public Container //abstract
+class Stream : public Container //abstract
 {
 protected:
     ////////////////
@@ -50,11 +50,11 @@ class StreamIterator : public Iterator
 private:
     char Terminator[2];
     _StreamMode _Mode;
-    CryStream(CryStream &nono);
+    Stream(Stream &nono);
 public:
     int Tag;	// for other classes to use, set to 0 on contruction
-    CryStream();
-    virtual ~CryStream();
+    Stream();
+    virtual ~Stream();
     StreamMode GetMode() const;
     void SetMode(StreamMode NewMode);
     enum CopyStyle { NORMAL,ZIP,UNZIP };
@@ -68,15 +68,15 @@ struct Context : public Object::Context
         };
         struct _CryFromStream
         {
-            CryStream * FromStream;
+            Stream * FromStream;
         };
         struct _CryToStream
         {
-            CryStream * ToStream;
+            Stream * ToStream;
         };
         struct _StreamSize
         {
-            CryStream *Stream;
+            Stream *Stream;
             size_t Size;
         };
         struct _char
@@ -156,7 +156,7 @@ struct Context : public Object::Context
                   EWriteStr,EReadStr,
                   ETell,EEof,EOpen,EClose,
                   ELast};
-    StdFunctionsAbstract(CryStream,Container);
+    StdFunctionsAbstract(Stream,Container);
     //    const char* ClassName() const;
     //virtual const char *ChildClassName() const;
     virtual int Seek(int offset,int whence) const= 0;
@@ -164,12 +164,12 @@ struct Context : public Object::Context
     virtual int SeekFromStart(int Offset=0) const= 0;
     virtual int SeekFromCurrent(int Offset) const= 0;
     virtual int SeekFromEnd(int Offset=0) const= 0;
-    virtual CryFunctionDefList *GetFunctions(const char *Type=0) const;
+    virtual FunctionDefList *GetFunctions(const char *Type=0) const;
     virtual void SetTag(int i) const;
     virtual size_t Read(char *ToBuffer,size_t Size) const = 0;
     virtual size_t Write(const char *FromBuffer,size_t Size)= 0;
     virtual void CopyTo(Object &Object) const;
-    virtual void CopyToStream(CryStream &Dest,CopyStyle Style = NORMAL) const;
+    virtual void CopyToStream(Stream &Dest,CopyStyle Style = NORMAL) const;
     virtual bool CanDup() const;
     //    virtual CryObject *Dup() const = 0; // creates a duplicate of this object
 
@@ -180,24 +180,24 @@ struct Context : public Object::Context
     // write until terminator or size (inclusive)
     virtual size_t WriteTI(const char *FromBuffer,size_t Size);
     // read until terminator or Size (inclusive)
-    virtual size_t ReadTI(CryStream *ToBuffer,size_t Size) const;
+    virtual size_t ReadTI(Stream *ToBuffer,size_t Size) const;
     // write until terminator or size (inclusive)
-    virtual size_t WriteTI(CryStream *FromBuffer,size_t Size);
+    virtual size_t WriteTI(Stream *FromBuffer,size_t Size);
 
     // read until terminator or Size (exclusive)
     virtual size_t ReadTE(char *ToBuffer,size_t Size) const ;
     // write until terminator or size (exculusive)
     virtual size_t WriteTE(const char *FromBuffer,size_t Size);
     // read until terminator or Size (exclusive)
-    virtual size_t ReadTE(CryStream *ToBuffer,size_t Size) const;
+    virtual size_t ReadTE(Stream *ToBuffer,size_t Size) const;
     // write until terminator or size (Exclusive)
-    virtual size_t WriteTE(CryStream *FromBuffer,size_t Size);
+    virtual size_t WriteTE(Stream *FromBuffer,size_t Size);
 
     virtual char *StreamedClass(char ClassNameBuffer[TMaxClassNameSize]) const; // will LoadFrom the Buffer with the name of the next class in the stream to LoadFrom
-    virtual size_t Read(CryStream *ToStream,size_t Size) const= 0;
-    virtual size_t Write(const CryStream *FromStream,size_t Size)= 0;
-    virtual size_t Read(CryStream *ToStream) const;
-    virtual size_t Write(const CryStream *FromStream);
+    virtual size_t Read(Stream *ToStream,size_t Size) const= 0;
+    virtual size_t Write(const Stream *FromStream,size_t Size)= 0;
+    virtual size_t Read(Stream *ToStream) const;
+    virtual size_t Write(const Stream *FromStream);
     virtual size_t WriteNStr(const char *Buffer);
     virtual size_t ReadNStr(char *Buffer,size_t MaxLength) const;
     virtual size_t WriteStr(const char *Buffer);
@@ -216,9 +216,9 @@ struct Context : public Object::Context
     virtual int fgetc() const;
     // if this class contains the property name, it will attempt to load it
     // if all is well returns true
-    virtual bool SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue);
-    virtual bool HasProperty(const CryPropertyParser &PropertyName) const;
-    virtual const char *GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const;
+    virtual bool SetProperty(const PropertyParser &PropertyName,const char *PropertyValue);
+    virtual bool HasProperty(const PropertyParser &PropertyName) const;
+    virtual const char *GetProperty(const PropertyParser &PropertyName,String &Result) const;
     virtual int GetPropertyCount() const;
 	virtual CryPropertyList* PropertyNames() const;
 
@@ -227,7 +227,7 @@ struct Context : public Object::Context
     virtual bool Test(bool Verbose,Object &Object,bool (CallBack)(bool Verbose,const char *Result,bool fail));
 #endif
 
-    void GetEleType(CryString &Result) const;
+    void GetEleType(String &Result) const;
     /// Container fucntions
     virtual Object *Add(Object *Item);    // returns Item
     virtual Object *AddOwned(Object *Item);   // gives ownership to list
@@ -235,8 +235,8 @@ struct Context : public Object::Context
     virtual bool GetItemOwnerShip(const Iterator *I) const;
     virtual size_t GetItemSize(Iterator *I) const;
     virtual bool IsObject(const Iterator *I) const;
-    virtual bool LoadAsText(Iterator *I,CryString &FromStream);
-    virtual bool SaveAsText(Iterator *I,CryString &ToStream) const;
+    virtual bool LoadAsText(Iterator *I,String &FromStream);
+    virtual bool SaveAsText(Iterator *I,String &ToStream) const;
 }
 ;//CryStream
 #endif

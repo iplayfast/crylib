@@ -90,12 +90,12 @@ StdFunctionsNoDup(HugeDouble,HugeInt);
 // CryObject virtuals
 virtual void CopyTo(Object &Dest) const;  //copies contents of this to Dest
 virtual Object *Dup() const; // creates a duplicate of this object
-virtual const char *GetProperty(CryPropertyParser &PropertyName,CryString &Result) const;
-virtual bool HasProperty(CryPropertyParser &PropertyName)const;
+virtual const char *GetProperty(PropertyParser &PropertyName,String &Result) const;
+virtual bool HasProperty(PropertyParser &PropertyName)const;
 virtual int GetPropertyCount() const;
 virtual CryPropertyList* PropertyNames() const;
 
-virtual bool SetProperty(CryPropertyParser &PropertyName,const char *PropertyValue);
+virtual bool SetProperty(PropertyParser &PropertyName,const char *PropertyValue);
 
 // HugeDouble functions
 bool ZeroOut() { HugeInt::ZeroOut(); Exp = 0; return true;}

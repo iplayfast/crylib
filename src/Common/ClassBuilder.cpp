@@ -53,23 +53,13 @@ class CryObjectNAbstract : public Object
     {
         return 0;
     }
-    virtual const char *GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const
+	virtual const char *GetProperty(const PropertyParser &PropertyName,String &Result) const
     {
         return  "";
-    }
+	}
 
 };
-/*/// Dummy class with stubs for virtual functions
-class CryNamedObjectNAbstract : public CryNamedObject
-{
-void CopyTo(CryObject &Object) const
-{}
-;
-CryObject *Dup() const
-{
-return 0;
-}
-};*/
+
 /// Dummy class with stubs for virtual functions
 class CryContainerNAbstract : public Container
 {
@@ -111,15 +101,15 @@ class CryContainerNAbstract : public Container
     {
         return false;
     }
-    virtual bool LoadAsText(Iterator *I,CryString &FromStream)
+    virtual bool LoadAsText(Iterator *I,String &FromStream)
     {
         return false;
     }
-    virtual bool SaveAsText(Iterator *I,CryString &ToStream) const
+    virtual bool SaveAsText(Iterator *I,String &ToStream) const
     {
         return false;
     }
-    virtual void GetEleType(CryString &Result) const
+    virtual void GetEleType(String &Result) const
         {}
     ;
     virtual Iterator *_CreateIterator() const
@@ -173,7 +163,7 @@ class CryContainerNAbstract : public Container
     virtual void CopyTo(Object &Dest) const
         {}
     ;
-    virtual const char *GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const
+    virtual const char *GetProperty(const PropertyParser &PropertyName,String &Result) const
     {
         return  "";
     }
@@ -181,7 +171,7 @@ class CryContainerNAbstract : public Container
 };
 
 /// Dummy class with stubs for virtual functions
-class CryStreamNAbstract : public CryStream
+class CryStreamNAbstract : public Stream
 {
     virtual void Clear()
     {}
@@ -267,12 +257,12 @@ class CryStreamNAbstract : public CryStream
     {
         return false;
     }
-    virtual bool LoadAsText(Iterator *I,CryString &FromStream)
+    virtual bool LoadAsText(Iterator *I,String &FromStream)
 	{
         return false;
     }
     ;
-    virtual bool SaveAsText(Iterator *I,CryString &ToStream) const
+    virtual bool SaveAsText(Iterator *I,String &ToStream) const
     {
         return false;
     }
@@ -302,19 +292,19 @@ class CryStreamNAbstract : public CryStream
     {
         return 0;
     }
-    virtual size_t Read(CryStream *ToStream,size_t Size) const
+    virtual size_t Read(Stream *ToStream,size_t Size) const
     {
         return 0;
 	}
-    virtual size_t Read(CryStream *ToStream) const
+    virtual size_t Read(Stream *ToStream) const
     {
         return 0;
     }
-    virtual size_t Write(const CryStream *FromStream)
+    virtual size_t Write(const Stream *FromStream)
     {
         return 0;
     }
-    virtual size_t Write(const CryStream *FromStream,size_t Size)
+    virtual size_t Write(const Stream *FromStream,size_t Size)
     {
         return 0;
     }
@@ -402,15 +392,15 @@ class CrySimpleArrayNAbstract : public SimpleArray
 	void SetSize(size_t _Size)
 	{
 	}
-    virtual bool LoadAsText(int i,CryString &FromStream)
+    virtual bool LoadAsText(int i,String &FromStream)
     {
         return false;
     };
-    virtual bool SaveAsText(int i,CryString &ToStream) const
+    virtual bool SaveAsText(int i,String &ToStream) const
     {
         return false;
     };
-    virtual void GetEleType(CryString &Result) const
+    virtual void GetEleType(String &Result) const
         {}
     ;
     virtual bool IsEmpty(const Iterator *I)const
@@ -425,11 +415,11 @@ class CrySimpleArrayNAbstract : public SimpleArray
     virtual void Clear()
     {}
     ;
-    virtual bool LoadAsText(Iterator *I,CryString &FromStream)
+    virtual bool LoadAsText(Iterator *I,String &FromStream)
     {
         return true;
     }
-    virtual bool SaveAsText(Iterator *I,CryString &ToStream) const
+    virtual bool SaveAsText(Iterator *I,String &ToStream) const
     {
         return true;
     }
@@ -479,35 +469,35 @@ class CryArrayNAbstract : public Array
     {
         return 0;
     };
-    virtual void SaveItemTo(const Array *Owner,EmptyObject *FromItem,CryStream &ToStream) const
+    virtual void SaveItemTo(const Array *Owner,EmptyObject *FromItem,Stream &ToStream) const
         {}
     ;
-    virtual EmptyObject *LoadItemFrom(Array *Owner,EmptyObject *ToItem,CryStream &FromStream)
+    virtual EmptyObject *LoadItemFrom(Array *Owner,EmptyObject *ToItem,Stream &FromStream)
     {
         return 0;
     };
-    virtual bool LoadAsText(int i,CryString &FromStream)
+    virtual bool LoadAsText(int i,String &FromStream)
     {
         return false;
     };
-    virtual bool SaveAsText(int i,CryString &ToStream) const
+    virtual bool SaveAsText(int i,String &ToStream) const
     {
         return false;
     };
-    virtual void GetEleType(CryString &Result) const
+    virtual void GetEleType(String &Result) const
         {}
     ;
-    virtual bool LoadAsText(Iterator *I,CryString &FromStream)
+    virtual bool LoadAsText(Iterator *I,String &FromStream)
     {
         return true;
     }
-    virtual bool SaveAsText(Iterator *I,CryString &ToStream) const
+    virtual bool SaveAsText(Iterator *I,String &ToStream) const
     {
         return true;
     }
 };
 
-void ClassBuilder::SetDefaultBodies(CryFunctionDefList *AbstractFunctions) // will setup default bodies of functions
+void ClassBuilder::SetDefaultBodies(FunctionDefList *AbstractFunctions) // will setup default bodies of functions
 {
     HeaderFactory *hf = (HeaderFactory *) Create(CHeaderFactory,this);
 	ClassHeaderFactory *cf = (ClassHeaderFactory *)Create(CClassHeaderFactory,hf);
@@ -518,19 +508,19 @@ void ClassBuilder::SetDefaultBodies(CryFunctionDefList *AbstractFunctions) // wi
 			do
 			{
 				//                AbstractFunctions->SetItemOwnerShip(i,false);     /// I'll take that!
-				CryFunctionDef *s = (CryFunctionDef *) i->Get();
+				FunctionDef *s = (FunctionDef *) i->Get();
 				try
 				{
-					CryString Def;
+					String Def;
 					s->GetDeclaration(Def);
 					if (/*s->IsPure && */(!s->IsComment) && !cf->Present(s))
 					{
-						CryString Declare = s->GetNPDeclaration();
+						String Declare = s->GetNPDeclaration();
 						InheritedFactory *If = (InheritedFactory *)Create(CInheritedFactory,hf);
 						If->SetProperty("Function",Declare);
 					}
 				}
-				catch(CryException &e)
+				catch(Exception &e)
 				{
 					// If function already added, then don worry bout it
 				}
@@ -630,13 +620,13 @@ void ClassBuilder::SetBaseClass(const char *Type,bool AddStubs,bool AddVirtuals,
 {
     Object *p1;
     SetName(_ClassName);
-    CryFunctionDefList *AbstractFunctions = 0;
+    FunctionDefList *AbstractFunctions = 0;
     try
     {
         p1 = Object::Create(Type);
         _IsAbstract = false;
     }
-    catch(CryException &e)
+    catch(Exception &e)
     {
         _IsAbstract = true;
         p1 = new CryObjectNAbstract();
@@ -683,7 +673,7 @@ void ClassBuilder::SetBaseClass(const char *Type,bool AddStubs,bool AddVirtuals,
         }
         if (!p1)
         {
-            throw CryException("Could not create abstract function");
+            throw Exception("Could not create abstract function");
         }
     };
     if (p)
@@ -698,14 +688,14 @@ void ClassBuilder::SetBaseClass(const char *Type,bool AddStubs,bool AddVirtuals,
             AbstractFunctions = p->GetAbstractFunctions(Type);
     /* We add these functions just to make things easier */
     if (!AbstractFunctions)
-        AbstractFunctions = new CryFunctionDefList();
-	AbstractFunctions->AddOwned(new CryFunctionDef(
+        AbstractFunctions = new FunctionDefList();
+	AbstractFunctions->AddOwned(new FunctionDef(
 								"virtual CryPropertyList *PropertyNames() const;"));
-	AbstractFunctions->AddOwned(new CryFunctionDef(
+	AbstractFunctions->AddOwned(new FunctionDef(
 							   "virtual void CopyTo(CryObject &Dest) const;"));
-	AbstractFunctions->AddOwned(new CryFunctionDef(
+	AbstractFunctions->AddOwned(new FunctionDef(
 								"virtual bool SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue);"));
-	AbstractFunctions->AddOwned(new CryFunctionDef(
+	AbstractFunctions->AddOwned(new FunctionDef(
 							"virtual const char *GetProperty(const char *PropertyName,CryString &Result) const;"));
 	//AbstractFunctions->Add(new CryFunctionDef(
     //                         "virtual CryObject *Dup() const = 0;"));
@@ -731,10 +721,10 @@ void ClassBuilder::AddClassInstance(const char *ClassType,const char *ClassName,
 			if (o->IsA(CClassHeaderFactory))
             {
 				ClassHeaderFactory *chf = (ClassHeaderFactory *)o;
-                CryString n;
+                String n;
                 n = ClassName;
                 if (chf->Present(&n))
-					throw CryException("Component name \"%s\" is already being used");
+					throw Exception("Component name \"%s\" is already being used");
 				ClassInstance *i = new ClassInstance(chf);
 				try
 				{
@@ -753,7 +743,7 @@ void ClassBuilder::AddClassInstance(const char *ClassType,const char *ClassName,
 				}
 				chf->AddFactory(i);
 				}
-				catch(CryException &s)
+				catch(Exception &s)
 				{
 					delete i;
 					throw s;
@@ -776,11 +766,11 @@ void ClassBuilder::AddPrimInstance(const char *PrimType,
 			if (o->IsA(CClassHeaderFactory))
             {
                 ClassHeaderFactory *chf = (ClassHeaderFactory *)o;
-                CryString n;
+                String n;
                 n = GetName();
                 if (chf->Present(&n))
                     //		if (chf->Present(ClassName))
-					throw CryException("Component name \"%s\" is already being used");
+					throw Exception("Component name \"%s\" is already being used");
 				chf->AddFactory(new PrimInstance(chf,PrimType,PrimName,DefaultValue,Count,IsProperty,IsPointer,IsArrayPointer));
 			}
 //                break;
@@ -788,18 +778,18 @@ void ClassBuilder::AddPrimInstance(const char *PrimType,
         while(a.GotoNext());
 }
 
-Object *ClassBuilder::Create(CryStream &FromStream)
+Object *ClassBuilder::Create(Stream &FromStream)
 {
-    throw CryException("Not Implemented");
+    throw Exception("Not Implemented");
 }
 
 
-Object *ClassBuilder::Create(const CryPropertyParser &PropertyName,Object *Parent)
+Object *ClassBuilder::Create(const PropertyParser &PropertyName,Object *Parent)
 {
     return CodeFactory::Create(PropertyName,(Object *)Parent);
 }
 
-Object *ClassBuilder::Create(const CryPropertyParser &PropertyName,CodeFactory *Parent)
+Object *ClassBuilder::Create(const PropertyParser &PropertyName,CodeFactory *Parent)
 {
 	if (PropertyName==CContainerFactory && p)
     {
@@ -812,7 +802,7 @@ Object *ClassBuilder::Create(const CryPropertyParser &PropertyName,CodeFactory *
         PropertyFactory *pf = (PropertyFactory *) FindFactory(PropertyName);
         if (!pf)
         {
-            CryString Name,Value;
+            String Name,Value;
             pf = new PropertyFactory(this,&Name,&Value);
             AddFactory(pf);
         }
@@ -837,23 +827,23 @@ int ClassBuilder::GetPropertyCount() const
     return CodeFactory::GetPropertyCount()+1;
 }
 /// will return a pointer to a dup of the property
-Object *ClassBuilder::GetCopyOfPropertyAsObject(const CryPropertyParser &PropertyName) const
+Object *ClassBuilder::GetCopyOfPropertyAsObject(const PropertyParser &PropertyName) const
 {
 	return CodeFactory::GetCopyOfPropertyAsObject(PropertyName);
 }
-Object *ClassBuilder::_GetPropertyAsObject(const CryPropertyParser &PropertyName) const
+Object *ClassBuilder::_GetPropertyAsObject(const PropertyParser &PropertyName) const
 {
 	return CodeFactory::_GetPropertyAsObject(PropertyName);
 }
 
-bool ClassBuilder::GetIsPropertyContainer(const CryPropertyParser &PropertyName) const
+bool ClassBuilder::GetIsPropertyContainer(const PropertyParser &PropertyName) const
 {
     if (PropertyName=="ClassType")
         return false;
     else
         return CodeFactory::GetIsPropertyContainer(PropertyName);
 }
-const char * ClassBuilder::GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const
+const char * ClassBuilder::GetProperty(const PropertyParser &PropertyName,String &Result) const
 {
     if (PropertyName=="ClassType")
     {
@@ -863,11 +853,11 @@ const char * ClassBuilder::GetProperty(const CryPropertyParser &PropertyName,Cry
     return CodeFactory::GetProperty(PropertyName,Result);
 }
 
-bool  ClassBuilder::SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue)
+bool  ClassBuilder::SetProperty(const PropertyParser &PropertyName,const char *PropertyValue)
 {
     if (PropertyName=="ClassType")
     { // we don't add stubs here because this is coming from a saved version, which will have already defined them
-        CryString Name;
+        String Name;
         Object::GetProperty("Name",Name);
         SetBaseClass(PropertyValue,false,false,Name);
         return true;
@@ -882,7 +872,7 @@ CryPropertyList *ClassBuilder::PropertyNames() const
 	pn->AddPropertyByName("ClassType",this);
 	return pn;
 };
-bool ClassBuilder::HasProperty(const CryPropertyParser &PropertyName) const
+bool ClassBuilder::HasProperty(const PropertyParser &PropertyName) const
 {
 	return (PropertyName=="ClassType") ||
            CodeFactory::HasProperty(PropertyName);
@@ -902,8 +892,8 @@ CryPropertyList *Properties = p->PropertyNames();
 	if (pi->GotoFirst())
 		do
 		{
-			const CryString *name = pi->GetName();
-			CryString r;
+			const String *name = pi->GetName();
+			String r;
 //			const char *value = pi->GetValue(r);
 			this->AddFactory(new PropertyFactory(this,name,&r));
 		}
@@ -922,7 +912,7 @@ void ClassBuilder::SetFilename(const char *name)
     Filename = name;
     Filename.Replace(".xml");
 }//no extention on filename, eg stdio not stdio.h
-const CryString &ClassBuilder::GetFilename() const
+const String &ClassBuilder::GetFilename() const
 {
     return Filename;
 }
@@ -939,7 +929,7 @@ const char *ClassBuilder::GetInheritType()
 {
     return InheritType.AsPChar();
 }
-void ClassBuilder::SaveHeaderBody(CryStream &ToStreamHeader,CryStream &ToStreamBody)
+void ClassBuilder::SaveHeaderBody(Stream &ToStreamHeader,Stream &ToStreamBody)
 {
     Clear("Source");
     Build();
@@ -969,9 +959,9 @@ CompositeIterator  ci(this);
 	}
 
 } */
-CryString fn = Filename;
+String fn = Filename;
     if (Filename =="")
-        throw CryException("filename must be assigned before saving source (body must include header, so we need to know header's name)");
+        throw Exception("filename must be assigned before saving source (body must include header, so we need to know header's name)");
     fn += ".h";
     CryFileStream header;
 	//fn = "stdout";
@@ -1001,9 +991,9 @@ CryString fn = Filename;
 ClassBuilder *gptr;
 void ClassBuilder::LoadSource()
 {
-    CryString fn = Filename;
+    String fn = Filename;
     if (Filename =="")
-        throw CryException("filename must be assigned before loading");
+        throw Exception("filename must be assigned before loading");
     fn = Filename;
     fn+=".xml";
     CryFileStream body;
@@ -1029,7 +1019,7 @@ ContainerFactory::ContainerFactory(CodeFactory *Parent,Container *c) : CodeFacto
 /*===========================================================================
 // PropertyFactory
 ============================================================================*/
-PropertyFactory::PropertyFactory(CodeFactory *Parent,const CryString *n,const CryString *v) : CodeFactory(Parent,CPropertyFactory)
+PropertyFactory::PropertyFactory(CodeFactory *Parent,const String *n,const String *v) : CodeFactory(Parent,CPropertyFactory)
 {
 	SetSortValue(0X00090000);
     SetName(*n);
@@ -1044,7 +1034,7 @@ const char *PropertyFactory::GetPropertyName()
 {
     return GetName();
 }
-const CryString *PropertyFactory::GetPropertyValue()
+const String *PropertyFactory::GetPropertyValue()
 {
     return &Value;
 }
@@ -1053,7 +1043,7 @@ const CryString *PropertyFactory::GetPropertyValue()
 // HeaderFactory
 ============================================================================*/
 
-HeaderFactory::HeaderFactory(CodeFactory *Parent,CryFunctionDefList *AbstractFunctions) : CodeFactory(Parent,"HeaderFactory")
+HeaderFactory::HeaderFactory(CodeFactory *Parent,FunctionDefList *AbstractFunctions) : CodeFactory(Parent,"HeaderFactory")
 {
 	SetSortValue(0);
     AddProduct("Header");
@@ -1063,7 +1053,7 @@ HeaderFactory::HeaderFactory(CodeFactory *Parent,CryFunctionDefList *AbstractFun
 }
 
 
-Object *HeaderFactory::Create(const CryPropertyParser &PropertyName,CodeFactory *Parent)
+Object *HeaderFactory::Create(const PropertyParser &PropertyName,CodeFactory *Parent)
 {
 	if (!Parent->IsA(CClassBuilder))
     {
@@ -1091,7 +1081,7 @@ Object *HeaderFactory::Create(const CryPropertyParser &PropertyName,CodeFactory 
     }
     if (PropertyName=="Header")
     {
-        CryString s;
+        String s;
         //        s.printf("/*! ToDo Make this loadable from an external file (for other peoples copyright notices */\n");
         s.printf("//****************************************************\n");
         s.printf("//Copyright 2004\n");
@@ -1126,13 +1116,13 @@ FooterFactory::FooterFactory(CodeFactory *Parent) : CodeFactory(Parent,"FooterFa
 	AddProduct(CFooter);
 }
 
-Object *FooterFactory::Create(const CryPropertyParser &PropertyName,CodeFactory *Parent)
+Object *FooterFactory::Create(const PropertyParser &PropertyName,CodeFactory *Parent)
 {
 	if (PropertyName==CFooter)
 	{
         if (Parent->IsA(CClassBuilder))
         {
-            CryString s;
+            String s;
             const char *Name = Parent->GetName();
             s.printf("\n#endif // %s\n// End of file\n",Name);
             SetHead(PropertyName,s.AsPChar());
@@ -1155,7 +1145,7 @@ IncludesFactory::IncludesFactory(CodeFactory *Parent) : CodeFactory(Parent,"Incl
     AddProduct("Includes");
 }
 
-void IncludesFactory::AddInclude(const Object *p,const char *Type,CryString &CurrentIncludes,const char *File)
+void IncludesFactory::AddInclude(const Object *p,const char *Type,String &CurrentIncludes,const char *File)
 {
 	if (p->IsA(Type) && CurrentIncludes.Pos(File)==-1)
 	{
@@ -1164,20 +1154,20 @@ void IncludesFactory::AddInclude(const Object *p,const char *Type,CryString &Cur
 	}
 }
 
-Object *IncludesFactory::Create(const Object *p,const CryPropertyParser &PropertyName,CryString &CurrentIncludes)
+Object *IncludesFactory::Create(const Object *p,const PropertyParser &PropertyName,String &CurrentIncludes)
 {
     if (PropertyName=="CryIncludes")
     {
 	AddInclude(p,CObject,CurrentIncludes,"Object.h");
 	AddInclude(p,CObject,CurrentIncludes,"ClassException.h");	// always need this one
 	AddInclude(p,CContainer,CurrentIncludes,"ClassContainer.h");
-	AddInclude(p,CCryProperty,CurrentIncludes,"ClassProperty.h");
+	AddInclude(p,CProperty,CurrentIncludes,"ClassProperty.h");
 	AddInclude(p,CCryPropertyList,CurrentIncludes,"ClassProperty.h");
 	AddInclude(p,CList,CurrentIncludes,"ClassList.h");
-	AddInclude(p,CCryStream,CurrentIncludes,"ClassStream.h");
+	AddInclude(p,CStream,CurrentIncludes,"ClassStream.h");
 	AddInclude(p,CCryFileStream,CurrentIncludes,"ClassFileStream.h");
-	AddInclude(p,CCryMemStream,CurrentIncludes,"ClassMemStream.h");
-	AddInclude(p,CCryString,CurrentIncludes,"ClassString.h");
+	AddInclude(p,CMemStream,CurrentIncludes,"ClassMemStream.h");
+	AddInclude(p,CString,CurrentIncludes,"ClassString.h");
 	AddInclude(p,CHugeDouble,CurrentIncludes,"hugedouble.h");
 	AddInclude(p,CHugeFraction,CurrentIncludes,"hugedouble.h");
 	AddInclude(p,CBitArray,CurrentIncludes,"BitArray.h");
@@ -1196,8 +1186,8 @@ Object *IncludesFactory::Create(const Object *p,const CryPropertyParser &Propert
 	AddInclude(p,CCryOFactory,CurrentIncludes,"CryPattern.h");
 
 	AddInclude(p,CCryFuzzy,CurrentIncludes,"CryFuzzy.h");
-	AddInclude(p,CCryFunctionDef,CurrentIncludes,"CryFunctionDef.h");
-	AddInclude(p,CCryFunctionDefList,CurrentIncludes,"CryFunctionDef.h");
+	AddInclude(p,CFunctionDef,CurrentIncludes,"CryFunctionDef.h");
+	AddInclude(p,CFunctionDefList,CurrentIncludes,"CryFunctionDef.h");
 
 	AddInclude(p,CArray,CurrentIncludes,"CryArray.h");
 	AddInclude(p,CSimpleArray,CurrentIncludes,"CryArray.h");
@@ -1218,7 +1208,7 @@ Object *IncludesFactory::Create(const Object *p,const CryPropertyParser &Propert
 }
 
 
-Object *IncludesFactory::Create(const CryPropertyParser &PropertyName,CodeFactory *Parent)
+Object *IncludesFactory::Create(const PropertyParser &PropertyName,CodeFactory *Parent)
 {
 	if ((PropertyName==CIncludesFactory) && (!Parent->IsA(CClassBuilder)))
 	{
@@ -1229,7 +1219,7 @@ Object *IncludesFactory::Create(const CryPropertyParser &PropertyName,CodeFactor
 	{
 		ClassBuilder *cbParent = (ClassBuilder *)Parent;
 		const Object *p = cbParent->Getp();
-		CryString s;
+		String s;
 		Clear(PropertyName);
 		s.printf("#ifndef C%s\n#define C%s\t\"%s\"\n",Parent->GetName(),Parent->GetName(),Parent->GetName());
 		s.printf("//standard files\n#include\t<string.h>\n#include\t<stdlib.h>\n");
@@ -1254,7 +1244,7 @@ Object *IncludesFactory::Create(const CryPropertyParser &PropertyName,CodeFactor
 			while(a.GotoNext());
 		SetHead(PropertyName,s);
 		s.Clear();
-		CryString FileName;
+		String FileName;
 		FileName =cbParent->GetFilename();
 		if (FileName=="")
 			FileName.printf("?%s?",Parent->GetName());
@@ -1277,14 +1267,14 @@ Object *IncludesFactory::Create(const CryPropertyParser &PropertyName,CodeFactor
 /*===========================================================================
 // InheritedFactory
 ============================================================================*/
-InheritedFactory::InheritedFactory(CodeFactory *Parent,CryFunctionDef &_Func) : CodeFactory(Parent,CInheritedFactory)
+InheritedFactory::InheritedFactory(CodeFactory *Parent,FunctionDef &_Func) : CodeFactory(Parent,CInheritedFactory)
 {
-    Func = new CryFunctionDef(_Func);
+    Func = new FunctionDef(_Func);
     SetSortValue(0X00120000);
     AddProduct(CInheritedFactory);
 }
 	/// will return a property represented as an object, useful for classes which contain properties that are dynamically allocated, as a property that is dynamic is a Object and therefore callable
-Object *InheritedFactory::GetCopyOfPropertyAsObject(const CryPropertyParser &PropertyName) const
+Object *InheritedFactory::GetCopyOfPropertyAsObject(const PropertyParser &PropertyName) const
 {  // we can't just dup the result of _GetPropertyAsObject as subclasses may not implement a property in _GetPropertyAsObject
 	if (PropertyName=="Function")
 	{
@@ -1293,7 +1283,7 @@ Object *InheritedFactory::GetCopyOfPropertyAsObject(const CryPropertyParser &Pro
 	return CodeFactory::GetCopyOfPropertyAsObject(PropertyName);
 }
 	/// will return a pointer to the property if the property is an Object (or decendent)
-Object *InheritedFactory::_GetPropertyAsObject(const CryPropertyParser &PropertyName) const
+Object *InheritedFactory::_GetPropertyAsObject(const PropertyParser &PropertyName) const
 {
 	if (PropertyName=="Function")
 	{
@@ -1302,7 +1292,7 @@ Object *InheritedFactory::_GetPropertyAsObject(const CryPropertyParser &Property
 	return CodeFactory::_GetPropertyAsObject(PropertyName);
 }
 /*! will return whether or not the property named in PropertyName is a container */
-bool InheritedFactory::GetIsPropertyContainer(const CryPropertyParser &PropertyName) const
+bool InheritedFactory::GetIsPropertyContainer(const PropertyParser &PropertyName) const
 {
     if (PropertyName=="Function")
     {
@@ -1311,7 +1301,7 @@ bool InheritedFactory::GetIsPropertyContainer(const CryPropertyParser &PropertyN
     return CodeFactory::GetIsPropertyContainer(PropertyName);
 }
 /*! will return the property named in PropertyName in a string format */
-const char *InheritedFactory::GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const
+const char *InheritedFactory::GetProperty(const PropertyParser &PropertyName,String &Result) const
 {
     if (PropertyName=="Function")
     {
@@ -1321,7 +1311,7 @@ const char *InheritedFactory::GetProperty(const CryPropertyParser &PropertyName,
     return CodeFactory::GetProperty(PropertyName,Result);
 }
 /*! returns true if the class in question has the property */
-bool InheritedFactory::HasProperty(const CryPropertyParser &PropertyName) const
+bool InheritedFactory::HasProperty(const PropertyParser &PropertyName) const
 {
     if (PropertyName=="Function")
     {
@@ -1341,7 +1331,7 @@ CryPropertyList *InheritedFactory::PropertyNames() const
 	l->AddPropertyByName("Function",this);
 	return l;
 }
-bool InheritedFactory::SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue)
+bool InheritedFactory::SetProperty(const PropertyParser &PropertyName,const char *PropertyValue)
 {
 	if (PropertyName=="Function")
     {
@@ -1356,7 +1346,7 @@ InheritedFactory::~InheritedFactory()
 {
     delete Func;
 }
-const CryFunctionDef *InheritedFactory::GetFunc()
+const FunctionDef *InheritedFactory::GetFunc()
 {
     return Func;
 }
@@ -1366,7 +1356,7 @@ bool InheritedFactory::IsA(const char *ClassName) const    // can the object map
 }
 
 
-Object *InheritedFactory::Create(const CryPropertyParser &PropertyName,CodeFactory *Parent)
+Object *InheritedFactory::Create(const PropertyParser &PropertyName,CodeFactory *Parent)
 {
 	if ((PropertyName==CInheritedFactory) && (!Parent->IsA(CClassBuilder)))
 	{
@@ -1376,9 +1366,9 @@ Object *InheritedFactory::Create(const CryPropertyParser &PropertyName,CodeFacto
 	if (CanBuildProduct(CCopyToEnd) && (PropertyName==CCopyToEnd))
 	{
 		if (!Parent->IsA(CClassBuilder))
-			throw CryException("Bad Parent at end of copyto function");
+			throw Exception("Bad Parent at end of copyto function");
 		ClassBuilder *p = (ClassBuilder *)Parent;
-		CryString Implementation;
+		String Implementation;
 		Implementation.Clear();
 		Implementation.printf("\n\t}\n//Now copy the base class\n\t%s::CopyTo(Dest);\n\n}//%s\n\n",p->GetInheritType(), Parent->GetName());
 		SetImp(PropertyName,Implementation);
@@ -1389,8 +1379,8 @@ Object *InheritedFactory::Create(const CryPropertyParser &PropertyName,CodeFacto
 	if (PropertyName==CInheritedFactory && Parent->IsA(CClassBuilder))
 	{
 		ClassBuilder *cbParent = (ClassBuilder *)Parent;
-		CryString s,h,t,Tester,Header,Implementation;
-		CryFunctionDef fd;
+		String s,h,t,Tester,Header,Implementation;
+		FunctionDef fd;
 		Func->GetNPDeclaration(s);
 		Header = s;
 		fd.Parse("virtual const char *GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const;");
@@ -1416,9 +1406,9 @@ Object *InheritedFactory::Create(const CryPropertyParser &PropertyName,CodeFacto
 								cf = (CodeFactory *)o;
 								if (cf->GetIsProperty())
 								{
-				CryString PropertyStart;
+				String PropertyStart;
 									const char *N = cf->GetName();
-				if (cf->IsA(CCryProperty))
+				if (cf->IsA(CProperty))
 					PropertyStart.printf("PropertyName==%s.GetName()",N);
 				else
 				if (cf->IsA(CCryPropertyList))
@@ -1457,8 +1447,8 @@ Object *InheritedFactory::Create(const CryPropertyParser &PropertyName,CodeFacto
 										if (AClassInstance->GetIsProperty())
 										{
 N = AClassInstance->GetName();
-CryString PropertyStart;
-if (AClassInstance->IsA(CCryProperty))
+String PropertyStart;
+if (AClassInstance->IsA(CProperty))
 	PropertyStart.printf("PropertyName==%s.GetName()",N);
 else
 	if (AClassInstance->IsA(CCryPropertyList))
@@ -1618,7 +1608,7 @@ else
 	if (Header==Tester)
 	{
 		if (!Parent->IsA(CClassBuilder))
-			throw CryException("Bad Parent at PropertyNames function");
+			throw Exception("Bad Parent at PropertyNames function");
 		ClassBuilder *p = (ClassBuilder *)Parent;
 			Clear(PropertyName);
 			Header.printf("\n");
@@ -1639,7 +1629,7 @@ else
 				Implementation.printf("\n\n// inherited properites which can be exposed by uncommenting");
 				Found = true;
 			}
-			CryString r;
+			String r;
 				Implementation.printf("\n//\tNames->AddProperty(\"%s\",\"%s\");",i->GetName(),i->GetValue(r));
 			} while(i->GotoNext());
 		}

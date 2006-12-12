@@ -31,10 +31,10 @@
 //namespace Crystal {
 using namespace Crystal;
 using namespace std;
-HeadImp::HeadImp(): CryString("[]")
+HeadImp::HeadImp(): String("[]")
 {
-	Head  = new CryString();
-	Imp = new CryString();
+	Head  = new String();
+	Imp = new String();
 }
 
 
@@ -51,7 +51,7 @@ HeadImp::~HeadImp()
  * 
  * @return the string representing the code for the header
  */
-const CryString *HeadImp::GetHead() const
+const String *HeadImp::GetHead() const
 {
     Head->SeekToStart();
     return Head;
@@ -61,7 +61,7 @@ const CryString *HeadImp::GetHead() const
  * 
  * @return the string representing the code for the implementation
  */
-const CryString *HeadImp::GetImp() const
+const String *HeadImp::GetImp() const
 {
     Imp->SeekToStart();
     return Imp;
@@ -72,7 +72,7 @@ const CryString *HeadImp::GetImp() const
  */
 void HeadImp::SetHead(const char *v)
 {
-    *((CryString *)Head) = v;
+    *((String *)Head) = v;
     Head->SeekToStart();
 }
 /**
@@ -81,7 +81,7 @@ void HeadImp::SetHead(const char *v)
  */
 void HeadImp::SetImp(const char *v)
 {
-    *((CryString *)Imp) = v;
+    *((String *)Imp) = v;
     Imp->SeekToStart();
 }
 
@@ -95,7 +95,7 @@ void HeadImp::Clear()
 }
 
 	/// will return a property represented as an object, useful for classes which contain properties that are dynamically allocated, as a property that is dynamic is a CryObject and therefore callable
-Object *HeadImp::GetCopyOfPropertyAsObject(const CryPropertyParser &PropertyName) const
+Object *HeadImp::GetCopyOfPropertyAsObject(const PropertyParser &PropertyName) const
 {
 	if (PropertyName=="Declaration")
 		return Head->Dup();
@@ -104,7 +104,7 @@ Object *HeadImp::GetCopyOfPropertyAsObject(const CryPropertyParser &PropertyName
 	return Object::GetCopyOfPropertyAsObject(PropertyName);
 }
 	/// will return a pointer to the property if the property is an CryObject (or decendent)
-Object *HeadImp::_GetPropertyAsObject(const CryPropertyParser &PropertyName) const
+Object *HeadImp::_GetPropertyAsObject(const PropertyParser &PropertyName) const
 {
 	if (PropertyName=="Declaration")
 		return Head;
@@ -113,7 +113,7 @@ Object *HeadImp::_GetPropertyAsObject(const CryPropertyParser &PropertyName) con
 	return Object::_GetPropertyAsObject(PropertyName);
 }
 /*! will return whether or not the property named in PropertyName is a container */
-bool HeadImp::GetIsPropertyContainer(const CryPropertyParser &PropertyName) const
+bool HeadImp::GetIsPropertyContainer(const PropertyParser &PropertyName) const
 {
     if (PropertyName=="Declaration")
         return false;
@@ -122,7 +122,7 @@ bool HeadImp::GetIsPropertyContainer(const CryPropertyParser &PropertyName) cons
     return true;
 }
 /*! will return the property named in PropertyName in a string format */
-const char *HeadImp::GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const
+const char *HeadImp::GetProperty(const PropertyParser &PropertyName,String &Result) const
 {
     if (PropertyName=="Declaration")
     {
@@ -137,7 +137,7 @@ const char *HeadImp::GetProperty(const CryPropertyParser &PropertyName,CryString
     return Object::GetProperty(PropertyName,Result);
 }
 /*! returns true if the class in question has the property */
-bool HeadImp::HasProperty(const CryPropertyParser &PropertyName) const
+bool HeadImp::HasProperty(const PropertyParser &PropertyName) const
 {
     return (PropertyName=="Declaration") ||
            (PropertyName=="Implementation") ||
@@ -149,12 +149,12 @@ void HeadImp::CopyTo(Object &Object) const
     if (Object.IsA(CHeadImp))
     {
         HeadImp *Dest = (HeadImp *)&Object;
-		CryString::CopyTo(*Dest); // copy base class
+		String::CopyTo(*Dest); // copy base class
 		Head->CopyTo(*Dest->Head);
 		Imp->CopyTo(*Dest->Imp);
 	}
     else
-        CryString::CopyTo(Object);
+        String::CopyTo(Object);
 }
 
 
@@ -171,7 +171,7 @@ CryPropertyList* HeadImp::PropertyNames() const
 	n->AddPropertyByName("Implementation",this);
 	return n;
 }
-bool HeadImp::SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue)
+bool HeadImp::SetProperty(const PropertyParser &PropertyName,const char *PropertyValue)
 {
     if (PropertyName=="Declaration")
     {

@@ -88,11 +88,11 @@ StdFunctionsNoDup(HugeInt,Object);
 // Object virtuals
 virtual void CopyTo(Object &Dest) const;  //copies contents of this to Dest
 virtual Object *Dup() const; // creates a duplicate of this object
-virtual const char *GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const;
-virtual bool HasProperty(const CryPropertyParser &PropertyName)const;
+virtual const char *GetProperty(const PropertyParser &PropertyName,String &Result) const;
+virtual bool HasProperty(const PropertyParser &PropertyName)const;
 virtual int GetPropertyCount() const;
 virtual CryPropertyList* PropertyNames() const;
-virtual bool SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue);
+virtual bool SetProperty(const PropertyParser &PropertyName,const char *PropertyValue);
 // HugeInt functions
       // returns true if non zero
 virtual bool ZeroOut() { for(unsigned int i=0;i<NumDigits;i++) Number[i] = 0; Flags = ISZERO; FirstDigit = NumDigits-1; return false;}
@@ -141,7 +141,7 @@ virtual HugeInt &operator=(const HugeInt &n) { return SetValue(n); }
 	memcpy(Number,n.Number,sizeof(unsigned int) * n.NumDigits);
 	Flags = n.Flags; FirstDigit = n.FirstDigit; return *this;}
 virtual HugeInt & SetValue(const char *str);
-virtual CryString &GetValue(CryString &Result) const;
+virtual String &GetValue(String &Result) const;
 virtual HugeInt &Or(HugeInt &n) { for(unsigned int i=0;i<NumDigits;i++) Number[i] |=n.Number[i]; SetFlags(); return *this; }
 virtual HugeInt &And(HugeInt &n) { for(unsigned int i=0;i<NumDigits;i++) Number[i] &=n.Number[i]; SetFlags(); return *this; }
 virtual bool Mask(HugeInt &v,unsigned int Digits) const

@@ -33,16 +33,16 @@ class ClassFooterFactory : public CodeFactory
 public:
      StdFunctionsNoDup(ClassFooterFactory,CodeFactory);
     ClassFooterFactory(CodeFactory *Parent);
-    virtual Object *Create(const CryPropertyParser &PropertyName,CodeFactory *Parent);
-    virtual Object *Create(const CryPropertyParser &PropertyName,Object *Parent)
+    virtual Object *Create(const PropertyParser &PropertyName,CodeFactory *Parent);
+    virtual Object *Create(const PropertyParser &PropertyName,Object *Parent)
     {
       return CodeFactory::Create(PropertyName,Parent);
     }
-    virtual Object *Create(CryStream &FromStream)
+    virtual Object *Create(Stream &FromStream)
     {
       return CodeFactory::Create(FromStream);
     }
-    virtual Object *Create(const char *FactoryName,const CryPropertyParser &PropertyName,Object *Parent)
+    virtual Object *Create(const char *FactoryName,const PropertyParser &PropertyName,Object *Parent)
     {
       return CodeFactory::Create(FactoryName,PropertyName,Parent);
     }

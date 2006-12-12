@@ -20,7 +20,7 @@ bool BitArray::Test(bool Verbose,Object &ThisObject,bool  (CallBack)(bool Verbos
 
 char Result[200];
 bool Fail = false;
-CryString spn,spv,stemp;
+String spn,spv,stemp;
 
 BitArray Copy;
 BitArray *OrgObject = 0;
@@ -52,14 +52,14 @@ BitArray Prime;
 		if (!CallBack(Verbose,Result,Fail))
 			return false;
 	}
-	catch(CryException &e)
+	catch(Exception &e)
 	{
 		sprintf(Result,"Outof range test");
 		if (!CallBack(Verbose,Result,Fail))
 			return false;
 
 	}
-	return CryMemStream::Test(Verbose,ThisObject,CallBack);
+	return MemStream::Test(Verbose,ThisObject,CallBack);
 }
 
 #endif
@@ -68,7 +68,7 @@ BitArray Prime;
 BitArray::BitArray()
 {
 	LocIterator = _CreateIterator();
-	CryMemStream::Zero();
+	MemStream::Zero();
 }// BitArray
 
 
@@ -82,10 +82,10 @@ BitArray::~BitArray()
 
 void BitArray::SetItemOwnerShip(Iterator *I,bool Owned)
 {
-    throw CryException("BitArray always owns it's bits");
+    throw Exception("BitArray always owns it's bits");
 }
 
-void BitArray::GetEleType(CryString &Result) const
+void BitArray::GetEleType(String &Result) const
 {
     Result = "bool";
 }
@@ -106,7 +106,7 @@ void BitArray::CopyTo(Object &Dest) const
         }
     */
 
-    CryMemStream::CopyTo(Dest); //Copy Base Class
+    MemStream::CopyTo(Dest); //Copy Base Class
 }
 void BitArray::Clear(int amount) // 0 == all, 1.. from start, -1..-N from end
 {// todo, optimize this
@@ -127,11 +127,11 @@ void BitArray::Clear(int amount) // 0 == all, 1.. from start, -1..-N from end
 
 void BitArray::Clear()
 {
-    CryMemStream::Clear();
+    MemStream::Clear();
 }
 size_t BitArray::Size() const
 {
-    size_t size = CryMemStream::Size();
+    size_t size = MemStream::Size();
     return size;
 }
 
@@ -144,13 +144,13 @@ size_t BitArray::Count() const
 {
     return Size() * 8;
 }
-bool BitArray::SaveAsText(Iterator *I,CryString &ToStream) const
+bool BitArray::SaveAsText(Iterator *I,String &ToStream) const
 {
-    return CryMemStream::SaveAsText(I,ToStream);
+    return MemStream::SaveAsText(I,ToStream);
 }
-bool BitArray::LoadAsText(Iterator *I,CryString &FromStream)
+bool BitArray::LoadAsText(Iterator *I,String &FromStream)
 {
-    return CryMemStream::LoadAsText(I,FromStream);
+    return MemStream::LoadAsText(I,FromStream);
 }
 bool BitArray::IsObject(const Iterator *I) const
 {
@@ -208,7 +208,7 @@ void BitArray::RemoveAtIterator(Iterator *I)
 bool BitArray::GetBit(int BitIndex)
 {
 	if (BitIndex>=BitCount)
-		throw CryException("Range error");
+		throw Exception("Range error");
 
 	cbyte Byte = *this[BitIndex / 8];
 	return Byte & (1<< (BitIndex & 7));
@@ -217,7 +217,7 @@ bool BitArray::GetBit(int BitIndex)
 void BitArray::SetBit(int BitIndex,bool Value)
 {
 	if (BitIndex>=BitCount)
-		throw CryException("Range error");
+		throw Exception("Range error");
 	cbyte Byte = *this[BitIndex / 8];
     if (Value)
         Byte |= (1 << (BitIndex & 7));
@@ -231,16 +231,16 @@ void BitArray::SetBit(int BitIndex,bool Value)
 
 EmptyObject *BitArray::GetAtIterator(const Iterator *I) const
 {
-    throw CryException("Cannot Retrieve EmptyObject * from BitArray");
+    throw Exception("Cannot Retrieve EmptyObject * from BitArray");
 }
 EmptyObject *BitArray::AddOwned(EmptyObject *Item,size_t Size)
 {
-    throw CryException("Cannot Add EmptyObject * to BitArray");
+    throw Exception("Cannot Add EmptyObject * to BitArray");
 }
 
 EmptyObject *BitArray::Add(EmptyObject *Item,size_t Size)
 {
-    throw CryException("Cannot Add EmptyObject * to BitArray");
+    throw Exception("Cannot Add EmptyObject * to BitArray");
 }
 
 Object *BitArray::Dup() const
@@ -252,20 +252,20 @@ Object *BitArray::Dup() const
 
 Object *BitArray::AddOwned(Object *Item)
 {
-    throw CryException("Cannot Add EmptyObject * to BitArray");
+    throw Exception("Cannot Add EmptyObject * to BitArray");
 }
 Object *BitArray::Add(Object *Item)
 {
-    throw CryException("Cannot Add EmptyObject * to BitArray");
+    throw Exception("Cannot Add EmptyObject * to BitArray");
 }
-CryFunctionDefList *BitArray::GetFunctions(const char *Type) const
+FunctionDefList *BitArray::GetFunctions(const char *Type) const
 {
 // if a type has been defined and it's not this class, check subclasses for it
     if (Type && !IsA(Type))
-        return CryMemStream::GetFunctions(Type);
+        return MemStream::GetFunctions(Type);
     // otherwise get any functions in subclasses
-    CryFunctionDefList *l = CryMemStream::GetFunctions();
-    CryString s;
+    FunctionDefList *l = MemStream::GetFunctions();
+    String s;
     s += "//  BitArray;";
     s += "virtual void SetItemOwnerShip(Iterator *I,bool Owned);";
     s += "virtual void GetEleType(CryString &Result) const;";
@@ -307,14 +307,14 @@ CryFunctionDefList *BitArray::GetFunctions(const char *Type) const
 // Inherited Properties
 // ***********************************************************************
 
-const char *BitArray::GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const
+const char *BitArray::GetProperty(const PropertyParser &PropertyName,String &Result) const
 {
-    return CryMemStream::GetProperty(PropertyName,Result);
+    return MemStream::GetProperty(PropertyName,Result);
 } // GetProperty
 
-bool BitArray::SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue)
+bool BitArray::SetProperty(const PropertyParser &PropertyName,const char *PropertyValue)
 {
-    return CryMemStream::SetProperty(PropertyName,PropertyValue);
+    return MemStream::SetProperty(PropertyName,PropertyValue);
 } // SetProperty
 
 

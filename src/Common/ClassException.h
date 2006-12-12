@@ -29,28 +29,28 @@ using namespace std;
 /*!Exceptions are used for failures as opposed to return values. In this way functions are always assumed to
 have worked if they return
 */
-class CryException
+class Exception
 {
     int _errno;
     char *Error;
 public:
-    CryException(const CryException &E);
-    CryException(const char *FormatStr,...);
-    CryException(const Object *Object,const char *FormatStr,...);
-    CryException(const Object *Object,const CryException &E);
+    Exception(const Exception &E);
+    Exception(const char *FormatStr,...);
+    Exception(const Object *Object,const char *FormatStr,...);
+    Exception(const Object *Object,const Exception &E);
     //    CryException(const CryObject *Object,const CryException &E1,const CryException &E2);
     operator const char *() const;
-    CryException(const Object *Object,int ErrorNumber,const char *FormatStr,...);
-    CryException(const Object *Object,const char *sError,const long value);
-    CryException(const Object *Object,const char *sError,const long value,const char *sError2);
-    ~CryException();
+    Exception(const Object *Object,int ErrorNumber,const char *FormatStr,...);
+    Exception(const Object *Object,const char *sError,const long value);
+    Exception(const Object *Object,const char *sError,const long value,const char *sError2);
+    ~Exception();
     void SetErrno(int ErrorNumber);
     int GetErrno() const;
     void SetErrorStr(char *NewError);
 };
 
 /// simple default class for exceptions
-class CryExceptUnknown : public CryException
+class CryExceptUnknown : public Exception
 {
 public:
     CryExceptUnknown();

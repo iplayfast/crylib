@@ -27,7 +27,7 @@ using namespace std;
 #define CCryFileStream "CryFileStream"
 
 /// File Handling stream
-class CryFileStream : public CryStream
+class CryFileStream : public Stream
 {
 class FileStreamIterator : public StreamIterator
     {
@@ -47,10 +47,10 @@ class FileStreamIterator : public StreamIterator
     char StdType;
     CryFileStream(CryFileStream &nono);
 public:
-    StdFunctionsNoDup(CryFileStream,CryStream);
+    StdFunctionsNoDup(CryFileStream,Stream);
     virtual Object *Dup() const; // creates a duplicate of this object
     virtual const cbyte* GetRaw() const;
-    virtual CryFunctionDefList *GetFunctions(const char *Type=0) const;
+    virtual FunctionDefList *GetFunctions(const char *Type=0) const;
     //    const char* ClassName() const;
 
     //    virtual const char *ChildClassName() const;
@@ -69,17 +69,17 @@ public:
     // write until terminator or size (inclusive)
     virtual size_t WriteTI(const char *FromBuffer,size_t Size);
     // read until terminator or Size (inclusive)
-    virtual size_t ReadTI(CryStream *ToBuffer,size_t Size) const;
+    virtual size_t ReadTI(Stream *ToBuffer,size_t Size) const;
     // write until terminator or size (inclusive)
-    virtual size_t WriteTI(CryStream *FromBuffer,size_t Size);
+    virtual size_t WriteTI(Stream *FromBuffer,size_t Size);
     //    virtual bool IsAbstract() const;
     virtual size_t Read(char *ToBuffer,size_t Size) const;
     virtual size_t Write(const char *FromBuffer,size_t Size);
     virtual bool Eof() const;
-    virtual size_t Read(CryStream *ToStream,size_t Size) const;
-    virtual size_t Write(const CryStream *FromStream,size_t Size);
-    virtual size_t Read(CryStream *ToStream) const;
-    virtual size_t Write(const CryStream *FromStream);
+    virtual size_t Read(Stream *ToStream,size_t Size) const;
+    virtual size_t Write(const Stream *FromStream,size_t Size);
+    virtual size_t Read(Stream *ToStream) const;
+    virtual size_t Write(const Stream *FromStream);
     virtual bool IsOpen() const;
     virtual size_t Tell() const;
     virtual bool Open(const char *Name,const char *Operation,bool ExceptOnError=true);

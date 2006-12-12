@@ -27,7 +27,7 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 
 bool/* __cdecl */FormCallBack(bool Verbose,const char *Result,bool fail)
 {
-	CryString s;
+	Crystal::String s;
 	s.printf("%s %s",Result,fail ? "Fail" : "Pass");
 	s.Replace("\n","");
 	Form1->Memo1->Lines->Add(s.AsPChar());
@@ -72,7 +72,7 @@ bool Fail=true;
 			break;
 		case 2:
 			{
-				CryString a;
+				Crystal::String a;
 				Fail = a.Test(true,a,FormCallBack);
 			}
 			break;
@@ -123,9 +123,9 @@ bool Fail=true;
 		}
 		CheckListBox1->Checked[i]= Fail;
 	}
-	catch (CryException &E)
+	catch (Crystal::Exception &E)
 	{
-		CryString s;
+		Crystal::String s;
 		s ="Exception Caught: ";
 		s += E;
 		ShowMessage(s.AsPChar());

@@ -112,7 +112,7 @@ bool CrySet::Test(bool Verbose,Object &Object,bool  (CallBack)(bool Verbose,cons
 {
 char Result[200];
 bool Fail = false;
-CryString spn,spv,stemp;
+String spn,spv,stemp;
 
 CrySet Copy;
 CrySet *OrgObject = 0;

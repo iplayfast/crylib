@@ -6,13 +6,13 @@
 
 using namespace Crystal;
 using namespace std;
-void FunctionDef::SetDefaultValues()
+void BuilderFunctionDef::SetDefaultValues()
 {
 		Return = "void";
 		Param = "();\n";
 		SetProperty("Value","");
 
-CryString xml( "<CryString Value=\"\" />\
+String xml( "<CryString Value=\"\" />\
 ");
 	xml.Replace("\\\"","\"");// replace \" with "  
 CryXML x;
@@ -20,15 +20,15 @@ CryXML x;
 	x.SaveTo(*this);
 }
 
-CryFunctionDefList *FunctionDef::GetFunctions(const char *Type) const
+FunctionDefList *BuilderFunctionDef::GetFunctions(const char *Type) const
 {
 // if a type has been defined and it's not this class, check subclasses for it
 	if (Type && !IsA(Type))
-	   return CryString::GetFunctions(Type);
+	   return String::GetFunctions(Type);
 	// otherwise get any functions in subclasses
-	CryFunctionDefList *l = CryString::GetFunctions();
-CryString s;
-  s = "\\ class FunctionDef;";
+	FunctionDefList *l = String::GetFunctions();
+String s;
+  s = "\\ class BuilderFunctionDef;";
 	s+="const char * GetValue(CryString &Result) const;";
 	s+="void SetValue(const char * _Value);";
 	s+="const char *GetReturn(CryString &Result) const;";
@@ -40,17 +40,17 @@ CryString s;
 }
 
 //////////////////////
-bool ListFunctionDef::IteratedFunction(ListFunctionDef::IControl *Control,FunctionDef *Item)
+bool ListFunctionDef::IteratedFunction(ListFunctionDef::IControl *Control,BuilderFunctionDef *Item)
 {
 //	switch(Control->State) ...
 	return false;
 }
-FunctionDef* ListFunctionDef::AddOwned(FunctionDef * Item)
+BuilderFunctionDef* ListFunctionDef::AddOwned(BuilderFunctionDef * Item)
 {
 	List::AddOwned(Item);
 	return Item;
 }
-FunctionDef* ListFunctionDef::Add(FunctionDef * Item)
+BuilderFunctionDef* ListFunctionDef::Add(BuilderFunctionDef * Item)
 {
 	List::Add(Item);
 	return Item;
@@ -59,21 +59,21 @@ void ListFunctionDef::SetDefaultValues()
 {
 		SetProperty("Values","");
 
-CryString xml( "<CryList />\
+String xml( "<CryList />\
 ");
 	xml.Replace("\\\"","\"");// replace \" with "  
 CryXML x;
 	x.LoadFrom(xml);
 	x.SaveTo(*this);
 }
-CryFunctionDefList *ListFunctionDef::GetFunctions(const char *Type) const
+FunctionDefList *ListFunctionDef::GetFunctions(const char *Type) const
 {
 // if a type has been defined and it's not this class, check subclasses for it
 	if (Type && !IsA(Type))
 	   return List::GetFunctions(Type);
 	// otherwise get any functions in subclasses
-	CryFunctionDefList *l = List::GetFunctions();
-CryString s;
+	FunctionDefList *l = List::GetFunctions();
+String s;
   s = "\\ Class ListFunctionDef;";
 	s+="const char * GetItems(CryString &Result) const;";
 	s+="void SetItems(const char * _Items);";

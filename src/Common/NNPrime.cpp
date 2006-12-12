@@ -32,7 +32,7 @@ int SomePrimesCount;
 void LoadSomePrimes()
 {
 CryFileStream f;
-CryString s;
+String s;
     f.Open("primes.txt","r");
     f.SetTerminator('\n');
 int i=0;

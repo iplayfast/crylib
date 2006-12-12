@@ -37,21 +37,21 @@ void SimpleArray::CopyTo(Object &Dest) const ///copies contents of this to Dest
 {
 	if (Dest.IsA(CSimpleArray))
 		CopyTo(*(Array *)&Dest);
-    if (Dest.IsA(CCryMemStream))
+    if (Dest.IsA(CMemStream))
     {
-        CryMemStream *mDest = (CryMemStream *) &Dest;
+        MemStream *mDest = (MemStream *) &Dest;
 		mDest->Resize(MaxCount * ElementSize);
         mDest->SetRaw(0,GetRaw(),(size_t)MaxCount * ElementSize);
     }
 }
-CryFunctionDefList *SimpleArray::GetFunctions(const char *Type) const
+FunctionDefList *SimpleArray::GetFunctions(const char *Type) const
 {
     // if a type has been defined and it's not this class, check subclasses for it
     if (Type && !IsA(Type))
 		return Container::GetFunctions(Type);
 	// otherwise get any functions in subclasses
-	CryFunctionDefList *l = Container::GetFunctions();
-	CryString s;
+	FunctionDefList *l = Container::GetFunctions();
+	String s;
 	char *search;
 	s += "// Class CrySimpleArray;";
 	s +="virtual void CopyTo(CryObject &Dest) const;";
@@ -101,7 +101,7 @@ unsigned i = IteratorValue(I);
 	SetItem(i,Item,IsObject,IsOwned,Size);
 }
 
-bool SimpleArray::SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue)
+bool SimpleArray::SetProperty(const PropertyParser &PropertyName,const char *PropertyValue)
 {
 /*	if (PropertyName=="CurrentCount")
 	{
@@ -126,19 +126,19 @@ bool SimpleArray::SetProperty(const CryPropertyParser &PropertyName,const char *
 	return Container::SetProperty(PropertyName,PropertyValue);
 }
 
-bool SimpleArray::SetPropertyAsObject(const CryPropertyParser &PropertyName,Object *Value)
+bool SimpleArray::SetPropertyAsObject(const PropertyParser &PropertyName,Object *Value)
 {
-	if (Value->IsA(CCryString))
-		return SimpleArray::SetProperty(PropertyName,*(CryString *)Value);
+	if (Value->IsA(CString))
+		return SimpleArray::SetProperty(PropertyName,*(String *)Value);
 	return false;
 }
 
-bool SimpleArray::SetPropertyAsObject(CryProperty *Value)
+bool SimpleArray::SetPropertyAsObject(Property *Value)
 {
 	return Container::SetPropertyAsObject(Value);
 }
 
-const char *SimpleArray::GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const
+const char *SimpleArray::GetProperty(const PropertyParser &PropertyName,String &Result) const
 {
 	Result.Clear();
 /*	if (PropertyName=="CurrentCount")
@@ -165,7 +165,7 @@ const char *SimpleArray::GetProperty(const CryPropertyParser &PropertyName,CrySt
 	return Container::GetProperty(PropertyName,Result);
 }
 
-bool SimpleArray::HasProperty(const CryPropertyParser &PropertyName)const
+bool SimpleArray::HasProperty(const PropertyParser &PropertyName)const
 {
 	return (//(PropertyName=="CurrentCount") ||
 		(PropertyName=="MaxCount") ||
@@ -420,18 +420,18 @@ Array::Array(unsigned int ElementSize) : SimpleArray(ElementSize)
 Array::~Array()
 {
 	if (Count()!=0)
-		throw CryException(this, "deleting CryArray, while still having some elements! (Call Clear() first)");
+		throw Exception(this, "deleting CryArray, while still having some elements! (Call Clear() first)");
 
     delete []pPtr;
 }
-CryFunctionDefList *Array::GetFunctions(const char *Type) const
+FunctionDefList *Array::GetFunctions(const char *Type) const
 {
     // if a type has been defined and it's not this class, check subclasses for it
 	if (Type && !IsA(Type))
         return SimpleArray::GetFunctions(Type);
     // otherwise get any functions in subclasses
-    CryFunctionDefList *l = SimpleArray::GetFunctions();
-    CryString s;
+    FunctionDefList *l = SimpleArray::GetFunctions();
+    String s;
     s += "//  Class CryArray;";
     char *search;
     s +="virtual void DestroyArrayItem(CryArray *Owner,EmptyObject *Item) = 0;";
@@ -562,7 +562,7 @@ void Array::SetSize(size_t n) // set the number currently in use (either grow or
             SetMax(MaxCount + n);
         }
         else
-            throw(CryException(CryString("Setting Current Array Count %d  higher then MaxArray Count %d",n,MaxCount)));
+            throw(Exception(String("Setting Current Array Count %d  higher then MaxArray Count %d",n,MaxCount)));
     }
     while (CurrentCount>n)
     {
@@ -609,7 +609,7 @@ size_t Array::GetItemSize(Iterator *I) const
     return pPtr[i].Size;
 }
 
-void Array::GetEleType(CryString &Result) const
+void Array::GetEleType(String &Result) const
 {
     Result = "CryArray::Eleptr";
 }
@@ -629,7 +629,7 @@ bool Array::GetItemOwnerShip(const Iterator *I) const
 EmptyObject *Array::Add(EmptyObject *Item,bool IsObject,bool IsOwned,size_t Size)
 {
 	if (Item==0)
-		throw CryException(this,"AddOwned Null ptr added");
+		throw Exception(this,"AddOwned Null ptr added");
 
 	size_t n = CurrentCount + 1;
 	if (n>MaxCount)
@@ -639,7 +639,7 @@ EmptyObject *Array::Add(EmptyObject *Item,bool IsObject,bool IsOwned,size_t Size
 			SetMax(MaxCount + 100);
 		}
 		else
-			throw(CryException(CryString("Setting Current Array Count %d  higher then MaxArray Count %d",n,MaxCount)));
+			throw(Exception(String("Setting Current Array Count %d  higher then MaxArray Count %d",n,MaxCount)));
 	}
 	pPtr[CurrentCount].Item = Item;
 	pPtr[CurrentCount].Size = Size;
@@ -655,9 +655,9 @@ EmptyObject *Array::GetItem(unsigned int i)const //indexed from 0
 	if (i>=CurrentCount)
 	{
 		if (CurrentCount==0)
-			throw(CryException("Accessing empty Array"));
+			throw(Exception("Accessing empty Array"));
 		else
-			throw(CryException("Accessing past end of Array"));
+			throw(Exception("Accessing past end of Array"));
 	}
 	return pPtr[i].Item;
 }
@@ -673,9 +673,9 @@ void Array::SetItem(unsigned int i,EmptyObject *Item,bool IsObject,bool IsOwned,
 	if (i>=CurrentCount)
 	{
 		if (CurrentCount==0)
-			throw(CryException("Accessing empty Array"));
+			throw(Exception("Accessing empty Array"));
 		else
-			throw(CryException("Accessing past end of Array"));
+			throw(Exception("Accessing past end of Array"));
 	}
 	if (pPtr[i].IsOwned)
 	{
@@ -718,17 +718,17 @@ EmptyObject *Array::DupItem(const Array::ElePtr  *Node) const
 void Array::CopyTo(Array &Dest) const ///copies contents of this to Dest
 {
     if (Dest.ElementSize!=ElementSize)
-        throw(CryException("CopyTo: Destination Element size different then source"));
+        throw(Exception("CopyTo: Destination Element size different then source"));
     if (Dest.MaxCount<CurrentCount)
     {
         if (!Dest.AllowResize)
-            throw(CryException("CopyTo: Fixed Size Destination Array too small"));
+            throw(Exception("CopyTo: Fixed Size Destination Array too small"));
         else
             Dest.SetSize(CurrentCount);
     }
     for(unsigned int i=0;i<CurrentCount;i++)
     {
-        CryString s;
+        String s;
         SaveAsText(i,s);
         Dest.LoadAsText(i,s);
     }
@@ -738,9 +738,9 @@ void Array::CopyTo(Object &Dest) const ///copies contents of this to Dest
 {
 	if (Dest.IsA(CArray))
 		CopyTo(*(Array *)&Dest);
-	if (Dest.IsA(CCryMemStream))
+	if (Dest.IsA(CMemStream))
     {
-        CryMemStream *mDest = (CryMemStream *) &Dest;
+        MemStream *mDest = (MemStream *) &Dest;
         mDest->Resize(MaxCount * ElementSize);
         mDest->SetRaw(0,GetRaw(),(size_t)MaxCount * ElementSize);
     }
@@ -752,7 +752,7 @@ CryPropertyList *Array::PropertyNames() const
 	n->AddPropertyByName("Size",this);
 	return n;
 }
-bool Array::HasProperty(const CryPropertyParser &PropertyName) const
+bool Array::HasProperty(const PropertyParser &PropertyName) const
 {
 	/*    const char *name = ChildClassName();
 		int l = strlen(name);
@@ -765,7 +765,7 @@ bool Array::HasProperty(const CryPropertyParser &PropertyName) const
     return Container::HasProperty(PropertyName);
 }
 
-const char *Array::GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const
+const char *Array::GetProperty(const PropertyParser &PropertyName,String &Result) const
 {
 	Result.Clear();
 	if (PropertyName=="Size")
@@ -776,24 +776,24 @@ const char *Array::GetProperty(const CryPropertyParser &PropertyName,CryString &
 	return Container::GetProperty(PropertyName,Result);
 }
 
-bool Array::SetPropertyAsObject(const CryPropertyParser &PropertyName,Object *Value)
+bool Array::SetPropertyAsObject(const PropertyParser &PropertyName,Object *Value)
 {
-	if (Value->IsA(CCryString))
-		return SimpleArray::SetProperty(PropertyName,*(CryString *)Value);
+	if (Value->IsA(CString))
+		return SimpleArray::SetProperty(PropertyName,*(String *)Value);
 	return false;
 }
 
-bool Array::SetPropertyAsObject(CryProperty *Value)
+bool Array::SetPropertyAsObject(Property *Value)
 {
 	return SimpleArray::SetPropertyAsObject(Value);
 }
 
-bool Array::SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue)
+bool Array::SetProperty(const PropertyParser &PropertyName,const char *PropertyValue)
 {
 	if (PropertyName=="Size")
 	{
 		if (strlen(PropertyValue)==0)
-			throw CryException(this,"Cannot Set Size to no value");
+			throw Exception(this,"Cannot Set Size to no value");
 		int s = atoi(PropertyValue);
 		this->SetSize(s);
 		return true;
@@ -801,7 +801,7 @@ bool Array::SetProperty(const CryPropertyParser &PropertyName,const char *Proper
 	if (PropertyName=="Values")
 	{
 		if (strlen(PropertyValue)==0)
-			throw CryException(this,"Cannot Set Value to no value");
+			throw Exception(this,"Cannot Set Value to no value");
 		//        this->SaveItemTo(this,NULL,PropertyValue);
 		return true;
 	}
@@ -865,13 +865,13 @@ void IntArray::DestroyArrayItem(Array *Owner,EmptyObject *Item)
 EmptyObject *IntArray::CreateArrayItem(Array *Owner,bool *IsObject)
 {
 	if (IsObject) {
-		throw CryException(this,"Cannot create CryObject for Set");
+		throw Exception(this,"Cannot create CryObject for Set");
 	}
 	return (EmptyObject *)new int;
 }
 
 
-bool IntArray::LoadAsText(int i,CryString &FromStream)
+bool IntArray::LoadAsText(int i,String &FromStream)
 {
 	int v;
 	FromStream.scanf("%d ",&v);
@@ -879,13 +879,13 @@ bool IntArray::LoadAsText(int i,CryString &FromStream)
 	return true;
 }
 
-bool IntArray::SaveAsText(int i,CryString &ToStream) const
+bool IntArray::SaveAsText(int i,String &ToStream) const
 {
 	ToStream.printf("%d ",Values[i]);
 	return true;
 }
 
-void IntArray::GetEleType(CryString &Result) const
+void IntArray::GetEleType(String &Result) const
 {
 	Result = "int";
 }
@@ -973,12 +973,12 @@ void IntArray::CopyTo(Object &Dest) const
 }//CryIntArray
 
 
-bool IntArray::SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue)
+bool IntArray::SetProperty(const PropertyParser &PropertyName,const char *PropertyValue)
 {
 	if (PropertyName=="Size")
 	{
 		if (strlen(PropertyValue)==0)
-			throw CryException(this,"Cannot Set Size to no value");
+			throw Exception(this,"Cannot Set Size to no value");
 		int s = atoi(PropertyValue);
 		SetSize(s);
 		return true;
@@ -989,7 +989,7 @@ bool IntArray::SetProperty(const CryPropertyParser &PropertyName,const char *Pro
 }
 
 
-const char *IntArray::GetProperty(const char *PropertyName,CryString &Result) const
+const char *IntArray::GetProperty(const char *PropertyName,String &Result) const
 {
  return 0;	// to do fill in the stub
 }
@@ -998,7 +998,7 @@ const char *IntArray::GetProperty(const char *PropertyName,CryString &Result) co
 //
 //	DoubleArray
 //
-	void DoubleArray::GetEleType(CryString &Result) const
+	void DoubleArray::GetEleType(String &Result) const
 	{
 		Result = "double";
 	};
@@ -1019,7 +1019,7 @@ unsigned i = IteratorValue(I);
 	SetItem(i,Item,IsObject,IsOwned,Size);
 }
 
-bool DoubleArray::LoadAsText(int i,CryString &FromStream)
+bool DoubleArray::LoadAsText(int i,String &FromStream)
 {
 	double v;
 	FromStream.scanf("%f ",&v);
@@ -1033,7 +1033,7 @@ bool DoubleArray::LoadAsText(int i,CryString &FromStream)
 	}
 	return false;
 }
-bool DoubleArray::SaveAsText(int i,CryString &ToStream) const
+bool DoubleArray::SaveAsText(int i,String &ToStream) const
 {
 	ToStream.printf("%f ",Values[i]);
 	return true;
@@ -1054,20 +1054,20 @@ void DoubleArray::SetSize(size_t _Size)
 	CurrentCount = _Size;
 	Values = n;
 }
-bool DoubleArray::SetPropertyAsObject(const CryPropertyParser &PropertyName,Object *Value)
+bool DoubleArray::SetPropertyAsObject(const PropertyParser &PropertyName,Object *Value)
 {
-	if (Value->IsA(CCryString))
-		return SimpleArray::SetProperty(PropertyName,*(CryString *)Value);
+	if (Value->IsA(CString))
+		return SimpleArray::SetProperty(PropertyName,*(String *)Value);
 	return false;
 }
-CryFunctionDefList *DoubleArray::GetFunctions(const char *Type) const
+FunctionDefList *DoubleArray::GetFunctions(const char *Type) const
 {
 	// if a type has been defined and it's not this class, check subclasses for it
 	if (Type && !IsA(Type))
 		return SimpleArray::GetFunctions(Type);
 	// otherwise get any functions in subclasses
-	CryFunctionDefList *l = SimpleArray::GetFunctions();
-	CryString s;
+	FunctionDefList *l = SimpleArray::GetFunctions();
+	String s;
 	s += "// Class CryDoubleArray;";
 	char *search;
 	s +="void SetSize(size_t _Size);";
@@ -1098,12 +1098,12 @@ CryFunctionDefList *DoubleArray::GetFunctions(const char *Type) const
 
 // if this class contains the property name, it will attempt to load it
 // if all is well returns true
-bool DoubleArray::SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue)
+bool DoubleArray::SetProperty(const PropertyParser &PropertyName,const char *PropertyValue)
 {
 	if (PropertyName=="Size")
 	{
 		if (strlen(PropertyValue)==0)
-			throw CryException(this,"Cannot Set Size to no value");
+			throw Exception(this,"Cannot Set Size to no value");
 		int s = atoi(PropertyValue);
 		SetSize(s);
 		return true;
@@ -1123,7 +1123,7 @@ void DoubleArray::RemoveAtIterator(Iterator *LI)
 	return;
 }
 
-const char *DoubleArray::GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const
+const char *DoubleArray::GetProperty(const PropertyParser &PropertyName,String &Result) const
 {
 	if (PropertyName=="Size")
 	{
@@ -1136,7 +1136,7 @@ const char *DoubleArray::GetProperty(const CryPropertyParser &PropertyName,CrySt
 	}*/
 	return SimpleArray::GetProperty(PropertyName,Result);
 }
-bool DoubleArray::HasProperty(const CryPropertyParser &PropertyName)const
+bool DoubleArray::HasProperty(const PropertyParser &PropertyName)const
 {
 	if (PropertyName=="Size")
 		return true;

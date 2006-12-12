@@ -98,12 +98,12 @@ void HugeDouble::CopyTo(Object &Dest) const  //copies contents of this to Dest
     	*h = *this;
 	return;
     }
-    if (Dest.IsA(CCryStream))
+    if (Dest.IsA(CStream))
     {
-        SaveTo(*(CryStream *)&Dest);
+        SaveTo(*(Stream *)&Dest);
         return;
     }
-    throw CryException(this,"Can't copy HugeDouble to %s",Dest.ChildClassName());
+    throw Exception(this,"Can't copy HugeDouble to %s",Dest.ChildClassName());
 }
 #ifdef VALIDATING
 bool HugeDouble::Test(bool Verbose,Object &Object,bool  (CallBack)(bool Verbose,const char *Result,bool fail))
@@ -135,7 +135,7 @@ HugeDouble *h = new HugeDouble();
     return h;
 }
 
-const char *HugeDouble::GetProperty(CryPropertyParser &PropertyName,CryString &Result) const
+const char *HugeDouble::GetProperty(PropertyParser &PropertyName,String &Result) const
 {
     if (PropertyName=="Value")
     {
@@ -144,7 +144,7 @@ const char *HugeDouble::GetProperty(CryPropertyParser &PropertyName,CryString &R
     }
     return Object::GetProperty(PropertyName,Result);
 }
-bool HugeDouble::HasProperty(CryPropertyParser &PropertyName)const
+bool HugeDouble::HasProperty(PropertyParser &PropertyName)const
 {
     return (PropertyName=="Value") || Object::HasProperty(PropertyName);
 }
@@ -159,7 +159,7 @@ int HugeDouble::GetPropertyCount() const
 {
     return 1 + Object::GetPropertyCount();
 }
-bool HugeDouble::SetProperty(CryPropertyParser &PropertyName,const char *PropertyValue)
+bool HugeDouble::SetProperty(PropertyParser &PropertyName,const char *PropertyValue)
 {
     if (PropertyName=="Value")
     {

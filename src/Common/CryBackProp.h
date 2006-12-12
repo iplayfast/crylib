@@ -59,19 +59,19 @@ public:
 public:
 StdFunctionsNoDup(BackPropagateLayer,Object);
 
-virtual CryFunctionDefList *GetFunctions(const char *Type=0) const;
+virtual FunctionDefList *GetFunctions(const char *Type=0) const;
 
 BackPropagateLayer(CryBPNet *_Owner);
 void SetID(int i);
 int  GetID() const { return id; }
 virtual void CopyTo(Object &Object) const;
-virtual bool HasProperty(const CryPropertyParser &PropertyName)const;
+virtual bool HasProperty(const PropertyParser &PropertyName)const;
 virtual int GetPropertyCount() const;
 virtual CryPropertyList* PropertyNames() const;
-virtual const char *GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const;
+virtual const char *GetProperty(const PropertyParser &PropertyName,String &Result) const;
 // if this class contains the property name, it will attempt to load it
 // if all is well returns true
-virtual bool SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue);
+virtual bool SetProperty(const PropertyParser &PropertyName,const char *PropertyValue);
 };
 
 /// low level backpropagation array class
@@ -87,7 +87,7 @@ protected:
     int GetAllWeightsSize() const { return AllWeightsSize; }
 public:
 StdFunctions(CryBPNet,Array);
-    virtual CryFunctionDefList *GetFunctions(const char *Type=0) const;
+    virtual FunctionDefList *GetFunctions(const char *Type=0) const;
 
 	void SetAllWeights();	/// gets' called just before the network is trained, or as it is loaded
 	double *GetAllWeights() const { return AllWeights; }
@@ -96,17 +96,17 @@ StdFunctions(CryBPNet,Array);
 /// derived class will handle the creation of objects contained in array
 	virtual EmptyObject *CreateArrayItem(Array *Owner,bool *IsCryObject) ;
 /// derived class will handle the display in CryStream the objects contained in array (text assumed)
-	virtual void SaveItemTo(const Array *Owner,EmptyObject *FromItem,CryStream &ToStream) const;
+	virtual void SaveItemTo(const Array *Owner,EmptyObject *FromItem,Stream &ToStream) const;
 /// derived class will handle the loading of an Object from the stream, objectmust have already been created
-	virtual EmptyObject *LoadItemFrom(Array *Owner,EmptyObject *ToItem,CryStream &FromStream);
-	virtual bool LoadAsText(int i,CryString &FromStream) ;
+	virtual EmptyObject *LoadItemFrom(Array *Owner,EmptyObject *ToItem,Stream &FromStream);
+	virtual bool LoadAsText(int i,String &FromStream) ;
 
-    virtual bool LoadAsText(Iterator *I,CryString &FromStream)
+    virtual bool LoadAsText(Iterator *I,String &FromStream)
     {
         return Array::LoadAsText(I,FromStream);
     }
-   	virtual bool SaveAsText(int i,CryString &ToStream) const;
-    virtual bool SaveAsText(Iterator *I,CryString &ToStream) const
+   	virtual bool SaveAsText(int i,String &ToStream) const;
+    virtual bool SaveAsText(Iterator *I,String &ToStream) const
     {
         return Array::SaveAsText(I,ToStream);
 	}
@@ -124,7 +124,7 @@ StdFunctions(CryBPNet,Array);
     ~CryBPNet()  	{	Clear(); delete []AllWeights;	}
    virtual void CopyTo(Array &Dest) const { Array::CopyTo(Dest);  } //copies contents of this to Dest
     virtual void CopyTo(Object &Dest) const { Array::CopyTo(Dest);  }  //copies contents of this to Dest
-    virtual void GetEleType(CryString &Result) const;
+    virtual void GetEleType(String &Result) const;
 };
 
 /// backpropagation interface layer 
@@ -136,7 +136,7 @@ double          Alpha;         /* - momentum factor                     */
 double          Eta;           /* - learning rate                       */
 double          Gain;          /* - gain of sigmoid function            */
 double          Error;         /* - total net error                     */
-CryString Status;
+String Status;
 void SaveWeights();
 void RestoreWeights();
 public:
@@ -147,19 +147,19 @@ StdFunctions(CryBPNetContainer,CryBPNet);
   void SetGain(double g) { Gain = g; }
 
 // functions needed by CryObject
-	virtual CryFunctionDefList *GetFunctions(const char *Type=0) const;
+	virtual FunctionDefList *GetFunctions(const char *Type=0) const;
 
    virtual void CopyTo(Object &Dest) const;  //copies contents of this to Dest
 // functions needed by CryNamedObject
-	virtual bool HasProperty(const CryPropertyParser &PropertyName)const;
+	virtual bool HasProperty(const PropertyParser &PropertyName)const;
 	virtual int GetPropertyCount() const;
 	virtual CryPropertyList* PropertyNames() const;
-	virtual const char *GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const;
+	virtual const char *GetProperty(const PropertyParser &PropertyName,String &Result) const;
 	// if this class contains the property name, it will attempt to load it
 	// if all is well returns true
-	virtual bool SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue);
+	virtual bool SetProperty(const PropertyParser &PropertyName,const char *PropertyValue);
 	/*! will create an object of the Type named in Type. In container classes where the Type is the contained object, the Parent must be the appropriete container type or a derived class which can create the object (if the default class can't) */
-	virtual Object *Create(const CryPropertyParser &PropertyName,Object *Parent=0);
+	virtual Object *Create(const PropertyParser &PropertyName,Object *Parent=0);
 
 // functions if multithreaded
 const char *GetStatus() const { return Status.AsPChar(); }

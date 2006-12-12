@@ -24,29 +24,29 @@
 namespace Crystal
 {
 using namespace std;
-#ifndef CCryProperty
-#define CCryProperty    "CryProperty"
+#ifndef CProperty
+#define CProperty    "Property"
 #define CCryPropertyList "CryPropertyList"
 #define CCryPropertyParser "CryPropertyParser"
 #define CPropertyIterator "PropertyIterator"
 
 /// This class has the unusual ability of being able to have a property assigned to it at runtime.
-class CryProperty : public Object
+class Property : public Object
 {
-    CryString *Name;
-    Object* Value;
+	String *Name;
+	Object* Value;
 	void Init(const char *_Name,const char *_Value);
 public:
-	CryProperty()
+	Property()
 	{
 	Init("NoName","");
 	}
-	StdFunctionsNoDup(CryProperty,Object);
-	CryProperty(const char *_Name,const char *_Value);
-	CryProperty(const char *_Name);
-	CryProperty(CryProperty &Copy);
-	virtual ~CryProperty();
-	virtual CryFunctionDefList *GetFunctions(const char *Type=0) const;
+	StdFunctionsNoDup(Property,Object);
+	Property(const char *_Name,const char *_Value);
+	Property(const char *_Name);
+	Property(Property &Copy);
+	virtual ~Property();
+	virtual FunctionDefList *GetFunctions(const char *Type=0) const;
 	virtual Object *Dup() const;  /// creates a duplicate of this object
 
 	void SetValue(const char *_Value);
@@ -58,40 +58,40 @@ public:
         SetName(_Name);
     }
 	const Object *GetValue() const;
-	const char *GetValue(CryString &Result) const;	// return string value or Object name if not CryString
+	const char *GetValue(String &Result) const;	// return string value or Object name if not CryString
 	Object*_GetValue() const;
-    virtual const char *GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const;
-	virtual const char *GetProperty(CryString &Result) const;
+    virtual const char *GetProperty(const PropertyParser &PropertyName,String &Result) const;
+	virtual const char *GetProperty(String &Result) const;
 	virtual const cbyte* GetRaw() const;
     //    virtual const char *ChildClassName() const;
-	virtual bool HasProperty(const CryPropertyParser &PropertyName) const;
-	virtual bool SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue);
-    virtual bool SetProperty(const CryPropertyParser &PropertyName,const Object *PropertyValue);
+	virtual bool HasProperty(const PropertyParser &PropertyName) const;
+	virtual bool SetProperty(const PropertyParser &PropertyName,const char *PropertyValue);
+    virtual bool SetProperty(const PropertyParser &PropertyName,const Object *PropertyValue);
 	//virtual bool SetProperty(const char*PropertyName,const CryString &PropertyValue);
 	virtual CryPropertyList* PropertyNames() const;
 //    virtual bool IsAbstract() const;
     virtual void CopyTo(Object &Dest) const;   //copies contents of this to Dest
-    const CryString *GetName() const;
+    const String *GetName() const;
     //    virtual CryObject *Dup() const;  /// creates a duplicate of this object
     virtual size_t Size() const;
 }
 ;  //CryProperty
 
 /// this class is used to easily parse out propertyname[Index]
-class CryPropertyParser : public CryString
+class PropertyParser : public String
 {
 	int Index;	// if -1 then there is no []
-	CryPropertyParser() : CryString("")
+	PropertyParser() : String("")
 	{
 		Index = -1;
 	}
 public:
-	StdFunctions(CryPropertyParser,CryString);
-	CryPropertyParser(const char *Property);
+	StdFunctions(PropertyParser,String);
+	PropertyParser(const char *Property);
 	int GetIndex() const;
 	const char *GetPlainProperty() const;
-	void GetPlainProperty(CryString &Result) const;
-	void Get(CryString &Result) const;
+	void GetPlainProperty(String &Result) const;
+	void Get(String &Result) const;
 };
 
 /// CryPropertyList will load in the properties of some object
@@ -115,9 +115,9 @@ public:
 		bool GotoNext();
 		bool GotoLast();
 		size_t GetItemSize();
-		CryProperty *_Get() { return (CryProperty *)Get(); }
-		const CryString *GetName();
-		const char *GetValue(CryString &r);
+		Property *_Get() { return (Property *)Get(); }
+		const String *GetName();
+		const char *GetValue(String &r);
 
 		void SetName(const char *Name);
 		void SetValue(const char *Value);
@@ -146,32 +146,32 @@ public:
 	/// add a new property to the list (property is owned by list);
 	void AddProperty(const char *Name,Object *Value);
 	/// add a new property to the list (property is owned by list);
-	void AddProperty(CryString *Name,CryString *Value);
+	void AddProperty(String *Name,String *Value);
 	/// add a new property to the list, by giving the name and object that it came from. (Object is asked for Property value)
 	void AddPropertyByName(const char *Name,const Object *object);
-	virtual Object *_GetPropertyAsObject(const CryPropertyParser &PropertyName) const;
-	virtual Object *GetCopyOfPropertyAsObject(const CryPropertyParser &PropertyName) const;
+	virtual Object *_GetPropertyAsObject(const PropertyParser &PropertyName) const;
+	virtual Object *GetCopyOfPropertyAsObject(const PropertyParser &PropertyName) const;
 	/// check for a propertyname in the list
-	virtual bool HasProperty(const CryPropertyParser &PropertyName) const;
+	virtual bool HasProperty(const PropertyParser &PropertyName) const;
 	virtual int Compare(int CompareType,const Object *Test1,const Object *Test2) const;
 
 	/*! returns true if the class in question can have the property */
-	virtual bool CanHaveProperty(const CryPropertyParser &PropertyName) const
+	virtual bool CanHaveProperty(const PropertyParser &PropertyName) const
 	{
 		return true;
 	}
 
-	virtual const char *GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const;
+	virtual const char *GetProperty(const PropertyParser &PropertyName,String &Result) const;
 	/*! will return whether or not the property named in PropertyName is a container */
-	virtual bool GetIsPropertyContainer(const CryPropertyParser &PropertyName) const;
+	virtual bool GetIsPropertyContainer(const PropertyParser &PropertyName) const;
 
 	/// return a char * of the value for a property
-	const char *GetValueAsPChar(const CryPropertyParser &PropertyName,CryString &Result) const;
-	const char *GetValue(const CryPropertyParser &PropertyName,CryString &Result) const;
-	virtual bool SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue);
+	const char *GetValueAsPChar(const PropertyParser &PropertyName,String &Result) const;
+	const char *GetValue(const PropertyParser &PropertyName,String &Result) const;
+	virtual bool SetProperty(const PropertyParser &PropertyName,const char *PropertyValue);
 	void RenameProperty(const char *OldName,const char *NewName);
 	virtual size_t Size() const;
-	void RemoveNodeValue(const CryMemStream &Needle);
+	void RemoveNodeValue(const MemStream &Needle);
 //	void RemoveAtIterator(Iterator *LI);
 	void SetOwner(Object *_Owner) { OwnedObject::SetOwner(_Owner); }
 	virtual void CopyTo(Object &Dest) const;

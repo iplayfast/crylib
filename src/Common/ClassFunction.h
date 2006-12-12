@@ -24,56 +24,56 @@
 namespace Crystal
 {
 using namespace std;
-#ifndef CCryFunctionDef
-#define CCryFunctionDef "CryFunctionDef"
-#define CCryFunctionDefList "CryFunctionDefList"
+#ifndef CFunctionDef
+#define CFunctionDef "FunctionDef"
+#define CFunctionDefList "FunctionDefList"
 
 /*! contains all the info to describe a function definition, used when autobuilding classes
 */
-class CryFunctionDef : public CryString
+class FunctionDef : public String
 {
     bool _NeedsSpace() const;
-    const CryString &_GetDeclaration(CryString &Result,bool IsPure) const;
+    const String &_GetDeclaration(String &Result,bool IsPure) const;
 public:
-    StdFunctions(CryFunctionDef,CryString);
+    StdFunctions(FunctionDef,String);
     // The full function name eg, virtual size_t CryProperty::Size() const;
     bool IsVirtual;
-    CryString ReturnType;	// eg "size_t", or "const char *"
-    CryString FunctionName; // eg "Size()
-    CryString Body;         // { ... code ... } stuff
+    String ReturnType;	// eg "size_t", or "const char *"
+    String FunctionName; // eg "Size()
+    String Body;         // { ... code ... } stuff
     bool IsConst;		// const function
     bool IsPure;		// =0
     bool IsComment; // not a function def at all, just a comment about one!
-    CryFunctionDef();
-	CryFunctionDef(const char *Name);
-	~CryFunctionDef();
+    FunctionDef();
+	FunctionDef(const char *Name);
+	~FunctionDef();
     void Parse(const char *Name);
-    CryFunctionDef(const char *_ReturnType, const char *_FunctionName,bool _IsConst = false,bool _IsVirtual = false,bool _IsPure = false);
+    FunctionDef(const char *_ReturnType, const char *_FunctionName,bool _IsConst = false,bool _IsVirtual = false,bool _IsPure = false);
     virtual int CompareLogical(int CompareType,const Object *Test) const;
     virtual bool LessThen(int CompareType,const Object *Test)const;
 	virtual bool GreaterThen(int CompareType,const Object *Test)const;
 	virtual bool EqualTo(int CompareType,const Object *Test)const;
     virtual int GetPropertyCount() const;
-	virtual bool HasProperty(const CryPropertyParser &PropertyName) const;
+	virtual bool HasProperty(const PropertyParser &PropertyName) const;
 	virtual CryPropertyList* PropertyNames() const;
-	virtual const char * GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const;
-    virtual bool  SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue);
+	virtual const char * GetProperty(const PropertyParser &PropertyName,String &Result) const;
+    virtual bool  SetProperty(const PropertyParser &PropertyName,const char *PropertyValue);
     const char *GetFunctionName() const;
-    const CryString &GetDeclaration(CryString &Result) const; // eg what goes in the header file
-    const CryString &GetImplementedDeclaration(const char *ClassName,CryString &Result,
+    const String &GetDeclaration(String &Result) const; // eg what goes in the header file
+    const String &GetImplementedDeclaration(const char *ClassName,String &Result,
             bool ShowReturnType) const; // eg what goes in the body
-    const CryString &GetNPDeclaration(CryString &Result) const; // same as GetDeclaration but without = 0 in the case of pure virtuals
-    const CryString &GetDeclaration(); // eg what goes in the header file
-    const CryString &GetImplementedDeclaration(const char *ClassName,bool ShowReturnType); // eg what goes in the body
-    const CryString &GetNPDeclaration(); // same as GetDeclaration but without = 0 in the case of pure virtuals
+    const String &GetNPDeclaration(String &Result) const; // same as GetDeclaration but without = 0 in the case of pure virtuals
+    const String &GetDeclaration(); // eg what goes in the header file
+    const String &GetImplementedDeclaration(const char *ClassName,bool ShowReturnType); // eg what goes in the body
+    const String &GetNPDeclaration(); // same as GetDeclaration but without = 0 in the case of pure virtuals
 }
 ;  //CryFunctionDef
 
-class CryFunctionDefList : public List
+class FunctionDefList : public List
 {
 public:
-    StdFunctions(CryFunctionDefList,List);
-    void LoadFromString(const CryString &Source,const char *Separator);
+    StdFunctions(FunctionDefList,List);
+    void LoadFromString(const String &Source,const char *Separator);
 };
 
 #endif	// TCryFunctionDef

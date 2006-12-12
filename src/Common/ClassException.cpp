@@ -31,7 +31,7 @@ using namespace std;
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 
-CryException::CryException(const char *FormatStr,...)
+Exception::Exception(const char *FormatStr,...)
 {
     char Buffer[1024];
     va_list argptr;
@@ -43,7 +43,7 @@ CryException::CryException(const char *FormatStr,...)
     Error[size] = '\0';
 }
 
-CryException::CryException(const Object *Object,const char *FormatStr,...)
+Exception::Exception(const Object *Object,const char *FormatStr,...)
 {
     char Buffer[1024];
     va_list argptr;
@@ -59,27 +59,27 @@ CryException::CryException(const Object *Object,const char *FormatStr,...)
 }
 
 
-CryException::CryException(const CryException &E)
+Exception::Exception(const Exception &E)
 {
     Error = new char[strlen(E)+1];
     errno = E.GetErrno();
     strcpy(Error,E);
 }
-CryException::~CryException()
+Exception::~Exception()
 {
     delete[] Error;
 }
 
-CryException::operator const char *() const
+Exception::operator const char *() const
 {
     return Error;
 }
 
-void CryException::SetErrno(int ErrorNumber)
+void Exception::SetErrno(int ErrorNumber)
 {
     _errno = ErrorNumber;
 }
-int CryException::GetErrno() const
+int Exception::GetErrno() const
 {
     return _errno;
 }
@@ -94,14 +94,14 @@ int CryException::GetErrno() const
     if (E2.errno!=-1)
         errno = E2.errno;
 } */
-CryException::CryException(const Object *Object,const CryException &E)
+Exception::Exception(const Object *Object,const Exception &E)
 {
     Error = new char[strlen(E)+1];
     errno = E.GetErrno();
     strcpy(Error,E);
 }
 
-CryException::CryException(const Object *Object,int ErrorNumber,const char *FormatStr,...)
+Exception::Exception(const Object *Object,int ErrorNumber,const char *FormatStr,...)
 {
     errno = ErrorNumber;
     char Buffer[1024];
@@ -119,7 +119,7 @@ CryException::CryException(const Object *Object,int ErrorNumber,const char *Form
 
 }
 
-CryException::CryException(const Object *Object,const char *sError,const long value)
+Exception::Exception(const Object *Object,const char *sError,const long value)
 {
     char sv[40];
     errno = -1;
@@ -128,7 +128,7 @@ CryException::CryException(const Object *Object,const char *sError,const long va
     strcpy(Error,sError);
     strcat(Error,sv);
 }
-CryException::CryException(const Object *Object,const char *sError1,const long value,const char *sError2)
+Exception::Exception(const Object *Object,const char *sError1,const long value,const char *sError2)
 {
     char sv[40];
     errno = -1;
@@ -138,7 +138,7 @@ CryException::CryException(const Object *Object,const char *sError1,const long v
     strcat(Error,sv);
     strcat(Error,sError2);
 }
-void CryException::SetErrorStr(char *NewError)
+void Exception::SetErrorStr(char *NewError)
 {
     delete[] Error;
     Error = new char[strlen(NewError)+1];
@@ -149,5 +149,5 @@ void CryException::SetErrorStr(char *NewError)
 // CryExceptUnknown
 ///----------------------------------------------------------------------------
 
-CryExceptUnknown::CryExceptUnknown() : CryException("Unknown")
+CryExceptUnknown::CryExceptUnknown() : Exception("Unknown")
 {}

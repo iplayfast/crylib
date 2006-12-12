@@ -75,10 +75,10 @@ virtual Object *Dup()const;
     float Equality(CryFuzzy &t)const;
     void Normalize(float factor);    // remove values that would normally fall within the range of factor
     void IncreaseSamples(); // add additional values (of the calculated value to data)
-    void SaveFuzzToStream(int i,CryStream *ToStream) const; // write 1 datapoint to the stream
+    void SaveFuzzToStream(int i,Stream *ToStream) const; // write 1 datapoint to the stream
 
-    void AppendFromStream(CryStream &Stream);
-    int AppendFuzzFromStream(CryStream &Stream);
+    void AppendFromStream(Stream &Stream);
+    int AppendFuzzFromStream(Stream &Stream);
 
 	void SimpleInhibit(float InhibitPercent);
 	void CopyAndInhibit(CryFuzzy &Fuzzy);
@@ -93,38 +93,38 @@ virtual Object *Dup()const;
 	float XOr(CryFuzzy f, float v)const;
 	float Not(float v)const;
 
-   virtual bool LoadAsText(int i,CryString &FromStream);
-   virtual bool SaveAsText(int i,CryString &ToStream) const;
-   virtual bool LoadAsText(Iterator *i,CryString &FromStream)
+   virtual bool LoadAsText(int i,String &FromStream);
+   virtual bool SaveAsText(int i,String &ToStream) const;
+   virtual bool LoadAsText(Iterator *i,String &FromStream)
    {
 	return Array::LoadAsText(i,FromStream);
    }
-   virtual bool SaveAsText(Iterator *i,CryString &ToStream) const
+   virtual bool SaveAsText(Iterator *i,String &ToStream) const
    {
 	return Array::SaveAsText(i,ToStream);
    }
 	void print(ostream &os);
 //    friend ostream &operator<<( ostream &os, CryFuzzy& f );
 
-  virtual Object *CreateItemType(const CryPropertyParser &PropertyName);
+  virtual Object *CreateItemType(const PropertyParser &PropertyName);
 // derived class will handle the display in CryStream the objects contained in array (text assumed)
-    virtual void SaveItemTo(const Array *Owner,EmptyObject *FromItem,CryStream &ToStream) const;
+    virtual void SaveItemTo(const Array *Owner,EmptyObject *FromItem,Stream &ToStream) const;
 // derived class will handle the Creation of an Object from the stream
-    virtual EmptyObject *LoadItemFrom(Array *Owner,EmptyObject *ToItem,CryStream &FromStream);
+    virtual EmptyObject *LoadItemFrom(Array *Owner,EmptyObject *ToItem,Stream &FromStream);
 
-    bool SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue);
-    virtual const char *GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const;
-    virtual bool HasProperty(const CryPropertyParser &PropertyName)const;
+    bool SetProperty(const PropertyParser &PropertyName,const char *PropertyValue);
+    virtual const char *GetProperty(const PropertyParser &PropertyName,String &Result) const;
+    virtual bool HasProperty(const PropertyParser &PropertyName)const;
 	virtual int GetPropertyCount() const;
 	virtual CryPropertyList* PropertyNames() const;
    virtual void CopyTo(Array &Dest) const { Array::CopyTo(Dest);  } //copies contents of this to Dest
     virtual void CopyTo(Object &Dest) const { Array::CopyTo(Dest);  }  //copies contents of this to Dest
-    virtual void GetEleType(CryString &Result) const { Result = "TFuzzyXY"; }
+    virtual void GetEleType(String &Result) const { Result = "TFuzzyXY"; }
 
 #ifdef VALIDATING
 virtual bool Test(bool Verbose,Object &Object,bool (CallBack)(bool Verbose,const char *Result,bool fail));
 #endif
-	virtual CryFunctionDefList *GetFunctions(const char *Type=0) const;
+	virtual FunctionDefList *GetFunctions(const char *Type=0) const;
 
 };
 } // end namespace Crystal
