@@ -31,16 +31,16 @@ using namespace std;
 	it's a convienence class
 */
 
-TwoStreams::TwoStreams(CryStream *_Stream1,CryStream *_Stream2)
+TwoStreams::TwoStreams(Stream *_Stream1,Stream *_Stream2)
 {
     Stream1 = _Stream1;
     Stream2 = _Stream2;
 }
-CryStream *TwoStreams::GetStream1()
+Stream *TwoStreams::GetStream1()
 {
     return Stream1;
 }
-CryStream *TwoStreams::GetStream2()
+Stream *TwoStreams::GetStream2()
 {
     return Stream2;
 }

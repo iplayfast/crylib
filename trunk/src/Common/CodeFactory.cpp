@@ -198,7 +198,7 @@ void CodeFactory::AppendHead(const char *Value)
 {
 	HeadImp *hp = (HeadImp *)Products._GetPropertyAsObject("Source");
 	if (hp) {
-		CryString s;
+		String s;
 		s = *hp->GetHead();
 		s += Value;
 		s+="\n";
@@ -209,7 +209,7 @@ void CodeFactory::AppendImp(const char *Value)
 {
 	HeadImp *hp = (HeadImp *)Products._GetPropertyAsObject("Source");
 	if (hp) {
-		CryString s;
+		String s;
 		s = *hp->GetImp();
 		s += Value;
 		s+="\n";
@@ -228,27 +228,27 @@ void CodeFactory::SetHeadImp(const CryPropertyParser &PropertyName,const char *s
 	SetHead(PropertyName,s);
 	SetImp(PropertyName,s);
 }
-const CryString *CodeFactory::GetHead(const CryPropertyParser &PropertyName) const
+const String *CodeFactory::GetHead(const CryPropertyParser &PropertyName) const
 {
 	HeadImp *hp = (HeadImp *)Products._GetPropertyAsObject(PropertyName);
 	if (hp)
 		return hp->GetHead();
 	else
-		throw CryException("Property Not found");
+		throw Exception("Property Not found");
 }
-const CryString *CodeFactory::GetImp(const CryPropertyParser &PropertyName) const
+const String *CodeFactory::GetImp(const CryPropertyParser &PropertyName) const
 {
 	HeadImp *hp = (HeadImp *)Products._GetPropertyAsObject(PropertyName);
 	if (hp)
 		return hp->GetImp();
 	else
-		throw CryException("Property Not found");
+		throw Exception("Property Not found");
 }
 int CodeFactory::GetPropertyCount() const
 {
 	return CryFactory::GetPropertyCount() + 2; // Name and Products
 };
-const char * CodeFactory::GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const
+const char * CodeFactory::GetProperty(const CryPropertyParser &PropertyName,String &Result) const
 {
 	Result.Clear();
 	if (PropertyName=="Name") {   // intercept crycontainer's property for our own
@@ -322,7 +322,7 @@ CryPropertyList *CodeFactory::PropertyNames() const
 	pn->AddPropertyByName("IsPointer",this);
 	pn->AddPropertyByName("IsProperty",this);
 	return pn;
-	//  pn->AddOwned(new CryString("Values"));
+	//  pn->AddOwned(new String("Values"));
 };
 bool CodeFactory::HasProperty(const CryPropertyParser &PropertyName) const
 {
@@ -339,8 +339,8 @@ bool CodeFactory::GetIsPropertyContainer(const CryPropertyParser &PropertyName) 
 	return CryFactory::GetIsPropertyContainer(PropertyName);
 }
 
-Object *CodeFactory::Create(CryStream &FromStream)
+Object *CodeFactory::Create(Stream &FromStream)
 {
-	throw(CryException("Not Implemented"));
+	throw(Exception("Not Implemented"));
 }
 

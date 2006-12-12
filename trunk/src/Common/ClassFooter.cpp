@@ -40,7 +40,7 @@ ClassFooterFactory::ClassFooterFactory(CodeFactory *Parent) : CodeFactory(Parent
     AddProduct(CClassFooterFactory);
 }
 
-Object *ClassFooterFactory::Create(const CryPropertyParser &PropertyName,CodeFactory *Parent)
+Object *ClassFooterFactory::Create(const PropertyParser &PropertyName,CodeFactory *Parent)
 {
     if (PropertyName==CClassFooterFactory)
     {
@@ -48,7 +48,7 @@ Object *ClassFooterFactory::Create(const CryPropertyParser &PropertyName,CodeFac
             return this;
 
 
-        CryString s;
+        String s;
         s.printf("}; // class %s\n\n}; // namespace Crystal \n",
                  Parent->GetName());
         SetHead(PropertyName,s);

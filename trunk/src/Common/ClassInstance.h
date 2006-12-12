@@ -35,7 +35,7 @@ When designing a new class this class will represent internal instances of class
 */
 class ClassInstance : public PrimInstance
 {
-    CryString Type;// TODO Handle Instance as pointer
+    String Type;// TODO Handle Instance as pointer
     Object *p;	// one instance so we can figure out includes and abstract
 /// checks for file preexisting, and if not and p->IsA(Type) then adds it.
 	bool HasDefault;	// set to true if a default property is set, 
@@ -43,15 +43,15 @@ public:
 StdFunctionsNoDup(ClassInstance,CodeFactory);
 	ClassInstance(CodeFactory *Parent) : PrimInstance(Parent) { p = 0; HasDefault = false;}
 //	ClassInstance(CodeFactory *Parent,const char *ClassType,const char *ClassName,int count,bool IsProperty,bool IsPointer,bool IsArrayPointer,const char *DefaultValue);
-    virtual Object *Create(const CryPropertyParser &PropertyName,CodeFactory *Parent);
+    virtual Object *Create(const PropertyParser &PropertyName,CodeFactory *Parent);
     virtual const char *GetType() const;
 	const Object *Getp() const { return p; }
-	virtual bool SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue);
-    virtual bool HasProperty(const CryPropertyParser &PropertyName) const;
+	virtual bool SetProperty(const PropertyParser &PropertyName,const char *PropertyValue);
+    virtual bool HasProperty(const PropertyParser &PropertyName) const;
     /*! The count of the properties a class has */
     virtual int GetPropertyCount() const;
     /*! will return the property named in PropertyName in a string format */
-    virtual const char *GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const;
+    virtual const char *GetProperty(const PropertyParser &PropertyName,String &Result) const;
 
 	/*! Make a list of all property names, the function is called from the parent class through each inheritance until it reaches this class, at which point a list is created and filled with any properties on the way back through the inheritance */
 	virtual CryPropertyList* PropertyNames() const;
@@ -59,21 +59,21 @@ StdFunctionsNoDup(ClassInstance,CodeFactory);
     //bool GetIsProperty() const;
     //void SetIsArrayPointer(bool _IsArrayPointer);
     //bool GetIsArrayPointer() const;
-    virtual Object *Create(const CryPropertyParser &PropertyName,Object *Parent)
+    virtual Object *Create(const PropertyParser &PropertyName,Object *Parent)
     {
       return CodeFactory::Create(PropertyName,Parent);
     }
-    virtual Object *Create(CryStream &FromStream)
+    virtual Object *Create(Stream &FromStream)
     {
       return CodeFactory::Create(FromStream);
     }
-    virtual Object *Create(const char *FactoryName,const CryPropertyParser &PropertyName,Object *Parent)
+    virtual Object *Create(const char *FactoryName,const PropertyParser &PropertyName,Object *Parent)
     {
       return PrimInstance::Create(FactoryName,PropertyName,Parent);
     }
-	virtual const char *Code_AssignDefaultValue(CryString &Result) const;
-virtual 	const char *Code_SetProperty(CryString &Result) const;
-virtual 	const char *Code_GetProperty(CryString &Result) const;
+	virtual const char *Code_AssignDefaultValue(String &Result) const;
+virtual 	const char *Code_SetProperty(String &Result) const;
+virtual 	const char *Code_GetProperty(String &Result) const;
 
 };
 

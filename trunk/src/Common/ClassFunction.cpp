@@ -31,18 +31,18 @@ using namespace Crystal;
 // CryFunctionDef
 ///----------------------------------------------------------------------------
 
-int CryFunctionDef::CompareLogical(int CompareType,const Object *Test) const
+int FunctionDef::CompareLogical(int CompareType,const Object *Test) const
 {
-    if (Test->IsA(CCryFunctionDef))
+    if (Test->IsA(CFunctionDef))
     {
-        CryFunctionDef *f = (CryFunctionDef *)Test;
+        FunctionDef *f = (FunctionDef *)Test;
         if ((CompareType>4) || (CompareType<0))
-            throw CryException("Unexpected Value for Sorting CryFunctionDef");
+            throw Exception("Unexpected Value for Sorting CryFunctionDef");
         switch(CompareType)
         {
         case 0:
             {
-                CryString a,b;
+                String a,b;
                 return GetDeclaration(a).strcmp(f->GetDeclaration(b));
             }
         case 1:
@@ -82,38 +82,38 @@ int CryFunctionDef::CompareLogical(int CompareType,const Object *Test) const
     return 0;
 }
 
-CryFunctionDef::~CryFunctionDef()
+FunctionDef::~FunctionDef()
 {
 	//
 }
 
-bool CryFunctionDef::LessThen(int CompareType,const Object *Test) const
+bool FunctionDef::LessThen(int CompareType,const Object *Test) const
 {
 	int c = CompareLogical(CompareType,Test);
 	return (c<0);
 }
-bool CryFunctionDef::GreaterThen(int CompareType,const Object *Test) const
+bool FunctionDef::GreaterThen(int CompareType,const Object *Test) const
 {
 	int c = CompareLogical(CompareType,Test);
 	return (c>0);
 }
 
-bool CryFunctionDef::EqualTo(int CompareType,const Object *Test) const
+bool FunctionDef::EqualTo(int CompareType,const Object *Test) const
 {
     int c = CompareLogical(CompareType,Test);
     return (c==0);
 }
 
 
-CryFunctionDef::CryFunctionDef()
+FunctionDef::FunctionDef()
 {}
-CryFunctionDef::CryFunctionDef(const char *Name)
+FunctionDef::FunctionDef(const char *Name)
 {
     Body="";
     Parse(Name);
 }	// Name get's parsed and put into categories
 
-CryFunctionDef::CryFunctionDef(const char *_ReturnType, const char *_FunctionName,bool _IsConst,bool _IsVirtual,bool _IsPure)
+FunctionDef::FunctionDef(const char *_ReturnType, const char *_FunctionName,bool _IsConst,bool _IsVirtual,bool _IsPure)
 {
     IsVirtual = _IsVirtual;
     ReturnType = _ReturnType;
@@ -123,16 +123,16 @@ CryFunctionDef::CryFunctionDef(const char *_ReturnType, const char *_FunctionNam
     Body = "";
 }
 
-const char *CryFunctionDef::GetFunctionName() const
+const char *FunctionDef::GetFunctionName() const
 {
     return FunctionName.AsPChar();
 };
 
-const CryString &CryFunctionDef::GetDeclaration(CryString &Result) const // eg what goes in the header file
+const String &FunctionDef::GetDeclaration(String &Result) const // eg what goes in the header file
 {
     return _GetDeclaration(Result,IsPure);
 }
-const CryString &CryFunctionDef::_GetDeclaration(CryString &Result,bool IsPure) const
+const String &FunctionDef::_GetDeclaration(String &Result,bool IsPure) const
 {
     bool NeedsSpace = _NeedsSpace();
     Result.Clear();
@@ -148,14 +148,14 @@ const CryString &CryFunctionDef::_GetDeclaration(CryString &Result,bool IsPure) 
     return Result;
 }
 
-const CryString &CryFunctionDef::GetImplementedDeclaration(const char *ClassName,
+const String &FunctionDef::GetImplementedDeclaration(const char *ClassName,
         bool ShowReturnType)  // eg what goes in the body
 {
     return GetImplementedDeclaration(ClassName,*this,ShowReturnType);
 }
 
 
-const CryString &CryFunctionDef::GetImplementedDeclaration(const char *ClassName,CryString &Result,bool ShowReturnType) const // eg what goes in the body
+const String &FunctionDef::GetImplementedDeclaration(const char *ClassName,String &Result,bool ShowReturnType) const // eg what goes in the body
 {
     bool NeedsSpace = _NeedsSpace();
     if (!ShowReturnType)
@@ -168,32 +168,32 @@ const CryString &CryFunctionDef::GetImplementedDeclaration(const char *ClassName
     return Result;
 }
 
-const CryString &CryFunctionDef::GetNPDeclaration(CryString &Result) const // same as GetDeclaration but without = 0 in the case of pure virtuals
+const String &FunctionDef::GetNPDeclaration(String &Result) const // same as GetDeclaration but without = 0 in the case of pure virtuals
 {
     return _GetDeclaration(Result,false);
 }
 
-const CryString &CryFunctionDef::GetDeclaration() // eg what goes in the header file
+const String &FunctionDef::GetDeclaration() // eg what goes in the header file
 {
     return GetDeclaration(*this);
 }
 
-const CryString &CryFunctionDef::GetNPDeclaration() // same as GetDeclaration but without = 0 in the case of pure virtuals
+const String &FunctionDef::GetNPDeclaration() // same as GetDeclaration but without = 0 in the case of pure virtuals
 {
     return GetNPDeclaration(*this);
 }
 
-bool CryFunctionDef::_NeedsSpace() const
+bool FunctionDef::_NeedsSpace() const
 {
     return ReturnType.Pos("*")!=(int) ReturnType.Length()-1;
 };
 
-int CryFunctionDef::GetPropertyCount() const
+int FunctionDef::GetPropertyCount() const
 {
     return 7;
 }
 
-bool CryFunctionDef::HasProperty(const CryPropertyParser &PropertyName) const
+bool FunctionDef::HasProperty(const PropertyParser &PropertyName) const
 {
     return
         ("IsVirtual"==PropertyName) ||
@@ -205,7 +205,7 @@ bool CryFunctionDef::HasProperty(const CryPropertyParser &PropertyName) const
         ("IsComment"==PropertyName);
 }
 
-CryPropertyList *CryFunctionDef::PropertyNames() const
+CryPropertyList *FunctionDef::PropertyNames() const
 {
 	CryPropertyList *n = new CryPropertyList();
 	n->AddPropertyByName("IsVirtual",this);
@@ -218,7 +218,7 @@ CryPropertyList *CryFunctionDef::PropertyNames() const
 	return n;
 }
 
-const char * CryFunctionDef::GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const
+const char * FunctionDef::GetProperty(const PropertyParser &PropertyName,String &Result) const
 {
     if (PropertyName=="IsVirtual")
     {
@@ -255,12 +255,12 @@ const char * CryFunctionDef::GetProperty(const CryPropertyParser &PropertyName,C
         Result.printf(IsComment ? "T" : "F");
         return Result.AsPChar();
     }
-    throw CryException(this,ExceptionUnknownProperty,"Unknown Property \"%s\"",PropertyName.AsPChar());
+    throw Exception(this,ExceptionUnknownProperty,"Unknown Property \"%s\"",PropertyName.AsPChar());
 }
 
-bool  CryFunctionDef::SetProperty(const CryPropertyParser &PropertyName,const char *_PropertyValue)
+bool  FunctionDef::SetProperty(const PropertyParser &PropertyName,const char *_PropertyValue)
 {
-    CryString PropertyValue;
+    String PropertyValue;
     PropertyValue = _PropertyValue;
     if (PropertyName=="IsVirtual")
     {
@@ -302,9 +302,9 @@ bool  CryFunctionDef::SetProperty(const CryPropertyParser &PropertyName,const ch
 
 
 
-void CryFunctionDef::Parse(const char *Name)
+void FunctionDef::Parse(const char *Name)
 {
-    CryString s;
+    String s;
 	s = Name;
 	int p = s.Pos(";");
 	if (p>-1)
@@ -367,7 +367,7 @@ void CryFunctionDef::Parse(const char *Name)
 ///----------------------------------------------------------------------------
 // CryFunctionDefList
 ///----------------------------------------------------------------------------
-void CryFunctionDefList::LoadFromString(const CryString &Source,const char *Separator)
+void FunctionDefList::LoadFromString(const String &Source,const char *Separator)
 {
     List *l = Source.ListFromString(Separator);
     ListIterator *li = (List::ListIterator *) l->CreateIterator();
@@ -376,15 +376,15 @@ void CryFunctionDefList::LoadFromString(const CryString &Source,const char *Sepa
     {
         do
         {
-            CryString *s = (CryString *)li->Get();
-            CryFunctionDef *f = new CryFunctionDef(s->AsPChar());
+            String *s = (String *)li->Get();
+            FunctionDef *f = new FunctionDef(s->AsPChar());
             {
                 ListIterator *li = (List::ListIterator *) CreateIterator();
                 if (li->GotoFirst())
                 {
                     do
                     {
-                        CryFunctionDef *o = (CryFunctionDef *)li->Get();
+                        FunctionDef *o = (FunctionDef *)li->Get();
                         if ((o->FunctionName == f->FunctionName) && (o->ReturnType==f->ReturnType))
                         {
                             RemoveAtIterator(li);

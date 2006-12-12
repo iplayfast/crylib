@@ -23,9 +23,9 @@
 #include "ClassException.h"
 
 using namespace Crystal;
-char *CryMemStream::gBuffer=NULL; // scrap memory, (volitale)
-int CryMemStream::gBuffSize=0;
-int CryMemStream::gBuffCount=0; // number of strings using it
+char *MemStream::gBuffer=NULL; // scrap memory, (volitale)
+int MemStream::gBuffSize=0;
+int MemStream::gBuffCount=0; // number of strings using it
 
 
 
@@ -34,7 +34,7 @@ int CryMemStream::gBuffCount=0; // number of strings using it
 //-------------------------------------------------------------------
 
 
-CryMemStream::CryMemStream(const CryMemStream *E)
+MemStream::MemStream(const MemStream *E)
 {
     gBuffCount++;
     if (E!=this)
@@ -45,9 +45,9 @@ CryMemStream::CryMemStream(const CryMemStream *E)
         Position = E->Position;
     }
     if (Buffer==0)
-        throw CryException("Out of memory creating Memory Stream");
+        throw Exception("Out of memory creating Memory Stream");
 }
-CryMemStream::CryMemStream(const CryMemStream &E)
+MemStream::MemStream(const MemStream &E)
 {
     gBuffCount++;
     if (E!=*this)
@@ -58,9 +58,9 @@ CryMemStream::CryMemStream(const CryMemStream &E)
         Position = E.Position;
     }
     if (Buffer==0)
-        throw CryException("Out of memory creating Memory Stream");
+        throw Exception("Out of memory creating Memory Stream");
 }
-bool CryMemStream::GotoFirst(Iterator *I) const
+bool MemStream::GotoFirst(Iterator *I) const
 {
     MemStreamIterator *i = (MemStreamIterator *)I;
     if (GetLength())
@@ -71,7 +71,7 @@ bool CryMemStream::GotoFirst(Iterator *I) const
     return false;
 }
 
-bool CryMemStream::GotoPrev(Iterator *I) const
+bool MemStream::GotoPrev(Iterator *I) const
 {
     MemStreamIterator *i = (MemStreamIterator *)I;
     if (i->Offset && GetLength())
@@ -81,7 +81,7 @@ bool CryMemStream::GotoPrev(Iterator *I) const
     }
     return false;
 }
-bool CryMemStream::GotoNext(Iterator *I) const    // returns true if success
+bool MemStream::GotoNext(Iterator *I) const    // returns true if success
 {
     MemStreamIterator *i = (MemStreamIterator *)I;
     if (i->Offset < (GetLength()-1))
@@ -92,7 +92,7 @@ bool CryMemStream::GotoNext(Iterator *I) const    // returns true if success
     return false;
 }
 
-bool CryMemStream::GotoLast(Iterator *Iterator) const    // returns true if success
+bool MemStream::GotoLast(Iterator *Iterator) const    // returns true if success
 {
     MemStreamIterator *i = (MemStreamIterator *)Iterator;
     int e = GetLength();
@@ -104,22 +104,22 @@ bool CryMemStream::GotoLast(Iterator *Iterator) const    // returns true if succ
     return false;
 }
 
-void CryMemStream::RemoveAtIterator(Iterator *I)
+void MemStream::RemoveAtIterator(Iterator *I)
 {
-    throw CryException("Cannot remove at iterator in CryMemoryStream");
+    throw Exception("Cannot remove at iterator in CryMemoryStream");
 }
 
-CryMemStream::MemStreamIterator::MemStreamIterator(const Container *container): StreamIterator(container)
+MemStream::MemStreamIterator::MemStreamIterator(const Container *container): StreamIterator(container)
 {
     GotoFirst();
 }
 
-void CryMemStream::Pos2DataLength()
+void MemStream::Pos2DataLength()
 {
     Position = DataLength;
 }
 
-void CryMemStream::Pos2Asciiz()
+void MemStream::Pos2Asciiz()
 {
     if (DataLength)
         Position = DataLength-1;
@@ -127,184 +127,184 @@ void CryMemStream::Pos2Asciiz()
         Position = 0;
 }
 
-char *CryMemStream::GetBuffer()
+char *MemStream::GetBuffer()
 {
     return Buffer;
 }
 
-void CryMemStream::CheckMem(size_t RequestedSize)
+void MemStream::CheckMem(size_t RequestedSize)
 {
     if (Length<RequestedSize)
         ReMem(RequestedSize);
 }
-void CryMemStream::Clear()
+void MemStream::Clear()
 {
     Position = DataLength = 0;
 }
-const cbyte* CryMemStream::GetRaw() const
+const cbyte* MemStream::GetRaw() const
 {
     return (cbyte *)Buffer;
 }
 /// Return a non-const reference to the ith character
-char& CryMemStream::operator[](unsigned int i)
+char& MemStream::operator[](unsigned int i)
 {
     return Buffer[i];
 }
 
 /// Return a const reference to the ith character
-const char& CryMemStream::operator[](unsigned int i) const
+const char& MemStream::operator[](unsigned int i) const
 {
     return Buffer[i];
 }
 
-const char *CryMemStream::AsPChar() const
+const char *MemStream::AsPChar() const
 {
     return (const char *) Buffer;
 }
-void CryMemStream::SetRaw(unsigned int i,cbyte v)
+void MemStream::SetRaw(unsigned int i,cbyte v)
 {
     Buffer[i]=v;
 }
-void CryMemStream::SetRaw(unsigned int Start,const cbyte *v,size_t Length)
+void MemStream::SetRaw(unsigned int Start,const cbyte *v,size_t Length)
 {
     memcpy(&Buffer[Start],v,Length);
 }
-size_t CryMemStream::GetLength() const
+size_t MemStream::GetLength() const
 {
 	return DataLength;
 }
-void CryMemStream::SetLength(int i)
+void MemStream::SetLength(int i)
 {
     CheckMem(i);
     DataLength = i;
 }
-CryMemStream::operator const char *() const
+MemStream::operator const char *() const
 {
     return Buffer;
 }
 
-void CryMemStream::SetPosition(size_t p)
+void MemStream::SetPosition(size_t p)
 {
     Position = p;
 }
 
-size_t CryMemStream::GetPosition() const
+size_t MemStream::GetPosition() const
 {
     return Position;
 }
 
-bool CryMemStream::operator ==(const CryMemStream *s)
+bool MemStream::operator ==(const MemStream *s)
 {
     return *this==*s;
 }
 
-bool CryMemStream::operator !=(const CryMemStream *s)
+bool MemStream::operator !=(const MemStream *s)
 {
     return *this!=*s;
 }
 
-size_t CryMemStream::Size() const
+size_t MemStream::Size() const
 {
     return DataLength;
 }
 
-size_t CryMemStream::Read(CryStream *ToStream) const
+size_t MemStream::Read(Stream *ToStream) const
 {
     return Read(ToStream,Size());
 }
 
-size_t CryMemStream::Write(const CryStream *FromStream)
+size_t MemStream::Write(const Stream *FromStream)
 {
     return Write(FromStream,FromStream->Size());
 }
 
-int CryMemStream::SeekToStart() const
+int MemStream::SeekToStart() const
 {
-    ((CryMemStream *)this)->Position = 0;
+    ((MemStream *)this)->Position = 0;
     return 0;
 }
 
 
-bool CryMemStream::IsOpen()  const
+bool MemStream::IsOpen()  const
 {
     return true;
 }
 
-bool CryMemStream::Open(const char *Name,const char *Operation,bool ExceptOnError)
+bool MemStream::Open(const char *Name,const char *Operation,bool ExceptOnError)
 {
     DataLength = 0;
     return true;
 }
 
-void CryMemStream::Close(bool ExceptOnError)
+void MemStream::Close(bool ExceptOnError)
 {
     DataLength = 0;
 };
 
-void CryMemStream::Flush()
+void MemStream::Flush()
 {}
 ;
 
-Container::Iterator *CryMemStream::_CreateIterator() const
+Container::Iterator *MemStream::_CreateIterator() const
 {
     return new MemStreamIterator(this);
 };
 
-void CryMemStream::DeleteIterator(Iterator *I) const
+void MemStream::DeleteIterator(Iterator *I) const
 {
     delete (MemStreamIterator *) I;
 }
 
-EmptyObject *CryMemStream::GetAtIterator(const Iterator *I) const
+EmptyObject *MemStream::GetAtIterator(const Iterator *I) const
 {
 	const MemStreamIterator *i = (const MemStreamIterator *)I;
 	return (EmptyObject *) &Buffer[i->Offset];
 }
 
-void CryMemStream::SetAtIterator(const Iterator *I,EmptyObject *Item,bool IsCryObject,bool IsOwned,size_t Size) 
+void MemStream::SetAtIterator(const Iterator *I,EmptyObject *Item,bool IsCryObject,bool IsOwned,size_t Size)
 {
 const MemStreamIterator *i = (const MemStreamIterator *)I;
 	memcpy(&Buffer[i->Offset],Item,Size);
 }
 
-size_t CryMemStream::Count() const
+size_t MemStream::Count() const
 {
 	return GetLength();
 }
 
-EmptyObject *CryMemStream::Add(EmptyObject *Item,size_t Size)
+EmptyObject *MemStream::Add(EmptyObject *Item,size_t Size)
 {
     Write((const char *)Item,Size);
     return Item;
 }
 
-EmptyObject *CryMemStream::AddOwned(EmptyObject *Item,size_t Size)
+EmptyObject *MemStream::AddOwned(EmptyObject *Item,size_t Size)
 {
     Write((const char *)Item,Size);
     return Item;
 }
 
-Object *CryMemStream::Add(Object *Item)
+Object *MemStream::Add(Object *Item)
 {
-    return CryStream::Add(Item);
+    return Stream::Add(Item);
 }    // returns Item
 
-Object *CryMemStream::AddOwned(Object *Item)
+Object *MemStream::AddOwned(Object *Item)
 {
-    return CryStream::AddOwned(Item);
+    return Stream::AddOwned(Item);
 }   // gives ownership to list
 
 
 
 
-CryFunctionDefList *CryMemStream::GetFunctions(const char *Type) const
+FunctionDefList *MemStream::GetFunctions(const char *Type) const
 {
 // if a type has been defined and it's not this class, check subclasses for it
 	if (Type && !IsA(Type))
-	   return CryStream::GetFunctions(Type);
+	   return Stream::GetFunctions(Type);
 	// otherwise get any functions in subclasses
-	CryFunctionDefList *l = CryStream::GetFunctions();
-    CryString s;
+	FunctionDefList *l = Stream::GetFunctions();
+    String s;
     s += "// Class CryMemStream;";
     s += "size_t Resize(size_t s);";
     s += "virtual void Clear();";
@@ -365,7 +365,7 @@ CryFunctionDefList *CryMemStream::GetFunctions(const char *Type) const
     return l;
 }
 
-CryMemStream::CryMemStream()
+MemStream::MemStream()
 {
     gBuffCount++;
 
@@ -374,11 +374,11 @@ CryMemStream::CryMemStream()
     DataLength = 0;
     Position = 0;
     if (Buffer==0)
-        throw CryException("Out of memory creating Memory Stream");
+        throw Exception("Out of memory creating Memory Stream");
 
 }
 
-CryMemStream::~CryMemStream()
+MemStream::~MemStream()
 {
     delete [] Buffer;
     Length = 0;
@@ -392,21 +392,21 @@ CryMemStream::~CryMemStream()
         gBuffer =0;
     }
 }
-void CryMemStream::ReMem(size_t Value)
+void MemStream::ReMem(size_t Value)
 {
     char *OldBuffer = Buffer;
     Buffer = new char[Value + 1];
     if (Buffer==0)
-        throw CryException(this,"out of memory");
+        throw Exception(this,"out of memory");
     memcpy(Buffer,OldBuffer,DataLength);
     Buffer[DataLength] = '\0';    // just to make it easier for strings
     delete [] OldBuffer;
     Length = Value;
 }
 // make the memory stream have an 0 at the end.
-void CryMemStream::LookLikeString() const
+void MemStream::LookLikeString() const
 {
-    CryMemStream *v = (CryMemStream *) this;    // making this into non const
+    MemStream *v = (MemStream *) this;    // making this into non const
     if (DataLength>=Length)
         v->ReMem(DataLength+1);
 
@@ -416,12 +416,12 @@ void CryMemStream::LookLikeString() const
 
 }
 
-void CryMemStream::Compress()
+void MemStream::Compress()
 {}
-void CryMemStream::Decompress()
+void MemStream::Decompress()
 {}
 
-CryMemStream &CryMemStream::MemDelete(unsigned int start,int amount)
+MemStream &MemStream::MemDelete(unsigned int start,int amount)
 {
     if (start>=DataLength)
         return *this;
@@ -431,27 +431,27 @@ CryMemStream &CryMemStream::MemDelete(unsigned int start,int amount)
     DataLength -= amount;
     return *this;
 }
-int CryMemStream::vsscanf(const char *format, va_list ap) const
+int MemStream::vsscanf(const char *format, va_list ap) const
 {
     return ::vsscanf(Buffer+Position,format,ap);
 }
 
 
-int CryMemStream::scanf(const char *format,...) const
+int MemStream::scanf(const char *format,...) const
 {
     va_list argptr;
     va_start(argptr,format);
     return ::vsscanf(Buffer,format,argptr);
 }
 
-size_t CryMemStream::printf(const char *format,...)
+size_t MemStream::printf(const char *format,...)
 { // this is normally a string function so we will assume that this class is being used as a string
     LookLikeString();
     va_list argptr;
     va_start(argptr,format);
     return vsprintf(format,argptr);
 }
-int CryMemStream::vsprintf(const char *format, va_list ap)
+int MemStream::vsprintf(const char *format, va_list ap)
 {
     int size = ::vsnprintf(gBuffer,gBuffSize,format,ap);
     while(size>=gBuffSize)
@@ -472,23 +472,23 @@ int CryMemStream::vsprintf(const char *format, va_list ap)
     return DataLength = strlen(Buffer) + 1;	// Memory includes the asciiz in length
 }
 
-void CryMemStream::CopyTo(Object &Dest) const
+void MemStream::CopyTo(Object &Dest) const
 {
-    if (Dest.IsA(CCryStream))
-        CopyToStream(*(CryMemStream *)&Dest);
+    if (Dest.IsA(CStream))
+        CopyToStream(*(MemStream *)&Dest);
     else
-        CryStream::CopyTo(Dest);    // see if any base class can handle it
+        Stream::CopyTo(Dest);    // see if any base class can handle it
 }
 
 
-bool CryMemStream::operator ==(const CryMemStream &s)
+bool MemStream::operator ==(const MemStream &s)
 {
     size_t i = s.DataLength;
     if (i>DataLength)
         i= DataLength;
     return memcmp(Buffer,s.Buffer,i)==0;
 }
-bool CryMemStream::operator !=(const CryMemStream &s)
+bool MemStream::operator !=(const MemStream &s)
 {
     size_t i = s.DataLength;
     if (i>DataLength)
@@ -500,12 +500,12 @@ bool CryMemStream::operator !=(const CryMemStream &s)
         return true;
     //    return !memcmp(Buffer,s.Buffer,i)==0;
 }
-bool CryMemStream::operator ==(const char *s)
+bool MemStream::operator ==(const char *s)
 {
     int i = DataLength;
     return strncmp(Buffer,s,i)==0;
 }
-bool CryMemStream::operator !=(const char *s)
+bool MemStream::operator !=(const char *s)
 {
     int i = DataLength;
     i = strncmp(Buffer,s,i);
@@ -515,22 +515,22 @@ bool CryMemStream::operator !=(const char *s)
         return true;
 }
 
-int CryMemStream::CompareLogical(int CompareType,const Object *Test) const
+int MemStream::CompareLogical(int CompareType,const Object *Test) const
 {
-    if (Test->IsA(CCryMemStream))
+    if (Test->IsA(CMemStream))
     {
         switch(CompareType)
         {
         case 1:
-            return ((const CryMemStream *)Test)->Compare(this);
+            return ((const MemStream *)Test)->Compare(this);
         default:
-            return Compare((CryMemStream *)Test);
+            return Compare((MemStream *)Test);
         }
     }
     return 0;
 }
 
-int CryMemStream::Compare(const CryMemStream *MemStream) const
+int MemStream::Compare(const MemStream *MemStream) const
 {
     if (DataLength<MemStream->DataLength)
         return -1;
@@ -540,15 +540,15 @@ int CryMemStream::Compare(const CryMemStream *MemStream) const
 }
 
 
-int CryMemStream::Seek(int offset,int whence) const
+int MemStream::Seek(int offset,int whence) const
 {
-    CryMemStream *t = (CryMemStream *) this;// allowing non const change to const object
+    MemStream *t = (MemStream *) this;// allowing non const change to const object
     switch (whence)
     {
     case SEEK_SET:
         {
             if (offset<0)
-                throw CryException(this,"Seek less then 0");
+                throw Exception(this,"Seek less then 0");
             else if ((size_t) offset >= Length)
                 t->ReMem(offset + 1);
             t->Position = offset;
@@ -559,7 +559,7 @@ int CryMemStream::Seek(int offset,int whence) const
             if (offset + Position > Length)
                 t->ReMem(offset + Position + 1);
             else if ((offset<0) && ((size_t)(-offset) > Position))
-                throw CryException(this,"Seek less then 0");
+                throw Exception(this,"Seek less then 0");
             t->Position = offset + Position;
         }
         break;
@@ -568,27 +568,27 @@ int CryMemStream::Seek(int offset,int whence) const
             if (offset + Length> Length)
                 t->ReMem(offset + Length + 1);
             else if ((offset<0) && ((size_t)(-offset) > Length))
-                throw CryException(this,"Seek less then 0");
+                throw Exception(this,"Seek less then 0");
             t->Position = offset + DataLength;
         }
     }
     return Position;
 }
 
-int CryMemStream::SeekFromStart(int Offset) const
+int MemStream::SeekFromStart(int Offset) const
 {
     return Seek(Offset,SEEK_SET);
 }
-int CryMemStream::SeekFromCurrent(int Offset) const
+int MemStream::SeekFromCurrent(int Offset) const
 {
     return Seek(Offset,SEEK_CUR);
 }
-int CryMemStream::SeekFromEnd(int Offset) const
+int MemStream::SeekFromEnd(int Offset) const
 {
     return Seek(Offset,SEEK_END);
 }
 
-size_t CryMemStream::ReadTI(char *ToBuffer,size_t Size) const
+size_t MemStream::ReadTI(char *ToBuffer,size_t Size) const
 {
     if ((Size + Position)> DataLength)
     {
@@ -600,16 +600,16 @@ size_t CryMemStream::ReadTI(char *ToBuffer,size_t Size) const
         Size = Dest - (Buffer + Position)+1;
     if (Size)
         memcpy(ToBuffer,Buffer+Position,Size);
-    CryMemStream *t = (CryMemStream *) this;    // making change to const function
+    MemStream *t = (MemStream *) this;    // making change to const function
     t->Position += Size;
     return Size;
 }
 // read until terminator or Size (inclusive)
-size_t CryMemStream::ReadTI(CryStream *ToBuffer,size_t Size) const
+size_t MemStream::ReadTI(Stream *ToBuffer,size_t Size) const
 {
-    if (ToBuffer->IsA(CCryMemStream))
+    if (ToBuffer->IsA(CMemStream))
     {
-        CryMemStream *mToBuffer = (CryMemStream *)ToBuffer;
+        MemStream *mToBuffer = (MemStream *)ToBuffer;
         if (mToBuffer->Length < Size)
             mToBuffer->ReMem(Size+1);
         mToBuffer->SetLength(ReadTI(mToBuffer->Buffer,Size));
@@ -617,27 +617,27 @@ size_t CryMemStream::ReadTI(CryStream *ToBuffer,size_t Size) const
     }
     else
     {
-        return CryStream::ReadTI(ToBuffer,Size);
+        return Stream::ReadTI(ToBuffer,Size);
     }
 }
 // write until terminator or size (inclusive)
-size_t CryMemStream::WriteTI(CryStream *FromBuffer,size_t Size)
+size_t MemStream::WriteTI(Stream *FromBuffer,size_t Size)
 {
-    if (FromBuffer->IsA(CCryMemStream))
+    if (FromBuffer->IsA(CMemStream))
     {
-        CryMemStream *mFromBuffer = (CryMemStream *)FromBuffer;
+        MemStream *mFromBuffer = (MemStream *)FromBuffer;
         if (mFromBuffer->Length < Size)
             mFromBuffer->ReMem(Size+1);
         return WriteTI(mFromBuffer->Buffer,Size);
     }
     else
-        return CryStream::WriteTI(FromBuffer,Size);
+        return Stream::WriteTI(FromBuffer,Size);
 }
-void CryMemStream::Zero()
+void MemStream::Zero()
 {
 	memset(Buffer,0,Length);
 }
-void CryMemStream::Clear(int amount) // 0 == all, 1.. from start, -1..-N from end
+void MemStream::Clear(int amount) // 0 == all, 1.. from start, -1..-N from end
 {
     if (amount==0)
         Clear();
@@ -663,7 +663,7 @@ void CryMemStream::Clear(int amount) // 0 == all, 1.. from start, -1..-N from en
         }
     }
 }
-size_t CryMemStream::WriteTI(const char *FromBuffer,size_t Size)
+size_t MemStream::WriteTI(const char *FromBuffer,size_t Size)
 {
     const char *Dest = (char *)memchr(FromBuffer, GetTerminator(), Size);
     if (Dest)
@@ -680,7 +680,7 @@ size_t CryMemStream::WriteTI(const char *FromBuffer,size_t Size)
         return Size;
 }
 
-size_t CryMemStream::Read(char *ToBuffer,size_t Size) const
+size_t MemStream::Read(char *ToBuffer,size_t Size) const
 {
     if ((Size + Position)> DataLength)
     {
@@ -691,12 +691,12 @@ size_t CryMemStream::Read(char *ToBuffer,size_t Size) const
     }
     if (Size)
         memcpy(ToBuffer,Buffer+Position,Size);
-    CryMemStream *t = (CryMemStream *) this;// allowing non const change to const object
+    MemStream *t = (MemStream *) this;// allowing non const change to const object
     t->Position += Size;
     return Size;
 }
 
-size_t CryMemStream::Write(const char *FromBuffer,size_t Size)
+size_t MemStream::Write(const char *FromBuffer,size_t Size)
 {
     if (Size)
     {
@@ -710,7 +710,7 @@ size_t CryMemStream::Write(const char *FromBuffer,size_t Size)
     return Size;
 }
 
-size_t CryMemStream::Read(CryStream *ToStream,size_t Size) const
+size_t MemStream::Read(Stream *ToStream,size_t Size) const
 {
     if (Size + Position>DataLength)
         Size = DataLength - Position;
@@ -719,16 +719,16 @@ size_t CryMemStream::Read(CryStream *ToStream,size_t Size) const
         size_t w = ToStream->Write(Buffer + Position,Size);
         if (w!=Size)
         {
-            CryMemStream *t = (CryMemStream *) this;// allowing non const change to const object
+            MemStream *t = (MemStream *) this;// allowing non const change to const object
             t->Position+=w;
             return w;
         }
-        CryMemStream *t = (CryMemStream *) this;// allowing non const change to const object
+        MemStream *t = (MemStream *) this;// allowing non const change to const object
         t->Position += Size;
     }
     return Size;
 }
-size_t CryMemStream::Write(const CryStream *FromStream,size_t Size)
+size_t MemStream::Write(const Stream *FromStream,size_t Size)
 {
     if (Size)
     {
@@ -743,21 +743,21 @@ size_t CryMemStream::Write(const CryStream *FromStream,size_t Size)
 }
 
 
-size_t CryMemStream::Resize(size_t s)
+size_t MemStream::Resize(size_t s)
 {
     if (s<DataLength)
         DataLength = s;
     else
-        throw CryException(this,"Resizing beyond current data");
+        throw Exception(this,"Resizing beyond current data");
     return DataLength;
 }
 
 
-size_t CryMemStream::Tell() const
+size_t MemStream::Tell() const
 {
     return Position;
 }
-bool CryMemStream::Eof() const
+bool MemStream::Eof() const
 {
     return Position == DataLength;
 }

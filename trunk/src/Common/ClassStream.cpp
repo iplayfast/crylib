@@ -30,17 +30,17 @@ using namespace Crystal;
 //-------------------------------------------------------------------
 
 #ifdef VALIDATING
-bool CryStream::Test(bool Verbose,Object &Object,bool (CallBack)(bool Verbose, const char *Result,bool fail))
+bool Stream::Test(bool Verbose,Object &Object,bool (CallBack)(bool Verbose, const char *Result,bool fail))
 {
     char Result[200];
     bool Fail = false;
 //    CryMemStream *DebugViewMemStream = (CryMemStream *)&Object;
-    bool IsString=Object.IsA(CCryString);	// some tests have different results for strings
+    bool IsString=Object.IsA(CString);	// some tests have different results for strings
     size_t t;
-    if (Object.IsA(CCryStream))
+    if (Object.IsA(CStream))
     {
-        CryStream *s = (CryStream *)&Object;
-        sprintf(Result,"\nCryStream Testing:\nObject UnNamed of ClassName %s,ChildClassName %s",
+        Stream *s = (Stream *)&Object;
+        sprintf(Result,"\nStream Testing:\nObject UnNamed of ClassName %s,ChildClassName %s",
                 s->ClassName(),s->ChildClassName());
         if (!CallBack(Verbose,Result,Fail))
             return false;
@@ -57,7 +57,7 @@ bool CryStream::Test(bool Verbose,Object &Object,bool (CallBack)(bool Verbose, c
                 return false;
             }
         }
-        catch (CryException &E)
+        catch (Exception &E)
         {
             Fail = true;
             sprintf(Result,"\nException on opening Could not open test.dat");
@@ -159,7 +159,7 @@ bool CryStream::Test(bool Verbose,Object &Object,bool (CallBack)(bool Verbose, c
             s->SeekFromEnd(0);
             {
                 unsigned int start = 50 + strlen(test) + sizeof(size_t);	// for files and memory
-                if (IsA(CCryString))
+                if (IsA(CString))
                     start = 22; // strings see the 0 and mark as end of str
                 if ((r=s->Tell())!=(unsigned)(start ))
                 {
@@ -188,7 +188,7 @@ bool CryStream::Test(bool Verbose,Object &Object,bool (CallBack)(bool Verbose, c
 
             if (Verbose)
                 CallBack(Verbose,"\nCopyTo (memstream) tests",false);
-            CryMemStream ms;
+            MemStream ms;
             s->CopyTo(ms);
             int extra = 0;
             if (IsString)
@@ -227,7 +227,7 @@ bool CryStream::Test(bool Verbose,Object &Object,bool (CallBack)(bool Verbose, c
             s->Close();
 
         }
-        catch (CryException &E)
+        catch (Exception &E)
         {
             s->Close();
             throw E;
@@ -247,26 +247,26 @@ bool CryStream::Test(bool Verbose,Object &Object,bool (CallBack)(bool Verbose, c
         // write until terminator or size (inclusive)
         virtual size_t WriteTI(const char *FromBuffer,size_t Size);
         // read until terminator or Size (inclusive)
-        virtual size_t ReadTI(CryStream *ToBuffer,size_t Size);
+        virtual size_t ReadTI(Stream *ToBuffer,size_t Size);
         // write until terminator or size (inclusive)
-        virtual size_t WriteTI(CryStream *FromBuffer,size_t Size);
+        virtual size_t WriteTI(Stream *FromBuffer,size_t Size);
      
         // read until terminator or Size (exclusive)
         virtual size_t ReadTE(char *ToBuffer,size_t Size);
         // write until terminator or size (exculusive)
         virtual size_t WriteTE(const char *FromBuffer,size_t Size);
         // read until terminator or Size (exclusive)
-        virtual size_t ReadTE(CryStream *ToBuffer,size_t Size);
+        virtual size_t ReadTE(Stream *ToBuffer,size_t Size);
         // write until terminator or size (Exclusive)
-        virtual size_t WriteTE(CryStream *FromBuffer,size_t Size);
+        virtual size_t WriteTE(Stream *FromBuffer,size_t Size);
      
         virtual char *StreamedClass(char ClassNameBuffer[TMaxClassNameSize]) const; // will LoadFrom the Buffer with the name of the next class in the stream to LoadFrom
-        virtual size_t Read(CryStream *ToStream,size_t Size)=0;
-        virtual size_t Write(CryStream *FromStream,size_t Size)=0;
-        virtual size_t Read(CryStream *ToStream) {  return Read(ToStream,Size()); }
-        virtual size_t Write(CryStream *FromStream) {  return Write(FromStream,FromStream->Size()); }
-        virtual void SaveTo(CryStream *ToStream);
-        virtual void LoadFrom(CryStream *FromStream);
+        virtual size_t Read(Stream *ToStream,size_t Size)=0;
+        virtual size_t Write(Stream *FromStream,size_t Size)=0;
+        virtual size_t Read(Stream *ToStream) {  return Read(ToStream,Size()); }
+        virtual size_t Write(Stream *FromStream) {  return Write(FromStream,FromStream->Size()); }
+        virtual void SaveTo(Stream *ToStream);
+        virtual void LoadFrom(Stream *FromStream);
         virtual size_t WriteNStr(const char *Buffer);
         virtual size_t ReadNStr(char *Buffer,size_t MaxLength);
         virtual size_t Size() const = 0;
@@ -294,29 +294,29 @@ bool CryStream::Test(bool Verbose,Object &Object,bool (CallBack)(bool Verbose, c
 
 
 
-void CryStream::GetEleType(CryString &Result) const
+void Stream::GetEleType(String &Result) const
 {
-    Result = "CryStream::ListNode";
+    Result = "Stream::ListNode";
 }
 
 
 
-void CryStream::SetMode(StreamMode NewMode)
+void Stream::SetMode(StreamMode NewMode)
 {
     _Mode.ExtraData =0;
     _Mode.Mode = NewMode;
 }
 
-CryFunctionDefList *CryStream::GetFunctions(const char *Type) const
+FunctionDefList *Stream::GetFunctions(const char *Type) const
 {
 // if a type has been defined and it's not this class, check subclasses for it
     if (Type && !IsA(Type))
         return Container::GetFunctions(Type);
     // otherwise get any functions in subclasses
-    CryFunctionDefList *l = Container::GetFunctions();
+    FunctionDefList *l = Container::GetFunctions();
 
-    CryString s;
-    s += "// Class CryStream;";
+    String s;
+    s += "// Class Stream;";
     s += "StreamMode GetMode() const;";
     s += "void SetMode(StreamMode NewMode);";
     s += "const char* ClassName() const;";
@@ -330,24 +330,24 @@ CryFunctionDefList *CryStream::GetFunctions(const char *Type) const
     s += "virtual size_t Read(char *ToBuffer,size_t Size) const = 0;";
     s += "virtual size_t Write(const char *FromBuffer,size_t Size) = 0;";
     s += "virtual void CopyTo(CryObject &Dest) const;";
-    s += "virtual void CopyToStream(CryStream &Dest) const;";
+    s += "virtual void CopyToStream(Stream &Dest) const;";
     s += "virtual bool CanDup() const;";
     s += "virtual CryObject *Dup() const = 0;";
     s += "virtual void SetTerminator(char Terminator_);";
     s += "virtual char GetTerminator() const;";
     s += "virtual size_t ReadTI(char *ToBuffer,size_t Size) const;";
     s += "virtual size_t WriteTI(const char *FromBuffer,size_t Size);";
-    s += "virtual size_t ReadTI(CryStream *ToBuffer,size_t Size) const;";
-    s += "virtual size_t WriteTI(CryStream *FromBuffer,size_t Size);";
+    s += "virtual size_t ReadTI(Stream *ToBuffer,size_t Size) const;";
+    s += "virtual size_t WriteTI(Stream *FromBuffer,size_t Size);";
     s += "virtual size_t ReadTE(char *ToBuffer,size_t Size) const ;";
     s += "virtual size_t WriteTE(const char *FromBuffer,size_t Size);";
-    s += "virtual size_t ReadTE(CryStream *ToBuffer,size_t Size) const;";
-    s += "virtual size_t WriteTE(CryStream *FromBuffer,size_t Size);";
+    s += "virtual size_t ReadTE(Stream *ToBuffer,size_t Size) const;";
+    s += "virtual size_t WriteTE(Stream *FromBuffer,size_t Size);";
     s += "virtual char *StreamedClass(char ClassNameBuffer[TMaxClassNameSize]) const;";
-    s += "virtual size_t Read(CryStream *ToStream,size_t Size) const = 0;";
-    s += "virtual size_t Write(const CryStream *FromStream,size_t Size) = 0;";
-    s += "virtual size_t Read(CryStream *ToStream) const;";
-    s += "virtual size_t Write(const CryStream *FromStream);";
+    s += "virtual size_t Read(Stream *ToStream,size_t Size) const = 0;";
+    s += "virtual size_t Write(const Stream *FromStream,size_t Size) = 0;";
+    s += "virtual size_t Read(Stream *ToStream) const;";
+    s += "virtual size_t Write(const Stream *FromStream);";
     s += "virtual size_t WriteNStr(const char *Buffer);";
     s += "virtual size_t ReadNStr(char *Buffer,size_t MaxLength) const;";
     s += "virtual size_t WriteStr(const char *Buffer);";
@@ -378,19 +378,19 @@ CryFunctionDefList *CryStream::GetFunctions(const char *Type) const
     return l;
 }
 
-CryStream::~CryStream()
+Stream::~Stream()
 {}
 
 
-void CryStream::CopyToStream(CryStream &Dest,CopyStyle Style) const
+void Stream::CopyToStream(Stream &Dest,CopyStyle Style) const
 {
     if (!IsOpen())
-        throw CryException(this,"Stream Not Open in CopyTo Source");
+        throw Exception(this,"Stream Not Open in CopyTo Source");
     if (!Dest.IsOpen())
-        throw CryException(this,"Stream Not Open in CopyTo Dest");
+        throw Exception(this,"Stream Not Open in CopyTo Dest");
     Dest.Terminator[0] = Terminator[0];   //copies contents of this to Dest    SeekFromStart(0);
     size_t OrigPosition = Tell();
-    CryStream *s = (CryStream *) this;
+    Stream *s = (Stream *) this;
     s->SeekFromStart(0);
     /*    // old working slow code
         for(unsigned int i=0;i<s->Size();i++)
@@ -411,17 +411,17 @@ void CryStream::CopyToStream(CryStream &Dest,CopyStyle Style) const
     {
         if (Style==ZIP)
         {
-            if (Dest.IsA(CCryString))
-                CryException(this,"Cannot compress into a CryString as there may be zeros in compressed data");
+            if (Dest.IsA(CString))
+                Exception(this,"Cannot compress into a CryString as there may be zeros in compressed data");
         }
         else
             if (Style==UNZIP)
             {
-                if (IsA(CCryString))
-                    CryException(this,"Cannot decompress from a CryString as there may be zeros in compressed data");
+                if (IsA(CString))
+                    Exception(this,"Cannot decompress from a CryString as there may be zeros in compressed data");
             }
             else
-                throw CryException(this,"CopyToStream unknown copy style");
+                throw Exception(this,"CopyToStream unknown copy style");
         while (OutBuffer==0)
         {
             OutBuffer = new char[OutBuffSize];
@@ -436,7 +436,7 @@ void CryStream::CopyToStream(CryStream &Dest,CopyStyle Style) const
             InBuffSize /=2;
     }
     // at this point we have appropriate buffers allocated
-    CryStream *pDest = &Dest;
+    Stream *pDest = &Dest;
 
     switch (Style)
     {
@@ -465,13 +465,13 @@ void CryStream::CopyToStream(CryStream &Dest,CopyStyle Style) const
             {
                 delete [] InBuffer;
                 delete [] OutBuffer;
-                throw CryException(this,"ZipCopy compress Error %d",err);
+                throw Exception(this,"ZipCopy compress Error %d",err);
             }
             if (pDest->Write(OutBuffer,OutBuffSize)!=OutBuffSize)
             {
                 delete [] InBuffer;
                 delete [] OutBuffer;
-                throw CryException(this,"ZipCopy write not equal to write requested");
+                throw Exception(this,"ZipCopy write not equal to write requested");
             }
         }
         delete [] InBuffer;
@@ -491,13 +491,13 @@ void CryStream::CopyToStream(CryStream &Dest,CopyStyle Style) const
             {
                 delete [] InBuffer;
                 delete [] OutBuffer;
-                throw CryException(this,"ZipCopy uncompress Error %d",err);
+                throw Exception(this,"ZipCopy uncompress Error %d",err);
             }
             if (pDest->Write(OutBuffer,OutBuffSize)!=OutBuffSize)
             {
                 delete [] InBuffer;
                 delete [] OutBuffer;
-                throw CryException(this,"ZipCopy write not equal to write requested");
+                throw Exception(this,"ZipCopy write not equal to write requested");
             }
         }
         delete [] InBuffer;
@@ -508,29 +508,29 @@ void CryStream::CopyToStream(CryStream &Dest,CopyStyle Style) const
     return; // should never get here
 }
 
-void CryStream::CopyTo(Object &Dest) const
+void Stream::CopyTo(Object &Dest) const
 {
-    if (Dest.IsA(CCryStream))
-        CopyToStream(*(CryStream *)&Dest);
+    if (Dest.IsA(CStream))
+        CopyToStream(*(Stream *)&Dest);
     else
-        throw CryException(this,"Copying from stream to object that is not streamable");
+        throw Exception(this,"Copying from stream to object that is not streamable");
 }
 
-CryPropertyList *CryStream::PropertyNames() const
+CryPropertyList *Stream::PropertyNames() const
 {
     CryPropertyList *n = Object::PropertyNames();
     n->AddPropertyByName("Terminator",this);
     return n;
 }
 
-bool CryStream::HasProperty(const CryPropertyParser &PropertyName) const
+bool Stream::HasProperty(const PropertyParser &PropertyName) const
 {
     if (PropertyName=="Terminator")
         return true;
     return Object::HasProperty(PropertyName);
 }
 
-const char *CryStream::GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const
+const char *Stream::GetProperty(const PropertyParser &PropertyName,String &Result) const
 {
     if (PropertyName=="Terminator")
     {
@@ -540,11 +540,11 @@ const char *CryStream::GetProperty(const CryPropertyParser &PropertyName,CryStri
     return Object::GetProperty(PropertyName,Result);
 }
 
-bool CryStream::SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue)
+bool Stream::SetProperty(const PropertyParser &PropertyName,const char *PropertyValue)
 {
     if (PropertyName=="Terminator")
     {
-        CryString Value;
+        String Value;
         Value = PropertyValue;
         int ch;
 
@@ -561,13 +561,13 @@ bool CryStream::SetProperty(const CryPropertyParser &PropertyName,const char *Pr
     return false;
 }
 //
-bool CryStream::Event(Object::EObject EventNumber,Object::Context::IO &Context)
+bool Stream::Event(Object::EObject EventNumber,Object::Context::IO &Context)
 {
     return Object::Event(EventNumber,Context);
 }
 
 // returns true if handled
-bool CryStream::Event(EObject EventNumber,Context::UIO &Context)
+bool Stream::Event(EObject EventNumber,Context::UIO &Context)
 {
     Context::UContext In = Context.StreamContext.In;  // In is parameters heading into this function, ie input parameters
     Context::UContext Out = Context.StreamContext.Out;// out is results from event
@@ -646,16 +646,16 @@ bool CryStream::Event(EObject EventNumber,Context::UIO &Context)
     return false;
 }
 
-void CryStream::SetTag(int i) const
+void Stream::SetTag(int i) const
 {
-    CryStream *p = (CryStream *) this;
+    Stream *p = (Stream *) this;
     p->Tag = i;
 }
 
 // will LoadFrom the Buffer with the name of the next class in the stream to LoadFrom
-char *CryStream::StreamedClass(char ClassNameBuffer[TMaxClassNameSize]) const
+char *Stream::StreamedClass(char ClassNameBuffer[TMaxClassNameSize]) const
 {
-    CryStream *p = (CryStream *) this;
+    Stream *p = (Stream *) this;
     int CurrentLocation = p->Tell();
     p->ReadNStr(ClassNameBuffer,TMaxClassNameSize);
     p->SeekFromStart(CurrentLocation);
@@ -667,7 +667,7 @@ char *CryStream::StreamedClass(char ClassNameBuffer[TMaxClassNameSize]) const
 
 
 // read until terminator or Size (exclusive)
-size_t CryStream::ReadTE(char *ToBuffer,size_t Size) const
+size_t Stream::ReadTE(char *ToBuffer,size_t Size) const
 {
     Size = ReadTI(ToBuffer,Size);
     if (Size>0)
@@ -680,7 +680,7 @@ size_t CryStream::ReadTE(char *ToBuffer,size_t Size) const
     return Size;
 }
 // write until terminator or size (exculusive)
-size_t CryStream::WriteTE(const char *FromBuffer,size_t Size)
+size_t Stream::WriteTE(const char *FromBuffer,size_t Size)
 {
     const char *Dest = (char *)memchr(FromBuffer, GetTerminator(), Size);
     if (Dest)
@@ -690,7 +690,7 @@ size_t CryStream::WriteTE(const char *FromBuffer,size_t Size)
     return Size;
 }
 // write until terminator or size (Inclusive)
-size_t CryStream::WriteTI(const char *FromBuffer,size_t Size)
+size_t Stream::WriteTI(const char *FromBuffer,size_t Size)
 {
     const char *Dest = (char *)memchr(FromBuffer, GetTerminator(), Size);
     if (Dest)
@@ -701,7 +701,7 @@ size_t CryStream::WriteTI(const char *FromBuffer,size_t Size)
 }
 
 // read until terminator or Size (exclusive)
-size_t CryStream::ReadTE(CryStream *ToBuffer,size_t Size) const
+size_t Stream::ReadTE(Stream *ToBuffer,size_t Size) const
 {
     char *Buffer = new char[Size+1];
     size_t s = ReadTE(Buffer,Size);
@@ -712,7 +712,7 @@ size_t CryStream::ReadTE(CryStream *ToBuffer,size_t Size) const
 
 /// write until terminator or size (Exclusive)
 /// returns the number of chars written
-size_t CryStream::WriteTE(CryStream *FromBuffer,size_t Size)
+size_t Stream::WriteTE(Stream *FromBuffer,size_t Size)
 {
     char buff[2];
     char t = FromBuffer->GetTerminator();
@@ -730,19 +730,19 @@ size_t CryStream::WriteTE(CryStream *FromBuffer,size_t Size)
     return i;
 }
 
-size_t CryStream::WriteStr(const char *StrBuffer)
+size_t Stream::WriteStr(const char *StrBuffer)
 {
     size_t s = strlen(StrBuffer);
     return Write(StrBuffer,s+1);    // include the terminator
 }
 
-size_t CryStream::WriteNStr(const char *StrBuffer)
+size_t Stream::WriteNStr(const char *StrBuffer)
 {
     size_t s = strlen(StrBuffer);
     size_t c = Write((char *)&s,sizeof(s));
     return c+Write(StrBuffer,s);
 }
-size_t CryStream::ReadStr(char *Buffer,size_t MaxLength) const
+size_t Stream::ReadStr(char *Buffer,size_t MaxLength) const
 {
     size_t o=0;
     while (MaxLength)
@@ -756,13 +756,13 @@ size_t CryStream::ReadStr(char *Buffer,size_t MaxLength) const
     }
     return o;
 }
-size_t CryStream::ReadNStr(char *Buffer,size_t MaxLength) const
+size_t Stream::ReadNStr(char *Buffer,size_t MaxLength) const
 {
     size_t s=0,o=0;
     if (Eof())
-        throw CryException(this,"ReadNStr reading past eof");
+        throw Exception(this,"ReadNStr reading past eof");
     if (Read((char *)&s,sizeof(s))<sizeof(s))
-        throw CryException(this,"ReadNStr Read Length error on length");
+        throw Exception(this,"ReadNStr Read Length error on length");
     if (MaxLength<s)
     {
         o = s - MaxLength-1;
@@ -772,9 +772,9 @@ size_t CryStream::ReadNStr(char *Buffer,size_t MaxLength) const
     if (r!=s)
     {
         if (Eof())
-            throw CryException(this,"ReadNStr reading past eof");
+            throw Exception(this,"ReadNStr reading past eof");
         else
-            throw CryException(this,"ReadNStr Read length error");
+            throw Exception(this,"ReadNStr Read length error");
 
     }
     Buffer[s] = '\0';
@@ -783,7 +783,7 @@ size_t CryStream::ReadNStr(char *Buffer,size_t MaxLength) const
     return s;
 }
 // read until terminator or Size (inclusive)
-size_t CryStream::ReadTI(char *ToBuffer,size_t Size) const
+size_t Stream::ReadTI(char *ToBuffer,size_t Size) const
 {
     char t = GetTerminator();
     size_t s =0;
@@ -800,7 +800,7 @@ size_t CryStream::ReadTI(char *ToBuffer,size_t Size) const
 }
 
 // read until terminator or Size (inclusive)
-size_t CryStream::ReadTI(CryStream *ToBuffer,size_t Size) const
+size_t Stream::ReadTI(Stream *ToBuffer,size_t Size) const
 {
     char *Buffer = new char[Size+1];
     size_t s = ReadTI(Buffer,Size);
@@ -809,7 +809,7 @@ size_t CryStream::ReadTI(CryStream *ToBuffer,size_t Size) const
     return s;
 }
 // write until terminator or size (inclusive)
-size_t CryStream::WriteTI(CryStream *FromBuffer,size_t Size)
+size_t Stream::WriteTI(Stream *FromBuffer,size_t Size)
 {
     char *Buffer = new char[Size+1];
     Size = FromBuffer->ReadTI(Buffer,Size);
@@ -819,7 +819,7 @@ size_t CryStream::WriteTI(CryStream *FromBuffer,size_t Size)
 
 
 
-CryStream::CryStream()
+Stream::Stream()
 {
     Terminator[0] = Terminator[1] = '\0';
     _Mode.Mode = SText;
@@ -827,92 +827,92 @@ CryStream::CryStream()
 }
 
 
-bool CryStream::CanDup() const
+bool Stream::CanDup() const
 {
     return IsOpen();
 }
 
-Object::StreamMode CryStream::GetMode() const
+Object::StreamMode Stream::GetMode() const
 {
     return _Mode.Mode;
 }
 
-void CryStream::SetTerminator(char Terminator_)
+void Stream::SetTerminator(char Terminator_)
 {
     Terminator[0] = Terminator_;
     Terminator[1] = '\0';
 }
-char CryStream::GetTerminator() const
+char Stream::GetTerminator() const
 {
     return Terminator[0];
 }
 
-size_t CryStream::Read(CryStream *ToStream) const
+size_t Stream::Read(Stream *ToStream) const
 {
     return Read(ToStream,Size());
 }
 
-size_t CryStream::Write(const CryStream *FromStream)
+size_t Stream::Write(const Stream *FromStream)
 {
     return Write(FromStream,FromStream->Size());
 }
 
-int CryStream::fgetc() const
+int Stream::fgetc() const
 {
     char r[2];
     Read(r,1);
     return r[0];
 }
 
-void CryStream::SetItemOwnerShip(Iterator *I,bool Owned)
+void Stream::SetItemOwnerShip(Iterator *I,bool Owned)
 {} // ignored we always own, as it's a copy
-bool CryStream::GetItemOwnerShip(const Iterator *I) const
+bool Stream::GetItemOwnerShip(const Iterator *I) const
 {
     return true;
 }  // always
-size_t CryStream::GetItemSize(Iterator *I) const
+size_t Stream::GetItemSize(Iterator *I) const
 {
     return 1;
 }
-bool CryStream::IsObject(const Iterator *I) const
+bool Stream::IsObject(const Iterator *I) const
 {
     return false;
 }
 
-int CryStream::GetPropertyCount() const
+int Stream::GetPropertyCount() const
 {
     return Object::GetPropertyCount() + 2;
 }
 
-int CryStream::SeekToStart() const
+int Stream::SeekToStart() const
 {
     return SeekFromStart(0);
 }
 
 
-CryStream::StreamIterator::StreamIterator(const Container *Container) : Iterator(Container)
+Stream::StreamIterator::StreamIterator(const Container *Container) : Iterator(Container)
 {}
-Object *CryStream::StreamIterator::Dup() const
+Object *Stream::StreamIterator::Dup() const
 {
     StreamIterator *it = (StreamIterator *)GetOrigContainer()->_CreateIterator();
     it->Offset = Offset;
     return it;
 }
 
-Object *CryStream::Add(Object *Item)    // returns Item
+Object *Stream::Add(Object *Item)    // returns Item
 {
-    CryString s;
+    String s;
     Item->SaveTo(s);
     Write(s.AsPChar(),s.GetLength());
     return Item;
 }
-Object *CryStream::AddOwned(Object *Item)   // gives ownership to list
+Object *Stream::AddOwned(Object *Item)   // gives ownership to list
 {
     delete Add(Item); // So we add the text equivilent and then delete it
     return 0;
 }
 
-bool CryStream::LoadAsText(Iterator *I,CryString &FromStream)
+bool Stream::LoadAsText(Iterator *I,String &FromStream)
 {
     //    StreamIterator *i = (StreamIterator *)I;
     char ToBuff[2];
@@ -926,13 +926,13 @@ bool CryStream::LoadAsText(Iterator *I,CryString &FromStream)
 }
 /*! this function does not change the contents of the stream so it is deamed const, even though internal varialbes can be modified
 */
-bool CryStream::SaveAsText(Iterator *I,CryString &ToStream) const
+bool Stream::SaveAsText(Iterator *I,String &ToStream) const
 {
     StreamIterator *i = (StreamIterator *)I;
     char FromBuff[2];
     if (Size() > i->Offset)
     {
-        CryStream *t = (CryStream *)this;
+        Stream *t = (Stream *)this;
         t->Write(FromBuff,1);
         if (ToStream.Read(FromBuff,1)==1)
             return true;

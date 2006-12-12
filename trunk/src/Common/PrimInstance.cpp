@@ -45,7 +45,7 @@ PrimInstance::PrimInstance(CodeFactory *Parent) : CodeFactory(Parent,CPrimInstan
 }
 PrimInstance::PrimInstance(CodeFactory *Parent,const char *PrimType,const char *PrimName,const char *_DefaultValue, int _Count,bool IsProperty,bool IsPointer,bool IsArrayPointer) : CodeFactory(Parent,CPrimInstance)
 {
-	CryString Type;
+	String Type;
 	Type = PrimType;
 	SetName(PrimName);
 	DefaultValue = _DefaultValue;
@@ -76,7 +76,7 @@ void PrimInstance::SetDefaultValue(const char *_DefaultValue)
 	switch(eType)
 	{
 	case Unknown:
-		throw CryException("Cannot set default value of unknown type");
+		throw Exception("Cannot set default value of unknown type");
 	case Char:
 		if ((DefaultValue.Length()!=3) ||((DefaultValue.AsPChar()[0]!='\'') && (DefaultValue.AsPChar()[2]!='\'')))
 		{
@@ -153,7 +153,7 @@ const char *PrimInstance::GetType() const
 }
 void PrimInstance::SetType(const char *PrimType)
 {
-	CryString Type(PrimType);
+	String Type(PrimType);
 	if (Type=="class")
 	{
 		eType = Class;
@@ -180,17 +180,17 @@ void PrimInstance::SetType(const char *PrimType)
 		eType = Double;
 }
 /*! will return a const pointer to the property */
-Object *PrimInstance::GetCopyOfPropertyAsObject(const CryPropertyParser &PropertyName) const
+Object *PrimInstance::GetCopyOfPropertyAsObject(const PropertyParser &PropertyName) const
 {
 	return CodeFactory::GetCopyOfPropertyAsObject(PropertyName);
 }
 /*! will return whether or not the property named in PropertyName is a container */
-bool PrimInstance::GetIsPropertyContainer(const CryPropertyParser &PropertyName) const
+bool PrimInstance::GetIsPropertyContainer(const PropertyParser &PropertyName) const
 {
 	return false;
 }
 /*! will return the property named in PropertyName in a string format */
-const char *PrimInstance::GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const
+const char *PrimInstance::GetProperty(const PropertyParser &PropertyName,String &Result) const
 {
 	if (PropertyName=="Type")
 	{
@@ -218,7 +218,7 @@ const char *PrimInstance::GetProperty(const CryPropertyParser &PropertyName,CryS
 	return CodeFactory::GetProperty(PropertyName,Result);
 }
 /*! returns true if the class in question has the property */
-bool PrimInstance::HasProperty(const CryPropertyParser &PropertyName) const
+bool PrimInstance::HasProperty(const PropertyParser &PropertyName) const
 {
 	return (PropertyName=="Type") ||
 		   (PropertyName=="Default") ||
@@ -237,7 +237,7 @@ CryPropertyList *PrimInstance::PropertyNames() const
 	CryPropertyList *Names = CodeFactory::PropertyNames();
 	Names->AddPropertyByName("Type",this);
 	{	// Don't add "Default" by name since it confuses the children classes (which may not have default values)
-	   CryString *v = new CryString(DefaultValue);
+	   String *v = new String(DefaultValue);
 		Names->AddProperty("Default",v);
 	}
 	Names->AddPropertyByName("Count",this);
@@ -245,7 +245,7 @@ CryPropertyList *PrimInstance::PropertyNames() const
 	return Names;
 }
 
-bool PrimInstance::SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue)
+bool PrimInstance::SetProperty(const PropertyParser &PropertyName,const char *PropertyValue)
 {
 	if (PropertyName=="Type")
 	{
@@ -254,11 +254,11 @@ bool PrimInstance::SetProperty(const CryPropertyParser &PropertyName,const char 
 	}
 	if (PropertyName=="Count")
 	{
-		CryString a(PropertyValue);
+		String a(PropertyValue);
 		int i;
 		a.scanf("%d",&i);
 		if (i<1)
-			throw CryException("SetProperty(Count,%d) must be >0",i);
+			throw Exception("SetProperty(Count,%d) must be >0",i);
 		CodeFactory::SetCount(i);
 		SetCount();
 		return true;
@@ -276,7 +276,7 @@ bool PrimInstance::SetProperty(const CryPropertyParser &PropertyName,const char 
 	return CodeFactory::SetProperty(PropertyName,PropertyValue);
 }
 
-const char *PrimInstance::Code_AssignDefaultValue(CryString &Result) const
+const char *PrimInstance::Code_AssignDefaultValue(String &Result) const
 {
 	Result = "";
 	if (GetIsPointer())
@@ -306,9 +306,9 @@ const char *PrimInstance::Code_AssignDefaultValue(CryString &Result) const
     return Result.AsPChar();
 }
 
-const char *PrimInstance::Code_SetProperty(CryString &Result) const
+const char *PrimInstance::Code_SetProperty(String &Result) const
 {
-    CryString pName;
+    String pName;
     pName.printf("%s%s%s",this->GetIsPointer() ? "*" : "",GetName(),((eType!=CharStr) && (GetCount()>1)) ? "[Index]" : "");
     switch(eType)
     {
@@ -337,7 +337,7 @@ const char *PrimInstance::Code_SetProperty(CryString &Result) const
     return Result.AsPChar();
 }
 
-const char *PrimInstance::Code_GetProperty(CryString &Result) const
+const char *PrimInstance::Code_GetProperty(String &Result) const
 {
     if (GetCount()>1)
     {
@@ -395,7 +395,7 @@ const char *PrimInstance::Code_GetProperty(CryString &Result) const
     return Result.AsPChar();
 }
 
-Object *PrimInstance::Create(const CryPropertyParser &PropertyName,CodeFactory *Parent)
+Object *PrimInstance::Create(const PropertyParser &PropertyName,CodeFactory *Parent)
 {
 	if ((PropertyName==CPrimInstance) && (!Parent->IsA(CClassBuilder)))
 	{
@@ -406,7 +406,7 @@ Object *PrimInstance::Create(const CryPropertyParser &PropertyName,CodeFactory *
 	{
 		if (GetCount()<2)
 			return 0;
-		CryString s;
+		String s;
 		s.printf("\n#define %s_LEN %d",GetName(),GetCount());
 		SetHead(PropertyName,s.AsPChar());
 		Parent->AppendHead(*GetHead(PropertyName));
@@ -414,7 +414,7 @@ Object *PrimInstance::Create(const CryPropertyParser &PropertyName,CodeFactory *
 	}
 	if (PropertyName==CDeclaration)
 	{
-		CryString s;
+		String s;
 		if (GetCount()>1)
 		{
 			//bool * MyBool[MyBool_LEN];
@@ -444,13 +444,13 @@ Object *PrimInstance::Create(const CryPropertyParser &PropertyName,CodeFactory *
 	};
 	if (PropertyName==CConstructor)
 	{		// we are construction our variables
-		CryString s;
-		CryString Dummy;
+		String s;
+		String Dummy;
 
 		s.Clear();
 		if (GetIsPointer())
 		{
-			CryString C;
+			String C;
 			if (GetCount()>1)
 				C.printf("%s[%s_LEN]",GetIsArrayPointer() ? "*" : "",GetName());
 			if (GetIsArrayPointer())
@@ -499,7 +499,7 @@ Object *PrimInstance::Create(const CryPropertyParser &PropertyName,CodeFactory *
 	}
 	if (PropertyName==CDestructor)
 	{
-		CryString s;
+		String s;
 		if (GetIsPointer())
 		{
 			if (GetCount()>1)
@@ -519,7 +519,7 @@ Object *PrimInstance::Create(const CryPropertyParser &PropertyName,CodeFactory *
 	}
 	if (PropertyName==CCopyTo)
 	{
-		CryString s;
+		String s;
 		if (GetIsPointer())
 		{
 			if (GetCount()>1)
@@ -544,8 +544,8 @@ Object *PrimInstance::Create(const CryPropertyParser &PropertyName,CodeFactory *
 	}
 	if ((PropertyName==CSetProperty) && CanBuildProduct(PropertyName))//Can't build if it isn't a property
 	{
-		CryString s;
-		CryFunctionDef Func;
+		String s;
+		FunctionDef Func;
 		if (GetCount()>1)
 		{
 			s.printf("void Set%s(int Index,const char *Value);",GetName());
@@ -554,9 +554,9 @@ Object *PrimInstance::Create(const CryPropertyParser &PropertyName,CodeFactory *
 			SetHead(PropertyName,s.AsPChar());
 			s.Clear();
 			s = Func.GetImplementedDeclaration(Parent->GetName(),true);
-			s.printf("\n{\n#ifdef RangeChecking\n\tif ((Index<0) || (Index>=%s_LEN))\n\t\tthrow CryException(\"Range Error\");\n#endif",
+			s.printf("\n{\n#ifdef RangeChecking\n\tif ((Index<0) || (Index>=%s_LEN))\n\t\tthrow Exception(\"Range Error\");\n#endif",
 					 GetName(),GetName());
-			CryString temp;
+			String temp;
 			s += "\n\t";
 			Code_SetProperty(temp);
 			s += temp;
@@ -572,7 +572,7 @@ Object *PrimInstance::Create(const CryPropertyParser &PropertyName,CodeFactory *
 			s.Clear();
 			s = Func.GetImplementedDeclaration(Parent->GetName(),true);
 			s.printf("\n{\n\t");
-			CryString Temp;
+			String Temp;
 			Code_SetProperty(Temp);
 			s += Temp;
 			s += "\n}\n";
@@ -584,8 +584,8 @@ Object *PrimInstance::Create(const CryPropertyParser &PropertyName,CodeFactory *
 	}
 	if ((PropertyName==CGetProperty) && CanBuildProduct(PropertyName))//Can't build if it isn't a property
 	{
-		CryString s;
-		CryFunctionDef Func;
+		String s;
+		FunctionDef Func;
         if (GetCount()>1)
         {
             s.printf("const char *Get%s(int Index,CryString &Result) const;",GetName());
@@ -595,10 +595,10 @@ Object *PrimInstance::Create(const CryPropertyParser &PropertyName,CodeFactory *
             SetHead(PropertyName,s.AsPChar());
             s.Clear();
             s = Func.GetImplementedDeclaration(Parent->GetName(),true);
-            s.printf("\n{\n#ifdef RangeChecking\n\tif ((Index<0) || (Index>=%s_LEN))\n\t\tthrow CryException(\"Range Error\");\n#endif",
+            s.printf("\n{\n#ifdef RangeChecking\n\tif ((Index<0) || (Index>=%s_LEN))\n\t\tthrow Exception(\"Range Error\");\n#endif",
                      GetName(),GetName());
             s.printf("\n\t//Result.Clear()\n\t");
-            CryString Temp;
+            String Temp;
             Code_GetProperty(Temp);
             s += Temp;
             s += "\n\treturn Result.AsPChar();\n}\n";
@@ -613,7 +613,7 @@ Object *PrimInstance::Create(const CryPropertyParser &PropertyName,CodeFactory *
             s.Clear();
             s = Func.GetImplementedDeclaration(Parent->GetName(),true);
             s.printf("\n{\n\t");
-            CryString Temp;
+            String Temp;
             Code_GetProperty(Temp);
             s += Temp;
             s += "\n\treturn Result.AsPChar();\n}\n";

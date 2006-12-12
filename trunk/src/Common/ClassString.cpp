@@ -31,11 +31,11 @@
 
 using namespace Crystal;
 //-------------------------------------------------------------------
-// CryString
+// String
 //-------------------------------------------------------------------
 
 #ifdef VALIDATING
-bool CryString::Test(bool Verbose,Object &Object,bool (CallBack)(bool Verbose,const char *Result,bool fail))
+bool String::Test(bool Verbose,Object &Object,bool (CallBack)(bool Verbose,const char *Result,bool fail))
 {
     bool fail = false;
     // don't do any substream tests since crystring acts differently then other streams. (size doesn't include the asciiz)
@@ -48,7 +48,7 @@ bool CryString::Test(bool Verbose,Object &Object,bool (CallBack)(bool Verbose,co
         if (!CallBack(Verbose,Result,fail))
             return false;
     }
-    if (Object.IsA(CCryString))
+    if (Object.IsA(CString))
     {
 
         /*
@@ -123,14 +123,14 @@ bool CryString::Test(bool Verbose,Object &Object,bool (CallBack)(bool Verbose,co
         virtual bool Test(bool Verbose,CryObject &Object,bool (CallBack)(bool Verbose,const char *Result,bool fail));
         #endif
         */
-        CryString a;
+        String a;
         const char *ErrorStr;
         char *emptyconst = "CryString a; make empty string test";
         char *nonemptyconst = "CryString a(\"test\") contructor";
         char *copyconst = "copy constructor";
         char *cleartest = "Clear test, assignment of const char,Length";
         {
-            CryString a;
+            String a;
             ErrorStr = emptyconst;
             if (a.Length()==0 && (a==""))
             {
@@ -150,7 +150,7 @@ bool CryString::Test(bool Verbose,Object &Object,bool (CallBack)(bool Verbose,co
         if (!fail)
         {
             {
-                CryString s;
+                String s;
                 s = "AaBbCcDd";
                 cout << s.AsPChar() << endl;
                 ErrorStr = "Sort case sensitive";
@@ -190,7 +190,7 @@ bool CryString::Test(bool Verbose,Object &Object,bool (CallBack)(bool Verbose,co
 
         if (!fail)
         {
-            CryString Test("this is a testing");
+            String Test("this is a testing");
             Test.Replace("is","");  // "th  a testing"
             Test.Replace("ing","ed");       // "th  a tested"
             Test.Replace("e","a");          // "th  a tastad"
@@ -207,7 +207,7 @@ bool CryString::Test(bool Verbose,Object &Object,bool (CallBack)(bool Verbose,co
         }
         if (!fail)
         {
-            CryString a("test");
+            String a("test");
             ;
             ErrorStr = nonemptyconst;
             if ((a.Length()==4) && (a=="test"))
@@ -227,8 +227,8 @@ bool CryString::Test(bool Verbose,Object &Object,bool (CallBack)(bool Verbose,co
         }
         if (!fail)
         {
-            CryString a("test");
-            CryString b(a);
+            String a("test");
+            String b(a);
             ErrorStr = copyconst;
             if ((b.Length()==4) && (b=="test"))
             {
@@ -248,7 +248,7 @@ bool CryString::Test(bool Verbose,Object &Object,bool (CallBack)(bool Verbose,co
         if (!fail)
         {
             ErrorStr = cleartest;
-            CryString a("1234567");
+            String a("1234567");
             // 0 == all, 1.. from start, -1..-N from end
 			a.Clear(0);
             if (a!="")
@@ -277,7 +277,7 @@ bool CryString::Test(bool Verbose,Object &Object,bool (CallBack)(bool Verbose,co
                 return false;
         }
         {
-            CryString a("test");
+            String a("test");
             //		CryList *l = a.PropertyNames();
 
             // todo, carry on
@@ -288,27 +288,27 @@ bool CryString::Test(bool Verbose,Object &Object,bool (CallBack)(bool Verbose,co
     return true;
 }
 #endif
-size_t CryString::WriteNStr(const char *StrBuffer)
+size_t String::WriteNStr(const char *StrBuffer)
 {
 	int l = Length();
 	printf("%d %s",strlen(StrBuffer),StrBuffer);
 	return Length() - l + 1;
 }
-bool CryString::SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue)
+bool String::SetProperty(const PropertyParser &PropertyName,const char *PropertyValue)
 {
 	if (PropertyName=="Value")
 	{
 		*this = PropertyValue;
 		return true;
 	}
-	return CryMemStream::SetProperty(PropertyName,PropertyValue);
+	return MemStream::SetProperty(PropertyName,PropertyValue);
 }
-CryString::operator const char *() const
+String::operator const char *() const
 {
 	return (const char *)GetRaw();
 }
 // creates a hash value of [a..z,A..Z,0..9,_]
-int CryString::HashValue()const
+int String::HashValue()const
 {
 const char *c = (const char *)GetRaw();
 int e = Length();
@@ -338,15 +338,15 @@ int Hash = 0;
 	}
 	return Hash;
 }
-size_t CryString::Read(CryStream *ToStream) const
+size_t String::Read(Stream *ToStream) const
 {
     return Read(ToStream,Size());
 }
-size_t CryString::Write(const CryStream *FromStream)
+size_t String::Write(const Stream *FromStream)
 {
     return Write(FromStream,FromStream->Size());
 }
-int CryString::Pos(const char *s,size_t StartIndex)
+int String::Pos(const char *s,size_t StartIndex)
 {
     if (GetLength()<StartIndex)
         return -1;
@@ -356,7 +356,7 @@ int CryString::Pos(const char *s,size_t StartIndex)
     else
         return -1;
 }
-int CryString::Pos(const char *s) const
+int String::Pos(const char *s) const
 {
     const char *c = strstr(s);
     if (c)
@@ -365,15 +365,15 @@ int CryString::Pos(const char *s) const
         return -1;
 }
 /// returns NULL if not found
-const char *CryString::strstr(CryString &s) const
+const char *String::strstr(String &s) const
 {
     return  ::strstr((const char *)GetRaw(),(const char *)s.GetRaw());
 }
-const char *CryString::strstr(const char *s) const
+const char *String::strstr(const char *s) const
 {
     return (const char *) ::strstr((const char *)GetRaw(),s);
 }
-int CryString::strncmp(CryString &s,size_t n) const
+int String::strncmp(String &s,size_t n) const
 {
     size_t l = s.Length();
     if (n<l)
@@ -382,41 +382,41 @@ int CryString::strncmp(CryString &s,size_t n) const
         l = Length();
     return ::strncmp((const char *)GetRaw(),(const char *)s.GetRaw(),l);
 }
-int CryString::strncmp(const char *s,size_t n) const
+int String::strncmp(const char *s,size_t n) const
 {
     return ::strncmp((const char *)GetRaw(),s,n);
 }
-int CryString::strcmp(CryString &s) const
+int String::strcmp(String &s) const
 {
     size_t l = s.Length();
     if (l<Length())
         l = Length();
     return ::strncmp((const char *)GetRaw(),(const char *)s.GetRaw(),l);
 }
-int CryString::strcmp(const char *s) const
+int String::strcmp(const char *s) const
 {
     return ::strcmp((const char *)GetRaw(),s);
 }
-const char *CryString::strcat(CryString &s)
+const char *String::strcat(String &s)
 {
     Pos2Asciiz();
     Write((const char *)s.GetRaw(),s.Length());
     SeekFromStart(0);
     return (const char *)GetRaw();
 }
-const CryString *CryString::GetAddress()
+const String *String::GetAddress()
 {
     return this;
 }
-CryString &CryString::ExclusiveAppend(const char *_Append)
+String &String::ExclusiveAppend(const char *_Append)
 {
     return ReplaceAppend(_Append,"",_Append);
 }
-void CryString::Close(bool ExceptOnError)
+void String::Close(bool ExceptOnError)
 {
     Clear(0);
 };
-CryString & CryString::operator = (const CryString &v)
+String & String::operator = (const String &v)
 {
     return *this = v.AsPChar();
 }
@@ -449,7 +449,7 @@ int RandomCompare(const void *p1,const void *p2)
 {
     return rand() - (RAND_MAX / 2);
 }
-void CryString::Sort(int CompareType)
+void String::Sort(int CompareType)
 {
     char *ch = (char *)GetRaw();
     int l = Length();
@@ -473,14 +473,14 @@ void CryString::Sort(int CompareType)
     }
     return;
 }
-int CryString::CompareLogical(int CompareType,const Object *Test) const
+int String::CompareLogical(int CompareType,const Object *Test) const
 {
     if ((CompareType>1) || (CompareType<0))
-        throw CryException("Unexpected Value for Sorting CryFunctionDef");
+        throw Exception("Unexpected Value for Sorting CryFunctionDef");
 
-    if (Test->IsA(CCryString))
+    if (Test->IsA(CString))
     {
-        CryString *t = (CryString *)Test;
+        String *t = (String *)Test;
         switch(CompareType)
         {
         case 0:
@@ -491,83 +491,83 @@ int CryString::CompareLogical(int CompareType,const Object *Test) const
     }
     return 0;
 }
-bool CryString::LessThen(int CompareType,const Object *Test) const
+bool String::LessThen(int CompareType,const Object *Test) const
 {
 	int i = CompareLogical(CompareType,Test);
 	return (i<0);
 }
-bool CryString::GreaterThen(int CompareType,const Object *Test)const
+bool String::GreaterThen(int CompareType,const Object *Test)const
 {
 	int i = CompareLogical(CompareType,Test);
 	return (i>0);
 }
-bool CryString::EqualTo(int CompareType,const Object *Test)const
+bool String::EqualTo(int CompareType,const Object *Test)const
 {
     int i = CompareLogical(CompareType,Test);
     return (i==0);
 }
 
-bool CryString::IsOpen() const
+bool String::IsOpen() const
 {
     return true;
 }
 // 0 == all, 1.. from start, -1..-N from end
-void CryString::Clear(int amount)
+void String::Clear(int amount)
 {
-    CryMemStream::Clear(amount);
+    MemStream::Clear(amount);
     SetRaw(Size(),'\0');
 }
 
-size_t CryString::Length() const
+size_t String::Length() const
 {
     return Size();
 }
 
 // SetLength set's the position of the asciiz, ie 0 = ""
-void CryString::SetLength(int i)
+void String::SetLength(int i)
 {
-    CryMemStream::SetLength(i+1);
+    MemStream::SetLength(i+1);
     SetRaw(i,'\0');
 }
-int CryString::GetPropertyCount() const
+int String::GetPropertyCount() const
 {
     return 1;
 }// strings only have a value (even if they are named!)
-CryString &CryString::Delete(int start,int amount)
+String &String::Delete(int start,int amount)
 {
 	if (start<0)
     	start += GetLength() - 2;
-	CryMemStream::MemDelete(start,amount);
+	MemStream::MemDelete(start,amount);
     LookLikeString();
     return *this;
 }
 /// Return a non-const reference to the ith character -ith means from the end back
-char& CryString::operator[](int i)
+char& String::operator[](int i)
 {
 int l = GetLength();
-CryMemStream *m = (CryMemStream *)this;
+MemStream *m = (MemStream *)this;
 	if (i>l)
-		throw CryException("Reference beyond end of string");
+		throw Exception("Reference beyond end of string");
 	if (i>0)
 		return  m->operator [](i);
          //(*m)[i];
 		
 	i = l + i - 2;
 	if (i<0)
-		throw CryException("Reference before beginning of string");
+		throw Exception("Reference before beginning of string");
 	return m->operator [](i);
         //(*m)[i];
 //	return CryMemStream::operator[i];
 }
 
-CryString& CryString::simplify()
+String& String::simplify()
 {
     unsigned int e = GetLength();
     if (e)
     {
         unsigned int s=0;
         unsigned int d=0;
-        CryString &str = *this;
+        String &str = *this;
         while(s<e && isspace((char)str[s]))
             s++;
         while(1)
@@ -586,7 +586,7 @@ CryString& CryString::simplify()
     return *this;
 }
 
-size_t CryString::ReadNStr(char *Buffer,size_t MaxLength) const
+size_t String::ReadNStr(char *Buffer,size_t MaxLength) const
 {
     int n;
     //    int l = 0;
@@ -616,7 +616,7 @@ size_t CryString::ReadNStr(char *Buffer,size_t MaxLength) const
     return Buffer - BufferStart;
 }
 
-CryString &CryString::ReplaceAppend(const char *_Search,const char *_Replace,const char *_Append)
+String &String::ReplaceAppend(const char *_Search,const char *_Replace,const char *_Append)
 {
     Replace(_Search,_Replace);
     if (_Append!=0)
@@ -624,24 +624,24 @@ CryString &CryString::ReplaceAppend(const char *_Search,const char *_Replace,con
     return *this;
 }
 
-const char *CryString::strcat(const char *s)
+const char *String::strcat(const char *s)
 {
     int NewSize = Size() + ::strlen(s) + 1;
     CheckMem(NewSize);
     char *b = GetBuffer();
     ::strcat(b,s);
-    CryMemStream::SetLength(NewSize);
+    MemStream::SetLength(NewSize);
     //LookLikeString();	// not needed
     return (const char *)GetRaw();
 }
 // returns the offset from start of the string or -1 if not found
-int CryString::SeekTextFromStart(const char *SearchString) const
+int String::SeekTextFromStart(const char *SearchString) const
 {
     SeekFromStart(0);
     return SeekTextFromCurrent(SearchString);
 }
 // Returns the offset from the start of the string or -1 if not found
-int CryString::SeekTextFromCurrent(const char *SearchString) const
+int String::SeekTextFromCurrent(const char *SearchString) const
 {
     const char *p,*e,*t;
     const char *b = (const char *)GetRaw();
@@ -674,9 +674,9 @@ int CryString::SeekTextFromCurrent(const char *SearchString) const
 }
 
 
-CryString &CryString::Insert(int Index,const char *Text)
+String &String::Insert(int Index,const char *Text)
 {
-    CryString Temp;
+    String Temp;
     Temp = *this;
     Temp.Delete(0,Index);
     this->Delete(Index,GetLength());
@@ -684,14 +684,14 @@ CryString &CryString::Insert(int Index,const char *Text)
     *this += Temp;
     return *this;
 }
-CryString &CryString::Replace(const char *_Search,const char *_Replace)
+String &String::Replace(const char *_Search,const char *_Replace)
 {
     int j,i = SeekTextFromStart(_Search);
     if (i==-1)
         return *this;	// not found
     if (_Replace==0)
         _Replace = "";
-    CryString Build = *this;
+    String Build = *this;
     int l = strlen(_Search);
     Build.Delete(i,GetLength());
     Build += _Replace;
@@ -727,24 +727,24 @@ CryString &CryString::Replace(const char *_Search,const char *_Replace)
     }
 }
 
-int CryString::scanf(const char *format,...) const
+int String::scanf(const char *format,...) const
 {
     //    SeekToStart();
     va_list argptr;
     va_start(argptr,format);
-    return CryMemStream::vsscanf(format,argptr);
+    return MemStream::vsscanf(format,argptr);
 }
 
-size_t CryString::printf(const char *format,...)
+size_t String::printf(const char *format,...)
 { // this is normally a string function so we will assume that this class is being used as a string
     //    Clear();
     va_list argptr;
     va_start(argptr,format);
     return vsprintf(format,argptr);
 }
-int CryString::Seek(int offset,int whence) const
+int String::Seek(int offset,int whence) const
 {
-    int l = CryMemStream::Seek(offset,whence);
+    int l = MemStream::Seek(offset,whence);
     /*if (whence==SEEK_END && l)
     {
         l--;
@@ -753,21 +753,21 @@ int CryString::Seek(int offset,int whence) const
     return l;
 }
 
-CryString::CryString()
+String::String()
 {
 	SetIsContainer(false);
     SetTerminator('\0');
     SetLength(0);
     //    Clear();
 }
-CryFunctionDefList *CryString::GetFunctions(const char *Type) const
+FunctionDefList *String::GetFunctions(const char *Type) const
 {
 // if a type has been defined and it's not this class, check subclasses for it
 	if (Type && !IsA(Type))
-	   return CryMemStream::GetFunctions(Type);
+	   return MemStream::GetFunctions(Type);
 	// otherwise get any functions in subclasses
-	CryFunctionDefList *l = CryMemStream::GetFunctions();
-    CryString s;
+	FunctionDefList *l = MemStream::GetFunctions();
+    String s;
     s += "// Class CryString;";
     s += "virtual void Clear();";
     s += "virtual CryString *GetFunctions() const;";
@@ -845,17 +845,17 @@ CryFunctionDefList *CryString::GetFunctions(const char *Type) const
     SetPosition(len);
     SetTerminator('\0');
 } */
-CryString::CryString(const CryString &a)
+String::String(const String &a)
 {
 	const char *ch = a.AsPChar();
 	*this = ch;
 }
-CryString::CryString(const CryString *a)
+String::String(const String *a)
 {
     const char *ch = a->AsPChar();
     *this = ch;
 }
-CryString::CryString(const char *FormatStr,...)
+String::String(const char *FormatStr,...)
 {
     LookLikeString();
     SetTerminator('\0');
@@ -879,28 +879,28 @@ CryString::CryString(const char *FormatStr,...)
  
 } */
 
-CryPropertyList *CryString::PropertyNames() const
+CryPropertyList *String::PropertyNames() const
 {   // bypass stream property names because we aren't interested inthe Terminator
 	CryPropertyList *n = Object::PropertyNames();
 	n->AddPropertyByName("Value",this);
     return n;
 }
-bool CryString::HasProperty(const CryPropertyParser &PropertyName) const
+bool String::HasProperty(const PropertyParser &PropertyName) const
 {
-    return ::strcmp(PropertyName,"Value")==0 ||CryMemStream::HasProperty(PropertyName);
+    return ::strcmp(PropertyName,"Value")==0 ||MemStream::HasProperty(PropertyName);
 }
 
-const char *CryString::GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const
+const char *String::GetProperty(const PropertyParser &PropertyName,String &Result) const
 {
     if (PropertyName=="Value")
     {
         return AsPChar();
     }
-    return CryMemStream::GetProperty(PropertyName,Result);
+    return MemStream::GetProperty(PropertyName,Result);
 
 }
 
-const char *CryString::FormatHex(cbyte *data,size_t length)
+const char *String::FormatHex(cbyte *data,size_t length)
 {
     char buff[10];
     Clear();
@@ -913,32 +913,32 @@ const char *CryString::FormatHex(cbyte *data,size_t length)
     return AsPChar();
 }
 
-size_t CryString::Size() const
+size_t String::Size() const
 {
     /*const char *s = *this;
     int l = strlen(s);
         if (l < DataLength)
             return l;
         else*/
-    int l =  CryMemStream::Size()-1;  // memstream includes the asciiz
+    int l =  MemStream::Size()-1;  // memstream includes the asciiz
     if (l<0)
         l = 0;
     return l;
 }
 
-bool CryString::Convert(int *i) const
+bool String::Convert(int *i) const
 {
     int j = sscanf(AsPChar(),"%d",i);
     return !((j==EOF) || (j==0));
 }
 
-bool CryString::Convert(char *b,int len) const
+bool String::Convert(char *b,int len) const
 {
     strncpy(b,AsPChar(),len);
     return true;
 }
 
-CryString & CryString::operator =(const CryString *text)
+String & String::operator =(const String *text)
 {
     if (text==0)
         *this = "";
@@ -947,31 +947,31 @@ CryString & CryString::operator =(const CryString *text)
     return *this;
 }
 
-CryString & CryString::operator =(const char *text)
+String & String::operator =(const char *text)
 {
     const char *thisText = GetBuffer();
     if (thisText != text)
     {
-        CryMemStream::Clear();
+        MemStream::Clear();
         GetBuffer()[0] = '\0';
         if (text)
             strcat(text);
     }
     return *this;
 }
-CryString & CryString::operator+=(const char *text)
+String & String::operator+=(const char *text)
 {
 	if (text)
 		strcat(text);
 	return *this;
 }
 
-void CryString::SetValue(const char *_Value)
+void String::SetValue(const char *_Value)
 {
     *this = _Value;
 }
 
-CryString &CryString::Rev()
+String &String::Rev()
 {
     char *ch1 = (char *)GetRaw();
     char *ch2 = ch1 + Length()-1;
@@ -986,7 +986,7 @@ CryString &CryString::Rev()
     return *this;
 }
 
-CryString &CryString::TrimLeft()
+String &String::TrimLeft()
 {
     const char *orgch,*ch;
     SetPosition(0);
@@ -994,10 +994,10 @@ CryString &CryString::TrimLeft()
     while((*ch) && isspace(*ch))
         ch++;
     if (ch!= orgch)
-        CryMemStream::Clear(ch - orgch);
+        MemStream::Clear(ch - orgch);
     return *this;
 }
-CryString &CryString::TrimRight()
+String &String::TrimRight()
 {
     int l = Length();
     const char *orgch,*ch;
@@ -1014,12 +1014,12 @@ CryString &CryString::TrimRight()
     }
     return *this;
 }
-CryString &CryString::Trim()
+String &String::Trim()
 {
     TrimRight();
     return TrimLeft();
 }
-CryString &CryString::ToUpper()
+String &String::ToUpper()
 {
     int l = Length();
     char *ch;
@@ -1036,7 +1036,7 @@ CryString &CryString::ToUpper()
     }
     return *this;
 }
-CryString &CryString::ToLower()
+String &String::ToLower()
 {
     int l = Length();
     char *ch;
@@ -1054,7 +1054,7 @@ CryString &CryString::ToLower()
     return *this;
 }
 
-bool CryString::operator ==(const char *s) const
+bool String::operator ==(const char *s) const
 {
     int i = Size();
     int j = strlen(s);
@@ -1063,7 +1063,7 @@ bool CryString::operator ==(const char *s) const
     i = ::strncmp((const char *)GetRaw(),s,i);
     return (i==0);
 }
-bool CryString::operator !=(const char *s) const
+bool String::operator !=(const char *s) const
 {
     int i = Size();
     int j = strlen(s);
@@ -1075,40 +1075,40 @@ bool CryString::operator !=(const char *s) const
 }
 
 
-size_t CryString::Read(CryStream *ToStream,size_t Size) const
+size_t String::Read(Stream *ToStream,size_t Size) const
 {
-    return CryMemStream::Read(ToStream,Size);
+    return MemStream::Read(ToStream,Size);
 }
 
-size_t CryString::Write(const CryStream *FromStream,size_t Size)
+size_t String::Write(const Stream *FromStream,size_t Size)
 {
     size_t p = GetPosition();
     if (p && (p >=GetLength()))
         Pos2Asciiz();
-    size_t s = CryMemStream::Write(FromStream,Size);
+    size_t s = MemStream::Write(FromStream,Size);
     LookLikeString();
     return s;
 }
 
-size_t CryString::Read(char *ToBuffer,size_t t) const
+size_t String::Read(char *ToBuffer,size_t t) const
 {
-    return CryMemStream::Read(ToBuffer,t);
+    return MemStream::Read(ToBuffer,t);
 }
-void CryString::LookLikeString()
+void String::LookLikeString()
 {
-    if ((CryMemStream::GetLength()==0) || GetBuffer()[CryMemStream::GetLength()]!='\0')
-        CryMemStream::LookLikeString();
+    if ((MemStream::GetLength()==0) || GetBuffer()[MemStream::GetLength()]!='\0')
+        MemStream::LookLikeString();
     SetLength(strlen(*this));
 }
 
 
-size_t CryString::Write(const char *FromBuffer,size_t t)
+size_t String::Write(const char *FromBuffer,size_t t)
 {
     if (t==0)
         return 0;
     if (FromBuffer[t-1]=='\0')
         t--;
-    size_t s = CryMemStream::Write(FromBuffer,t);
+    size_t s = MemStream::Write(FromBuffer,t);
     //        CryMemStream::Write("",1);
     //    SetRaw(s+p,'\0');
     size_t p = GetPosition();
@@ -1119,45 +1119,45 @@ size_t CryString::Write(const char *FromBuffer,size_t t)
 /*! returns a list of CryStrings made up from String separated by Separater (eg convert text with \n to list of strings)
 The CryStrings do not contain the separator
 */
-List *CryString::ListFromString(const char *Separator) const
+List *String::ListFromString(const char *Separator) const
 {
     List *l = new List();
     return LoadListFromString(Separator,l);
 }
-List *CryString::LoadListFromString(const char *Separator,List *ListToLoad) const
+List *String::LoadListFromString(const char *Separator,List *ListToLoad) const
 {
-    const char *String = this->AsPChar();
-    List *l = ListToLoad;
-    int seplen = strlen(Separator);
-    while(strlen(String))
+	const char *MyString = this->AsPChar();
+	List *l = ListToLoad;
+	int seplen = strlen(Separator);
+    while(strlen(MyString))
     {
-        CryString *s = new CryString();
-        const char *ch = ::strstr(String,Separator);
-        if (ch==NULL)
-        {
-            *s = String;
-            l->AddOwned(s);
-            return l;
-        }
-        s->Write(String,ch - String);
-        size_t size;
-        if ((size = s->Size())>0)
-        {
-            const char *ch = s->strstr("//");
-            const char *pch = s->AsPChar();
-            if((ch==0) || (pch[size-1] !='/')) // if s is not empty and doesn't have a / at the end, then we are done with this one
-            {
-                l->AddOwned(s);
-            }
-            else
-            {
-                delete(s);
-            }
-        }
-        else
-            delete(s);
-        String = ch + seplen;
-    }
-    return l;
+        String *s = new String();
+		const char *ch = ::strstr(MyString,Separator);
+		if (ch==NULL)
+		{
+			*s = MyString;
+			l->AddOwned(s);
+			return l;
+		}
+		s->Write(MyString,ch - MyString);
+		size_t size;
+		if ((size = s->Size())>0)
+		{
+			const char *ch = s->strstr("//");
+			const char *pch = s->AsPChar();
+			if((ch==0) || (pch[size-1] !='/')) // if s is not empty and doesn't have a / at the end, then we are done with this one
+			{
+				l->AddOwned(s);
+			}
+			else
+			{
+				delete(s);
+			}
+		}
+		else
+			delete(s);
+		MyString = ch + seplen;
+	}
+	return l;
 }
 

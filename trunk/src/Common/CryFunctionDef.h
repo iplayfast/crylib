@@ -4,19 +4,19 @@
 namespace Crystal {
 
 using namespace std;
-#ifndef CFunctionDef
-#define CFunctionDef	"FunctionDef"
+#ifndef CBuilderFunctionDef
+#define CBuilderFunctionDef	"BuilderFunctionDef"
 #define CListFunctionDef	"ListFunctionDef"
 
-class FunctionDef : public CryString
+class BuilderFunctionDef : public String
 {
-CryString Return;
-CryString Param;
+String Return;
+String Param;
 public:
-StdFunctions(FunctionDef,CryString);
-	FunctionDef()
+StdFunctions(BuilderFunctionDef,String);
+	BuilderFunctionDef()
 	{	}
-	~FunctionDef()
+	~BuilderFunctionDef()
 	{	}
 
 // --- Functions for setting and retrieving property values ---
@@ -26,20 +26,20 @@ StdFunctions(FunctionDef,CryString);
 
 
 // --- Inhertied properties ---
-	const char * GetValue(CryString &Result) const
+	const char * GetValue(String &Result) const
 		{ return GetProperty("Value",Result);}
 	void SetValue(const char * _Value)
 		{ SetProperty("Value", _Value);}
 
 
 // --- Local properties ---
-	const char *GetReturn(CryString &Result) const
+	const char *GetReturn(String &Result) const
 		{ return GetProperty("Return",Result);}
-	void SetReturn(CryString _Return)
+	void SetReturn(String _Return)
 		{ SetProperty("Return", _Return);}
-	const char *GetParam(CryString &Result) const
+	const char *GetParam(String &Result) const
 		{ return GetProperty("Param",Result);}
-	void SetParam(CryString _Param)
+	void SetParam(String _Param)
 		{ SetProperty("Param", _Param);}
 
 // Inherited Functions
@@ -55,8 +55,8 @@ StdFunctions(FunctionDef,CryString);
 //virtual bool SetPropertyAsObject(CryProperty *Value);
 //virtual void SaveTo(CryStream &ToStream) const;
 //virtual void LoadFrom(CryStream &FromStream);
-Object *FactoryCreate(CryStream &FromStream);
-Object *FactoryCreate(const CryString &Type,Object *Parent=0);
+Object *FactoryCreate(Stream &FromStream);
+Object *FactoryCreate(const String &Type,Object *Parent=0);
 bool IterateThroughAll(Container *Container,EmptyObject *Control);
 //virtual bool IteratedFunction(EmptyObject *Control,EmptyObject *Item);
 //virtual bool Test(bool Verbose,CryObject &Object,bool  (CallBack)(bool Verbose,const char *Result,bool fail));
@@ -92,10 +92,10 @@ size_t Resize(size_t s);
 //virtual size_t GetLength() const;
 void Compress();
 void Decompress();
-bool operator ==(const CryMemStream &s);
-bool operator !=(const CryMemStream &s);
-bool operator ==(const CryMemStream *s);
-bool operator !=(const CryMemStream *s);
+bool operator ==(const MemStream &s);
+bool operator !=(const MemStream &s);
+bool operator ==(const MemStream *s);
+bool operator !=(const MemStream *s);
 bool operator ==(const char *s);
 bool operator !=(const char *s);
 //virtual int Seek(int offset,int whence) const;
@@ -113,7 +113,7 @@ bool operator !=(const char *s);
 //virtual size_t Write(const char *FromBuffer,size_t Size);
 //virtual size_t Tell() const;
 //virtual bool Eof() const;
-int Compare(CryMemStream *MemStream);
+int Compare(MemStream *MemStream);
 //virtual bool Open(const char *Name,const char *Operation,bool ExceptOnError=true);
 //virtual void Flush();
 int vsscanf(const char *format, va_list ap) const;
@@ -128,10 +128,10 @@ int vsprintf(const char *format, va_list ap);
 //virtual void SetLength(int i);
 //virtual CryList *PropertyNames() const;
 //virtual int GetPropertyCount() const;
-CryString &Delete(unsigned int start,int amount);
+String &Delete(unsigned int start,int amount);
 //virtual const char *ChildClassName() const;
 //virtual operator const char *() const;
-CryString operator &();
+String operator &();
 char operator [](unsigned int Offset) const;
 //virtual CryObject *Dup() const;
 //virtual size_t Read(CryStream *ToStream,size_t Size) const;
@@ -142,19 +142,19 @@ char operator [](unsigned int Offset) const;
 //virtual size_t Write(const char *FromBuffer,size_t t);
 //virtual size_t WriteNStr(const char *Buffer);
 //virtual size_t ReadNStr(char *Buffer,size_t MaxLength) const;
-const char *strstr(CryString &s) const;
+const char *strstr(String &s) const;
 const char *strstr(const char *s) const;
-int strncmp(CryString &s,size_t n) const;
+int strncmp(String &s,size_t n) const;
 int strncmp(const char *s,size_t n) const;
-int strcmp(CryString &s) const;
+int strcmp(String &s) const;
 int strcmp(const char *s) const;
-const char *strcat(CryString &s);
+const char *strcat(String &s);
 const char *strcat(const char *s);
 const char *FormatHex(cbyte *data,size_t length);
 EmptyObject *GetAddress();
 bool operator ==(const char *s) const;
 bool operator !=(const char *s) const;
-CryString & operator +=(const char *s);
+String & operator +=(const char *s);
 //virtual bool IsOpen() const;
 //virtual int scanf(const char *format,...) const;
 //virtual size_t printf(const char *format,...);
@@ -169,19 +169,19 @@ int SeekTextFromCurrent(const char *SearchString) const;
 //virtual bool Convert(int *i) const;
 //virtual bool Convert(char *b,int len) const;
 //virtual bool IsA(const char *ClassName) const;
-CryString & operator =(const char *text);
-CryString & operator = (const CryString *v);
-CryString & operator = (const CryString &v);
+String & operator =(const char *text);
+String & operator = (const String *v);
+String & operator = (const String &v);
 //virtual size_t Size() const;
 //virtual bool HasProperty(const char *PropertyName) const;
 //virtual const char *GetProperty(const char *PropertyName,CryString &Result) const;
 //virtual bool Test(bool Verbose,CryObject &Object,bool (CallBack)(bool Verbose,const char *Result,bool fail));
 
 
-//FunctionDef
-virtual CryFunctionDefList *GetFunctions(const char *Type=0) const;
+//BuilderFunctionDef
+virtual FunctionDefList *GetFunctions(const char *Type=0) const;
 void SetDefaultValues();
-}; // class FunctionDef
+}; // class BuilderFunctionDef
 
 //////////////////////
 
@@ -206,7 +206,7 @@ StdFunctions(ListFunctionDef,List);
 
 
 // --- Inhertied properties ---
-	const char * GetItems(CryString &Result) const
+	const char * GetItems(String &Result) const
 		{ return GetProperty("Items",Result);}
 	void SetItems(const char * _Items)
 		{ SetProperty("Items", _Items);}
@@ -214,7 +214,7 @@ StdFunctions(ListFunctionDef,List);
 
 // --- Local properties ---
 /*! Get a string delimited by \n containing all functions this class can inherite */
-CryFunctionDefList *GetFunctions(const char *Type=0) const;
+FunctionDefList *GetFunctions(const char *Type=0) const;
 /*! This function set's default values that were present when class was built.
 If default values aren't needed it can safely be deleted */
 void SetDefaultValues();
@@ -228,16 +228,16 @@ struct IControl
 /*! The virtual function called from CryContainer for each iteration of the container */
 virtual bool IteratedFunction(EmptyObject *Control,EmptyObject *Item)
 {
-	return IteratedFunction((IControl *)Control,(FunctionDef *)Item);
+	return IteratedFunction((IControl *)Control,(BuilderFunctionDef *)Item);
 }
 /*! Our own iterated function using a contol set up internally */
-virtual bool IteratedFunction(ListFunctionDef::IControl *Control,FunctionDef *Item);
-/*! This function will add an object of type FunctionDef to
+virtual bool IteratedFunction(ListFunctionDef::IControl *Control,BuilderFunctionDef *Item);
+/*! This function will add an object of type BuilderFunctionDef to
 the container. The Owned part means that the container is responsible for deleting it*/
-virtual FunctionDef* AddOwned(FunctionDef * Item);
-/*! This function will add an object of type FunctionDef to
+virtual BuilderFunctionDef* AddOwned(BuilderFunctionDef * Item);
+/*! This function will add an object of type BuilderFunctionDef to
 the container. It is not "Owned" so the container is NOT responsible for deleting it*/
-virtual FunctionDef* Add(FunctionDef * Item);
+virtual BuilderFunctionDef* Add(BuilderFunctionDef * Item);
 
 // Iterator functions available because this is a container class
 
@@ -247,8 +247,8 @@ virtual FunctionDef* Add(FunctionDef * Item);
 /*! If thing at current location is owned by the Container (ie the container delete's it */
 	bool I_IsOwned() { return LocIterator->IsOwned(); }
 
-/*! This container is specialized to handle FunctionDef's. Get the current FunctionDef the Iterator is pointing to */
-	FunctionDef *I_Get() { return (FunctionDef *)LocIterator->Get(); }
+/*! This container is specialized to handle BuilderFunctionDef's. Get the current BuilderFunctionDef the Iterator is pointing to */
+	BuilderFunctionDef *I_Get() { return (BuilderFunctionDef *)LocIterator->Get(); }
 /*! Position the Iterator at the first item in the container (return true if items there)*/
 	bool I_GotoFirst() { return LocIterator->GotoFirst(); }
 /*! Position the Iterator at the previous item in the container (could be slow for list type containers*/
@@ -258,7 +258,7 @@ virtual FunctionDef* Add(FunctionDef * Item);
 /*! Position the Iterator at the last item in the container */
 	bool I_GotoLast() { return LocIterator->GotoLast(); }
 	size_t I_GetItemSize() { return LocIterator->GetItemSize(); }
-	bool I_SaveAsText(CryString &ToBody) { return  LocIterator->SaveAsText(ToBody); }
+	bool I_SaveAsText(String &ToBody) { return  LocIterator->SaveAsText(ToBody); }
 	const Container *I_GetOrigContainer() const  { return LocIterator->GetOrigContainer(); }
 
 /*!*************************************************

@@ -81,9 +81,9 @@ In order to be used by XML classes must have at least
 /// The internal nodes of the xml system
 class XMLNode : public List
 {
-CryString Name;
+String Name;
 /*! The type of object represented by this node */
-CryString Type;
+String Type;
 /*! the list of attributes/values that this object has */
 CryPropertyList *_Attributes;
 /*! the list of XML nodes that this node contains */
@@ -113,11 +113,11 @@ StdFunctionsNoDup(XMLNode,List);
 
     void AddAttribute(const char *Name,const char *Value);
     /*! Save this node to a stream (xml format) */
-    virtual void SaveTo(CryStream &ToStream) const;
+    virtual void SaveTo(Stream &ToStream) const;
     /*! save this node to an object setting the object's attributes */
     virtual void SaveTo(Object &ToObject) const;
     /*! Load this node from an xml stream */
-    virtual void LoadFrom(const CryStream &FromStream);
+    virtual void LoadFrom(const Stream &FromStream);
     /*! Load this node from an object */
     virtual void LoadFrom(const Object &FromObject);
     /*! Create the Object defined by this XML Node*/
@@ -139,12 +139,12 @@ StdFunctionsNoDup(XML,List);
     virtual ~CryXML() { /*delete head;*/ }
         
 	/*! Save this xml tree to a stream (xml format) */
-    virtual void SaveTo(CryStream &ToStream) const { XMLNode *head = (XMLNode *) FirstNode()->Item; head->SaveTo(ToStream); }
+    virtual void SaveTo(Stream &ToStream) const { XMLNode *head = (XMLNode *) FirstNode()->Item; head->SaveTo(ToStream); }
     /*! save this xml stream to an object setting the object's attributes */   
     virtual void SaveTo(Object &ToObject) const { XMLNode *head = (XMLNode *) FirstNode()->Item; head->SaveTo(ToObject); }
     
      /*! Load this xml tree from a xml stream */
-    virtual void LoadFrom(const CryStream &FromStream) { XMLNode *head = (XMLNode *) FirstNode()->Item; head->LoadFrom(FromStream); }
+    virtual void LoadFrom(const Stream &FromStream) { XMLNode *head = (XMLNode *) FirstNode()->Item; head->LoadFrom(FromStream); }
     virtual void CopyTo(Object &Dest) const {};  //copies contents of this to Dest
     /*! Load this xml tree from an object */
     virtual void LoadFrom(const Object &FromObject) { XMLNode *head = (XMLNode *) FirstNode()->Item; head->LoadFrom(FromObject); }

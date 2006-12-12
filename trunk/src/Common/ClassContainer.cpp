@@ -138,12 +138,12 @@ bool Container::Test(bool Verbose,Object &Object, bool (CallBack)(bool Verbose,c
 }
 #endif
 
-bool Container::SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue)
+bool Container::SetProperty(const PropertyParser &PropertyName,const char *PropertyValue)
 {
     bool result = false;
     if (PropertyName=="Values")
     {
-        CryString Temp;
+        String Temp;
         Temp = PropertyValue;
         Iterator *i = _CreateIterator();
         if (GotoFirst(i))
@@ -159,17 +159,17 @@ bool Container::SetProperty(const CryPropertyParser &PropertyName,const char *Pr
         return Object::SetProperty(PropertyName,PropertyValue);
     return result;
 }
-Object *Container::GetCopyOfPropertyAsObject(const CryPropertyParser &PropertyName) const
+Object *Container::GetCopyOfPropertyAsObject(const PropertyParser &PropertyName) const
 {
     return Object::GetCopyOfPropertyAsObject(PropertyName);
 }
 
-const char *Container::GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const
+const char *Container::GetProperty(const PropertyParser &PropertyName,String &Result) const
 {
     if (PropertyName=="Values")	// this is handled on an individual basis instead of passing the array flag back because strings are also containers, and as such would be huge lists of single letters.
     {
         Result.Clear();
-        CryString Temp;
+        String Temp;
         Iterator *i = _CreateIterator();
         if (GotoFirst(i))
         {
@@ -186,7 +186,7 @@ const char *Container::GetProperty(const CryPropertyParser &PropertyName,CryStri
 	}
     return Object::GetProperty(PropertyName,Result);
 }
-bool Container::HasProperty(const CryPropertyParser &PropertyName) const
+bool Container::HasProperty(const PropertyParser &PropertyName) const
 {
     if (PropertyName=="Values")
         return true;
@@ -203,14 +203,14 @@ CryPropertyList *Container::PropertyNames() const
 	return n;
 }
 
-CryFunctionDefList *Container::GetFunctions(const char *Type) const
+FunctionDefList *Container::GetFunctions(const char *Type) const
 {
 // if a type has been defined and it's not this class, check subclasses for it
 	if (Type && !IsA(Type))
 	   return Object::GetFunctions(Type);
 	// otherwise get any functions in subclasses
-   CryFunctionDefList *l = Object::GetFunctions();
-    CryString s;
+   FunctionDefList *l = Object::GetFunctions();
+    String s;
     s += "//Class CryContainer;";
     s += "virtual void GetEleType(CryString &Result) const = 0;";
     s += "const CryContainer *GetOwner(Iterator *I) const;";
@@ -402,7 +402,7 @@ size_t Container::Iterator::GetItemSize()
 }
 
 //bool LoadAsText(CryString *FromStream) { return OrigContainer->LoadAsText(this,FromStream); }
-bool Container::Iterator::SaveAsText(CryString &ToStream)
+bool Container::Iterator::SaveAsText(String &ToStream)
 {
     return OrigContainer->SaveAsText(this,ToStream);
 }
@@ -413,7 +413,7 @@ const Container *Container::Iterator::GetOrigContainer() const
 }
 
 /// return the type of structure used to control this list (ie listnode eleptr, etc)
-void Container::Iterator::GetEleType(CryString &Result) const
+void Container::Iterator::GetEleType(String &Result) const
 {
     OrigContainer->GetEleType(Result);
 }

@@ -69,9 +69,9 @@ public:
 	List();
 	List(List &List);
 	List(List *List);
-	virtual void GetEleType(CryString &Result) const;
-	void SaveItemsTo(CryStream &ToStream) const;
-	virtual CryFunctionDefList *GetFunctions(const char *Type=0) const;
+	virtual void GetEleType(String &Result) const;
+	void SaveItemsTo(Stream &ToStream) const;
+	virtual FunctionDefList *GetFunctions(const char *Type=0) const;
 	virtual ~List();
 	virtual const cbyte* GetRaw() const;
 	virtual Iterator *_CreateIterator() const;
@@ -95,8 +95,8 @@ public:
 	virtual void Clear();
 	const ListNode *FindNode(const EmptyObject *Needle) const;
 	/// find a node who's item has the same "value" property
-	int FindNodeValue(const CryMemStream &Needle) const;
-	void RemoveNodeValue(const CryMemStream &Needle);
+	int FindNodeValue(const MemStream &Needle) const;
+	void RemoveNodeValue(const MemStream &Needle);
 	const ListNode *FirstNode() const;
 	const ListNode *LastNode() const;
 	const ListNode *NextNode(const ListNode *n) const;
@@ -108,8 +108,8 @@ public:
 	bool GetItemOwnerShip(const EmptyObject *Item) const;
 	bool IsObject(const Iterator *I) const;
 	size_t GetItemSize(Iterator *I) const;
-	bool LoadAsText(Iterator *I,CryString &FromStream) ;
-	bool SaveAsText(Iterator *I,CryString &ToStream) const;
+	bool LoadAsText(Iterator *I,String &FromStream) ;
+	bool SaveAsText(Iterator *I,String &ToStream) const;
 
 	virtual void SetItemOwnerShip(Iterator  *I,bool Owned);
 	virtual bool GetItemOwnerShip(const Iterator *I) const;
@@ -124,8 +124,8 @@ public:
 	// if this class contains the property name, it will attempt to load it
 	// if all is well returns true
 	//virtual bool SetProperty(CryString *PropertyName,CryString *PropertyValue);
-	virtual const char *GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const;
-	virtual bool HasProperty(const CryPropertyParser &PropertyName) const;
+	virtual const char *GetProperty(const PropertyParser &PropertyName,String &Result) const;
+	virtual bool HasProperty(const PropertyParser &PropertyName) const;
 	virtual int GetPropertyCount() const;
 	virtual CryPropertyList* PropertyNames() const;
 ///copies contents of this to Dest

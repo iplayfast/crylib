@@ -47,7 +47,7 @@ List::List()
 	Head = Tail = 0;
 }
 
-void List::GetEleType(CryString &Result) const
+void List::GetEleType(String &Result) const
 {
 	Result = "CryList::ListNode";
 }
@@ -93,14 +93,14 @@ EmptyObject* List::GetAtIterator(const Iterator *I) const
 {
 	ListIterator *pLI = (ListIterator *)I;
 	if (pLI->p==0)	// nothing there!
-		throw CryException("Attempt to GetAtIterator where Iterator is pointing to nothing");
+		throw Exception("Attempt to GetAtIterator where Iterator is pointing to nothing");
 	return pLI->p->Item;
 }
 void List::SetAtIterator(const Iterator *I,EmptyObject *Item,bool IsObject,bool IsOwned,size_t Size)
 {
 	ListIterator *pLI = (ListIterator *)I;
 	if (pLI->p==0)	// nothing there!
-		throw CryException("Attempt to SetAtIterator where Iterator is pointing to nothing");
+		throw Exception("Attempt to SetAtIterator where Iterator is pointing to nothing");
 	DeleteItem(pLI->p); // only deletes if owned
 	pLI->p->IsObject = IsObject;
 	pLI->p->IsOwned = IsOwned;
@@ -197,14 +197,14 @@ size_t List::GetItemSize(Iterator *I) const
 		return 0;
 }
 
-CryFunctionDefList *List::GetFunctions(const char *Type) const
+FunctionDefList *List::GetFunctions(const char *Type) const
 {
 // if a type has been defined and it's not this class, check subclasses for it
 	if (Type && !IsA(Type))
 	   return Container::GetFunctions(Type);
 	// otherwise get any functions in subclasses
-	CryFunctionDefList *l = Container::GetFunctions();
-	CryString s;
+	FunctionDefList *l = Container::GetFunctions();
+	String s;
 	s += "// Class CryList;";
 	s += "virtual void GetEleType(CryString &Result) const;";
 	s += "void SaveItemsTo(CryStream &ToStream) const;";
@@ -256,7 +256,7 @@ CryFunctionDefList *List::GetFunctions(const char *Type) const
 	return l;
 }
 
-bool List::LoadAsText(Iterator *I,CryString &FromStream)
+bool List::LoadAsText(Iterator *I,String &FromStream)
 {
 	size_t Size;
 	FromStream.scanf("%d ",&Size);
@@ -282,7 +282,7 @@ bool List::LoadAsText(Iterator *I,CryString &FromStream)
 	li->p->Size = Size;
 	return true;
 }
-bool List::SaveAsText(Iterator *I,CryString &ToStream) const
+bool List::SaveAsText(Iterator *I,String &ToStream) const
 {
 	ToStream.Clear();
 	ListIterator *li = (ListIterator *)I;
@@ -333,7 +333,7 @@ bool List::GotoPrev(Iterator *LI) const
 			n = n->Next;
 		}
 		while(n);
-		throw CryException(this,"Iterator not from this list");
+		throw Exception(this,"Iterator not from this list");
 	}
 	return false;
 }
@@ -452,7 +452,7 @@ EmptyObject *List::Add(EmptyObject *_Item,bool IsObject,bool IsOwned,size_t _Siz
 {
 	ListNode *New = new ListNode;
 	if (New==0)
-		throw CryException(this,"Memory error\n");
+		throw Exception(this,"Memory error\n");
 	New->Item = _Item;
 	New->Size = _Size;
 	New->Next = 0;
@@ -516,12 +516,12 @@ ListNode *Prev,*p = Head;
 void List::Remove(EmptyObject *_Item)
 {
 	if (! _Remove(_Item))
-		throw CryException(this,0,(const char *)"Item Not found in list");
+		throw Exception(this,0,(const char *)"Item Not found in list");
 }
 void List::Remove(Object*_Item)
 {
 	if (! _Remove(_Item))
-		throw CryException(this,0,_Item->ChildClassName(),(const char *)"Not found in list");
+		throw Exception(this,0,_Item->ChildClassName(),(const char *)"Not found in list");
 }
 
 
@@ -574,7 +574,7 @@ size_t List::Count() const
 	return i;
 }
 
-void List::SaveItemsTo(CryStream &ToStream) const
+void List::SaveItemsTo(Stream &ToStream) const
 {
 	const ListNode *f = FirstNode();
 	if (f)
@@ -625,7 +625,7 @@ List::ListNode *List::_FindNode(const EmptyObject *Needle) const
 	return (List::ListNode*) FindNode(Needle);
 }
 
-void List::RemoveNodeValue(const CryMemStream &Needle)   // find a node who's item has the same "value" property
+void List::RemoveNodeValue(const MemStream &Needle)   // find a node who's item has the same "value" property
 {
 
 	ListNode *Prev,*p = _FirstNode();
@@ -633,12 +633,12 @@ void List::RemoveNodeValue(const CryMemStream &Needle)   // find a node who's it
 	{
 		Prev = p;
 		size_t nl = Needle.GetLength();
-		CryMemStream *t;
+		MemStream *t;
 		do
 		{
-			if ((p->IsObject) && (((Object *)p->Item)->IsA(CCryMemStream)))
+			if ((p->IsObject) && (((Object *)p->Item)->IsA(CMemStream)))
 			{
-				t = (CryMemStream *) p->Item;
+				t = (MemStream *) p->Item;
 				if ((t->GetLength()==nl) && (*t==Needle))
 				{
 					if (p==Head)	// is first node?
@@ -662,22 +662,22 @@ void List::RemoveNodeValue(const CryMemStream &Needle)   // find a node who's it
 }
 
 /// return the index into the list of a value
-int List::FindNodeValue(const CryMemStream &Needle) const   // find a node who's item has the same "value" property
+int List::FindNodeValue(const MemStream &Needle) const   // find a node who's item has the same "value" property
 {
 int i=0;
 	const ListNode *p = FirstNode();
 	if (p)
 	{
 		size_t nl = Needle.GetLength();
-		CryMemStream *t;
+		MemStream *t;
 		do
 		{
 			if (p->IsObject)
 			{
 
-				if (((Object *)p->Item)->IsA(CCryMemStream))
+				if (((Object *)p->Item)->IsA(CMemStream))
 				{
-					t = (CryMemStream *) p->Item;
+					t = (MemStream *) p->Item;
 					if ((t->GetLength()==nl) && (*t==Needle))
 						return i;
 				}
@@ -708,7 +708,7 @@ EmptyObject *List::GetItem(int i) const
 	if (p)
 		return p->Item;
 	else
-		throw CryException(this,"Item Not found");
+		throw Exception(this,"Item Not found");
 }
 
 void List::CopyTo(Object &Dest) const //copies contents of this to Dest
@@ -741,7 +741,7 @@ void List::CopyTo(Object &Dest) const //copies contents of this to Dest
 		return;
 	}
 	else
-		throw CryException(this,"Copying from List to object that is not Listable");
+		throw Exception(this,"Copying from List to object that is not Listable");
 }
 
 size_t List::Size() const
@@ -767,12 +767,12 @@ int List::GetPropertyCount() const
 	return Container::GetPropertyCount() + 1;
 }
 
-bool List::HasProperty(const CryPropertyParser &PropertyName) const
+bool List::HasProperty(const PropertyParser &PropertyName) const
 {
 	return Container::HasProperty(PropertyName);
 }
 
-const char *List::GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const
+const char *List::GetProperty(const PropertyParser &PropertyName,String &Result) const
 {
 	Result.Clear();
 	if (PropertyName=="Values")   // intercept crycontainer's property for our own

@@ -38,17 +38,17 @@ using namespace std;
 
 class TwoStreams : public Object
 {
-    CryStream *Stream1;
-    CryStream *Stream2;
+    Stream *Stream1;
+    Stream *Stream2;
     TwoStreams()
     {
-        throw CryException("Cannot Dup this class");
+        throw Exception("Cannot Dup this class");
     }
 public:
     StdFunctions(TwoStreams,Object);
-    TwoStreams(CryStream *_Stream1,CryStream *_Stream2);
-    CryStream *GetStream1();
-    CryStream *GetStream2();
+    TwoStreams(Stream *_Stream1,Stream *_Stream2);
+    Stream *GetStream1();
+    Stream *GetStream2();
 };
 
 void InitializeRandoms();

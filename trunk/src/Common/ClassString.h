@@ -19,36 +19,37 @@
  ***************************************************************************/
 
 #include "ClassMemStream.h"
+#include "ClassList.h"
 namespace Crystal
 {
 using namespace std;
-#ifndef CCryString
-#define CCryString  "CryString"
+#ifndef CString
+#define CString  "String"
 #ifdef __BORLANDC__
 #define strcasecmp stricmp
 #endif
 /// string handling as though it were a stream
-class CryString : public CryMemStream
+class String : public MemStream
 {
 protected:
     void LookLikeString();
 public:
-    StdFunctions(CryString,CryMemStream);
-	CryString();
-	CryString(const CryString &a);
-	CryString(const CryString *a);
-	virtual ~CryString()
+    StdFunctions(String,MemStream);
+	String();
+	String(const String &a);
+	String(const String *a);
+	virtual ~String()
 	{}
-	//    CryString(const char *Value);
-	CryString(const char *FormatStr,...);
+	//    String(const char *Value);
+	String(const char *FormatStr,...);
 	virtual void Clear()
 	{
         SetRaw(0,0);
         SetLength(0);
         SetPosition(0);
-        CryMemStream::Clear();
+        MemStream::Clear();
     }
-    virtual CryFunctionDefList *GetFunctions(const char *Type=0) const;
+    virtual FunctionDefList *GetFunctions(const char *Type=0) const;
 
     // 0 == all, 1.. from start, -1..-N from end
     virtual void Clear(int amount);
@@ -59,18 +60,18 @@ public:
     virtual int Seek(int offset,int whence) const;
 	virtual CryPropertyList* PropertyNames() const;
 virtual int GetPropertyCount() const;
-    CryString &Delete(int start,int amount);
+    String &Delete(int start,int amount);
     //    const char* ClassName() const;
     //    virtual const char *ChildClassName() const;
     virtual operator const char *() const;
     /// Simplify whitespace in string
-    CryString& simplify();
+    String& simplify();
 
     //    virtual CryObject *Dup() const;
-    virtual size_t Read(CryStream *ToStream,size_t Size) const;
-    virtual size_t Write(const CryStream *FromStream,size_t Size);
-    virtual size_t Read(CryStream *ToStream) const;
-    virtual size_t Write(const CryStream *FromStream);
+    virtual size_t Read(Stream *ToStream,size_t Size) const;
+    virtual size_t Write(const Stream *FromStream,size_t Size);
+    virtual size_t Read(Stream *ToStream) const;
+    virtual size_t Write(const Stream *FromStream);
     virtual size_t Read(char *ToBuffer,size_t t) const;
     virtual size_t Write(const char *FromBuffer,size_t t);
     virtual size_t WriteNStr(const char *Buffer);
@@ -78,32 +79,32 @@ virtual int GetPropertyCount() const;
     int Pos(const char *s,size_t StartIndex);
     int Pos(const char *s) const;
     /// returns NULL if not found
-    const char *strstr(CryString &s) const;
+    const char *strstr(String &s) const;
     const char *strstr(const char *s) const;
-    int strncmp(CryString &s,size_t n) const;
+    int strncmp(String &s,size_t n) const;
     int strncmp(const char *s,size_t n) const;
-    int strcmp(CryString &s) const;
+    int strcmp(String &s) const;
     int strcmp(const char *s) const;
-    virtual CryString &Rev();
-    const char *strcat(CryString &s);
+    virtual String &Rev();
+    const char *strcat(String &s);
     const char *strcat(const char *s);
     const char *FormatHex(cbyte *data,size_t length);
-    const CryString *GetAddress();
+    const String *GetAddress();
     bool operator ==(const char *s) const ;
 	bool operator !=(const char *s) const;
-	CryString & operator +=(const char *s);
+	String & operator +=(const char *s);
 	virtual bool IsOpen() const;
     virtual int scanf(const char *format,...) const;
     virtual size_t printf(const char *format,...);
-    virtual CryString &TrimLeft();
-    virtual CryString &TrimRight();
-    virtual CryString &Trim();
-    virtual CryString &ToUpper();
-    virtual CryString &ToLower();
-    virtual CryString &Insert(int Index,const char *Text);
-    virtual CryString &Replace(const char *_Search,const char *_Replace=0);
-    virtual CryString &ReplaceAppend(const char *_Search,const char *_Replace,const char *_Append=0);
-    virtual CryString &ExclusiveAppend(const char *_Append);
+    virtual String &TrimLeft();
+    virtual String &TrimRight();
+    virtual String &Trim();
+    virtual String &ToUpper();
+    virtual String &ToLower();
+    virtual String &Insert(int Index,const char *Text);
+    virtual String &Replace(const char *_Search,const char *_Replace=0);
+    virtual String &ReplaceAppend(const char *_Search,const char *_Replace,const char *_Append=0);
+    virtual String &ExclusiveAppend(const char *_Append);
     /// returns offset from start of string or -1 if not found
     int SeekTextFromStart(const char *SearchString) const;
     /// returns offset from start of string or -1 if not found
@@ -115,15 +116,15 @@ virtual int GetPropertyCount() const;
     virtual bool Convert(int *i) const;
     virtual bool Convert(char *b,int len) const;
     //    virtual bool Convert(double *d) const;
-    CryString & operator =(const char *text);
-    CryString & operator = (const CryString *v);
-    CryString & operator = (const CryString &v);
+    String & operator =(const char *text);
+    String & operator = (const String *v);
+    String & operator = (const String &v);
     void SetValue(const char *_Value);
     virtual size_t Size() const;
     virtual bool HasProperty(const CryPropertyParser &PropertyName) const;
     virtual bool SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue);
 
-    virtual const char *GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const;
+    virtual const char *GetProperty(const CryPropertyParser &PropertyName,String &Result) const;
 #ifdef VALIDATING
 
     virtual bool Test(bool Verbose,Object &Object,bool (CallBack)(bool Verbose,const char *Result,bool fail));
@@ -139,6 +140,6 @@ virtual int GetPropertyCount() const;
 	virtual bool EqualTo(int CompareType,const Object *Test)const;
 	virtual int HashValue()const;
 }
-;//CryString
-#endif	// TCryString
+;//String
+#endif	// CString
 }

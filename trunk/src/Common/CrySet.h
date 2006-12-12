@@ -40,43 +40,43 @@ public:
 	int Pos(int v);	// returns -1 if not present, else returns position of value in set
 	bool operator==(CrySet &s);
 	bool operator!=(CrySet &s) { return ! (*this==s);};
-	virtual void GetEleType(CryString &Result) const
+	virtual void GetEleType(String &Result) const
 	{
 		Result = "int";	// values in set stored as int
 	}
-	virtual Object *Create(const CryPropertyParser &PropertyName,Object *Parent=0)
+	virtual Object *Create(const PropertyParser &PropertyName,Object *Parent=0)
 	{
 		if (PropertyName==CCrySet)
 			return new CrySet();
 		else
 			return TArray<int>::Create(PropertyName,Parent);
 	}
-	static Object *ClassCreate(const CryPropertyParser &PropertyName,Object *Parent=0)
+	static Object *ClassCreate(const PropertyParser &PropertyName,Object *Parent=0)
 	{
 		return new CrySet();
 	}
-	virtual bool SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue)
+	virtual bool SetProperty(const PropertyParser &PropertyName,const char *PropertyValue)
 	{
 		if (PropertyName=="int")
 		{
-		CryString v = PropertyValue;
+		String v = PropertyValue;
 			return LoadAsText((int)Size(),v);
 		}
 		return TArray<int>::SetProperty(PropertyName,PropertyValue);
 	}
-	virtual bool SetPropertyAsObject(const CryPropertyParser &PropertyName,Object *Value)
+	virtual bool SetPropertyAsObject(const PropertyParser &PropertyName,Object *Value)
 	{
 		return TArray<int>::SetPropertyAsObject(PropertyName,Value);
 	}
-	virtual bool SetPropertyAsObject(CryProperty *Value)
+	virtual bool SetPropertyAsObject(Property *Value)
 	{
 		return TArray<int>::SetPropertyAsObject(Value);
 	}
-	virtual const char *GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const
+	virtual const char *GetProperty(const PropertyParser &PropertyName,String &Result) const
 	{
 		return TArray<int>::GetProperty(PropertyName,Result);
 	}
-	virtual bool HasProperty(const CryPropertyParser &PropertyName)const
+	virtual bool HasProperty(const PropertyParser &PropertyName)const
 	{
 		return TArray<int>::HasProperty(PropertyName);
 	}

@@ -52,7 +52,7 @@ public:
     virtual bool IsContainer() const;
 	virtual void SetIsContainer(bool Enabled);
     /// will return the type of contained type used by the container. eg  CryStream::ListNode
-    virtual void GetEleType(CryString &Result) const = 0;
+    virtual void GetEleType(String &Result) const = 0;
 	/// Create an Iterator class which can be used for travesing the container
 	virtual Iterator *_CreateIterator() const = 0;
 	/// non virtual function
@@ -83,7 +83,7 @@ public:
 	/// abstract function used by subclasses to clear whatever is contained within the containers
 	virtual void Clear() = 0;
 	/// return a list of functions contained in this class
-	virtual CryFunctionDefList *GetFunctions(const char *Type=0) const;
+	virtual FunctionDefList *GetFunctions(const char *Type=0) const;
 	virtual EmptyObject *Add(EmptyObject *Item,size_t Size)  = 0;
 	virtual EmptyObject *AddOwned(EmptyObject *Item,size_t Size) = 0;
 	virtual Object *Add(Object *Item) = 0;    // returns Item
@@ -92,16 +92,16 @@ public:
 	virtual bool GetItemOwnerShip(const Iterator *I) const = 0;
 	virtual size_t GetItemSize(Iterator *I) const = 0;
 	virtual bool IsObject(const Iterator *I) const = 0;
-	virtual bool LoadAsText(Iterator *I,CryString &FromStream) = 0;
-	virtual bool SaveAsText(Iterator *I,CryString &ToStream) const = 0;
+	virtual bool LoadAsText(Iterator *I,String &FromStream) = 0;
+	virtual bool SaveAsText(Iterator *I,String &ToStream) const = 0;
 	bool IterateThroughAll(EmptyObject *Control); // for each item, will call bool (*FunctionToCall)(EmptyObject *); (unless 0)
 	/// returns true if all contained things where iterated through, FunctionToCall returns false if iteration should stop
 	//    bool IterateThroughAll(ClassCall *FunctionToCall);
 	virtual bool IteratedFunction(EmptyObject *Control,EmptyObject *Item);
-	virtual bool SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue);
-	virtual const char *GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const;
-	virtual Object *GetCopyOfPropertyAsObject(const CryPropertyParser &PropertyName) const;
-	virtual bool HasProperty(const CryPropertyParser &PropertyName) const;
+	virtual bool SetProperty(const PropertyParser &PropertyName,const char *PropertyValue);
+	virtual const char *GetProperty(const PropertyParser &PropertyName,String &Result) const;
+	virtual Object *GetCopyOfPropertyAsObject(const PropertyParser &PropertyName) const;
+	virtual bool HasProperty(const PropertyParser &PropertyName) const;
 	virtual int GetPropertyCount() const;
 	//    virtual const char* ChildClassName() const;
 	virtual CryPropertyList* PropertyNames() const;
@@ -144,10 +144,10 @@ class Iterator : public Object//EmptyObject
 
 		size_t GetItemSize();
 		//bool LoadAsText(CryString *FromStream) { return OrigContainer->LoadAsText(this,FromStream); }
-		bool SaveAsText(CryString &ToStream);
+		bool SaveAsText(String &ToStream);
 		const Container *GetOrigContainer() const;
 		/// return the type of structure used to control this list (ie listnode eleptr, etc)
-		void GetEleType(CryString &Result) const;
+		void GetEleType(String &Result) const;
 		virtual bool IsA(const char *ClassName) const    // can the object map to a ClassName
 		{
 			return (strcmp(ClassName,TIterator)==0);

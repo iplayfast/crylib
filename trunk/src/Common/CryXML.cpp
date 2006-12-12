@@ -28,7 +28,7 @@
 using namespace Crystal;
 
 
-void XMLNode::SaveTo(CryStream &ToStream) const
+void XMLNode::SaveTo(Stream &ToStream) const
 {
     for (int i=0;i<ToStream.Tag;i++)	//add some indenting
         ToStream.printf("  ");
@@ -39,9 +39,9 @@ void XMLNode::SaveTo(CryStream &ToStream) const
     {
         do
         {
-            CryString a;
+            String a;
 //		const CryProperty *p = (const CryProperty *) li->Get();
-            CryString Value;
+            String Value;
             li->GetValue(Value);
             Value.Replace("&","&amp;");
             Value.Replace("<","&lt;");
@@ -91,7 +91,7 @@ void XMLNode::SaveTo(Object &ToObject) const
     if (!ToObject.IsA(Type))
     {
         ToObject.IsA(Type);
-        throw CryException(this,ExceptionSaveToDifferentType,"SaveTo Object of different Type");
+        throw Exception(this,ExceptionSaveToDifferentType,"SaveTo Object of different Type");
     }
     CryPropertyList::PropertyIterator * pi = _Attributes->CreateIterator();
     if (pi->GotoFirst())
@@ -104,7 +104,7 @@ void XMLNode::SaveTo(Object &ToObject) const
 //        if (ToObject.HasProperty(p->GetName()))
             if (ToObject.CanHaveProperty(c))
             {
-                CryString Result;
+                String Result;
                 pi->GetValue(Result);
                 ToObject.SetProperty(c,Result.AsPChar());
 
@@ -123,14 +123,14 @@ void XMLNode::SaveTo(Object &ToObject) const
             {
                 if (current->Type=="")
                 {
-                    CryString Result;
+                    String Result;
 //					ToObject.SetProperty(current->Type.AsPChar(),current->_Attributes(Result));
                     CryPropertyList::PropertyIterator *ai = current->_Attributes->CreateIterator();
                     if (ai->GotoFirst())
                     {
                         do
                         {
-                            CryString Value;
+                            String Value;
                             ToObject.SetProperty(ai->GetName()->AsPChar(),ai->GetValue(Value));
                         }
                         while (ai->GotoNext());
@@ -145,15 +145,15 @@ void XMLNode::SaveTo(Object &ToObject) const
             else // The object isn't a container so the property must be one
             {
                 Object *o = current->CreateObjectFromNode(&ToObject);
-                if (o->IsA(CCryProperty))
+                if (o->IsA(CProperty))
                 {
-                    ToObject.SetPropertyAsObject((CryProperty *)o);
+                    ToObject.SetPropertyAsObject((Property *)o);
                     delete o;
                 }
                 else
                 {
                     delete o;
-                    throw CryException("Setting Unknown ObjectType as Property");
+                    throw Exception("Setting Unknown ObjectType as Property");
                 }
             }
         }
@@ -163,14 +163,14 @@ void XMLNode::SaveTo(Object &ToObject) const
 }
 
 // load this Node and subnodes from the stream
-void XMLNode::LoadFrom(const CryStream &FromStream)
+void XMLNode::LoadFrom(const Stream &FromStream)
 {
     bool	 WithinQuote = false,GettingEndName = false,GettingEquals=false,GettingAttribute = false;
     bool GettingAttributeValue = false,FoundLetter = false,AtStart = true,Escaped = false,AddChar;
 
 #ifdef DEBUGGING
 	bool AtEnd = false,Done = false;
-	CryString v;
+	String v;
 #endif
 	char Buff[2];
 #ifdef DEBUGGING
@@ -178,7 +178,7 @@ void XMLNode::LoadFrom(const CryStream &FromStream)
 	char LastChar;
 #endif
 
-	CryString LocName,Attribute,Value,EndName;
+	String LocName,Attribute,Value,EndName;
 	AtStart = !GettingName; // normally GettingName is false on construction, but if being called recursivly
 	// it will be true (becaues '<' was already found
 	Buff[0] = Buff[1] = '\0';
@@ -200,7 +200,7 @@ void XMLNode::LoadFrom(const CryStream &FromStream)
 			{
 				if (GettingAttribute && (Attribute.Length()==0) && (Value.Length()==0) )
 					return; // done!
-				throw CryException(&FromStream,"Bad /> sequence near line ",FromStream.Tag);
+				throw Exception(&FromStream,"Bad /> sequence near line ",FromStream.Tag);
 			}
 		}
 		else
@@ -231,12 +231,12 @@ void XMLNode::LoadFrom(const CryStream &FromStream)
                         FoundLetter = false;
                         break;
                     }
-                    throw CryException(&FromStream,"Misplaced = near line ",FromStream.Tag);
+                    throw Exception(&FromStream,"Misplaced = near line ",FromStream.Tag);
                 case '>':
                     if (GettingEndName)
                     {
                         if (EndName!=LocName)
-                            throw CryException(&FromStream,"Name End Name mismatch near line ",FromStream.Tag);
+                            throw Exception(&FromStream,"Name End Name mismatch near line ",FromStream.Tag);
                         Type.SetValue(LocName);
                         return;
                     }
@@ -250,7 +250,7 @@ void XMLNode::LoadFrom(const CryStream &FromStream)
                         GettingEndName = true;
                         break;
                     }
-                    throw CryException(&FromStream,"Bad > near line ",FromStream.Tag);
+                    throw Exception(&FromStream,"Bad > near line ",FromStream.Tag);
                 case ' ':
                     if (WithinQuote)
                         break;
@@ -302,7 +302,7 @@ void XMLNode::LoadFrom(const CryStream &FromStream)
                         continue;
                     }
                     else
-                        throw CryException(&FromStream,"Unexpected \" near line ",FromStream.Tag);
+                        throw Exception(&FromStream,"Unexpected \" near line ",FromStream.Tag);
                     //                break;  // unreachable
                 case '/':
                     if ((GettingName && FoundLetter) || GettingAttributeValue || GettingAttribute)
@@ -337,7 +337,7 @@ void XMLNode::LoadFrom(const CryStream &FromStream)
 
                         }
                         else
-                            throw CryException(&FromStream,"Bad < near line ",FromStream.Tag);
+                            throw Exception(&FromStream,"Bad < near line ",FromStream.Tag);
                     break;
                 default:
                     if ((Buff[0]=='.') || (isalnum(Buff[0])) || (isprint(Buff[0])))
@@ -383,13 +383,13 @@ if (pn->Sortable())       /* TODO : Need to reimplment this for CryPropertyList 
     CryPropertyList::PropertyIterator *i = pn->CreateIterator();
     try
     {
-        CryString Result;
+        String Result;
 //       Type = FromObject.ChildClassName();
         if (i->GotoFirst())
         {
             do
             {
-                const CryString *item =  i->GetName();
+                const String *item =  i->GetName();
                 const char *c = *item;
                 Result.Clear();
                 //        Result.SeekFromStart(0);
@@ -408,7 +408,7 @@ if (pn->Sortable())       /* TODO : Need to reimplment this for CryPropertyList 
                         delete o;
                         //			n->Type = c;
                         if (n->Type.Pos(" ")>=0)
-                            throw CryException("Can't have space in Type");
+                            throw Exception("Can't have space in Type");
                         SubNodes.AddOwned(n);
                     }
                     else
@@ -428,8 +428,8 @@ if (pn->Sortable())       /* TODO : Need to reimplment this for CryPropertyList 
 									}
 									else
 									{
-										CryString e;
-										CryString t;
+										String e;
+										String t;
 										cc->GetEleType(t);
 										n->Type = "";
 										if (!cc->SaveAsText(I,e))  // try to save it to e
@@ -452,8 +452,8 @@ if (pn->Sortable())       /* TODO : Need to reimplment this for CryPropertyList 
                         else    // The object isn't a container so the property must be one
                         {
 							XMLNode *n = new XMLNode(c);
-							CryPropertyParser PropertyName(item->AsPChar());
-							CryProperty *o = FromObject.GetPropertyAsCryProperty(PropertyName);
+							PropertyParser PropertyName(item->AsPChar());
+							Property *o = FromObject.GetPropertyAsCryProperty(PropertyName);
 							n->LoadFrom(*o);
 							SubNodes.AddOwned(n);
 							if (o->IsA(CArray))
@@ -475,7 +475,7 @@ if (pn->Sortable())       /* TODO : Need to reimplment this for CryPropertyList 
 		pn->DeleteIterator(i);
 		delete(pn);
 	}
-	catch (CryException &e)
+	catch (Exception &e)
 	{
 		pn->DeleteIterator(i);
 		delete pn;
@@ -493,8 +493,8 @@ Object *XMLNode::CreateObjectFromNode(Object *Parent)
         ParentType = Parent->ChildClassName();
     else
         ParentType = 0;
-    CryString NameToCreate;
-    const CryPropertyParser PropertyName(Type);
+    String NameToCreate;
+    const PropertyParser PropertyName(Type);
     if (Parent)
         f = Parent->Create(PropertyName,Parent);
     else
@@ -502,7 +502,7 @@ Object *XMLNode::CreateObjectFromNode(Object *Parent)
     if (f==0)
         f = Parent->Create(c,Parent);
     if (f==0)
-        throw CryException("Class %s failed construction", c);
+        throw Exception("Class %s failed construction", c);
     SaveTo(*f);
     return f;
     /*
@@ -542,7 +542,7 @@ Object *XMLNode::CreateObjectFromNode(Object *Parent)
                    else
                    {
                        delete o;
-                       throw CryException("Setting Unknown ObjectType as Property");
+                       throw Exception("Setting Unknown ObjectType as Property");
                    }
                }
                ln = ln->Next;
@@ -563,7 +563,7 @@ Object *CryXML::CreateObjectFromNode(Object *Parent)
         return head->CreateObjectFromNode(Parent);
     else
     {
-        throw CryException("Creating Object from empty XML node");
+        throw Exception("Creating Object from empty XML node");
         //    return 0;
     }
 }

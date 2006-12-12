@@ -100,22 +100,20 @@ using namespace std;
 #define cbyte unsigned char
 #endif
 class Object;
-class CryNamedObject;
-class CryStream;
-class CryString;
-class CryException;
-class CryStdStream;
-class CryProperty;
-class CryFunctionDef;
-class List;
-class CryFunctionDefList;
+class Stream;
+class String;
+class Exception;
+class Property;
+class FunctionDef;
+class Property;
+class FunctionDefList;
 class Container;
-class CryPropertyParser;
+class PropertyParser;
 class CryPropertyList;
 
 /// this is the base class for any object which will be created or destroyed
 struct EmptyObject
-    {}
+	{}
 ;
 
 
@@ -143,11 +141,11 @@ public:
 		/* The following structures are all possible contexts of the data exchange of internal functions */
 		struct _InTo
 		{
-			CryStream *ToStream;
+			Stream *ToStream;
 		};
 		struct _InLoad
 		{
-			CryStream *FromStream;
+			Stream *FromStream;
 		};
 		struct _Object
 		{
@@ -211,7 +209,7 @@ public:
     /// returns the size of an object (in this case 0)
     virtual size_t Size() const;
     /// will attempt to create an object of the type specified in PropertyName
-    virtual Object *CreateItemType(const CryPropertyParser &PropertyName);
+    virtual Object *CreateItemType(const PropertyParser &PropertyName);
 
     /// returns a pointer to a string stating the current class Name, Eg Object (not CryString which would be a child class)
     const char* ClassName() const;
@@ -230,14 +228,14 @@ public:
     // not used?  fixme
     //Object *LoadItem(CryStream &FromStream);
     /// returns a list of public functions for a class (including the abstract ones)
-    virtual CryFunctionDefList *GetFunctions(const char *Type=0) const;
+    virtual FunctionDefList *GetFunctions(const char *Type=0) const;
 
     /*! returns a list of the abstract functions for a class
     	as this function is virtual it will go to any decendants first, and each of them
     	calls it's base GetFunctions After all the functions are retrieved, 
     	all the virtual fuctions are collected, which have not been overrode by non-virtual
     	functions  */
-    virtual CryFunctionDefList *GetAbstractFunctions(const char *Type) const;
+    virtual FunctionDefList *GetAbstractFunctions(const char *Type) const;
 
 	virtual int Compare(int CompareType,const Object *Test1,const Object *Test2) const;
 	/*! will return a value showing a comparison result using CompareType. Used by derived classes
@@ -257,28 +255,28 @@ public:
      */
     virtual bool IsContainer() const;
 	/// will return the value of a property, or if the property is an array, a text string representing the array
-	virtual CryProperty *GetPropertyAsCryProperty(const CryPropertyParser &PropertyName) const;
+	virtual Property *GetPropertyAsCryProperty(const PropertyParser &PropertyName) const;
 	/// will return a property represented as an object, useful for classes which contain properties that are dynamically allocated, as a property that is dynamic is a Object and therefore callable
-	virtual Object *GetCopyOfPropertyAsObject(const CryPropertyParser &PropertyName) const;
+	virtual Object *GetCopyOfPropertyAsObject(const PropertyParser &PropertyName) const;
 	/// will return a pointer to the property if the property is an Object (or decendent)
-	virtual Object *_GetPropertyAsObject(const CryPropertyParser &PropertyName) const;
+	virtual Object *_GetPropertyAsObject(const PropertyParser &PropertyName) const;
 	/// will return whether or not the property named in PropertyName is a container
-    virtual bool GetIsPropertyContainer(const CryPropertyParser &PropertyName) const;
+    virtual bool GetIsPropertyContainer(const PropertyParser &PropertyName) const;
 
     /*! will return a const char * and a Result showing the property's value, usually the const char * will point to the first character of the Result, however in the case of a property that is an array, the const char * will point to a "*", and the result will return a "[]"
     in this case you will need to use GetPropertyAsCryProperty
     */
-    const char *GetProperty(const char *PropertyName,CryString &Result) const;
+    const char *GetProperty(const char *PropertyName,String &Result) const;
 
     /*! will return a const char * and a Result showing the property's value, usually the const char * will point to the first character of the Result, however in the case of a property that is an array, the const char * will point to a "*", and the result will return a "[]"
     in this case you will need to use GetPropertyAsCryProperty
     */
-    virtual const char *GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const;
+    virtual const char *GetProperty(const PropertyParser &PropertyName,String &Result) const;
 
     /// returns true if the class in question has the property
-    virtual bool HasProperty(const CryPropertyParser &PropertyName) const;
+    virtual bool HasProperty(const PropertyParser &PropertyName) const;
     /*! returns true if the class in question can have the property. Useful for determining if a class can accept dynamic properties */
-	virtual bool CanHaveProperty(const CryPropertyParser &PropertyName) const;
+	virtual bool CanHaveProperty(const PropertyParser &PropertyName) const;
     /// The count of the properties a class has
     virtual int GetPropertyCount() const;
 
@@ -286,22 +284,22 @@ public:
 	virtual CryPropertyList* PropertyNames() const;
 
     /// set the value of a property
-    virtual bool SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue);
-    virtual bool SetPropertyAsObject(CryProperty *Value);
+    virtual bool SetProperty(const PropertyParser &PropertyName,const char *PropertyValue);
+    virtual bool SetPropertyAsObject(Property *Value);
     /*! save (in xml format) to a stream, stream pays attention to it's mode and will compress the data if mode is SObject, if it's SText, it saves as text.*/
-    virtual void SaveTo(CryStream &ToStream) const; // xml save
+    virtual void SaveTo(Stream &ToStream) const; // xml save
     /// load a previously saved (in xml format) stream
-    virtual void LoadFrom(const CryStream &FromStream); // xml load
+    virtual void LoadFrom(const Stream &FromStream); // xml load
 	/// create an object (or container of objects) from the stream
-	virtual Object *Create(CryStream &FromStream);
+	virtual Object *Create(Stream &FromStream);
 
 	/*! will create an object of the Type named in Type. In container classes where the Type is the contained object, the Parent must be the appropriete container type or a derived class which can create the object (if the default class can't) */
-	virtual Object *Create(const CryPropertyParser &PropertyName,Object *Parent=0);
+	virtual Object *Create(const PropertyParser &PropertyName,Object *Parent=0);
 	/*! will create an object of the Type named in Type. In container classes where the Type is the contained object, the Parent must be the appropriete container type or a derived class which can create the object (if the default class can't) */
-	static Object *ClassCreate(const CryPropertyParser &PropertyName,Object *Parent=0);
+	static Object *ClassCreate(const PropertyParser &PropertyName,Object *Parent=0);
 
-	virtual bool CanCreate(const CryPropertyParser &PropertyName) const;
-	static bool ClassCanCreate(const CryPropertyParser &PropertyName);
+	virtual bool CanCreate(const PropertyParser &PropertyName) const;
+	static bool ClassCanCreate(const PropertyParser &PropertyName);
 
     //virtual size_t printf(const char *format,...)= 0;
     //virtual CryStream * sprintf(CryStream *s,const char *format,...)= 0;
@@ -338,8 +336,8 @@ public:
 	Object *GetOwner() const { return Owner; }
 /*! will create an object of the Type named in Type. In container classes where the Type is the contained object, the
 	Parent must be the appropriete container type or a derived class which can create the object (if the default class can't) */
-	virtual Object *Create(const CryPropertyParser &PropertyName,Object *Parent=0);
-	virtual Object *Create(CryStream &e) { return Object::Create(e); }
+	virtual Object *Create(const PropertyParser &PropertyName,Object *Parent=0);
+	virtual Object *Create(Stream &e) { return Object::Create(e); }
 };
 
 
