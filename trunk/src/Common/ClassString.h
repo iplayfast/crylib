@@ -58,7 +58,7 @@ public:
     // SetLength set's the position of the asciiz, ie 0 = ""
     virtual void SetLength(int i);
     virtual int Seek(int offset,int whence) const;
-	virtual CryPropertyList* PropertyNames() const;
+	virtual PropertyList* PropertyNames() const;
 virtual int GetPropertyCount() const;
     String &Delete(int start,int amount);
     //    const char* ClassName() const;
@@ -121,10 +121,10 @@ virtual int GetPropertyCount() const;
     String & operator = (const String &v);
     void SetValue(const char *_Value);
     virtual size_t Size() const;
-    virtual bool HasProperty(const CryPropertyParser &PropertyName) const;
-    virtual bool SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue);
+	virtual bool HasProperty(const PropertyParser &PropertyName) const;
+	virtual bool SetProperty(const PropertyParser &PropertyName,const char *PropertyValue);
 
-    virtual const char *GetProperty(const CryPropertyParser &PropertyName,String &Result) const;
+    virtual const char *GetProperty(const PropertyParser &PropertyName,String &Result) const;
 #ifdef VALIDATING
 
     virtual bool Test(bool Verbose,Object &Object,bool (CallBack)(bool Verbose,const char *Result,bool fail));

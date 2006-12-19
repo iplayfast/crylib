@@ -164,9 +164,9 @@ int HeadImp::GetPropertyCount() const
     return Object::GetPropertyCount() + 2;
 }
 /*! Make a list of all property names, the function is called from the parent class through each inheritance until it reaches this class, at which point a list is created and filled with any properties on the way back through the inheritance */
-CryPropertyList* HeadImp::PropertyNames() const
+PropertyList* HeadImp::PropertyNames() const
 {
-	CryPropertyList *n = Object::PropertyNames();
+	PropertyList *n = Object::PropertyNames();
 	n->AddPropertyByName("Declaration",this);
 	n->AddPropertyByName("Implementation",this);
 	return n;

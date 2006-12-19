@@ -84,7 +84,7 @@ public:
 	{
 		return TArray<int>::GetPropertyCount();
 	}
-	virtual CryPropertyList* PropertyNames() const
+	virtual PropertyList* PropertyNames() const
 	{
 		return TArray<int>::PropertyNames();
 	}

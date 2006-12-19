@@ -866,9 +866,9 @@ bool  ClassBuilder::SetProperty(const PropertyParser &PropertyName,const char *P
 
 }
 
-CryPropertyList *ClassBuilder::PropertyNames() const
+PropertyList *ClassBuilder::PropertyNames() const
 {
-	CryPropertyList *pn = CodeFactory::PropertyNames();
+	PropertyList *pn = CodeFactory::PropertyNames();
 	pn->AddPropertyByName("ClassType",this);
 	return pn;
 };
@@ -884,10 +884,10 @@ void ClassBuilder::Build()
 }
 void ClassBuilder::AssignInheritedElements()
 {
-CryPropertyList *Properties = p->PropertyNames();
+PropertyList *Properties = p->PropertyNames();
 
-	CryPropertyList::PropertyIterator *pi =
-		(CryPropertyList::PropertyIterator *)Properties->_CreateIterator();
+	PropertyList::PropertyIterator *pi =
+		(PropertyList::PropertyIterator *)Properties->_CreateIterator();
 
 	if (pi->GotoFirst())
 		do
@@ -1162,7 +1162,7 @@ Object *IncludesFactory::Create(const Object *p,const PropertyParser &PropertyNa
 	AddInclude(p,CObject,CurrentIncludes,"ClassException.h");	// always need this one
 	AddInclude(p,CContainer,CurrentIncludes,"ClassContainer.h");
 	AddInclude(p,CProperty,CurrentIncludes,"ClassProperty.h");
-	AddInclude(p,CCryPropertyList,CurrentIncludes,"ClassProperty.h");
+	AddInclude(p,CPropertyList,CurrentIncludes,"ClassProperty.h");
 	AddInclude(p,CList,CurrentIncludes,"ClassList.h");
 	AddInclude(p,CStream,CurrentIncludes,"ClassStream.h");
 	AddInclude(p,CCryFileStream,CurrentIncludes,"ClassFileStream.h");
@@ -1325,9 +1325,9 @@ int InheritedFactory::GetPropertyCount() const
     return CodeFactory::GetPropertyCount()+1;
 }
 /*! Make a list of all property names, the function is called from the parent class through each inheritance until it reaches this class, at which point a list is created and filled with any properties on the way back through the inheritance */
-CryPropertyList *InheritedFactory::PropertyNames() const
+PropertyList *InheritedFactory::PropertyNames() const
 {
-	CryPropertyList *l = CodeFactory::PropertyNames();
+	PropertyList *l = CodeFactory::PropertyNames();
 	l->AddPropertyByName("Function",this);
 	return l;
 }
@@ -1411,7 +1411,7 @@ Object *InheritedFactory::Create(const PropertyParser &PropertyName,CodeFactory 
 				if (cf->IsA(CProperty))
 					PropertyStart.printf("PropertyName==%s.GetName()",N);
 				else
-				if (cf->IsA(CCryPropertyList))
+				if (cf->IsA(CPropertyList))
 					PropertyStart.printf("%s.HasProperty(PropertyName)",N);
 				else
 					PropertyStart.printf("PropertyName==\"%s\"",N);
@@ -1451,7 +1451,7 @@ String PropertyStart;
 if (AClassInstance->IsA(CProperty))
 	PropertyStart.printf("PropertyName==%s.GetName()",N);
 else
-	if (AClassInstance->IsA(CCryPropertyList))
+	if (AClassInstance->IsA(CPropertyList))
 		PropertyStart.printf("%s.HasProperty(PropertyName)",N);
 	else
 		PropertyStart.printf("PropertyName==T%s",N);
@@ -1603,7 +1603,7 @@ else
             }
 
         }
-	fd.Parse("virtual CryPropertyList *PropertyNames() const");
+	fd.Parse("virtual PropertyList *PropertyNames() const");
 	fd.GetNPDeclaration(Tester);
 	if (Header==Tester)
 	{
@@ -1619,8 +1619,8 @@ else
 		Implementation.printf("\n// now add our own properties (if any)");
 		{
 		bool Found = false;
-		CryPropertyList *Names = p->Getp()->PropertyNames();
-		CryPropertyList::PropertyIterator *i = Names->CreateIterator();
+		PropertyList *Names = p->Getp()->PropertyNames();
+		PropertyList::PropertyIterator *i = Names->CreateIterator();
 		if(i->GotoFirst())
 		{
 			do

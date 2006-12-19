@@ -104,7 +104,7 @@ public:
 	virtual bool HasProperty(const PropertyParser &PropertyName) const;
 	virtual int GetPropertyCount() const;
 	//    virtual const char* ChildClassName() const;
-	virtual CryPropertyList* PropertyNames() const;
+	virtual PropertyList* PropertyNames() const;
 	virtual bool Sortable() const;
 	virtual void Sort(int CompareType=0);
 	//! Compare the contained items (Used in sorting)

@@ -166,7 +166,7 @@ StdFunctionsNoDup(SimpleArray,Container);
 	{
 		return Container::GetPropertyCount() + 3;
 	}
-	virtual CryPropertyList* PropertyNames() const;
+	virtual PropertyList* PropertyNames() const;
 
 	virtual void SetSize(size_t _Size)	=0;
 
@@ -235,6 +235,7 @@ public:
 	{
 		throw Exception("GetEleType needs to be added from CryTArray");
 	}
+
 		/*! will create an object of the Type named in Type. In container classes where the Type is the contained object, the Parent must be the appropriete container type or a derived class which can create the object (if the default class can't) */
 	virtual Object *Create(const PropertyParser &PropertyName,Object *Parent=0)
 	{
@@ -285,59 +286,76 @@ public:
 		throw Exception("Class needs to be expanded");
 	}
 //	void SetSize(size_t _Size);
-void SetSize(size_t _Size)
-{
-	if ((MaxCount < 1000) && (MaxCount>_Size)) {
-		return;	// we're good
+	void SetSize(size_t _Size)
+	{
+		if ((MaxCount < 1000) && (MaxCount>_Size)) {
+			return;	// we're good
+		}
+		T *n = new T[_Size];
+		SetMax(_Size);
+		int CopyAmount = CurrentCount;
+		if (_Size<CurrentCount)
+			CopyAmount = _Size;
+		for(int i=0;i<CopyAmount;i++)
+			n[i] = Values[i];
+	//	for(unsigned int i=CopyAmount;i<_Size;i++)
+	//		n[i] = GetDefault();  // default value for <T>
+		delete []Values;
+		Values = n;
 	}
-	T *n = new T[_Size];
-	SetMax(_Size);
-	int CopyAmount = CurrentCount;
-	if (_Size<CurrentCount)
-		CopyAmount = _Size;
-	for(int i=0;i<CopyAmount;i++)
-		n[i] = Values[i];
-//	for(unsigned int i=CopyAmount;i<_Size;i++)
-//		n[i] = GetDefault();  // default value for <T>
-	delete []Values;
-	Values = n;
-}
 
-	virtual bool SetProperty(const PropertyParser &PropertyName,const char *PropertyValue);
+	virtual bool SetProperty(const PropertyParser &PropertyName,const char *PropertyValue)
+	{
+		if (PropertyName=="CurrentCount")
+		{
+			CurrentCount = atoi(PropertyValue);
+			return true;
+		}
+		if (PropertyName=="Type")	// read only
+			return true;
+		return SimpleArray::SetProperty(PropertyName,PropertyValue);
+	}
 
 	virtual bool HasProperty(const PropertyParser &PropertyName)const
 	{
 		return PropertyName=="Type" ||
+				PropertyName=="CurrentCount" ||
 			SimpleArray::HasProperty(PropertyName);
 	}
 
-	
+
 	virtual int GetPropertyCount() const
 	{
-		return SimpleArray::GetPropertyCount() + 1;
+		return SimpleArray::GetPropertyCount() + 2;
 	}
 
 
 
-CryPropertyList* PropertyNames() const
-{
-		CryPropertyList *n = SimpleArray::PropertyNames();
-		n->AddPropertyByName("Type",this);
-//		n->AddPropertyByName("Values",this);
-		return n;
-}
+	PropertyList* PropertyNames() const
+	{
+			PropertyList *n = SimpleArray::PropertyNames();
+			n->AddPropertyByName("Type",this);
+			n->AddPropertyByName("CurrentCount",this);
+	//		n->AddPropertyByName("Values",this);
+			return n;
+	}
 	const char *GetProperty(const PropertyParser &PropertyName,String &Result) const
 	{
-	Result.Clear();
-	if (PropertyName=="Type")
-	{
-		GetEleType(Result);
-		return Result;
-	}
-	if (PropertyName=="Values") {
-		Result = "[]";  // if Result != what is returned, it's a special situation
-		return "*";
-	}
+		Result.Clear();
+		if (PropertyName=="Type")
+		{
+			GetEleType(Result);
+			return Result;
+		}
+		if (PropertyName=="CurrentCount")
+		{
+			Result.printf("%d",CurrentCount);
+			return Result.AsPChar();
+		}
+/*		if (PropertyName=="Values") {
+			Result = "[]";  // if Result != what is returned, it's a special situation
+			return "*";
+		}*/
 		return SimpleArray::GetProperty(PropertyName,Result);
 	}
 	virtual Object *Dup()const // creates a duplicate of this object
@@ -370,7 +388,7 @@ CryPropertyList* PropertyNames() const
 	{
 		throw Exception("CryTarray needs SaveAsText");
 	}
-	
+
 	void SetItem(unsigned int i,EmptyObject *Item,bool IsObject,bool IsOwned,size_t Size)
 	{
 		SetValue(i,*(T*)Item);
@@ -395,7 +413,7 @@ TArray<T> &Delete(int start,int amount)
 	if (start+amount>=MaxCount) {
 		amount = MaxCount - start;
 		if (amount<=0) {
-            return *this;
+			return *this;
 		}
 	}
 	while(start<Size())
@@ -513,7 +531,7 @@ template<>
 void TArray<int>::GetEleType(String &Result) const
 {
 	Result = "int";
-}
+} 
 
 template<>
 bool TArray<int>::LoadAsText(int i,String &FromStream)
@@ -521,6 +539,8 @@ bool TArray<int>::LoadAsText(int i,String &FromStream)
 	int v;
 	FromStream.scanf("%d ",&v);
 	SetValue(i,v);
+	FromStream.Delete(0,FromStream.Pos(" "));
+	FromStream.TrimLeft();
 	return true;
 }
 template<>
@@ -530,16 +550,45 @@ bool TArray<int>::SaveAsText(int i,String &ToStream) const
 	return true;
 }
 template<>
+/*const char *TArray<int>::GetProperty(const PropertyParser &PropertyName,String &Result) const
+{
+	if (PropertyName=="Type")
+	{
+		Result = "int";
+		return Result.AsPChar();
+	}
+	if (PropertyName=="int")
+	{
+		Result = "[]";  // if Result != what is returned, it's a special situation, in this case pointer to an array of weights
+		return "*";
+	}
+	if (PropertyName=="*int")
+	{
+		for(int i=0;i<CurrentCount;i++)
+			Result.printf("%d ",Values[i]);
+		return Result.AsPChar();
+	}
+	return SimpleArray::GetProperty(PropertyName,Result);
+}
+  */
+/*template<>
 bool TArray<int>::SetProperty(const PropertyParser &PropertyName,const char *PropertyValue)
 {
-	if (PropertyName=="CurrentCount")
+	if (PropertyName=="int")
 	{
-		SetValue(CurrentCount,atoi(PropertyValue));
+	String Pv = PropertyValue;
+		Pv.SeekFromStart(0);
+		for(int i=0;i<CurrentCount;i++)
+		{
+		int v;
+			Pv.scanf("%d ",&v);
+			SetValue(i,v);
+		}
 		return true;
 	}
 	return SimpleArray::SetProperty(PropertyName,PropertyValue);
 }
-
+*/
 	/*! will create an object of the Type named in Type. In container classes where the Type is the contained object, the Parent must be the appropriete container type or a derived class which can create the object (if the default class can't) */
 Object *TArray<float>::Create(const PropertyParser &PropertyName,Object *Parent)
 {
@@ -553,7 +602,7 @@ template<>
 void TArray<float>::GetEleType(String &Result) const
 {
 	Result = "float";
-}
+} 
 template<>
 bool TArray<float>::SetProperty(const PropertyParser &PropertyName,const char *PropertyValue)
 {
@@ -671,7 +720,7 @@ StdFunctionsNoDup(Array,SimpleArray);
 	{
 		return SimpleArray::GetPropertyCount() + 2;
 	}
-	virtual CryPropertyList* PropertyNames() const;
+	virtual PropertyList* PropertyNames() const;
 	virtual EmptyObject *GetAtIterator(const Iterator *I) const
 	{
 		int i = IteratorValue(I);
@@ -846,7 +895,7 @@ StdFunctionsNoDup(DoubleArray,SimpleArray);
 	virtual const char *GetProperty(const PropertyParser &PropertyName,String &Result) const;
 	virtual bool HasProperty(const PropertyParser &PropertyName)const;
 	virtual int GetPropertyCount() const;
-	virtual CryPropertyList* PropertyNames() const;
+	virtual PropertyList* PropertyNames() const;
 	virtual bool IsEmpty(const Iterator *I) const {  return ((ArrayIterator *)I)->i>CurrentCount; }
 };
 
@@ -888,7 +937,7 @@ virtual void GetEleType(String &Result) const;
 //virtual bool GotoFirst(Iterator *I) const;
 //virtual bool GotoLast(Iterator *Iterator) const;
 virtual EmptyObject *GetAtIterator(const Iterator *I) const;
-virtual CryPropertyList *PropertyNames() const;
+virtual PropertyList *PropertyNames() const;
 
 virtual void CopyTo(Object &Dest) const;
 

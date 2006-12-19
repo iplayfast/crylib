@@ -784,9 +784,9 @@ const char *List::GetProperty(const PropertyParser &PropertyName,String &Result)
 		return Container::GetProperty(PropertyName,Result);
 }
 
-CryPropertyList *List::PropertyNames() const
+PropertyList *List::PropertyNames() const
 {
-	CryPropertyList *n = Container::PropertyNames();
+	PropertyList *n = Container::PropertyNames();
 	return n;
 }/*
  * This is the actual sort function. Notice that it returns the new

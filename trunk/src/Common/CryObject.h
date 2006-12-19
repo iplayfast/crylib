@@ -109,7 +109,7 @@ class Property;
 class FunctionDefList;
 class Container;
 class PropertyParser;
-class CryPropertyList;
+class PropertyList;
 
 /// this is the base class for any object which will be created or destroyed
 struct EmptyObject
@@ -281,7 +281,7 @@ public:
     virtual int GetPropertyCount() const;
 
     /*! Make a list of all property names, the function is called from the parent class through each inheritance until it reaches this class, at which point a list is created and filled with any properties on the way back through the inheritance */
-	virtual CryPropertyList* PropertyNames() const;
+	virtual PropertyList* PropertyNames() const;
 
     /// set the value of a property
     virtual bool SetProperty(const PropertyParser &PropertyName,const char *PropertyValue);

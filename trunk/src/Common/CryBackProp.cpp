@@ -26,6 +26,7 @@
 #include "Utility.h"
 #include "ClassException.h"
 #include "ClassFileStream.h"
+#include "CryXML.h"
 
 using namespace Crystal;
 using namespace std;
@@ -35,7 +36,7 @@ BackPropagateLayer::BackPropagateLayer(CryBPNet *_Owner)
     SetID(-1);
     LayerSize = 0;
     Owner = _Owner;
-    //id = -1;
+	//id = -1;
 }
 FunctionDefList *BackPropagateLayer::GetFunctions(const char *Type) const
 {
@@ -62,9 +63,9 @@ String s;
 	l->LoadFromString(s,";");
 	return l;
 }
-CryPropertyList *BackPropagateLayer::PropertyNames() const
+PropertyList *BackPropagateLayer::PropertyNames() const
 {
-	CryPropertyList *n = Object::PropertyNames();
+	PropertyList *n = Object::PropertyNames();
 	n->AddPropertyByName("Size",this);
 	if (GetID()!=0)
 		n->AddPropertyByName("Weights",this);
@@ -231,15 +232,22 @@ String s;
 	l->LoadFromString(s,";");
     return l;
 }
+	/// will return whether or not the property named in PropertyName is a container
+bool CryBPNet::GetIsPropertyContainer(const PropertyParser &PropertyName) const
+{
+	if (PropertyName=="Layer")
+		return true;
+	return Array::GetIsPropertyContainer(PropertyName);
+}
 
 void CryBPNet::SetAllWeights()	// allocate the actual array of doubles
 {
     int n = 0,ps = 0;
-    for(unsigned int i=0;i<Count();i++)// for each layer
-    {
-        BackPropagateLayer *L =(BackPropagateLayer *)GetItem(i);
-        L->SetID(i);    // set layer id
-        int s = L->LayerSize;   
+	for(unsigned int i=0;i<Count();i++)// for each layer
+	{
+		BackPropagateLayer *L =(BackPropagateLayer *)GetItem(i);
+		L->SetID(i);    // set layer id
+		int s = L->LayerSize;
         L->PreviousLayerSize = ps;
         L->OutputStart = n;
         n += s;
@@ -276,7 +284,7 @@ void CryBPNet::SetAllWeights()	// allocate the actual array of doubles
     else
         for(int i=0;i<n;i++)
             NewWeights[i] = RandomDouble(-1,1);
-    AllWeights = NewWeights;
+	AllWeights = NewWeights;
     AllWeightsSize = n;
 }
 /// derived class will handle the destruction of objects contained in array
@@ -297,27 +305,31 @@ EmptyObject *CryBPNet::CreateArrayItem(Array *Owner,bool *IsCryObject)
 // derived class will handle the display in CryStream the objects contained in array (text assumed)
 void CryBPNet::SaveItemTo(const Array *Owner,EmptyObject *FromItem,Stream &ToStream) const
 {
-    BackPropagateLayer *l =(BackPropagateLayer *)FromItem;
+	BackPropagateLayer *l =(BackPropagateLayer *)FromItem;
+	XMLNode n;
+		n.LoadFrom(*l);
+		n.SaveTo(ToStream);
+		return;
   //  CryMemStream *ms = (CryMemStream *)ToStream;
 
-    ToStream.printf("%d %d ",l->GetID(),l->LayerSize);
-    if (l->GetID()>-1)  // has been initilized?
+	ToStream.printf("%d %d ",l->GetID(),l->LayerSize);
+	if (l->GetID()>-1)  // has been initilized?
 	{
-        /*if (l->id>0)     // Input layer doesn't have weights
-        {
-        double *dw = AllWeights + l->dWeightStart;
-        double *w = AllWeights + l->WeightStart;
-        int PrevLayerSize = l->PreviousLayerSize;
-            for(int i=0;i<l->LayerSize;i++)
-            {
-        for(int j=0;j<PrevLayerSize;j++)
-        ToStream.printf("%f %f ",*dw++,*w++);
-        //                ToStream.printf("%f %f %f %f ",
-        //                                 l->dWeight[i][l->id],l->WeightSave[i][l->id],l->Weight[i][l->id],l->Error->GetValue(i));
-            }
-        }*/
-        //        l->Output->SaveTo(ToStream);// I don't think we need this
-    }
+		/*if (l->id>0)     // Input layer doesn't have weights
+		{
+		double *dw = AllWeights + l->dWeightStart;
+		double *w = AllWeights + l->WeightStart;
+		int PrevLayerSize = l->PreviousLayerSize;
+			for(int i=0;i<l->LayerSize;i++)
+			{
+		for(int j=0;j<PrevLayerSize;j++)
+		ToStream.printf("%f %f ",*dw++,*w++);
+		//                ToStream.printf("%f %f %f %f ",
+		//                                 l->dWeight[i][l->id],l->WeightSave[i][l->id],l->Weight[i][l->id],l->Error->GetValue(i));
+			}
+		}*/
+		//        l->Output->SaveTo(ToStream);// I don't think we need this
+	}
     else
         ToStream.printf("Uninitialized");
 }
@@ -379,19 +391,19 @@ bool CryBPNet::SaveAsText(int i,String &ToStream) const
 */
 void CryBPNet::Propagate(int _From,int _To,double Gain)
 {
-    BackPropagateLayer *From,*To;
-    From = (BackPropagateLayer *)GetItem(_From);
-    To = (BackPropagateLayer *)GetItem(_To);
-    double *w = AllWeights +To->WeightStart;
-    double *_f = AllWeights + From->OutputStart;
+	BackPropagateLayer *From,*To;
+	From = (BackPropagateLayer *)GetItem(_From);
+	To = (BackPropagateLayer *)GetItem(_To);
+	double *w = AllWeights +To->WeightStart;
+	double *_f = AllWeights + From->OutputStart;
     double *o = AllWeights + To->OutputStart;
     for (int i=0; i<To->LayerSize; i++)
     {
-        double Sum = 0.0;
+		double Sum = 0.0;
         double *f = _f;
         for (int j=0; j<From->LayerSize; j++)
         {
-            Sum += *w * *f;
+			Sum += *w * *f;
             w++;
             f++;
         }
@@ -420,15 +432,15 @@ String s;
     s +="virtual void CopyTo(CryObject &Dest) const;";
     s +="virtual CryObject *Dup() const;";
     s +="virtual const char* ChildClassName() const;";
-    s +="virtual bool HasProperty(const CryPropertyParser &PropertyName) const;";
+	s +="virtual bool HasProperty(const CryPropertyParser &PropertyName) const;";
     s +="virtual int GetPropertyCount() const;";
     s +="virtual CryList *PropertyNames() const;";
     s +="virtual const char *GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const;";
-    s +="virtual bool SetProperty(const CryPropertyParser &PropertyName,const CryString &PropertyValue);";
+	s +="virtual bool SetProperty(const CryPropertyParser &PropertyName,const CryString &PropertyValue);";
     s +="const char *GetStatus() const;";
     s +="virtual void ShowStatus();";
     s +="void TrainNet(int Epochs,int LengthIn,double *SampleIn,int LengthOut,double *SampleOut);";
-    s +="void STTrainNet(int Epochs,int LengthIn,double *SampleIn,int LengthOut,double *SampleOut);";
+	s +="void STTrainNet(int Epochs,int LengthIn,double *SampleIn,int LengthOut,double *SampleOut);";
     s +="void SimulateNet(const double* Input, double* Output,const double* Target, bool Training);";
     s +="void SetInput(const double* Input);";
     s +="void PropagateNet();";
@@ -457,7 +469,7 @@ void CryBPNetContainer::SetSize(size_t n) // set the number currently in use (ei
     	GotoFirst(i);
     	do {
     		SetIsCryObject(i,true);
-    	} while(GotoNext(i));*/
+		} while(GotoNext(i));*/
 }
 
 
@@ -465,7 +477,7 @@ void CryBPNetContainer::SetSize(size_t n) // set the number currently in use (ei
     {
         Out = Output[i];
         Err = 0;
-        for (j=1; j<PropagateFrom->LayerSize; j++)
+		for (j=1; j<PropagateFrom->LayerSize; j++)
             Err += PropagateFrom->Weight[j][i] * PropagateFrom->Error[j];
         Error[i] = Gain * Out * (1-Out) * Err;
     }
@@ -498,7 +510,7 @@ void CryBPNet::BackPropagate(int _From,int _To,double Gain)
 
 int CryBPNet::GetLayerSize(int LayerNumber) const
 {
-    BackPropagateLayer *l = (BackPropagateLayer *)GetItem(LayerNumber);
+	BackPropagateLayer *l = (BackPropagateLayer *)GetItem(LayerNumber);
     return l->LayerSize;
 }
 
@@ -535,7 +547,7 @@ BackPropagateLayer *CryBPNet::SetLayerSize(int LayerNumber,int LayerSize)
 void CryBPNet::RandomWeights()
 {
     SetAllWeights();
-    double *w = AllWeights;
+	double *w = AllWeights;
     for(int i=0;i<AllWeightsSize;i++)
         *w++ = RandomDouble(-1,1);
 }
@@ -595,36 +607,84 @@ void CryBPNetContainer::CopyTo(Object &Dest) const  //copies contents of this to
 }
 void CryBPNetContainer::RandomWeights()
 {
-    CryBPNet::RandomWeights();
-    for (size_t l=1; l<Size(); l++)
-        CryBPNet::RandomWeights(l);
+	CryBPNet::RandomWeights();
+	for (size_t l=1; l<Size(); l++)
+		CryBPNet::RandomWeights(l);
+}
+
+/// will return a property represented as an object, useful for classes which contain properties that are dynamically allocated, as a property that is dynamic is a Object and therefore callable
+Object *CryBPNetContainer::GetCopyOfPropertyAsObject(const PropertyParser &PropertyName) const
+{
+	if (PropertyName=="Layer")
+	{
+	String Result;
+	const char *c = Container::GetProperty("*Values",Result);
+	XMLNode *x = new XMLNode(PropertyName);
+		x->LoadFrom(Result);
+		return x;
+	}
+/*	String s;
+	int n=0;
+	XMLNode *x = new XMLNode();
+		x->SetName(PropertyName);
+		for(n=0;n<Count();n++)// for each layer
+		{
+			BackPropagateLayer *l= (BackPropagateLayer *)GetItem(n);
+			s.printf("%d",l->GetID());
+			x->AddAttribute("ID",s);
+			s.Clear();
+			s.printf("%d",l->LayerSize);
+			x->AddAttribute("Size",s);
+
+			s->printf("%d %d ",l->GetID(),l->LayerSize);
+			if (l->GetID()>-1)  // has been initilized?
+			{
+				if (l->GetID()>0)     // Input layer doesn't have weights
+				{
+				double *dw = AllWeights + l->dWeightStart;
+				double *w = AllWeights + l->WeightStart;
+				int PrevLayerSize = l->PreviousLayerSize;
+					for(int i=0;i<l->LayerSize;i++)
+					{
+				for(int j=0;j<PrevLayerSize;j++)
+					s->printf("%f %f ",*dw++,*w++);
+				//                ToStream.printf("%f %f %f %f ",
+				//                                 l->dWeight[i][l->id],l->WeightSave[i][l->id],l->Weight[i][l->id],l->Error->GetValue(i));
+					}
+				}
+			}
+		}
+		return s;
+*/
+	return CryBPNet::GetCopyOfPropertyAsObject(PropertyName);
 }
 
 
 bool CryBPNetContainer::HasProperty(const PropertyParser &PropertyName) const
 {
-    if (PropertyName=="Layer_Count")
-        return true;
-    if (PropertyName=="TestError")
-        return true;
-    if (PropertyName=="TrainError")
+	if (PropertyName=="Layer_Count")
+		return true;
+	if (PropertyName=="TestError")
+		return true;
+	if (PropertyName=="TrainError")
 		return true;
 	if (PropertyName=="Layer")
 		return true;
 
-    //if (strcmp(PropertyName,"Weights")==0) return true;
-    //if (strcmp(PropertyName,"dWeights")==0) return true;
+	//if (strcmp(PropertyName,"Weights")==0) return true;
+	//if (strcmp(PropertyName,"dWeights")==0) return true;
 
-    return CryBPNet::HasProperty(PropertyName);
+	return CryBPNet::HasProperty(PropertyName);
 }
 int CryBPNetContainer::GetPropertyCount() const
 {
-    return CryBPNet::GetPropertyCount() +
-           4; 	//dWeigths,Weights, TestError and TrainError (Layer Count is same as base class Size property)
+	return CryBPNet::GetPropertyCount() +
+		   4; 	//dWeigths,Weights, TestError and TrainError (Layer Count is same as base class Size property)
 }
-CryPropertyList *CryBPNetContainer::PropertyNames() const
+
+PropertyList *CryBPNetContainer::PropertyNames() const
 {
-	CryPropertyList *n = CryBPNet::PropertyNames();
+	PropertyList *n = CryBPNet::PropertyNames();
 	n->AddPropertyByName("TestError",this);
 	n->AddPropertyByName("TrainError",this);
 	// we call Size == Layer Count
@@ -656,13 +716,18 @@ const char *CryBPNetContainer::GetProperty(const PropertyParser &PropertyName,St
 	}
 	if ((PropertyName=="Layer") || (PropertyName=="Values"))
     {
-		Result = "[]";  // if Result != what is returned, it's a special situation, in this case pointer to layers
-        return "*";
-    }
-    /*if (strcmp(PropertyName,"Weights")==0)
-    {
-        Result->Clear();
-        for(int Layer=1;Layer<Size();Layer++)
+		PropertyParser NewPropertyName("Values");
+		return CryBPNet::GetProperty(NewPropertyName,Result);
+	}
+	if (PropertyName=="*Layer")
+	{
+	PropertyParser NewPropertyName("*Values");
+		return CryBPNet::GetProperty(NewPropertyName,Result);
+	}
+	/*if (strcmp(PropertyName,"Weights")==0)
+	{
+		Result->Clear();
+		for(int Layer=1;Layer<Size();Layer++)
         {
             BackPropagateLayer *l =(BackPropagateLayer *)GetItem(Layer);
             double *w = GetAllWeights() + l->WeightStart;
@@ -689,13 +754,13 @@ const char *CryBPNetContainer::GetProperty(const PropertyParser &PropertyName,St
             {
                 for(int j=0;j<PrevLayerSize;j++)
                 {
-                    Result->printf("%f ",dw++);
+					Result->printf("%f ",dw++);
                 }
             }
         }
         return Result->AsPChar();
-    }*/
-    return CryBPNet::GetProperty(PropertyName,Result);
+	}*/
+	return CryBPNet::GetProperty(PropertyName,Result);
 }
 
 /*bool CryBPNetContainer::SetPropertyAsObject(const CryPropertyParser &PropertyName,CryObject *Value)
@@ -726,49 +791,66 @@ String PropertyValue;
         return true;
     }
     if (PropertyName=="TrainError")
-    {
+	{
         double v=0;
-        PropertyValue.scanf("%lf ",&v);
-        TrainError = v;
-        return true;
-    }
-    /*
-    if (strcmp(PropertyName,"Weights")==0)
-    {
-        SetAllWeights();
-        for(int Layer=1;Layer<Size();Layer++)
-        {
-            BackPropagateLayer *l =(BackPropagateLayer *)GetItem(Layer);
-            double *w = GetAllWeights() + l->WeightStart;
-            int PrevLayerSize = l->PreviousLayerSize;
-            for(int i=0;i<l->LayerSize;i++)
-            {
-                for(int j=0;j<PrevLayerSize;j++)
-                {
-                    PropertyValue->scanf("%f ",w++);
+		PropertyValue.scanf("%lf ",&v);
+		TrainError = v;
+		return true;
+	}
+	if (PropertyName=="*Layer")
+	{
+	PropertyParser NewPropertyName("*Values");
+		return CryBPNet::SetProperty(NewPropertyName,PropertyValue);
+	}
+	if (PropertyName=="Layer")
+	{
+	CryXML x;
+	String s = _PropertyValue;
+		x.LoadFrom(s);
+		BackPropagateLayer *l = (BackPropagateLayer *) x.CreateObjectFromNode(this);
+		return true;
+
+	PropertyParser NewPropertyName("Values");
+		return CryBPNet::SetProperty(NewPropertyName,PropertyValue);
+	}
+
+	/*
+	if (strcmp(PropertyName,"Weights")==0)
+	{
+		SetAllWeights();
+		for(int Layer=1;Layer<Size();Layer++)
+		{
+			BackPropagateLayer *l =(BackPropagateLayer *)GetItem(Layer);
+			double *w = GetAllWeights() + l->WeightStart;
+			int PrevLayerSize = l->PreviousLayerSize;
+			for(int i=0;i<l->LayerSize;i++)
+			{
+				for(int j=0;j<PrevLayerSize;j++)
+				{
+					PropertyValue->scanf("%f ",w++);
 				}
-            }
-        }
-    }
-    if (strcmp(PropertyName,"dWeights")==0)
-    {
-        SetAllWeights();
-        for(int Layer=1;Layer<Size();Layer++)
-        {
-            BackPropagateLayer *l =(BackPropagateLayer *)GetItem(Layer);
-            double *dw = GetAllWeights() + l->dWeightStart;
-            int PrevLayerSize = l->PreviousLayerSize;
-            for(int i=0;i<l->LayerSize;i++)
-            {
-                for(int j=0;j<PrevLayerSize;j++)
-                {
-                    PropertyValue->scanf("%f ",dw++);
-                }
-            }
-        }
-    }
-    */
-    return CryBPNet::SetProperty(PropertyName,PropertyValue);
+			}
+		}
+	}
+	if (strcmp(PropertyName,"dWeights")==0)
+	{
+		SetAllWeights();
+		for(int Layer=1;Layer<Size();Layer++)
+		{
+			BackPropagateLayer *l =(BackPropagateLayer *)GetItem(Layer);
+			double *dw = GetAllWeights() + l->dWeightStart;
+			int PrevLayerSize = l->PreviousLayerSize;
+			for(int i=0;i<l->LayerSize;i++)
+			{
+				for(int j=0;j<PrevLayerSize;j++)
+				{
+					PropertyValue->scanf("%f ",dw++);
+				}
+			}
+		}
+	}
+	*/
+	return CryBPNet::SetProperty(PropertyName,PropertyValue);
 }
 
 /*
@@ -877,34 +959,34 @@ Object *CryBPNetContainer::Create(const PropertyParser &PropertyName,Object *Par
 
 void CryBPNetContainer::ComputeOutputError(const double *Target)
 {
-    int  i;
-    double Out, Err;
+	int  i;
+	double Out, Err;
 
-    double Error = 0;
-    BackPropagateLayer  *pOutputLayer = (BackPropagateLayer  *)GetItem(Size()-1);
-    double *e = GetAllWeights() + pOutputLayer->ErrorStart;
-    double *o = GetAllWeights() + pOutputLayer->OutputStart;
-    Out = Err = 0.0;
+	double Error = 0;
+	BackPropagateLayer  *pOutputLayer = (BackPropagateLayer  *)GetItem(Size()-1);
+	double *e = GetAllWeights() + pOutputLayer->ErrorStart;
+	double *o = GetAllWeights() + pOutputLayer->OutputStart;
+	Out = Err = 0.0;
 
-    for (i=0; i<pOutputLayer->LayerSize; i++)
-    {
-        Out = *o++;
-        Err = Target[i]-Out;
-        *e++ = Gain * Out * (1-Out) * Err;
-        Error += 0.5 * Err * Err;
-    }
-    TestError += Error;
-    //printf("ComputeOutputError %3.3f\n",Net->Error);
+	for (i=0; i<pOutputLayer->LayerSize; i++)
+	{
+		Out = *o++;
+		Err = Target[i]-Out;
+		*e++ = Gain * Out * (1-Out) * Err;
+		Error += 0.5 * Err * Err;
+	}
+	TestError += Error;
+	//printf("ComputeOutputError %3.3f\n",Net->Error);
 }
 
 void CryBPNetContainer::AdjustWeights()
 {
-    for (unsigned int l=GetLockLevel(); l<Size(); l++)
-    {
-        BackPropagateLayer *pLayer1 = (BackPropagateLayer *)GetItem(l);
-        BackPropagateLayer *pLayer2 = (BackPropagateLayer *)GetItem(l-1);
-        double *dw,*w,*o,*e;
-        dw = GetAllWeights() + pLayer1->dWeightStart;
+	for (unsigned int l=GetLockLevel(); l<Size(); l++)
+	{
+		BackPropagateLayer *pLayer1 = (BackPropagateLayer *)GetItem(l);
+		BackPropagateLayer *pLayer2 = (BackPropagateLayer *)GetItem(l-1);
+		double *dw,*w,*o,*e;
+		dw = GetAllWeights() + pLayer1->dWeightStart;
         w = GetAllWeights() + pLayer1->WeightStart;
         e = GetAllWeights() + pLayer1->ErrorStart;
         for (int i=0; i<pLayer1->LayerSize; i++)
@@ -928,30 +1010,31 @@ void CryBPNetContainer::AdjustWeights()
 
 void CryBPNetContainer::PropagateNet()
 {
-    unsigned int l,s = Size()-1;
-    for (l=0; l<s; l++)
-        Propagate(l,l+1,Gain);
+	unsigned int l,s = Size()-1;
+	for (l=0; l<s; l++)
+		Propagate(l,l+1,Gain);
 }
 
 void CryBPNetContainer::BackPropagateNet()
 {
-    for (int l=Size()-1; l>1; l--)
-        BackPropagate(l,l-1,Gain);
+	for (int l=Size()-1; l>1; l--)
+		BackPropagate(l,l-1,Gain);
 }
 
 void CryBPNetContainer::GetOutput(double *Output)
 {
-    BackPropagateLayer  *pLayer = (BackPropagateLayer  *) GetItem(Size()-1);    // Output layer
+	BackPropagateLayer  *pLayer = (BackPropagateLayer  *) GetItem(Size()-1);    // Output layer
     double *out = GetAllWeights() + pLayer->OutputStart;
-    for (int i=0; i<pLayer->LayerSize; i++)
-        *Output++ = *out++;
+	for (int i=0; i<pLayer->LayerSize; i++)
+		*Output++ = *out++;
 }
+
 void CryBPNetContainer::SetInput(const double *Input)
 {
     BackPropagateLayer  *L = (BackPropagateLayer  *)GetItem(0);    // Input layer
     double *in = GetAllWeights() + L->OutputStart;
-    for (int i=0; i<L->LayerSize; i++)
-        *in++ = *Input++;
+	for (int i=0; i<L->LayerSize; i++)
+		*in++ = *Input++;
 }
 
 void CryBPNetContainer::SaveWeights()
@@ -960,7 +1043,7 @@ void CryBPNetContainer::SaveWeights()
     int NumLayers = Size();
     double *w,*ws;
     for (l=1; l<NumLayers; l++)
-    {
+	{
         BackPropagateLayer *pLayer = (BackPropagateLayer *) GetItem(l);
         int PreviousLayerSize = GetLayerSize(l-1);
         w = GetAllWeights() + pLayer->WeightStart;
@@ -970,7 +1053,6 @@ void CryBPNetContainer::SaveWeights()
                 *ws++ = *w++;
     }
 }
-
 
 void CryBPNetContainer::RestoreWeights()
 {
@@ -988,6 +1070,7 @@ void CryBPNetContainer::RestoreWeights()
                 *w++ = *ws++;
     }
 }
+
 void CryBPNetContainer::printWeights()
 {
     for(unsigned int i=0;i<Size();i++)
@@ -1008,7 +1091,6 @@ void CryBPNetContainer::printWeights()
 		//cout << s;         a derived class could use this
     }
 }
-
 
 void CryBPNetContainer::SimulateNet(const double *Input, double *Output,const double *Target, bool Training)
 {
@@ -1035,7 +1117,7 @@ void CryBPNetContainer::TrainNet(int Epochs,int LengthIn,double *SampleIn,int Le
     for (i=0; i<Epochs; i++)
     {
         int Sample = RandomInt(0,LengthIn-1);
-        j =Sample * GetLayerSize(0);	// adjust for input width
+		j =Sample * GetLayerSize(0);	// adjust for input width
         int k = Sample * OutputSize;
         SimulateNet(&SampleIn[j], Output, &SampleOut[k], true);
     }
@@ -1072,24 +1154,25 @@ void CryBPNetContainer::STTrainNet(int EPochs,int LengthIn,double *SampleIn,int 
                 RestoreWeights();
             }
         }
-    }
-    while (!Stop);
+	}
+	while (!Stop);
 }
+
 
 #ifdef VALIDATING
 #include "CryXML.h"
 bool CryBPNetContainer::Test(bool Verbose,Object &Object,bool (CallBack)(bool Verbose,const char *Result,bool fail))
 {
-    char Result[200];
+	char Result[200];
 
-    bool Fail = false;
+	bool Fail = false;
 
-    String spn,spv,stemp;
+	String spn,spv,stemp;
 
-    sprintf(Result,"\nCryBPNetContainer Testing:\nObject of ClassName %s,ChildClassName %s",
-            Object.ClassName(),Object.ChildClassName());
-    if (!CallBack(Verbose,Result,Fail))
-        return false;
+	sprintf(Result,"\nCryBPNetContainer Testing:\nObject of ClassName %s,ChildClassName %s",
+			Object.ClassName(),Object.ChildClassName());
+	if (!CallBack(Verbose,Result,Fail))
+		return false;
 	try
 	{
 //		Fail =  !CryBPNet::Test(Verbose,Object,CallBack);
@@ -1125,8 +1208,9 @@ bool CryBPNetContainer::Test(bool Verbose,Object &Object,bool (CallBack)(bool Ve
 		bp->Error = 0.6;
 		for(int i=0;i<bp->GetAllWeightsSize();i++)
 		{
-        	bp->AllWeights[i] = i+0.5;
+			bp->AllWeights[i] = i+0.5;
 		}
+		
 		CryXML x,x1;
 		String s1,s2;
 		CryBPNetContainer *npb;
@@ -1134,6 +1218,7 @@ bool CryBPNetContainer::Test(bool Verbose,Object &Object,bool (CallBack)(bool Ve
 			x.SaveTo(s1);
 			npb =(CryBPNetContainer *) x.CreateObjectFromNode(bp);
 			x1.LoadFrom(*npb);
+			delete npb;
 			x1.SaveTo(s2);
 			if (s1!=s2)
 			{
@@ -1253,7 +1338,8 @@ bool CryBPNetContainer::Test(bool Verbose,Object &Object,bool (CallBack)(bool Ve
         if (!CallBack(Verbose,Result,Fail))
             return false;
     }
-    return true;
+	return true;
+}
 }
 #endif
 

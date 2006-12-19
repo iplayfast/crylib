@@ -232,9 +232,9 @@ int PrimInstance::GetPropertyCount() const
 	return CodeFactory::GetPropertyCount() + 4;
 }
 /*! Make a list of all property names, the function is called from the parent class through each inheritance until it reaches this class, at which point a list is created and filled with any properties on the way back through the inheritance */
-CryPropertyList *PrimInstance::PropertyNames() const
+PropertyList *PrimInstance::PropertyNames() const
 {
-	CryPropertyList *Names = CodeFactory::PropertyNames();
+	PropertyList *Names = CodeFactory::PropertyNames();
 	Names->AddPropertyByName("Type",this);
 	{	// Don't add "Default" by name since it confuses the children classes (which may not have default values)
 	   String *v = new String(DefaultValue);

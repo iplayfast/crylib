@@ -879,9 +879,9 @@ String::String(const char *FormatStr,...)
  
 } */
 
-CryPropertyList *String::PropertyNames() const
+PropertyList *String::PropertyNames() const
 {   // bypass stream property names because we aren't interested inthe Terminator
-	CryPropertyList *n = Object::PropertyNames();
+	PropertyList *n = Object::PropertyNames();
 	n->AddPropertyByName("Value",this);
     return n;
 }

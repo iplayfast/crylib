@@ -149,9 +149,9 @@ bool HugeDouble::HasProperty(PropertyParser &PropertyName)const
     return (PropertyName=="Value") || Object::HasProperty(PropertyName);
 }
 
-CryPropertyList *HugeDouble::PropertyNames() const
+PropertyList *HugeDouble::PropertyNames() const
 {
-	CryPropertyList *n = Object::PropertyNames();
+	PropertyList *n = Object::PropertyNames();
 	n->AddPropertyByName("Value",this);
 	return n;
 }

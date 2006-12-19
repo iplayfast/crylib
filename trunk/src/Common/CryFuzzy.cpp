@@ -551,9 +551,9 @@ Object *CryFuzzy::CreateItemType(const PropertyParser &PropertyName)
     else return Array::CreateItemType(PropertyName);
 
 }
-CryPropertyList *CryFuzzy::PropertyNames() const
+PropertyList *CryFuzzy::PropertyNames() const
 {
-    CryPropertyList *n = Container::PropertyNames();// Skip Array class to avoid Size (Fuzzy takes care of that)
+    PropertyList *n = Container::PropertyNames();// Skip Array class to avoid Size (Fuzzy takes care of that)
     return n;
 }
 

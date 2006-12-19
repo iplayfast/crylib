@@ -205,9 +205,9 @@ bool FunctionDef::HasProperty(const PropertyParser &PropertyName) const
         ("IsComment"==PropertyName);
 }
 
-CryPropertyList *FunctionDef::PropertyNames() const
+PropertyList *FunctionDef::PropertyNames() const
 {
-	CryPropertyList *n = new CryPropertyList();
+	PropertyList *n = new PropertyList();
 	n->AddPropertyByName("IsVirtual",this);
 	n->AddPropertyByName("ReturnType",this);
 	n->AddPropertyByName("FunctionName",this);

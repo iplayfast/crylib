@@ -57,9 +57,9 @@ bool ClassInstance::HasProperty(const PropertyParser &PropertyName) const
 	return PrimInstance::HasProperty(PropertyName);
 }
 
-CryPropertyList *ClassInstance::PropertyNames() const
+PropertyList *ClassInstance::PropertyNames() const
 {
-	CryPropertyList *Names = PrimInstance::PropertyNames();
+	PropertyList *Names = PrimInstance::PropertyNames();
 	Names->AddPropertyByName("HasDefault",this);
 	if (!HasDefault)
 	{

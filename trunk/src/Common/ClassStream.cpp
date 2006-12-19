@@ -516,9 +516,9 @@ void Stream::CopyTo(Object &Dest) const
         throw Exception(this,"Copying from stream to object that is not streamable");
 }
 
-CryPropertyList *Stream::PropertyNames() const
+PropertyList *Stream::PropertyNames() const
 {
-    CryPropertyList *n = Object::PropertyNames();
+    PropertyList *n = Object::PropertyNames();
     n->AddPropertyByName("Terminator",this);
     return n;
 }

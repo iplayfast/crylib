@@ -91,7 +91,7 @@ virtual Object *Dup() const; // creates a duplicate of this object
 virtual const char *GetProperty(const PropertyParser &PropertyName,String &Result) const;
 virtual bool HasProperty(const PropertyParser &PropertyName)const;
 virtual int GetPropertyCount() const;
-virtual CryPropertyList* PropertyNames() const;
+virtual PropertyList* PropertyNames() const;
 virtual bool SetProperty(const PropertyParser &PropertyName,const char *PropertyValue);
 // HugeInt functions
       // returns true if non zero
