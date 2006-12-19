@@ -364,13 +364,13 @@ FunctionDefList *MemStream::GetFunctions(const char *Type) const
     l->LoadFromString(s,";");
     return l;
 }
-
 MemStream::MemStream()
 {
 	gBuffCount++;
+
 	Buffer = new char[101];
-    Length = 100;
-    DataLength = 0;
+	Length = 100;
+	DataLength = 0;
     Position = 0;
     if (Buffer==0)
         throw Exception("Out of memory creating Memory Stream");
@@ -379,6 +379,7 @@ MemStream::MemStream()
 
 MemStream::~MemStream()
 {
+Buffer[0]='a';
     delete [] Buffer;
     Length = 0;
     DataLength = 0;

@@ -185,6 +185,7 @@ bool Property::SetProperty(const PropertyParser &PropertyName,const Object* Prop
 		else
 		{
 			SetName(PropertyName);
+			delete Value;
 			Value = PropertyValue->Dup();
 		// normally we throw an exception, but CryProperty is a special case, as it's properties are user definable
 //			throw CryException(this,ExceptionUnknownProperty,"Unknown Property ",PropertyName.AsPChar());
