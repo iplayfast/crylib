@@ -127,7 +127,7 @@ public:
 	virtual const char *GetProperty(const PropertyParser &PropertyName,String &Result) const;
 	virtual bool HasProperty(const PropertyParser &PropertyName) const;
 	virtual int GetPropertyCount() const;
-	virtual CryPropertyList* PropertyNames() const;
+	virtual PropertyList* PropertyNames() const;
 ///copies contents of this to Dest
 	virtual void CopyTo(Object &Dest) const;
 	virtual size_t Size() const;

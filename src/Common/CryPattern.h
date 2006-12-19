@@ -389,7 +389,7 @@ our things will always be CryObjects
 		StdFunctions(CryFactory,Container);
 		virtual EmptyObject *GetAtIterator(const Iterator *I) const;
 		virtual void SetAtIterator(const Iterator *I,EmptyObject *Item,bool IsObject,bool IsOwned,size_t Size = 0);
-		virtual CryPropertyList* PropertyNames() const;
+		virtual PropertyList* PropertyNames() const;
 		virtual int GetPropertyCount() const;
 		virtual Object *GetCopyOfPropertyAsObject(const PropertyParser &PropertyName) const;
 

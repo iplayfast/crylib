@@ -85,7 +85,7 @@ String Name;
 /*! The type of object represented by this node */
 String Type;
 /*! the list of attributes/values that this object has */
-CryPropertyList *_Attributes;
+PropertyList *_Attributes;
 /*! the list of XML nodes that this node contains */
 List SubNodes;
 /*! an internal flag allowing the same code to be used for getting attribute names, as well as class names */
@@ -97,7 +97,7 @@ StdFunctionsNoDup(XMLNode,List);
     {
         Name = _Name;
         GettingName = false;
-        _Attributes = new CryPropertyList();
+        _Attributes = new PropertyList();
         Type="Unknown";
     }
     ~XMLNode()
@@ -110,8 +110,8 @@ StdFunctionsNoDup(XMLNode,List);
       Name = N;
     }
     const char *GetName() const { return Name.AsPChar(); }
-
-    void AddAttribute(const char *Name,const char *Value);
+	void AddSubNode(XMLNode *n) { SubNodes.AddOwned(n); }
+	void AddAttribute(const char *Name,const char *Value);
     /*! Save this node to a stream (xml format) */
     virtual void SaveTo(Stream &ToStream) const;
     /*! save this node to an object setting the object's attributes */

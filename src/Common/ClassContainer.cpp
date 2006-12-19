@@ -146,14 +146,15 @@ bool Container::SetProperty(const PropertyParser &PropertyName,const char *Prope
         String Temp;
         Temp = PropertyValue;
         Iterator *i = _CreateIterator();
-        if (GotoFirst(i))
-        {
-            do
-            {
-                result = LoadAsText(i,Temp);
-            }
-            while(GotoNext(i));
-        }
+		if (i->GotoFirst())
+		{
+			do
+			{
+				result = LoadAsText(i,Temp);
+			}
+			while(i->GotoNext());
+		}
+		DeleteIterator(i);
     }
     else
         return Object::SetProperty(PropertyName,PropertyValue);
@@ -166,22 +167,28 @@ Object *Container::GetCopyOfPropertyAsObject(const PropertyParser &PropertyName)
 
 const char *Container::GetProperty(const PropertyParser &PropertyName,String &Result) const
 {
-    if (PropertyName=="Values")	// this is handled on an individual basis instead of passing the array flag back because strings are also containers, and as such would be huge lists of single letters.
+	if (PropertyName=="Values")
+	{
+		Result = "[]";  // if Result != what is returned, it's a special situation, in this case pointer to an array of weights
+		return "*";
+	}
+
+	if (PropertyName=="*Values")	// this is handled on an individual basis instead of passing the array flag back because strings are also containers, and as such would be huge lists of single letters.
     {
-        Result.Clear();
-        String Temp;
-        Iterator *i = _CreateIterator();
-        if (GotoFirst(i))
-        {
-            do
-            {
-                Temp.Clear();
-                SaveAsText(i,Temp);
-                Result.printf("%s ",Temp.AsPChar());
-            }
-            while(GotoNext(i));
-        }
-        delete i;
+		Result.Clear();
+		String Temp;
+		Iterator *i = _CreateIterator();
+		if (GotoFirst(i))
+		{
+			do
+			{
+				Temp.Clear();
+				SaveAsText(i,Temp);
+				Result.printf("%s ",Temp.AsPChar());
+			}
+			while(GotoNext(i));
+		}
+		DeleteIterator(i);
         return Result.AsPChar();
 	}
     return Object::GetProperty(PropertyName,Result);
@@ -189,16 +196,20 @@ const char *Container::GetProperty(const PropertyParser &PropertyName,String &Re
 bool Container::HasProperty(const PropertyParser &PropertyName) const
 {
     if (PropertyName=="Values")
-        return true;
-    return Object::HasProperty(PropertyName);
+		return true;
+	if (PropertyName=="*Values")
+		return true;
+
+	return Object::HasProperty(PropertyName);
 }
 int Container::GetPropertyCount() const
 {
     return Object::GetPropertyCount() + 1;
 }
-CryPropertyList *Container::PropertyNames() const
+
+PropertyList *Container::PropertyNames() const
 {
-	CryPropertyList *n = Object::PropertyNames();
+	PropertyList *n = Object::PropertyNames();
 	n->AddPropertyByName("Values",this);
 	return n;
 }
@@ -242,7 +253,7 @@ FunctionDefList *Container::GetFunctions(const char *Type) const
     s += "virtual bool HasProperty(const char *PropertyName) const;";
     s += "virtual int GetPropertyCount() const;";
     s += "virtual const char* ChildClassName() const;";
-	s += "virtual CryPropertyList* PropertyNames() const;";
+	s += "virtual PropertyList* PropertyNames() const;";
 
 #ifdef VALIDATING
 
@@ -415,8 +426,8 @@ const Container *Container::Iterator::GetOrigContainer() const
 /// return the type of structure used to control this list (ie listnode eleptr, etc)
 void Container::Iterator::GetEleType(String &Result) const
 {
-    OrigContainer->GetEleType(Result);
-}
+	OrigContainer->GetEleType(Result);
+} 
 
 
 

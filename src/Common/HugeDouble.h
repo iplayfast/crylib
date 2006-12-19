@@ -93,7 +93,7 @@ virtual Object *Dup() const; // creates a duplicate of this object
 virtual const char *GetProperty(PropertyParser &PropertyName,String &Result) const;
 virtual bool HasProperty(PropertyParser &PropertyName)const;
 virtual int GetPropertyCount() const;
-virtual CryPropertyList* PropertyNames() const;
+virtual PropertyList* PropertyNames() const;
 
 virtual bool SetProperty(PropertyParser &PropertyName,const char *PropertyValue);
 

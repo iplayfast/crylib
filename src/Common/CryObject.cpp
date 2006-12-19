@@ -71,35 +71,35 @@ bool Object::Test(bool Verbose,Object &ThisObject, bool (CallBack)(bool Verbose,
 
     {
 
-        CryPropertyList *pn = ThisObject.PropertyNames();
+        PropertyList *pn = ThisObject.PropertyNames();
 
         sprintf(Result,"\n%s has %d properties", ThisObject.ClassName(),pn->Count());
 
         if (!CallBack(Verbose,Result,Fail))
             return false;
 
-        CryPropertyList::PropertyIterator *i = pn->CreateIterator();
+        PropertyList::PropertyIterator *i = pn->CreateIterator();
 
         {
             int count=0;
 
             if (i->GotoFirst())
-            {
-                do
-                {
-                    count++;
-                    String value;
+			{
+			String Result;
+				do
+				{
+					count++;
+					String value;
 
-                    const
-                    String *item =  i->GetName();
+					const
+					String *item =  i->GetName();
 
-                    i->GetValue(value);
+					i->GetValue(value);
+					Result.printf("\n  Property %d) %s = %s",count,item->AsPChar(),value.AsPChar());
 
-                    sprintf(Result,"\n  Property %d) %s = %s",count,item->AsPChar(),value.AsPChar());
-                }
-
-                while (i->GotoNext());
-
+				} while (i->GotoNext());
+				if (!CallBack(Verbose,Result,Fail))
+						return false;
             }
         }
 
@@ -218,21 +218,23 @@ bool Object::Test(bool Verbose,Object &ThisObject, bool (CallBack)(bool Verbose,
 			if (co)
 			{
 				if (!CallBack(Verbose,"CreateObjectFromNode",Fail))
-                	return false;
-
+				{
+					delete co;
+					return false;
+				}
 				String factorystring;
 				co->SaveTo(factorystring);
 
 				if (factorystring!=spn)
 				{
 					sprintf(Result,"\nObject failed XML save rebuild test");
-                    Fail = true;
-                }
+					Fail = true;
+				}
 
-                else
-                {
-                    sprintf(Result,"\nObject passed XML save rebuild test");
-                }
+				else
+				{
+					sprintf(Result,"\nObject passed XML save rebuild test");
+				}
 
                 delete co;
 
@@ -765,7 +767,7 @@ bool Object::ClassCanCreate(const
 		   (PropertyName==CString) ||
 		   (PropertyName==CProperty) ||
 		   (PropertyName==CList) ||
-		   (PropertyName==CCryPropertyList) ||
+		   (PropertyName==CPropertyList) ||
 		   (PropertyName==CDoubleArray) ||
 		   (PropertyName==CFunctionDef) ||
 		   (PropertyName==CFunctionDefList) ||
@@ -784,7 +786,7 @@ bool Object::ClassCanCreate(const
 	CryString,
 	CryProperty,
 	CryList,
-	CryPropertyList,
+	PropertyList,
 	CryDoubleArray,
 	CryFuzzy,
 	CryBPNetContainer
@@ -813,8 +815,8 @@ Object *Object::ClassCreate(const
 		return (Object *)new Property("NoName");
 	if (PropertyName==CList)
 		return (Object *)new List();
-	if (PropertyName==CCryPropertyList)
-		return (Object *)new CryPropertyList();
+	if (PropertyName==CPropertyList)
+		return (Object *)new PropertyList();
 	if (PropertyName==CDoubleArray)
 		return (Object *)new DoubleArray();
 	if (PropertyName==CFunctionDef)
@@ -973,9 +975,9 @@ Object *Object::Create(Stream &FromStream)
 	return  xml.CreateObjectFromNode(this);
 }
 
-CryPropertyList *Object::PropertyNames() const
+PropertyList *Object::PropertyNames() const
 {
-	CryPropertyList *n = new CryPropertyList();
+	PropertyList *n = new PropertyList();
 #ifdef DEBUG
 	n->AddPropertyByName("ObjectID",this);
 #endif
@@ -993,16 +995,16 @@ Property *Object::GetPropertyAsCryProperty(const
 
 		const
 		char *c =GetProperty(PropertyName,s);
-
+		String Result;
 		if ((*c=='*' ) && (s=="[]"))
 		{
 			// usually s and *c will be the same, but in this case it indicates an array
 			s.Clear();
 			s.printf("*%s",PropertyName.AsPChar());   // this get's overridden, but is used to show the property name
-			GetProperty(s.AsPChar(),s);
+			GetProperty(s.AsPChar(),Result);
 		}
 
-		o->SetValue(s.AsPChar());
+		o->SetValue(Result.AsPChar());
 
 		return o;
 	}

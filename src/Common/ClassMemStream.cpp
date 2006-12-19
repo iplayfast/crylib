@@ -367,9 +367,8 @@ FunctionDefList *MemStream::GetFunctions(const char *Type) const
 
 MemStream::MemStream()
 {
-    gBuffCount++;
-
-    Buffer = new char[101];
+	gBuffCount++;
+	Buffer = new char[101];
     Length = 100;
     DataLength = 0;
     Position = 0;

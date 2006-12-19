@@ -26,8 +26,8 @@ namespace Crystal
 using namespace std;
 #ifndef CProperty
 #define CProperty    "Property"
-#define CCryPropertyList "CryPropertyList"
-#define CCryPropertyParser "CryPropertyParser"
+#define CPropertyList "PropertyList"
+#define CPropertyParser "PropertyParser"
 #define CPropertyIterator "PropertyIterator"
 
 /// This class has the unusual ability of being able to have a property assigned to it at runtime.
@@ -68,7 +68,7 @@ public:
 	virtual bool SetProperty(const PropertyParser &PropertyName,const char *PropertyValue);
     virtual bool SetProperty(const PropertyParser &PropertyName,const Object *PropertyValue);
 	//virtual bool SetProperty(const char*PropertyName,const CryString &PropertyValue);
-	virtual CryPropertyList* PropertyNames() const;
+	virtual PropertyList* PropertyNames() const;
 //    virtual bool IsAbstract() const;
     virtual void CopyTo(Object &Dest) const;   //copies contents of this to Dest
     const String *GetName() const;
@@ -94,18 +94,18 @@ public:
 	void Get(String &Result) const;
 };
 
-/// CryPropertyList will load in the properties of some object
+/// PropertyList will load in the properties of some object
 /*! it is useful for
 doing comparisons with other objects properties or to set an object's properties
 (load one, set another)
 */
-class CryPropertyList : protected List
+class PropertyList : protected List
 {
-	CryPropertyList(CryPropertyList &nope); // avoid copying
+	PropertyList(PropertyList &nope); // avoid copying
 public:
 	struct PropertyIterator : public List::ListIterator
 	{
-		PropertyIterator(const CryPropertyList *container);
+		PropertyIterator(const PropertyList *container);
 		~PropertyIterator() { }
 		StdFunctionsNoDup(PropertyIterator,List::ListIterator);
 		virtual Object *Dup() const;
@@ -124,9 +124,9 @@ public:
 	};
 
 //	CryList *GetNames() const { return Names; }
-	StdFunctions(CryPropertyList,List);
-	virtual ~CryPropertyList();
-	CryPropertyList();
+	StdFunctions(PropertyList,List);
+	virtual ~PropertyList();
+	PropertyList();
 	virtual Iterator *_CreateIterator() const;
 	PropertyIterator *CreateIterator() const;
 //	virtual PropertyIterator *_CreateIterator() const;
@@ -135,8 +135,8 @@ public:
 //	CryContainer::Iterator * CreateNameIterator() const;
 //	void DeleteNameIterator(Iterator *I) const;
 	/// return the results of the last operation
-	virtual CryPropertyList* PropertyNames() const;
-	CryPropertyList *Boolean(const Object *O2,BOperation B);
+	virtual PropertyList* PropertyNames() const;
+	PropertyList *Boolean(const Object *O2,BOperation B);
 	void Load(const Object *o);
 	void Set(Object *Source);
 	/// Get the currently held properties that are also in Target, and set them from TheseValues

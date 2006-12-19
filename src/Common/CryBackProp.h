@@ -67,7 +67,7 @@ int  GetID() const { return id; }
 virtual void CopyTo(Object &Object) const;
 virtual bool HasProperty(const PropertyParser &PropertyName)const;
 virtual int GetPropertyCount() const;
-virtual CryPropertyList* PropertyNames() const;
+virtual PropertyList* PropertyNames() const;
 virtual const char *GetProperty(const PropertyParser &PropertyName,String &Result) const;
 // if this class contains the property name, it will attempt to load it
 // if all is well returns true
@@ -100,6 +100,8 @@ StdFunctions(CryBPNet,Array);
 /// derived class will handle the loading of an Object from the stream, objectmust have already been created
 	virtual EmptyObject *LoadItemFrom(Array *Owner,EmptyObject *ToItem,Stream &FromStream);
 	virtual bool LoadAsText(int i,String &FromStream) ;
+	/// will return whether or not the property named in PropertyName is a container
+    virtual bool GetIsPropertyContainer(const PropertyParser &PropertyName) const;
 
     virtual bool LoadAsText(Iterator *I,String &FromStream)
     {
@@ -152,8 +154,11 @@ StdFunctions(CryBPNetContainer,CryBPNet);
    virtual void CopyTo(Object &Dest) const;  //copies contents of this to Dest
 // functions needed by CryNamedObject
 	virtual bool HasProperty(const PropertyParser &PropertyName)const;
+	/// will return a property represented as an object, useful for classes which contain properties that are dynamically allocated, as a property that is dynamic is a Object and therefore callable
+	virtual Object *GetCopyOfPropertyAsObject(const PropertyParser &PropertyName) const;
+
 	virtual int GetPropertyCount() const;
-	virtual CryPropertyList* PropertyNames() const;
+	virtual PropertyList* PropertyNames() const;
 	virtual const char *GetProperty(const PropertyParser &PropertyName,String &Result) const;
 	// if this class contains the property name, it will attempt to load it
 	// if all is well returns true

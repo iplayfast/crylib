@@ -81,22 +81,22 @@ Object *HugeInt::Dup() const // creates a duplicate of this object
     return h;
 }
 
-const char *HugeInt::GetProperty(const CryPropertyParser &PropertyName,String &Result) const
+const char *HugeInt::GetProperty(const PropertyParser &PropertyName,String &Result) const
 {
-    if (PropertyName=="Value")
-    {
-        return GetValue(Result);
-    }
-    return Object::GetProperty(PropertyName,Result);
+	if (PropertyName=="Value")
+	{
+		return GetValue(Result);
+	}
+	return Object::GetProperty(PropertyName,Result);
 }
-bool HugeInt::HasProperty(const CryPropertyParser &PropertyName)const
+bool HugeInt::HasProperty(const PropertyParser &PropertyName)const
 {
-    return (PropertyName=="Value") || Object::HasProperty(PropertyName);
+	return (PropertyName=="Value") || Object::HasProperty(PropertyName);
 }
 
-CryPropertyList *HugeInt::PropertyNames() const
+PropertyList *HugeInt::PropertyNames() const
 {
-	CryPropertyList *n = Object::PropertyNames();
+	PropertyList *n = Object::PropertyNames();
 	n->AddPropertyByName("Value",this);
 	return n;
 }
@@ -104,21 +104,21 @@ int HugeInt::GetPropertyCount() const
 {
     return 1 + Object::GetPropertyCount();
 }
-bool HugeInt::SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue)
+bool HugeInt::SetProperty(const PropertyParser &PropertyName,const char *PropertyValue)
 {
-    if (PropertyName=="Value")
-    {
-        this->SetValue(PropertyValue);
-        return true;
-    }
-    return Object::SetProperty(PropertyName,PropertyValue);
+	if (PropertyName=="Value")
+	{
+		this->SetValue(PropertyValue);
+		return true;
+	}
+	return Object::SetProperty(PropertyName,PropertyValue);
 }
 void FindFactor::Step()
 {
-    HugeInt n;
-    CalcTargetDigits();
-    LowerNums.PutPool(CurrentResult);
-    FindMults();
+	HugeInt n;
+	CalcTargetDigits();
+	LowerNums.PutPool(CurrentResult);
+	FindMults();
     exp++;
 }
 

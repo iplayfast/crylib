@@ -574,7 +574,7 @@ TestDecorator::TestDecorator()
 
 
 
-/*Object *Factory::Create(const CryPropertyParser &PropertyName,Object *Parent)
+/*Object *Factory::Create(const PropertyParser &PropertyName,Object *Parent)
 {
     if (PropertyName==0)
         return 0;  // Create nothing
@@ -655,7 +655,7 @@ void CryFactory::AddFactory(CryFactory *f)
     //      Array[i]->Describe();
 }
 
-Object *CryFactory::Create(const CryPropertyParser &PropertyName,Object *Parent)
+Object *CryFactory::Create(const PropertyParser &PropertyName,Object *Parent)
 {
     // first Factory that can create what the thing matches returns thing
     for(int i=0;i<MaxCount;i++)
@@ -667,9 +667,9 @@ Object *CryFactory::Create(const CryPropertyParser &PropertyName,Object *Parent)
     }
     return 0;
 };
-CryPropertyList *CryFactory::PropertyNames() const
+PropertyList *CryFactory::PropertyNames() const
 {
-    CryPropertyList *pn = Container::PropertyNames();
+    PropertyList *pn = Container::PropertyNames();
     return pn;
     //  pn->AddOwned(new CryString("Values"));
 };
@@ -679,9 +679,9 @@ int CryFactory::GetPropertyCount() const
     return Container::GetPropertyCount();
 };
 
-Object *CryFactory::GetCopyOfPropertyAsObject(const CryPropertyParser &PropertyName) const
+Object *CryFactory::GetCopyOfPropertyAsObject(const PropertyParser &PropertyName) const
 {
-    return Container::GetCopyOfPropertyAsObject(PropertyName);
+	return Container::GetCopyOfPropertyAsObject(PropertyName);
 }
 void CryFactory::Sort(int CompareType)
 {
@@ -703,23 +703,23 @@ bool finished=false;	// simple bubble sort, re-implement a better sort when I ha
 	}
 }
 
-const char * CryFactory::GetProperty(const CryPropertyParser &PropertyName,String &Result) const
+const char * CryFactory::GetProperty(const PropertyParser &PropertyName,String &Result) const
 {
-    Result.Clear();
-    if (PropertyName=="Values")   // intercept crycontainer's property for our own
-    {
-        Result = "[]";  // if Result != what is returned, it's a special situation
-        return "*";
-    }
-    else
-        return Container::GetProperty(PropertyName,Result);
+	Result.Clear();
+	if (PropertyName=="Values")   // intercept crycontainer's property for our own
+	{
+		Result = "[]";  // if Result != what is returned, it's a special situation
+		return "*";
+	}
+	else
+		return Container::GetProperty(PropertyName,Result);
 };
-bool  CryFactory::SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue)
+bool  CryFactory::SetProperty(const PropertyParser &PropertyName,const char *PropertyValue)
 {
 	return Container::SetProperty(PropertyName,PropertyValue);
 };
 
-Object *CryOFactory::Create(const CryPropertyParser &PropertyName,Object *Parent)
+Object *CryOFactory::Create(const PropertyParser &PropertyName,Object *Parent)
 {
     Object *Return = CryFactory::Create(PropertyName,Parent);
     if (!Return)
@@ -744,14 +744,14 @@ List *CryFactory::GetProducts() const
     return l;
 };
 
-Object *CryOFactory::Create(const char *FactoryName,const CryPropertyParser &PropertyName,Object *Parent)
+Object *CryOFactory::Create(const char *FactoryName,const PropertyParser &PropertyName,Object *Parent)
 {
     return CryFactory::Create(FactoryName,PropertyName,Parent);
 }
 
 
 /// returns a Object or 0
-Object *CryFactory::Create(const char *FactoryName,const CryPropertyParser &PropertyName,Object *Parent)
+Object *CryFactory::Create(const char *FactoryName,const PropertyParser &PropertyName,Object *Parent)
 {
     Object *Return;
     if (PropertyName=="")
@@ -764,7 +764,7 @@ Object *CryFactory::Create(const char *FactoryName,const CryPropertyParser &Prop
     /// if can not match exact factory so ask each factory to make it, see which one succeeds (if any)
     return Create(PropertyName,Parent);
 }
-bool CryFactory::CanCreate(const CryPropertyParser &PropertyName) const
+bool CryFactory::CanCreate(const PropertyParser &PropertyName) const
 {
     CompositeIterator a(this);
     if (a.GotoFirst())

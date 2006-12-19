@@ -141,7 +141,7 @@ bool SimpleArray::SetPropertyAsObject(Property *Value)
 const char *SimpleArray::GetProperty(const PropertyParser &PropertyName,String &Result) const
 {
 	Result.Clear();
-/*	if (PropertyName=="CurrentCount")
+/*	if (PropertyName=="CurrentCount")	// not included here since subclasses may need to create dynamically so this property is handled by subclasses
 	{
 		Result.printf("%d",CurrentCount);
 		return Result;
@@ -174,9 +174,9 @@ bool SimpleArray::HasProperty(const PropertyParser &PropertyName)const
 		Container::HasProperty(PropertyName));
 }
 
-CryPropertyList* SimpleArray::PropertyNames() const
+PropertyList* SimpleArray::PropertyNames() const
 {
-	CryPropertyList *n = Container::PropertyNames();
+	PropertyList *n = Container::PropertyNames();
 //	n->AddPropertyByName("CurrentCount",this);	//current number of objects in the array
 	n->AddPropertyByName("MaxCount",this);	// maximum number of objects that can be contained in the array
 	n->AddPropertyByName("ElementSize",this);
@@ -611,7 +611,7 @@ size_t Array::GetItemSize(Iterator *I) const
 
 void Array::GetEleType(String &Result) const
 {
-    Result = "CryArray::Eleptr";
+	Result = "CryArray::Eleptr";
 }
 
 void Array::SetItemOwnerShip(Iterator *I,bool IsOwned)
@@ -746,9 +746,9 @@ void Array::CopyTo(Object &Dest) const ///copies contents of this to Dest
     }
 }
 
-CryPropertyList *Array::PropertyNames() const
+PropertyList *Array::PropertyNames() const
 {
-	CryPropertyList *n = Container::PropertyNames();
+	PropertyList *n = Container::PropertyNames();
 	n->AddPropertyByName("Size",this);
 	return n;
 }
@@ -947,10 +947,10 @@ bool IntArray::IsObject(const Iterator *I) const
 //bool SaveAsText(Iterator *I,CryString &ToStream) const = 0;
 
 /*!Get the names of all properties of this class*/
-CryPropertyList *IntArray::PropertyNames() const
+PropertyList *IntArray::PropertyNames() const
 {
 // get base class's properties
-CryPropertyList *Names = SimpleArray::PropertyNames();
+PropertyList *Names = SimpleArray::PropertyNames();
 // now add our own properties (if any)
 	Names->AddPropertyByName("Size",this);
 // properties that are local to this class
@@ -998,10 +998,10 @@ const char *IntArray::GetProperty(const char *PropertyName,String &Result) const
 //
 //	DoubleArray
 //
-	void DoubleArray::GetEleType(String &Result) const
-	{
-		Result = "double";
-	};
+void DoubleArray::GetEleType(String &Result) const
+{
+	Result = "double";
+};
 
 Object * DoubleArray::Dup() const
 {
@@ -1089,7 +1089,7 @@ FunctionDefList *DoubleArray::GetFunctions(const char *Type) const
 	s +="virtual const char *GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const;";
 	s +="virtual bool HasProperty(const char *PropertyName)const;";
 	s +="virtual int GetPropertyCount() const;";
-	s +="virtual CryPropertyList* PropertyNames() const;";
+	s +="virtual PropertyList* PropertyNames() const;";
 	s +="virtual const char* ChildClassName() const;";
 	s +="virtual bool IsA(const char *_ClassName) const;";
 	l->LoadFromString(s,";");
@@ -1148,9 +1148,9 @@ int DoubleArray::GetPropertyCount() const
 	return SimpleArray::GetPropertyCount() + 1;
 }
 
-CryPropertyList *DoubleArray::PropertyNames() const
+PropertyList *DoubleArray::PropertyNames() const
 {
-	CryPropertyList *n = SimpleArray::PropertyNames();
+	PropertyList *n = SimpleArray::PropertyNames();
 	n->AddPropertyByName("Size",this);
 	return n;
 }

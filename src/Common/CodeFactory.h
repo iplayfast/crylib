@@ -34,7 +34,7 @@ namespace Crystal {
 
 class CodeFactory : public CryFactory
 {
-    CryPropertyList Products;
+    PropertyList Products;
 
     bool _IsProperty;
     bool _IsPointer;
@@ -64,7 +64,7 @@ StdFunctionsIsAbstractFalse();
     virtual void CopyTo(Object &Dest) const;  //copies contents of this to Dest
     virtual bool IsA(const char *Name) const ;
     ~CodeFactory();
-    CryPropertyList *DescribeProducts() const;
+    PropertyList *DescribeProducts() const;
     virtual Object *Create(const PropertyParser &PropertyName,CodeFactory *Parent);
     virtual Object *Create(const PropertyParser &PropertyName,Object *Parent);
     const char *GetName() const;
@@ -94,7 +94,7 @@ StdFunctionsIsAbstractFalse();
 	virtual bool  SetProperty(const PropertyParser &PropertyName,const char *PropertyValue);
     virtual bool GetIsPropertyContainer(const PropertyParser &PropertyName) const;
 	virtual const char * GetProperty(const PropertyParser &PropertyName,String &Result) const;
-	virtual CryPropertyList* PropertyNames() const;
+	virtual PropertyList* PropertyNames() const;
 	virtual bool HasProperty(const PropertyParser &PropertyName) const;
     virtual void Clear()   {};
     virtual Object *Create(Stream &FromStream);

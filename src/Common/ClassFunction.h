@@ -55,7 +55,7 @@ public:
 	virtual bool EqualTo(int CompareType,const Object *Test)const;
     virtual int GetPropertyCount() const;
 	virtual bool HasProperty(const PropertyParser &PropertyName) const;
-	virtual CryPropertyList* PropertyNames() const;
+	virtual PropertyList* PropertyNames() const;
 	virtual const char * GetProperty(const PropertyParser &PropertyName,String &Result) const;
     virtual bool  SetProperty(const PropertyParser &PropertyName,const char *PropertyValue);
     const char *GetFunctionName() const;

@@ -116,7 +116,7 @@ virtual Object *Dup()const;
     virtual const char *GetProperty(const PropertyParser &PropertyName,String &Result) const;
     virtual bool HasProperty(const PropertyParser &PropertyName)const;
 	virtual int GetPropertyCount() const;
-	virtual CryPropertyList* PropertyNames() const;
+	virtual PropertyList* PropertyNames() const;
    virtual void CopyTo(Array &Dest) const { Array::CopyTo(Dest);  } //copies contents of this to Dest
     virtual void CopyTo(Object &Dest) const { Array::CopyTo(Dest);  }  //copies contents of this to Dest
     virtual void GetEleType(String &Result) const { Result = "TFuzzyXY"; }
