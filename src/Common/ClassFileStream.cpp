@@ -32,69 +32,69 @@ using namespace std;
 //-------------------------------------------------------------------
 
 
-CryFileStream::FileStreamIterator::FileStreamIterator(const CryFileStream *Container) : StreamIterator(Container)
+FileStream::FileStreamIterator::FileStreamIterator(const FileStream *Container) : StreamIterator(Container)
 {
     Size = 1;
     Offset = Container->Tell();
 }
-CryFileStream::FileStreamIterator::~FileStreamIterator()
+FileStream::FileStreamIterator::~FileStreamIterator()
 {}
 ;
-void CryFileStream::FileStreamIterator::SetSize(size_t _Size)
+void FileStream::FileStreamIterator::SetSize(size_t _Size)
 {
     Size = _Size;
 }
-size_t CryFileStream::FileStreamIterator::GetSize()
+size_t FileStream::FileStreamIterator::GetSize()
 {
     return Size;
 }
 
-const cbyte* CryFileStream::GetRaw() const
+const cbyte* FileStream::GetRaw() const
 {
     return (const cbyte *) File;
 }
 
-size_t CryFileStream::Read(Stream *ToStream) const
+size_t FileStream::Read(Stream *ToStream) const
 {
     return Read(ToStream,Size());
 }
 
-size_t CryFileStream::Write(const Stream *FromStream)
+size_t FileStream::Write(const Stream *FromStream)
 {
     return Write(FromStream,FromStream->Size());
 }
 
-bool CryFileStream::IsOpen() const
+bool FileStream::IsOpen() const
 {
     return File!= 0;
 }
 
-bool CryFileStream::IsEmpty(const Iterator *I) const
+bool FileStream::IsEmpty(const Iterator *I) const
 {
     return Size()==0;
 }
 
-Object *CryFileStream::Add(Object *Item)
+Object *FileStream::Add(Object *Item)
 {
     return Stream::Add(Item);
 }    // returns Item
 
-Object *CryFileStream::AddOwned(Object *Item)
+Object *FileStream::AddOwned(Object *Item)
 {
     return Stream::AddOwned(Item);
 }   // gives ownership to list
 
-size_t CryFileStream::Count() const
+size_t FileStream::Count() const
 {
     return Size();
 }
 
-void CryFileStream::DeleteIterator(Iterator *I) const
+void FileStream::DeleteIterator(Iterator *I) const
 {
     delete (FileStreamIterator *) I;
 }
 
-size_t CryFileStream::Tell() const
+size_t FileStream::Tell() const
 {
     if (File)
     {
@@ -104,15 +104,15 @@ size_t CryFileStream::Tell() const
         throw Exception(this,"Stream Not Open");
 }
 
-Object *CryFileStream::Dup() const // creates a duplicate of this object
+Object *FileStream::Dup() const // creates a duplicate of this object
 {
     if (!IsOpen())
         throw Exception(this,"Stream Not Open");
-    CryFileStream *Result = new CryFileStream;
+    FileStream *Result = new FileStream;
     CopyTo(*Result);
     return Result;
 }
-FunctionDefList *CryFileStream::GetFunctions(const char *Type) const
+FunctionDefList *FileStream::GetFunctions(const char *Type) const
 {
 // if a type has been defined and it's not this class, check subclasses for it
 	if (Type && !IsA(Type))
@@ -130,7 +130,7 @@ FunctionDefList *CryFileStream::GetFunctions(const char *Type) const
     s += "virtual int SeekFromStart(int Offset=0) const;";
     s += "virtual int SeekFromCurrent(int Offset) const;";
     s += "virtual int SeekFromEnd(int Offset=0) const;";
-    s += "virtual CryObject *Dup() const;";
+    s += "virtual Object *Dup() const;";
     s += "virtual size_t ReadTI(char *ToBuffer,size_t Size) const;";
     s += "virtual size_t WriteTI(const char *FromBuffer,size_t Size);";
     s += "virtual size_t ReadTI(CryStream *ToBuffer,size_t Size) const;";
@@ -155,13 +155,13 @@ FunctionDefList *CryFileStream::GetFunctions(const char *Type) const
     return l;
 }
 
-int CryFileStream::scanf(const char *format,...) const
+int FileStream::scanf(const char *format,...) const
 {
     va_list argptr;
     va_start(argptr,format);
     return vfscanf(File,format,argptr);
 }
-size_t CryFileStream::printf(const char *format,...)
+size_t FileStream::printf(const char *format,...)
 {
     va_list argptr;
     va_start(argptr,format);
@@ -169,7 +169,7 @@ size_t CryFileStream::printf(const char *format,...)
 }
 
 // read until terminator or Size (inclusive)
-size_t CryFileStream::ReadTI(char *ToBuffer,size_t Size) const
+size_t FileStream::ReadTI(char *ToBuffer,size_t Size) const
 {
     char T = GetTerminator();
     for(size_t i=0;i<Size;i++)
@@ -182,7 +182,7 @@ size_t CryFileStream::ReadTI(char *ToBuffer,size_t Size) const
     return Size;
 }
 // read until terminator or Size (inclusive)
-size_t CryFileStream::ReadTI(Stream *ToBuffer,size_t Size) const
+size_t FileStream::ReadTI(Stream *ToBuffer,size_t Size) const
 {
     char *buffer = new char[Size+1];
     size_t s = ReadTI(buffer,Size);
@@ -191,7 +191,7 @@ size_t CryFileStream::ReadTI(Stream *ToBuffer,size_t Size) const
     return s;
 }
 // write until terminator or size (inclusive)
-size_t CryFileStream::WriteTI(Stream *FromBuffer,size_t Size)
+size_t FileStream::WriteTI(Stream *FromBuffer,size_t Size)
 {
     char t = FromBuffer->GetTerminator();
     FromBuffer->SetTerminator(GetTerminator());
@@ -201,7 +201,7 @@ size_t CryFileStream::WriteTI(Stream *FromBuffer,size_t Size)
 }
 
 // write until terminator or size (inclusive)
-size_t CryFileStream::WriteTI(const char *FromBuffer,size_t Size)
+size_t FileStream::WriteTI(const char *FromBuffer,size_t Size)
 {
     char T = GetTerminator();
     const char *Dest = (char *)memchr(FromBuffer,T,Size);
@@ -211,14 +211,14 @@ size_t CryFileStream::WriteTI(const char *FromBuffer,size_t Size)
 }
 
 
-size_t CryFileStream::Read(char *ToBuffer,size_t Size) const
+size_t FileStream::Read(char *ToBuffer,size_t Size) const
 {
     if (File)
         return fread(ToBuffer,1,Size,File);
     else
         throw Exception(this,"Read on unopened Stream");
 }
-size_t CryFileStream::Write(const char *FromBuffer,size_t Size)
+size_t FileStream::Write(const char *FromBuffer,size_t Size)
 {
     if (File)
         return fwrite(FromBuffer,1,Size,File);
@@ -226,7 +226,7 @@ size_t CryFileStream::Write(const char *FromBuffer,size_t Size)
         throw Exception(this,"Write on unopened Stream");
 }
 
-bool CryFileStream::Eof() const
+bool FileStream::Eof() const
 {
     if (File)
         return feof(File);
@@ -234,7 +234,7 @@ bool CryFileStream::Eof() const
         throw Exception(this,"Eof on unopened Stream");
 }
 
-size_t CryFileStream::Read(Stream *ToStream,size_t Size) const
+size_t FileStream::Read(Stream *ToStream,size_t Size) const
 {
     char Buffer[1025];
     size_t l,t,r,w;
@@ -260,17 +260,17 @@ size_t CryFileStream::Read(Stream *ToStream,size_t Size) const
     }
     return t;
 }
-size_t CryFileStream::Write(const Stream *FromStream,size_t Size)
+size_t FileStream::Write(const Stream *FromStream,size_t Size)
 {
     return FromStream->Read(this,Size);
 }
 
 
-size_t CryFileStream::Size() const
+size_t FileStream::Size() const
 {
     if (StdStream)
         return 0;
-    CryFileStream *f = (CryFileStream *) this;
+    FileStream *f = (FileStream *) this;
     if (!f->IsOpen())
         return 0;
     size_t CurrentLocation = f->Tell();
@@ -281,14 +281,14 @@ size_t CryFileStream::Size() const
 }
 
 
-bool CryFileStream::GotoFirst(Iterator *I) const
+bool FileStream::GotoFirst(Iterator *I) const
 {
     if (!IsOpen())
         throw Exception("Cannot use Iterator on Closed Filestream");
     SeekFromStart(0);
     return true;
 }
-bool CryFileStream::GotoPrev(Iterator *I) const // returns true if success
+bool FileStream::GotoPrev(Iterator *I) const // returns true if success
 {
     if (!IsOpen())
         throw Exception("Cannot use Iterator on Closed Filestream");
@@ -302,7 +302,7 @@ bool CryFileStream::GotoPrev(Iterator *I) const // returns true if success
         return true;
     return false;
 }
-bool CryFileStream::GotoNext(Iterator *I) const    // returns true if success
+bool FileStream::GotoNext(Iterator *I) const    // returns true if success
 {
     if (!IsOpen())
         throw Exception("Cannot use Iterator on Closed Filestream");
@@ -317,7 +317,7 @@ bool CryFileStream::GotoNext(Iterator *I) const    // returns true if success
     return false;
 }
 
-Container::Iterator *CryFileStream::_CreateIterator() const
+Container::Iterator *FileStream::_CreateIterator() const
 {
     if (IsOpen())
     {
@@ -327,7 +327,7 @@ Container::Iterator *CryFileStream::_CreateIterator() const
         throw Exception("Cannot create Iterator on Closed FileStream");
 }
 
-bool CryFileStream::GotoLast(Iterator *Iterator) const    // returns true if success
+bool FileStream::GotoLast(Iterator *Iterator) const    // returns true if success
 {
     if (!IsOpen())
         throw Exception("Cannot use Iterator on Closed Filestream");
@@ -343,12 +343,12 @@ bool CryFileStream::GotoLast(Iterator *Iterator) const    // returns true if suc
     return false;
 }
 
-void CryFileStream::RemoveAtIterator(Iterator *I)
+void FileStream::RemoveAtIterator(Iterator *I)
 {
 	Exception("Cannot use RemoveAtIterator with FileStreams.");
 }
 
-EmptyObject *CryFileStream::GetAtIterator(const Iterator *I) const
+EmptyObject *FileStream::GetAtIterator(const Iterator *I) const
 {
 	if (!IsOpen())
 		throw Exception("Cannot use Iterator on Closed Filestream");
@@ -356,39 +356,39 @@ EmptyObject *CryFileStream::GetAtIterator(const Iterator *I) const
 	return 0;
 }
 
-void CryFileStream::SetAtIterator(const Iterator *I,EmptyObject *Item,bool IsCryObject,bool IsOwned,size_t Size) 
+void FileStream::SetAtIterator(const Iterator *I,EmptyObject *Item,bool IsObject,bool IsOwned,size_t Size)
 {
 	if (!IsOpen())
 		throw Exception("Cannot use Iterator on Closed Filestream");
 	Exception("Cannot use SetAtIterator with FileStreams. Use Read or Write instead");
 }
 
-EmptyObject *CryFileStream::Add(EmptyObject *Item,size_t Size)
+EmptyObject *FileStream::Add(EmptyObject *Item,size_t Size)
 {
     Exception("Cannot use Add with FileStreams.");
     return 0;
 }
-EmptyObject *CryFileStream::AddOwned(EmptyObject *Item,size_t Size)
+EmptyObject *FileStream::AddOwned(EmptyObject *Item,size_t Size)
 {
     Exception("Cannot use AddOwned with FileStreams.");
     return 0;
 }
-void CryFileStream::Clear()
+void FileStream::Clear()
 {
     Exception("Cannot use Clear with FileStreams.");
 }
 
-CryFileStream::CryFileStream()
+FileStream::FileStream()
 {
     StdStream = false;
     StdType = 0;
     File = 0;
 }
-CryFileStream::~CryFileStream()
+FileStream::~FileStream()
 {
     Close(false);
 }
-bool CryFileStream::Open(const char *Name,const char *Operation,bool ExceptOnError)
+bool FileStream::Open(const char *Name,const char *Operation,bool ExceptOnError)
 {
     Tag = 0;
     if (!StdStream && File)
@@ -428,7 +428,7 @@ bool CryFileStream::Open(const char *Name,const char *Operation,bool ExceptOnErr
     }
     return true;
 }
-void CryFileStream::Close(bool ExceptOnError)
+void FileStream::Close(bool ExceptOnError)
 {
     if (File)
     {
@@ -441,12 +441,12 @@ void CryFileStream::Close(bool ExceptOnError)
         if (ExceptOnError)
             throw Exception(this,"Closing unopened File");
 }
-void CryFileStream::Flush()
+void FileStream::Flush()
 {
     if (File)
         fflush(File);
 }
-int CryFileStream::Seek(int Offset,int whence) const
+int FileStream::Seek(int Offset,int whence) const
 {
     if (File)
     {
@@ -461,7 +461,7 @@ int CryFileStream::Seek(int Offset,int whence) const
     else
         throw Exception(this,"Stream Not Open");
 }
-int CryFileStream::SeekFromStart(int Offset) const
+int FileStream::SeekFromStart(int Offset) const
 {
     try
     {
@@ -474,7 +474,7 @@ int CryFileStream::SeekFromStart(int Offset) const
     }
 }
 
-int CryFileStream::SeekFromEnd(int Offset) const
+int FileStream::SeekFromEnd(int Offset) const
 {
     try
     {
@@ -486,7 +486,7 @@ int CryFileStream::SeekFromEnd(int Offset) const
         throw(E);
     }
 }
-int CryFileStream::SeekFromCurrent(int Offset) const
+int FileStream::SeekFromCurrent(int Offset) const
 {
     try
     {
@@ -498,7 +498,7 @@ int CryFileStream::SeekFromCurrent(int Offset) const
         throw(E);
     }
 }
-bool CryFileStream::ReOpen(const char *FileName,const char *Mode,bool ExceptOnError)
+bool FileStream::ReOpen(const char *FileName,const char *Mode,bool ExceptOnError)
 {
     if (!File)
         throw Exception(this,"ReOpen of file that wasn't open");

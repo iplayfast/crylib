@@ -32,7 +32,7 @@ using namespace std;
 
 
 
-/*! TwoStreams purpose is only to provide a method of transporting streams within a CryObject, it doesn't own anything
+/*! TwoStreams purpose is only to provide a method of transporting streams within a Object, it doesn't own anything
 	it's a convienence class
 */
 

@@ -99,7 +99,7 @@ struct Context : public Object::Context
         };
         union   UContext
         {
-            Object::Context::UContext _CryObject;
+            Object::Context::UContext _Object;
             _intint Seek;
             _int    SeekFromStart;
             _int    SeekFromCurrent;
@@ -171,7 +171,7 @@ struct Context : public Object::Context
     virtual void CopyTo(Object &Object) const;
     virtual void CopyToStream(Stream &Dest,CopyStyle Style = NORMAL) const;
     virtual bool CanDup() const;
-    //    virtual CryObject *Dup() const = 0; // creates a duplicate of this object
+    //    virtual Object *Dup() const = 0; // creates a duplicate of this object
 
     virtual void SetTerminator(char Terminator_);
     virtual char GetTerminator() const;

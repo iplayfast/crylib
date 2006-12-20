@@ -23,9 +23,9 @@
 
 #include <stdarg.h>
 
-#include "CryObject.h"
+#include "ClassObject.h"
 #include "ClassBuilder.h"
-#include "CryXML.h"
+#include "ClassXML.h"
 #include "CryBackProp.h"
 
 #include "ClassInstance.h"
@@ -44,7 +44,7 @@ using namespace std;
 /*ClassInstance::ClassInstance(CodeFactory *Parent,const char *ClassType,const char *ClassName,int _Count,bool _IsProperty,bool _IsPointer,bool _IsArrayPointer,const char *DefaultValue) :
 		PrimInstance(Parent,"class",ClassName,DefaultValue, _Count,_IsProperty,_IsPointer,_IsArrayPointer)
 {
-	p = CryObject::Create(ClassType,0);
+	p = Object::Create(ClassType,0);
 	Type = ClassType;
 } */
 
@@ -80,7 +80,7 @@ const char *ClassInstance::GetProperty(const PropertyParser &PropertyName,String
 		if(!HasDefault)
 			return PrimInstance::GetProperty(PropertyName,Result);
 //			throw CryException("Default Requested, when none was set");
-		CryXML x("obj");
+		XML x("obj");
 		x.LoadFrom(*p);
 		x.SaveTo(Result);
 		return Result.AsPChar();
@@ -111,7 +111,7 @@ bool ClassInstance::SetProperty(const PropertyParser &PropertyName,const char *P
 	}
 	if (PropertyName=="Default")
 	{	// if the class couldn't use the default just let it go.
-		CryXML x("obj");
+		XML x("obj");
 		String  s(PropertyValue);
 		x.LoadFrom(s);
 		x.SaveTo(*p);

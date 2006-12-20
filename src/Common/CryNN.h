@@ -52,7 +52,7 @@ If the errorlevel for index2
 
 #include <math.h>
 #include <string.h>
-#include "CryObject.h"
+#include "ClassObject.h"
 
 #define BIAS          1
 #define MIN_DOUBLE      -HUGE_VAL

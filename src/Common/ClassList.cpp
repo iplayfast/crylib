@@ -49,7 +49,7 @@ List::List()
 
 void List::GetEleType(String &Result) const
 {
-	Result = "CryList::ListNode";
+	Result = "List::ListNode";
 }
 
 const cbyte* List::GetRaw() const
@@ -205,10 +205,10 @@ FunctionDefList *List::GetFunctions(const char *Type) const
 	// otherwise get any functions in subclasses
 	FunctionDefList *l = Container::GetFunctions();
 	String s;
-	s += "// Class CryList;";
-	s += "virtual void GetEleType(CryString &Result) const;";
-	s += "void SaveItemsTo(CryStream &ToStream) const;";
-	s += "virtual CryString *GetFunctions() const;";
+	s += "// Class List;";
+	s += "virtual void GetEleType(String &Result) const;";
+	s += "void SaveItemsTo(Stream &ToStream) const;";
+	s += "virtual String *GetFunctions() const;";
 	s += "virtual const cbyte* GetRaw() const;";
 	s += "virtual Iterator *_CreateIterator() const;";
 	s += "virtual void DeleteIterator(Iterator *LI) const;";
@@ -224,33 +224,33 @@ FunctionDefList *List::GetFunctions(const char *Type) const
 	s += "virtual const char *ChildClassName() const;";
 	s += "virtual bool IsA(const char *ClassName) const;";
 	s += "ListNode *FindNode(const EmptyObject *Needle) const;";
-	s += "int FindNodeValue(CryMemStream &Needle) const;";
+	s += "int FindNodeValue(MemStream &Needle) const;";
 	s += "const ListNode *FirstNode() const;";
 	s += "const ListNode *NextNode(const ListNode *n) const;";
 	s += "EmptyObject *Add(EmptyObject *Item,size_t Size);";
 	s += "EmptyObject *AddOwned(EmptyObject *Item,size_t Size);";
-	s += "CryObject *Add(CryObject *Item);";
-	s += "CryObject *AddOwned(CryObject *Item);";
+	s += "Object *Add(Object *Item);";
+	s += "Object *AddOwned(Object *Item);";
 	s += "void SetItemOwnerShip(EmptyObject  *Item,bool Owned);";
 	s += "bool GetItemOwnerShip(const EmptyObject *Item) const;";
 	s += "bool IsObject(const Iterator *I) const;";
 	s += "size_t GetItemSize(Iterator *I) const;";
-	s += "bool LoadAsText(Iterator *I,CryString &FromStream);";
-	s += "bool SaveAsText(Iterator *I,CryString &ToStream) const;";
+	s += "bool LoadAsText(Iterator *I,String &FromStream);";
+	s += "bool SaveAsText(Iterator *I,String &ToStream) const;";
 	s += "void SetItemOwnerShip(Iterator  *I,bool Owned);";
 	s += "bool GetItemOwnerShip(const Iterator *I) const;";
-	s += "bool InList(CryObject *Needle) const;";
+	s += "bool InList(Object *Needle) const;";
 	s += "EmptyObject *GetItem(int i) const;";
 	s += "virtual bool IsContainer() const;";
-	s += "void Remove(CryObject *Item);";
-	s += "void RemoveNodeValue(CryMemStream &Needle);";
-	s += "CryObject *Dup() const;";
-	s += "void Copy(CryList *List);";
-	s += "virtual const char *GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const;";
+	s += "void Remove(Object *Item);";
+	s += "void RemoveNodeValue(MemStream &Needle);";
+	s += "Object *Dup() const;";
+	s += "void Copy(List *List);";
+	s += "virtual const char *GetProperty(const PropertyParser &PropertyName,String &Result) const;";
 	s += "virtual bool HasProperty(const char *PropertyName) const;";
 	s += "virtual int GetPropertyCount() const;";
-	s += "virtual CryList *PropertyNames() const;";
-	s += "virtual void CopyTo(CryObject &Dest) const;";
+	s += "virtual List *PropertyNames() const;";
+	s += "virtual void CopyTo(Object &Dest) const;";
 	s += "virtual size_t Size() const;";
 	l->LoadFromString(s,";");
 	return l;
@@ -775,7 +775,7 @@ bool List::HasProperty(const PropertyParser &PropertyName) const
 const char *List::GetProperty(const PropertyParser &PropertyName,String &Result) const
 {
 	Result.Clear();
-	if (PropertyName=="Values")   // intercept crycontainer's property for our own
+	if (PropertyName=="Values")   // intercept container's property for our own
 	{
 		Result = "[]";  // if Result != what is returned, it's a special situation
 		return "*";
@@ -904,13 +904,13 @@ int List::Compare2(int CompareType,const EmptyObject *First,const EmptyObject *S
 			return Compare(CompareType,F,S);
 //            return F->CompareLogical(CompareType,S);
 		}
-		return -1;  // EmptyObjects are always less then CryObjects
+		return -1;  // EmptyObjects are always less then Objects
 	}
 	else
 	{
 		if (s->IsObject)
 		{
-			return 1; // EmptyObjects are alway less then CryObjects
+			return 1; // EmptyObjects are alway less then Objects
 		}
 		if (f->Size==s->Size)
 			return memcmp(f->Item,s->Item,f->Size);

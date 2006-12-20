@@ -18,8 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include <ctype.h>
-#include "CryXML.h"
-#include "CryArray.h"
+#include "ClassXML.h"
+#include "ClassArray.h"
 #include "ClassProperty.h"
 #include "ClassException.h"
 
@@ -535,7 +535,7 @@ if (pn->Sortable())       /* TODO : Need to reimplment this for CryPropertyList 
 
 Object *XMLNode::CreateObjectFromNode(Object *Parent)
 {
-    //    CryObject *f = CryList::FactoryCreate(Type,Parent);
+    //    Object *f = CryList::FactoryCreate(Type,Parent);
     Object *f;
     const char *c = Type;
     const char *ParentType;
@@ -576,14 +576,14 @@ Object *XMLNode::CreateObjectFromNode(Object *Parent)
     		{
     			CryXMLNode *current = (CryXMLNode *)ln->Item;
     #ifdef DEBUGGING
-    			CryObject *o =
+    			Object *o =
     #endif
     			  current->CreateObjectFromNode(f);// Object Created goes into the continer "f"
     		}
     		else // The object isn't a container so the property must be one
     		{
     			CryXMLNode *current = (CryXMLNode *)ln->Item;
-                   CryObject *o = current->CreateObjectFromNode(f);
+                   Object *o = current->CreateObjectFromNode(f);
                    if (o->IsA(TCryProperty))
                    {
                        f->SetPropertyAsObject((CryProperty *)o);
@@ -606,7 +606,7 @@ void XMLNode::AddAttribute(const char *Name,const char *Value)
 }
 
 
-Object *CryXML::CreateObjectFromNode(Object *Parent)
+Object *XML::CreateObjectFromNode(Object *Parent)
 {
     XMLNode *head = (XMLNode *) FirstNode()->Item;
     if (head)

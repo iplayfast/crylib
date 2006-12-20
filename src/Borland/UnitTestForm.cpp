@@ -111,7 +111,7 @@ bool Fail=true;
 			break;
 		case 7:
 			{
-				CryBPNetContainer bp;
+				BPNetContainer bp;
 				Fail = bp.Test(true,bp,FormCallBack);
 			}
 			break;

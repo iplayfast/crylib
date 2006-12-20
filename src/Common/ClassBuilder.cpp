@@ -17,9 +17,9 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "CryObject.h"
+#include "ClassObject.h"
 #include "ClassBuilder.h"
-#include "CryXML.h"
+#include "ClassXML.h"
 #include "CryBackProp.h"
 #include "ClassHeader.h"
 #include "ClassFooter.h"
@@ -44,7 +44,7 @@ using namespace std;
 // are to be used.
 
 /// Dummy class with stubs for virtual functions
-class CryObjectNAbstract : public Object
+class ObjectNAbstract : public Object
 {
     virtual void CopyTo(Object &Dest) const
         {}
@@ -561,7 +561,7 @@ void ClassBuilder::SetDefaultBodies(FunctionDefList *AbstractFunctions) // will 
 
 				try
 				{
-					CryFunctionDef fd("virtual CryObject *Dup() const");
+					CryFunctionDef fd("virtual Object *Dup() const");
 					e = AddProperty(AbstractFunction,"Inherited",
 									fd.GetDeclaration().AsPChar(),"",0,"","",false);
 					e->SetFunction(fd);
@@ -572,7 +572,7 @@ void ClassBuilder::SetDefaultBodies(FunctionDefList *AbstractFunctions) // will 
 				}
 				try
 				{
-					CryFunctionDef fd("virtual void CopyTo(CryObject &Dest) const");
+					CryFunctionDef fd("virtual void CopyTo(Object &Dest) const");
 					e = AddProperty(AbstractFunction,"Inherited",
 									fd.GetDeclaration().AsPChar(),"",0,"","",false);
 					e->SetFunction(fd);
@@ -629,7 +629,7 @@ void ClassBuilder::SetBaseClass(const char *Type,bool AddStubs,bool AddVirtuals,
     catch(Exception &e)
     {
         _IsAbstract = true;
-        p1 = new CryObjectNAbstract();
+        p1 = new ObjectNAbstract();
         if (!p1->IsA(Type))
         {
             delete p1;
@@ -692,13 +692,13 @@ void ClassBuilder::SetBaseClass(const char *Type,bool AddStubs,bool AddVirtuals,
 	AbstractFunctions->AddOwned(new FunctionDef(
 								"virtual CryPropertyList *PropertyNames() const;"));
 	AbstractFunctions->AddOwned(new FunctionDef(
-							   "virtual void CopyTo(CryObject &Dest) const;"));
+							   "virtual void CopyTo(Object &Dest) const;"));
 	AbstractFunctions->AddOwned(new FunctionDef(
 								"virtual bool SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue);"));
 	AbstractFunctions->AddOwned(new FunctionDef(
 							"virtual const char *GetProperty(const char *PropertyName,CryString &Result) const;"));
 	//AbstractFunctions->Add(new CryFunctionDef(
-    //                         "virtual CryObject *Dup() const = 0;"));
+    //                         "virtual Object *Dup() const = 0;"));
 
     InheritType = Type;
     AssignInheritedElements();
@@ -717,7 +717,7 @@ void ClassBuilder::AddClassInstance(const char *ClassType,const char *ClassName,
     if (a.GotoFirst())
         do
         {
-            CryFactory *o = (CryFactory *)a.Get();
+            Factory *o = (Factory *)a.Get();
 			if (o->IsA(CClassHeaderFactory))
             {
 				ClassHeaderFactory *chf = (ClassHeaderFactory *)o;
@@ -762,7 +762,7 @@ void ClassBuilder::AddPrimInstance(const char *PrimType,
 	if (a.GotoFirst())
 		do
 		{
-			CryFactory *o = (CryFactory *)a.Get();
+			Factory *o = (Factory *)a.Get();
 			if (o->IsA(CClassHeaderFactory))
             {
                 ClassHeaderFactory *chf = (ClassHeaderFactory *)o;
@@ -946,10 +946,10 @@ CompositeIterator  ci(this);
 	if (ci.GotoFirst()) {
 		do
 		{
-		CryObject *o;
+		Object *o;
 			if (ci.IsObject())
 			{
-				o = (CryObject *)ci.Get();
+				o = (Object *)ci.Get();
 					if (o-Sortable()) {
 						o->Sort(0);
 					}
@@ -963,13 +963,13 @@ String fn = Filename;
     if (Filename =="")
         throw Exception("filename must be assigned before saving source (body must include header, so we need to know header's name)");
     fn += ".h";
-    CryFileStream header;
+    FileStream header;
 	//fn = "stdout";
     header.Open(fn,"w",true);
 
     fn = Filename;
     fn += ".cpp";
-    CryFileStream body;
+    FileStream body;
     body.Open(fn,"w",true);
 
     Clear("Source");
@@ -982,7 +982,7 @@ String fn = Filename;
     fn = Filename;
     fn+=".xml";
     body.Open(fn,"w",true);
-    CryXML x("obj");
+    XML x("obj");
     x.LoadFrom(*this);
 	x.SaveTo(body);
     body.Close();
@@ -996,9 +996,9 @@ void ClassBuilder::LoadSource()
         throw Exception("filename must be assigned before loading");
     fn = Filename;
     fn+=".xml";
-    CryFileStream body;
+    FileStream body;
     body.Open(fn,"r",true);
-    CryXML x("obj");
+    XML x("obj");
     x.LoadFrom(body);
     gptr = this;
     x.SaveTo(*this);
@@ -1060,7 +1060,7 @@ Object *HeaderFactory::Create(const PropertyParser &PropertyName,CodeFactory *Pa
 
 		if (PropertyName==CHeaderFactory)
             return this;
-        CryFactory *f = FindFactory(PropertyName);
+        Factory *f = FindFactory(PropertyName);
         if (f)
             return f;
 		if (PropertyName==CIncludesFactory)
@@ -1156,7 +1156,7 @@ void IncludesFactory::AddInclude(const Object *p,const char *Type,String &Curren
 
 Object *IncludesFactory::Create(const Object *p,const PropertyParser &PropertyName,String &CurrentIncludes)
 {
-    if (PropertyName=="CryIncludes")
+    if (PropertyName=="Includes")
     {
 	AddInclude(p,CObject,CurrentIncludes,"Object.h");
 	AddInclude(p,CObject,CurrentIncludes,"ClassException.h");	// always need this one
@@ -1165,7 +1165,7 @@ Object *IncludesFactory::Create(const Object *p,const PropertyParser &PropertyNa
 	AddInclude(p,CPropertyList,CurrentIncludes,"ClassProperty.h");
 	AddInclude(p,CList,CurrentIncludes,"ClassList.h");
 	AddInclude(p,CStream,CurrentIncludes,"ClassStream.h");
-	AddInclude(p,CCryFileStream,CurrentIncludes,"ClassFileStream.h");
+	AddInclude(p,CFileStream,CurrentIncludes,"ClassFileStream.h");
 	AddInclude(p,CMemStream,CurrentIncludes,"ClassMemStream.h");
 	AddInclude(p,CString,CurrentIncludes,"ClassString.h");
 	AddInclude(p,CHugeDouble,CurrentIncludes,"hugedouble.h");
@@ -1182,25 +1182,25 @@ Object *IncludesFactory::Create(const Object *p,const PropertyParser &PropertyNa
 	AddInclude(p,CCommandHolder,CurrentIncludes,"CryPattern.h");
 	AddInclude(p,CCompositeIterator,CurrentIncludes,"CryPattern.h");
 	AddInclude(p,CState,CurrentIncludes,"CryPattern.h");
-	AddInclude(p,CCryFactory,CurrentIncludes,"CryPattern.h");
-	AddInclude(p,CCryOFactory,CurrentIncludes,"CryPattern.h");
+	AddInclude(p,CFactory,CurrentIncludes,"CryPattern.h");
+	AddInclude(p,COFactory,CurrentIncludes,"CryPattern.h");
 
-	AddInclude(p,CCryFuzzy,CurrentIncludes,"CryFuzzy.h");
+	AddInclude(p,CFuzzy,CurrentIncludes,"CryFuzzy.h");
 	AddInclude(p,CFunctionDef,CurrentIncludes,"CryFunctionDef.h");
 	AddInclude(p,CFunctionDefList,CurrentIncludes,"CryFunctionDef.h");
 
-	AddInclude(p,CArray,CurrentIncludes,"CryArray.h");
-	AddInclude(p,CSimpleArray,CurrentIncludes,"CryArray.h");
-	AddInclude(p,CDoubleArray,CurrentIncludes,"CryArray.h");
+	AddInclude(p,CArray,CurrentIncludes,"ClassArray.h");
+	AddInclude(p,CSimpleArray,CurrentIncludes,"ClassArray.h");
+	AddInclude(p,CDoubleArray,CurrentIncludes,"ClassArray.h");
 
-	AddInclude(p,CCryBPNetContainer,CurrentIncludes,"CryBackProp.h");
+	AddInclude(p,CBPNetContainer,CurrentIncludes,"CryBackProp.h");
 	AddInclude(p,CBackPropagateLayer,CurrentIncludes,"CryBackProp.h");
-	AddInclude(p,CCryBPNet,CurrentIncludes,"CryBackProp.h");
+	AddInclude(p,CBPNet,CurrentIncludes,"CryBackProp.h");
 
 	AddInclude(p,CHugeInt,CurrentIncludes,"hugeint.h");
 
-	AddInclude(p,CXML,CurrentIncludes,"CryXML.h");
-	AddInclude(p,CXMLNode,CurrentIncludes,"CryXML.h");
+	AddInclude(p,CXML,CurrentIncludes,"ClassXML.h");
+	AddInclude(p,CXMLNode,CurrentIncludes,"ClassXML.h");
 
 		return 0;	// always return 0 so other classes can add theirs
 	}
@@ -1225,20 +1225,20 @@ Object *IncludesFactory::Create(const PropertyParser &PropertyName,CodeFactory *
 		s.printf("//standard files\n#include\t<string.h>\n#include\t<stdlib.h>\n");
 		s.printf("//Crystal files\n");
 
-	Create(p,"CryIncludes",s);
+	Create(p,"Includes",s);
 
 		Parent->AppendHeadImp("\n//Class Instance Includes");
 
-		Parent->Create("CryIncludes",Parent);
+		Parent->Create("Includes",Parent);
 		CompositeIterator a(Parent);
 		if (a.GotoFirst())
 			do
 			{
-				CryFactory *f = (CryFactory *)a.Get();
+				Factory *f = (Factory *)a.Get();
 				if (f->IsA(CClassInstance))
 				{
 					ClassInstance *c = (ClassInstance *)f;
-					Create(c->Getp(),"CryIncludes",s);
+					Create(c->Getp(),"Includes",s);
 				}
 			}
 			while(a.GotoNext());
@@ -1255,7 +1255,7 @@ Object *IncludesFactory::Create(const PropertyParser &PropertyName,CodeFactory *
 			FileName.Delete(FileName.Pos(FILEDEL),FileName.Length());
 			FileName.Rev();
 		}
-		s.printf("#include \"%s.h\"\n#include \"ClassProperty.h\"\n#include \"CryXML.h\"\t//Needed for SetDefaultValues\n\nusing namespace Crystal;\n",FileName.AsPChar());
+		s.printf("#include \"%s.h\"\n#include \"ClassProperty.h\"\n#include \"ClassXML.h\"\t//Needed for SetDefaultValues\n\nusing namespace Crystal;\n",FileName.AsPChar());
 		SetImp(PropertyName,s);
 		Parent->AppendHead(*GetHead(PropertyName));
 		Parent->AppendImp(*GetImp(PropertyName));

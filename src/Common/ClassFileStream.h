@@ -23,17 +23,17 @@
 namespace Crystal
 {
 using namespace std;
-#ifndef CCryFileString
-#define CCryFileStream "CryFileStream"
+#ifndef CFileStream
+#define CFileStream "CryFileStream"
 
 /// File Handling stream
-class CryFileStream : public Stream
+class FileStream : public Stream
 {
 class FileStreamIterator : public StreamIterator
     {
         size_t Size;  // size of stream items
     public:
-        FileStreamIterator(const CryFileStream *Container);
+        FileStreamIterator(const FileStream *Container);
         ~FileStreamIterator();
         void SetSize(size_t _Size);
         size_t GetSize();
@@ -45,12 +45,12 @@ class FileStreamIterator : public StreamIterator
     bool LastAccessInput;
     bool StdStream; // if true this class only redirects, It doesn't open or close
     char StdType;
-    CryFileStream(CryFileStream &nono);
+    FileStream(FileStream &nono);
 public:
-    StdFunctionsNoDup(CryFileStream,Stream);
+    StdFunctionsNoDup(FileStream,Stream);
     virtual Object *Dup() const; // creates a duplicate of this object
     virtual const cbyte* GetRaw() const;
-    virtual FunctionDefList *GetFunctions(const char *Type=0) const;
+	virtual FunctionDefList *GetFunctions(const char *Type=0) const;
     //    const char* ClassName() const;
 
     //    virtual const char *ChildClassName() const;
@@ -59,10 +59,10 @@ public:
     virtual int SeekFromStart(int Offset=0) const;
     virtual int SeekFromCurrent(int Offset) const;
     virtual int SeekFromEnd(int Offset=0) const;
-    //virtual void CopyTo(CryObject *Dest) const;
+    //virtual void CopyTo(Object *Dest) const;
     //virtual void CopyTo(CryStream *Dest) const;
     //virtual void CopyTo(CryFileStream *Dest) const;   //copies contents of this to Dest
-    //    virtual CryObject *Dup() const; // creates a duplicate of this object
+    //    virtual Object *Dup() const; // creates a duplicate of this object
 
     // read until terminator or Size (inclusive)
     virtual size_t ReadTI(char *ToBuffer,size_t Size) const;
@@ -77,7 +77,7 @@ public:
     virtual size_t Write(const char *FromBuffer,size_t Size);
     virtual bool Eof() const;
     virtual size_t Read(Stream *ToStream,size_t Size) const;
-    virtual size_t Write(const Stream *FromStream,size_t Size);
+	virtual size_t Write(const Stream *FromStream,size_t Size);
     virtual size_t Read(Stream *ToStream) const;
     virtual size_t Write(const Stream *FromStream);
     virtual bool IsOpen() const;
@@ -88,8 +88,8 @@ public:
     virtual bool ReOpen(const char *FileName,const char *Mode,bool ExceptOnError=true);
     virtual int scanf(const char *format,...) const;
     virtual size_t printf(const char *format,...);
-	CryFileStream();
-    virtual ~CryFileStream();
+	FileStream();
+    virtual ~FileStream();
     // Container functions
 	virtual Iterator *_CreateIterator() const;
 	Iterator *CreateIterator() const { return _CreateIterator(); }
@@ -100,18 +100,18 @@ public:
     virtual bool GotoNext(Iterator *I) const;    // returns true if success
     virtual bool GotoLast(Iterator *Iterator) const;    // returns true if success
 	virtual EmptyObject *GetAtIterator(const Iterator *I) const;
-	virtual void SetAtIterator(const Iterator *I,EmptyObject *Item,bool IsCryObject,bool IsOwned,size_t Size = 0);
+	virtual void SetAtIterator(const Iterator *I,EmptyObject *Item,bool IsObject,bool IsOwned,size_t Size = 0);
 
     virtual void RemoveAtIterator(Iterator *I);
     /// abstract function used by subclasses to count the number of items held by the container
-    virtual size_t Count() const;
-    virtual void Clear();
+	virtual size_t Count() const;
+	virtual void Clear();
 
-    virtual EmptyObject *Add(EmptyObject *Item,size_t Size);
-    virtual EmptyObject *AddOwned(EmptyObject *Item,size_t Size);
-    virtual Object *Add(Object *Item);
-    virtual Object *AddOwned(Object *Item);
+	virtual EmptyObject *Add(EmptyObject *Item,size_t Size);
+	virtual EmptyObject *AddOwned(EmptyObject *Item,size_t Size);
+	virtual Object *Add(Object *Item);
+	virtual Object *AddOwned(Object *Item);
 }
-;  // CryFileStream
-#endif //TCryFileStream
+;  // FileStream
+#endif //CFileStream
 }

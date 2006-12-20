@@ -18,7 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "CryObject.h"
+#include "ClassObject.h"
 //#include "CryArray.h"
 //#include "CryBackProp.h"
 //#include "CryFuzzy.h"
@@ -35,7 +35,7 @@ using namespace std;
 /// This class is a container of some sort, (either a linked list or an array of some type)
 /*!
 	Containers are named classes
-	CryObjects are able to Iterate through a container class, calling IteratedFunction for each item contained
+	Objects are able to Iterate through a container class, calling IteratedFunction for each item contained
 */
 class Container : public OwnedObject	//abstract
 {
@@ -152,13 +152,13 @@ class Iterator : public Object//EmptyObject
 		{
 			return (strcmp(ClassName,TIterator)==0);
 		}
-		/// returns a pointer to a string stating the current class Name, EG CryObject (not CryString)
+		/// returns a pointer to a string stating the current class Name, EG Object (not CryString)
 		const char* ClassName() const
 		{
 			return TIterator;
 		}
 
-		/// returns a pointer to a string stating the ChildClassName, EG CryString (not CryObject)
+		/// returns a pointer to a string stating the ChildClassName, EG CryString (not Object)
         virtual const char *ChildClassName() const
         {
             return TIterator;

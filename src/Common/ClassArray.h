@@ -441,7 +441,7 @@ TArray<T> &Delete(int start,int amount)
 /* need to code tests for the following functions
 	StdFunctionsNoDup(CryTArray,CrySimpleArray);
 	void SetSize(size_t _Size);
-	virtual CryObject *Dup()const; // creates a duplicate of this object
+	virtual Object *Dup()const; // creates a duplicate of this object
 	CryTArray<T> &Delete(int start,int amount);
 
 	virtual void Clear() { CurrentCount = 0; }

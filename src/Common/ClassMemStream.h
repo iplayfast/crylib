@@ -47,7 +47,6 @@ class MemStreamIterator : public StreamIterator
     static int gBuffSize;
     static int gBuffCount;  // number of references to it
     void ReMem(size_t Value);
-
 protected:
     void CheckMem(size_t RequestedSize);
     void SetPosition(size_t p);
@@ -75,7 +74,7 @@ public:
     /// Return a const reference to the ith character
     const char& operator[](unsigned int i) const;
     virtual const char *AsPChar() const;
-    virtual void SetRaw(unsigned int i,cbyte v);
+	virtual void SetRaw(unsigned int i,cbyte v);
     virtual void SetRaw(unsigned int Start,const cbyte *v,size_t Length);
     virtual size_t GetLength() const;
     virtual void SetLength(int i);
@@ -98,11 +97,11 @@ public:
     virtual size_t Size() const;
     virtual void CopyTo(Object &Dest) const;
     //    virtual void CopyTo(Stream *Dest) const;
-    //    virtual CryObject *Dup() const; // creates a duplicate of this object
+	//    virtual Object *Dup() const; // creates a duplicate of this object
     // read until terminator or Size (inclusive)
     virtual size_t ReadTI(char *ToBuffer,size_t Size) const;
     // write until terminator or size (inclusive)
-    virtual size_t WriteTI(const char *FromBuffer,size_t Size);
+	virtual size_t WriteTI(const char *FromBuffer,size_t Size);
     // read until terminator or Size (inclusive)
     virtual size_t ReadTI(Stream *ToBuffer,size_t Size) const;
     // write until terminator or size (inclusive)
@@ -116,20 +115,21 @@ public:
     virtual size_t Write(const Stream *FromStream);
     virtual size_t Tell() const;
     virtual bool Eof() const;
-    virtual int CompareLogical(int CompareType,const Object *Test) const;
+	virtual int Compare(int CompareType,const Object *Test1,const Object *Test2) const;
+	virtual int CompareLogical(int CompareType,const Object *Test) const;
 	virtual int Compare(const MemStream *MemStream) const;
 
-    virtual bool IsOpen()  const;
-    virtual bool Open(const char *Name,const char *Operation,bool ExceptOnError=true);
-    virtual void Close(bool ExceptOnError=true);
-    virtual void Flush();
-    int vsscanf(const char *format, va_list ap) const;
-    int vsprintf(const char *format, va_list ap);
+	virtual bool IsOpen()  const;
+	virtual bool Open(const char *Name,const char *Operation,bool ExceptOnError=true);
+	virtual void Close(bool ExceptOnError=true);
+	virtual void Flush();
+	int vsscanf(const char *format, va_list ap) const;
+	int vsprintf(const char *format, va_list ap);
 
-    virtual int scanf(const char *format,...) const;
-    virtual size_t printf(const char *format,...);
+	virtual int scanf(const char *format,...) const;
+	virtual size_t printf(const char *format,...);
 
-    // Container functions
+	// Container functions
     virtual Iterator *_CreateIterator() const;
     virtual void DeleteIterator(Iterator *I) const;
     virtual bool GotoFirst(Iterator *I) const;

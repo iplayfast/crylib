@@ -9,7 +9,7 @@
 #include	<stdlib.h>
 
 //Crystal files
-#include	"CryObject.h"
+#include	"ClassObject.h"
 #include	"ClassMemStream.h"
 
 namespace Crystal {

@@ -20,7 +20,7 @@
 
 #ifndef CHugeInt
 #define CHugeInt "HugeInt"
-#include "CryObject.h"
+#include "ClassObject.h"
 
 
 namespace Crystal {

@@ -261,7 +261,7 @@ EmptyObject *MemStream::GetAtIterator(const Iterator *I) const
 	return (EmptyObject *) &Buffer[i->Offset];
 }
 
-void MemStream::SetAtIterator(const Iterator *I,EmptyObject *Item,bool IsCryObject,bool IsOwned,size_t Size)
+void MemStream::SetAtIterator(const Iterator *I,EmptyObject *Item,bool IsObject,bool IsOwned,size_t Size)
 {
 const MemStreamIterator *i = (const MemStreamIterator *)I;
 	memcpy(&Buffer[i->Offset],Item,Size);
@@ -305,7 +305,7 @@ FunctionDefList *MemStream::GetFunctions(const char *Type) const
 	// otherwise get any functions in subclasses
 	FunctionDefList *l = Stream::GetFunctions();
     String s;
-    s += "// Class CryMemStream;";
+	s += "// Class MemStream;";
     s += "size_t Resize(size_t s);";
     s += "virtual void Clear();";
     s += "virtual void Clear(int amount);";
@@ -337,8 +337,8 @@ FunctionDefList *MemStream::GetFunctions(const char *Type) const
     s += "virtual int SeekFromEnd(int Offset=0) const;";
     s += "virtual CryMemStream &MemDelete(unsigned int start,int amount);";
     s += "virtual size_t Size() const;";
-    s += "virtual void CopyTo(CryObject &Dest) const;";
-    s += "virtual CryObject *Dup() const;";
+    s += "virtual void CopyTo(Object &Dest) const;";
+	s += "virtual Object *Dup() const;";
     s += "virtual size_t ReadTI(char *ToBuffer,size_t Size) const;";
     s += "virtual size_t WriteTI(const char *FromBuffer,size_t Size);";
     s += "virtual size_t ReadTI(CryStream *ToBuffer,size_t Size) const;";
@@ -514,7 +514,10 @@ bool MemStream::operator !=(const char *s)
     else
         return true;
 }
-
+int MemStream::Compare(int CompareType,const Object *Test1,const Object *Test2) const
+{
+    return Test1->CompareLogical(CompareType,Test2);
+}
 int MemStream::CompareLogical(int CompareType,const Object *Test) const
 {
     if (Test->IsA(CMemStream))

@@ -56,7 +56,7 @@ int i,t;
 } */
 
 
-CryFuzzy::CryFuzzy(const CryFuzzy &c)
+Fuzzy::Fuzzy(const Fuzzy &c)
 {
 TFuzzyXY *t;
     if (&c==this)
@@ -70,17 +70,17 @@ TFuzzyXY *t;
     }
 }
 
-CryFuzzy::CryFuzzy()
+Fuzzy::Fuzzy()
 {
 }
 
-CryFuzzy::~CryFuzzy()
+Fuzzy::~Fuzzy()
 {
     while(Count())
         DeleteItem(0);
 }
 
-CryFuzzy::CryFuzzy(const CryFuzzy *p)
+Fuzzy::Fuzzy(const Fuzzy *p)
 {
 TFuzzyXY *t;
     if (p==this)
@@ -96,14 +96,14 @@ TFuzzyXY *t;
 }
 
 // derived class will handle the display in CryStream the objects contained in array (text assumed)
-void CryFuzzy::SaveItemTo(const Array *Owner,EmptyObject *FromItem,Stream &ToStream) const
+void Fuzzy::SaveItemTo(const Array *Owner,EmptyObject *FromItem,Stream &ToStream) const
 {
 TFuzzyXY *t = (TFuzzyXY *)FromItem;
     ToStream.printf("%f,%f",t->x,t->y);
 }
 
 // derived class will handle the Creation of an Object from the stream
-EmptyObject *CryFuzzy::LoadItemFrom(Array *Owner,EmptyObject *Item,Stream &FromStream)
+EmptyObject *Fuzzy::LoadItemFrom(Array *Owner,EmptyObject *Item,Stream &FromStream)
 {
 TFuzzyXY *t = (TFuzzyXY *)Item;
     t->x = t->y = 0.0;
@@ -111,20 +111,20 @@ TFuzzyXY *t = (TFuzzyXY *)Item;
     return t;
 }
 
-void CryFuzzy::DestroyArrayItem(Array *Owner,EmptyObject *Item)
+void Fuzzy::DestroyArrayItem(Array *Owner,EmptyObject *Item)
 {
     delete Item;
 }
-EmptyObject *CryFuzzy::CreateArrayItem(Array *Owner,bool *IsCryObject)
+EmptyObject *Fuzzy::CreateArrayItem(Array *Owner,bool *IsObject)
 {
 TFuzzyXY *t = new TFuzzyXY;
     t->x = t->y = 0.0;
-    *IsCryObject = false;
+    *IsObject = false;
     return t;
 }
 
 	// adds a point to the fuzzy table, returns index of point added
-int CryFuzzy::AddPoint(float x,float y)
+int Fuzzy::AddPoint(float x,float y)
 {
 unsigned int i;
 TFuzzyXY *t,*n;
@@ -163,7 +163,7 @@ TFuzzyXY *t,*n;
 //     return i; // never gets here
 }
 
-float CryFuzzy::Value(float x)const  // returns a y value for an x into the table
+float Fuzzy::Value(float x)const  // returns a y value for an x into the table
 {
 int i,l,Previous,Next;
 float	m;
@@ -199,7 +199,7 @@ TFuzzyXY *t;
           return m * (x - p->x) + p->y;
     };
 }
-int CryFuzzy::SetValueAt(float x,float y) // Sets a point to the fuzzy table, returns index of point added
+int Fuzzy::SetValueAt(float x,float y) // Sets a point to the fuzzy table, returns index of point added
 {
 unsigned int i;
 TFuzzyXY *t;
@@ -221,30 +221,30 @@ TFuzzyXY *t;
 };
 
  // returns a y value for the index into the table
-float CryFuzzy::ValueAt(unsigned int idx)const
+float Fuzzy::ValueAt(unsigned int idx)const
 {
     return Index(idx)->y;
 }
  // returns a x value for the index into the table
-float CryFuzzy::IndexAt(unsigned int idx )const
+float Fuzzy::IndexAt(unsigned int idx )const
 {
     return Index(idx)->x;
 }
-float CryFuzzy::LowestRange() const// returns the lowest x
+float Fuzzy::LowestRange() const// returns the lowest x
 {
     return Index(0)->x;
 }
-float CryFuzzy::HighestRange() const // returns the highest x
+float Fuzzy::HighestRange() const // returns the highest x
 {
   return Index(Count()-1)->x;
 }
-void CryFuzzy::SwapXY()
+void Fuzzy::SwapXY()
 {
   for (unsigned int i=0;i<Count();i++)
     SetValueXY(i,ValueAt(i),IndexAt(i));
 }
 
-float CryFuzzy::Equality(CryFuzzy &t)const
+float Fuzzy::Equality(Fuzzy &t)const
 {
 unsigned int i;
 float	v,v1,result;
@@ -287,7 +287,7 @@ float	v,v1,result;
 };
 
 // remove values that would normally fall within the range of factor
-void CryFuzzy::Normalize(float factor)
+void Fuzzy::Normalize(float factor)
 {
 unsigned int i,j;
 float	r,va,v,s1,s2,factor2;
@@ -332,7 +332,7 @@ TFuzzyXY *n,*p;
 };
 
 // add additional values (of the calculated value to data)
-void CryFuzzy::IncreaseSamples()
+void Fuzzy::IncreaseSamples()
 {
 unsigned int i;
 float	x1,x2,y;
@@ -345,7 +345,7 @@ float	x1,x2,y;
     }
 }
 // write 1 datapoint to the stream
-void CryFuzzy::SaveFuzzToStream(int i,Stream *ToStream) const
+void Fuzzy::SaveFuzzToStream(int i,Stream *ToStream) const
 {
 int l;
 float x,y;
@@ -362,13 +362,13 @@ float x,y;
         break;
     }
 }
-bool CryFuzzy::LoadAsText(int i,String &FromStream)
+bool Fuzzy::LoadAsText(int i,String &FromStream)
 {
 float x,y;	// i is ignored as Fuzzy sorts input values and figures out the index itself
 	FromStream.scanf("%f %f ",&x,&y);
 	return SetValueAt(x,y);
 }
-bool CryFuzzy::SaveAsText(int i,String &ToStream) const
+bool Fuzzy::SaveAsText(int i,String &ToStream) const
 {
 float x,y;
    	x = Index(i)->x;
@@ -378,7 +378,7 @@ float x,y;
 }
 
 
-void CryFuzzy::AppendFromStream(Stream &FromStream)
+void Fuzzy::AppendFromStream(Stream &FromStream)
 {
 int l,i,c;
     switch(FromStream.GetMode())
@@ -394,7 +394,7 @@ int l,i,c;
 	    AppendFuzzFromStream(FromStream);
 }
 
-int CryFuzzy::AppendFuzzFromStream(Stream &FromStream)
+int Fuzzy::AppendFuzzFromStream(Stream &FromStream)
 {
 float x,y;
     switch(FromStream.GetMode())
@@ -410,12 +410,12 @@ float x,y;
     return SetValueAt(x,y);
 }
 
-void CryFuzzy::SetValueXY(int i,float x, float y ) //Sets a point in a fuzzy table at index i
+void Fuzzy::SetValueXY(int i,float x, float y ) //Sets a point in a fuzzy table at index i
 {
     Index(i)->x = x;  Index(i)->y = y;
 }
 
-void CryFuzzy::SimpleInhibit(float InhibitPercent)
+void Fuzzy::SimpleInhibit(float InhibitPercent)
 {
 unsigned int i;
 float	v1,v2,v3,v4;
@@ -434,30 +434,30 @@ float	v1,v2,v3,v4;
 	    v4 = ValueAt(i+3);
   }
 }
-void CryFuzzy::CopyAndInhibit(CryFuzzy &Fuzzy)
+void Fuzzy::CopyAndInhibit(Fuzzy &_Fuzzy)
 {
-CryFuzzy temp;
-	CopyAndInhibitTemp(Fuzzy,temp);
+Fuzzy temp;
+	CopyAndInhibitTemp(_Fuzzy,temp);
  	Normalize(1);
 }
-void CryFuzzy::CopyAndInhibitTemp(CryFuzzy &Fuzzy,CryFuzzy &Temp)
+void Fuzzy::CopyAndInhibitTemp(Fuzzy &_Fuzzy,Fuzzy &Temp)
 {
 float l,h,r,d;
-    Clear();
-    l = Fuzzy.LowestRange();
-    h = Fuzzy.HighestRange();
-    if ((l<0) || (h<0)) return;
-    d = (h - l) / (Fuzzy.Count() * 10);
-    r = l;
+	Clear();
+	l = _Fuzzy.LowestRange();
+	h = _Fuzzy.HighestRange();
+	if ((l<0) || (h<0)) return;
+	d = (h - l) / (_Fuzzy.Count() * 10);
+	r = l;
 
 //    Temp.SetUsedLength(ceil(h - l));	// make space needed
-    Temp.Clear();// set the space used right now
+	Temp.Clear();// set the space used right now
 //    SetUsedLength(ceil(h-l)*10);
 //    SetUsedLength(0);
-    Clear();
+	Clear();
 	while(r<h)
 	{
-		AddPoint(r,Fuzzy.Value(r));
+		AddPoint(r,_Fuzzy.Value(r));
 		r = r + d;
 	};
 	r = l + d;
@@ -473,11 +473,11 @@ float l,h,r,d;
 	while(r<(h-d))
 	{
 		AddPoint(r,Temp.Value(r-d)-Temp.Value(r) + Temp.Value(r) - Temp.Value(r+d));
-        r = r + d;
+		r = r + d;
 	};
 }
 
-void CryFuzzy::Range(float Floor,float Ceil)
+void Fuzzy::Range(float Floor,float Ceil)
 {
 float v;
 unsigned int Size = Count();
@@ -506,7 +506,7 @@ TFuzzyXY *t;
     }
 }
 
-float CryFuzzy::Or(const CryFuzzy &f, float v) const
+float Fuzzy::Or(const Fuzzy &f, float v) const
 {
 float r1,r2;
     r1 = f.Value(v);
@@ -515,7 +515,7 @@ float r1,r2;
     else return r2;
 }
 
-float CryFuzzy::And(CryFuzzy f, float v) const
+float Fuzzy::And(Fuzzy f, float v) const
 {
 float r1,r2;
     r1 = f.Value(v);
@@ -524,7 +524,7 @@ float r1,r2;
     else return r2;
 }
 
-float CryFuzzy::XOr(CryFuzzy f, float v) const
+float Fuzzy::XOr(Fuzzy f, float v) const
 {
 float r1,r2;
     r1 = f.Value(v);
@@ -533,45 +533,45 @@ float r1,r2;
     else return r1 - r2;
 }
 
-float CryFuzzy::Not(float v) const
+float Fuzzy::Not(float v) const
 {
     return 1.0 - Value(v);
 }
 
-Object *CryFuzzy::Dup()const // creates a duplicate of this object
+Object *Fuzzy::Dup()const // creates a duplicate of this object
 {
-CryFuzzy *n = new CryFuzzy(this);
+Fuzzy *n = new Fuzzy(this);
     return (Object *)n;
 }
 
-Object *CryFuzzy::CreateItemType(const PropertyParser &PropertyName)
+Object *Fuzzy::CreateItemType(const PropertyParser &PropertyName)
 {
-    if (PropertyName==CCryFuzzy)
-        return new CryFuzzy();
-    else return Array::CreateItemType(PropertyName);
+	if (PropertyName==CFuzzy)
+		return new Fuzzy();
+	else return Array::CreateItemType(PropertyName);
 
 }
-PropertyList *CryFuzzy::PropertyNames() const
+PropertyList *Fuzzy::PropertyNames() const
 {
     PropertyList *n = Container::PropertyNames();// Skip Array class to avoid Size (Fuzzy takes care of that)
     return n;
 }
 
-bool CryFuzzy::SetProperty(const PropertyParser &PropertyName,const char *PropertyValue)
+bool Fuzzy::SetProperty(const PropertyParser &PropertyName,const char *PropertyValue)
 {
     return Array::SetProperty(PropertyName,PropertyValue);
 }
-const char *CryFuzzy::GetProperty(const PropertyParser &PropertyName,String &Result) const
+const char *Fuzzy::GetProperty(const PropertyParser &PropertyName,String &Result) const
 {
     return Array::GetProperty(PropertyName,Result);
 }
-bool CryFuzzy::HasProperty(const PropertyParser &PropertyName)const
+bool Fuzzy::HasProperty(const PropertyParser &PropertyName)const
 {
     return Array::HasProperty(PropertyName); // pass it to base class, see if it knows anything about it
 }
-int CryFuzzy::GetPropertyCount() const { return Container::GetPropertyCount()  + 1; }    // Value is a property
+int Fuzzy::GetPropertyCount() const { return Container::GetPropertyCount()  + 1; }    // Value is a property
 
-FunctionDefList *CryFuzzy::GetFunctions(const char *Type) const
+FunctionDefList *Fuzzy::GetFunctions(const char *Type) const
 {
 // if a type has been defined and it's not this class, check subclasses for it
 	if (Type && !IsA(Type))
@@ -609,10 +609,10 @@ FunctionDefList *CryFuzzy::GetFunctions(const char *Type) const
     s += "virtual bool LoadAsText(Iterator *i,CryString &FromStream);";
     s += "virtual bool SaveAsText(Iterator *i,CryString &ToStream) const;";
     s += "void print(ostream &os);";
-    s += "virtual CryObject *Dup()const;";
+    s += "virtual Object *Dup()const;";
     s += "const char* ClassName() const;";
     s += "virtual const char* ChildClassName() const;";
-    s += "virtual CryObject *CreateItemType(const char *Name);";
+    s += "virtual Object *CreateItemType(const char *Name);";
     s += "virtual void SaveItemTo(const CryArray *Owner,EmptyObject *FromItem,CryStream &ToStream) const;";
     s += "virtual EmptyObject *LoadItemFrom(CryArray *Owner,EmptyObject *ToItem,CryStream &FromStream);";
     s += "bool SetProperty(const CryPropertyParser &PropertyName,const CryString &PropertyValue);";
@@ -621,11 +621,11 @@ FunctionDefList *CryFuzzy::GetFunctions(const char *Type) const
     s += "virtual int GetPropertyCount() const;";
     s += "virtual CryList *PropertyNames() const;";
     s += "virtual void CopyTo(CryArray &Dest) const;";
-    s += "virtual void CopyTo(CryObject &Dest) const;";
+    s += "virtual void CopyTo(Object &Dest) const;";
     s += "virtual void GetEleType(CryString &Result) const;";
     s += "virtual bool IsAbstract() const;";
 #ifdef VALIDATING
-    s += "virtual bool Test(bool Verbose,CryObject &Object,bool (CallBack)(bool Verbose,const char *Result,bool fail));";
+    s += "virtual bool Test(bool Verbose,Object &_Object,bool (CallBack)(bool Verbose,const char *Result,bool fail));";
 #endif
     s += "virtual CryFunctionDefList *GetFunctions(const char *Type=0) const;";
     l->LoadFromString(s,";");
@@ -633,13 +633,13 @@ FunctionDefList *CryFuzzy::GetFunctions(const char *Type) const
 };
 
 #ifdef VALIDATING
-bool CryFuzzy::Test(bool Verbose,Object &Object,bool (CallBack)(bool Verbose,const char *Result,bool fail))
+bool Fuzzy::Test(bool Verbose,Object &Object,bool (CallBack)(bool Verbose,const char *Result,bool fail))
 {
     return Array::Test(Verbose,Object,CallBack);
 }
 #endif
 
-void CryFuzzy::print(ostream &os)
+void Fuzzy::print(ostream &os)
 {
 TFuzzyXY *t;
       for(unsigned int i=0;i<Count();i++)
@@ -650,7 +650,7 @@ TFuzzyXY *t;
       }
 }
 using namespace std;
-ostream &operator<<( ostream &os, Crystal::CryFuzzy& ds )
+ostream &operator<<( ostream &os, Crystal::Fuzzy& ds )
 {
         ds.print ( os );
    return os;

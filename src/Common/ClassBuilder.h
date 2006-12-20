@@ -17,8 +17,8 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "CryObject.h"
-#include "CryArray.h"
+#include "ClassObject.h"
+#include "ClassArray.h"
 #include "CryBackProp.h"
 #include "CryFuzzy.h"
 #include "CryPattern.h"
@@ -81,7 +81,7 @@ StdFunctionsNoDup(ClassBuilder,CodeFactory);
 	virtual Object *Create(const PropertyParser &PropertyName,CodeFactory *Parent);
 	virtual Object *Create(const char *FactoryName,const PropertyParser &PropertyName,Object *Parent=0)
 	{
-	  return CryFactory::Create(FactoryName,PropertyName,Parent);
+	  return Factory::Create(FactoryName,PropertyName,Parent);
 	}
 
 	virtual Object *Create(Stream &FromStream);
@@ -89,7 +89,7 @@ StdFunctionsNoDup(ClassBuilder,CodeFactory);
 	int GetPropertyCount() const;
 	/// will return a pointer to a dup of the property
 	virtual Object *GetCopyOfPropertyAsObject(const PropertyParser &a) const;
-	/// will return a pointer to the property if the property is a CryObject or desendent
+	/// will return a pointer to the property if the property is a Object or desendent
 	virtual Object *_GetPropertyAsObject(const PropertyParser &a) const;
 	virtual bool  SetProperty(const PropertyParser &PropertyName,const char *PropertyValue);
 
@@ -240,9 +240,9 @@ public:
     {
         return CInheritedFactory;
 	}
-	/// will return a property represented as an object, useful for classes which contain properties that are dynamically allocated, as a property that is dynamic is a CryObject and therefore callable
+	/// will return a property represented as an object, useful for classes which contain properties that are dynamically allocated, as a property that is dynamic is a Object and therefore callable
 	virtual Object *GetCopyOfPropertyAsObject(const PropertyParser &PropertyName) const;
-	/// will return a pointer to the property if the property is an CryObject (or decendent)
+	/// will return a pointer to the property if the property is an Object (or decendent)
 	virtual Object *_GetPropertyAsObject(const PropertyParser &PropertyName) const;
 /*! will return whether or not the property named in PropertyName is a container */
     virtual bool GetIsPropertyContainer(const PropertyParser &PropertyName) const;

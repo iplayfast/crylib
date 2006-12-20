@@ -20,7 +20,7 @@
 #ifndef CHeadImp
 #define CHeadImp "HeadImp"
 
-#include "CryObject.h"
+#include "ClassObject.h"
 #include "ClassString.h"
 
 namespace Crystal {
@@ -47,9 +47,9 @@ StdFunctions(HeadImp,String);
 	virtual void CopyTo(Object &Object) const;
 	//virtual void CopyToStream(CryStream &Dest,CopyStyle Style = NORMAL) const;
 	virtual bool CanDup() const { return true; }
-	/// will return a property represented as an object, useful for classes which contain properties that are dynamically allocated, as a property that is dynamic is a CryObject and therefore callable
+	/// will return a property represented as an object, useful for classes which contain properties that are dynamically allocated, as a property that is dynamic is a Object and therefore callable
 	virtual Object *GetCopyOfPropertyAsObject(const PropertyParser &PropertyName) const;
-	/// will return a pointer to the property if the property is an CryObject (or decendent)
+	/// will return a pointer to the property if the property is an Object (or decendent)
 	virtual Object *_GetPropertyAsObject(const PropertyParser &PropertyName) const;
 
 /*! will return whether or not the property named in PropertyName is a container */

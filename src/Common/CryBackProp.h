@@ -20,7 +20,7 @@
 
 #include <math.h>
 
-#include "CryArray.h"
+#include "ClassArray.h"
 #include "ClassString.h"
 
 #ifndef BACKPROP_DEF
@@ -34,11 +34,11 @@
 namespace Crystal   {
 using namespace std;
 
-#define CCryBPNetContainer "CryBPNetContainer"
+#define CBPNetContainer "BPNetContainer"
 #define CBackPropagateLayer "BackPropagateLayer"
-#define CCryBPNet	"CryBPNet"
+#define CBPNet	"BPNet"
 
-class CryBPNet;
+class BPNet;
 /// a layer class for use within the CryBackpropagation Class
 /*! The layer of the backpropagation net Weights are stored elsewhere, this class just stores the offsets into the weights array*/
 class BackPropagateLayer : public Object
@@ -55,13 +55,13 @@ public:
 	int		WeightStart;	// connection weights to Nth unit
 	int		WeightSaveStart;	// saved weights for intermediate results
 	int		dWeightStart;	// delta weights for momentum
-	CryBPNet *Owner;
+	BPNet *Owner;
 public:
 StdFunctionsNoDup(BackPropagateLayer,Object);
 
 virtual FunctionDefList *GetFunctions(const char *Type=0) const;
 
-BackPropagateLayer(CryBPNet *_Owner);
+BackPropagateLayer(BPNet *_Owner);
 void SetID(int i);
 int  GetID() const { return id; }
 virtual void CopyTo(Object &Object) const;
@@ -75,7 +75,7 @@ virtual bool SetProperty(const PropertyParser &PropertyName,const char *Property
 };
 
 /// low level backpropagation array class
-class CryBPNet : public Array
+class BPNet : public Array
 {
 public:// shit remove atfter testing
 double *AllWeights;
@@ -86,7 +86,7 @@ protected:
     void CopyToWeights(double *Dest,int length) const;
     int GetAllWeightsSize() const { return AllWeightsSize; }
 public:
-StdFunctions(CryBPNet,Array);
+StdFunctions(BPNet,Array);
     virtual FunctionDefList *GetFunctions(const char *Type=0) const;
 
 	void SetAllWeights();	/// gets' called just before the network is trained, or as it is loaded
@@ -122,15 +122,15 @@ StdFunctions(CryBPNet,Array);
     BackPropagateLayer * AddLayer(int Size);
     void SetLockLevel(int n) { LockLevel = n; } // if retraining a new layer lock the old ones
     int GetLockLevel() { return LockLevel; }
-    CryBPNet() : Array()	{	AllWeights = 0; LockLevel = 1; }
-    ~CryBPNet()  	{	Clear(); delete []AllWeights;	}
+    BPNet() : Array()	{	AllWeights = 0; LockLevel = 1; }
+    ~BPNet()  	{	Clear(); delete []AllWeights;	}
    virtual void CopyTo(Array &Dest) const { Array::CopyTo(Dest);  } //copies contents of this to Dest
     virtual void CopyTo(Object &Dest) const { Array::CopyTo(Dest);  }  //copies contents of this to Dest
     virtual void GetEleType(String &Result) const;
 };
 
 /// backpropagation interface layer 
-class CryBPNetContainer : public CryBPNet
+class BPNetContainer : public BPNet
 {
 double TestError;
 double TrainError;
@@ -142,7 +142,7 @@ String Status;
 void SaveWeights();
 void RestoreWeights();
 public:
-StdFunctions(CryBPNetContainer,CryBPNet);
+StdFunctions(BPNetContainer,BPNet);
 // DataSetup Functions
   void SetAlpha(double a) { Alpha = a; }
   void SetEta(double e) { Eta = e; }
@@ -205,10 +205,10 @@ void printWeights();
    virtual bool LoadAsText(Iterator *I,CryString *FromStream);
    virtual bool SaveAsText(Iterator *I,CryString *ToStream) const;*/
    virtual void CopyTo(Array &Dest) const { Array::CopyTo(Dest);  } //copies contents of this to Dest
-   virtual void CopyTo(CryBPNetContainer &Dest) const { Object *n = &Dest; CopyTo(*n); }
+   virtual void CopyTo(BPNetContainer &Dest) const { Object *n = &Dest; CopyTo(*n); }
    void SetSize(size_t n); // set the number currently in use (either grow or shrink)
 // Actual class stuff
-    CryBPNetContainer();
+    BPNetContainer();
  #ifdef VALIDATING
 virtual bool Test(bool Verbose,Object &Object,bool (CallBack)(bool Verbose,const char *Result,bool fail));
 #endif

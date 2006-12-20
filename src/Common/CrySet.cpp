@@ -10,8 +10,8 @@
 //Class Instance Includes
 #include "CrySet.h"
 #include "ClassProperty.h"
-#include "CryXML.h"	//Needed for SetDefaultValues
-#include "CryArray.h"
+#include "ClassXML.h"	//Needed for SetDefaultValues
+#include "ClassArray.h"
 
 using namespace Crystal;
 using namespace std;

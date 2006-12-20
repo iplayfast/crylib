@@ -21,11 +21,11 @@
 #include <stdlib.h>
 
 #include "ClassContainer.h"
-#include "CryArray.h"
+#include "ClassArray.h"
 #include "ClassFunction.h"
 #include "ClassProperty.h"
 #include "ClassException.h"
-#include "CryXML.h"
+#include "ClassXML.h"
 using namespace Crystal;
 using namespace std;
 
@@ -54,7 +54,7 @@ FunctionDefList *SimpleArray::GetFunctions(const char *Type) const
 	String s;
 	char *search;
 	s += "// Class CrySimpleArray;";
-	s +="virtual void CopyTo(CryObject &Dest) const;";
+	s +="virtual void CopyTo(Object &Dest) const;";
 	s +="int IteratorValue(const Iterator *I) const;";
 	s +="virtual Iterator *_CreateIterator() const;";
 	s +="void SetAllowResize(bool v);";
@@ -79,7 +79,7 @@ FunctionDefList *SimpleArray::GetFunctions(const char *Type) const
 	s +="virtual const char* ChildClassName() const;";
 	s +="virtual bool IsA(const char *_ClassName) const;";
 	s +="virtual bool SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue);";
-	s +="virtual bool SetPropertyAsObject(const CryPropertyParser &PropertyName,CryObject *Value);";
+	s +="virtual bool SetPropertyAsObject(const CryPropertyParser &PropertyName,Object *Value);";
 	s +="virtual bool SetPropertyAsObject(CryProperty *Value);";
 	s +="virtual const char *GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const;";
 	s +="virtual bool HasProperty(const CryPropertyParser &PropertyName)const;";
@@ -195,7 +195,7 @@ StdFunctionsNoDup(CrySimpleArray,CryContainer);
 		ElementSize = _ElementSize;
 		CurrentCount = MaxCount = 0;
 	}
-	virtual void CopyTo(CryObject &Dest) const;  //copies contents of this to Dest
+	virtual void CopyTo(Object &Dest) const;  //copies contents of this to Dest
 	int IteratorValue(const Iterator *I) const
 	{
 		return ((ArrayIterator *)I)->i;
@@ -282,7 +282,7 @@ StdFunctionsNoDup(CrySimpleArray,CryContainer);
 	virtual bool IsEmpty(const Iterator *I) const { return GetAtIterator(I)==0; }
 	virtual void Clear() = 0;
 	virtual bool SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue);
-	virtual bool SetPropertyAsObject(const CryPropertyParser &PropertyName,CryObject *Value);
+	virtual bool SetPropertyAsObject(const CryPropertyParser &PropertyName,Object *Value);
 	virtual bool SetPropertyAsObject(CryProperty *Value);
 	virtual const char *GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const;
 	virtual bool HasProperty(const CryPropertyParser &PropertyName)const;
@@ -314,7 +314,7 @@ StdFunctionsNoDup(CrySimpleArray,CryContainer);
 //	CryTemplateArray
 //
 /*template<typename T>
-CryObject * CryTemplateArray<T>::Dup() const
+Object * CryTemplateArray<T>::Dup() const
 {
 	int i, m = GetMax();
 	CryTemplateArray<T> *n = new CryTemplateArray<T>(m);
@@ -324,12 +324,12 @@ CryObject * CryTemplateArray<T>::Dup() const
 } */
 #ifdef VALIDATING
 /*template<>
-bool CryTemplateArray<int>::Test(bool Verbose,CryObject &Object,bool (CallBack)(bool Verbose,const char *Result,bool fail))
+bool CryTemplateArray<int>::Test(bool Verbose,Object &Object,bool (CallBack)(bool Verbose,const char *Result,bool fail))
 {
 /* need to code tests for the following functions
 	StdFunctionsNoDup(CryTemplateArray,CrySimpleArray);
 	void SetSize(size_t _Size);
-	virtual CryObject *Dup()const; // creates a duplicate of this object
+	virtual Object *Dup()const; // creates a duplicate of this object
 	CryTemplateArray<T> &Delete(int start,int amount);
 
 	virtual void Clear() { CurrentCount = 0; }
@@ -448,17 +448,17 @@ FunctionDefList *Array::GetFunctions(const char *Type) const
     s +="int DeleteItem(unsigned int i);";
     s +="virtual void CopyTo(CryArray &Dest) const;";
     s +="void Sort(int (Compare) (const void *ele1,const void *ele2));";
-    s +="virtual void CopyTo(CryObject &Dest) const;";
-    s +="virtual CryObject *Dup()const;";
+    s +="virtual void CopyTo(Object &Dest) const;";
+    s +="virtual Object *Dup()const;";
     s +="virtual const cbyte* GetRaw() const;";
 #ifdef VALIDATING
 
-    s +="virtual bool Test(bool Verbose,CryObject &Object,bool (CallBack)(bool Verbose,const char *Result,bool Fail));";
+    s +="virtual bool Test(bool Verbose,Object &Object,bool (CallBack)(bool Verbose,const char *Result,bool Fail));";
 #endif
 
     s +="virtual const char *ChildClassName() const;";
 	s +="virtual bool SetProperty(const char *PropertyName,const CryString &PropertyValue);";
-    s +="virtual bool SetPropertyAsObject(const char *PropertyName,CryObject *Value);";
+    s +="virtual bool SetPropertyAsObject(const char *PropertyName,Object *Value);";
     s +="virtual bool SetPropertyAsObject(CryProperty *Value);";
     s +="virtual const char *GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const;";
     s +="virtual bool HasProperty(const char *PropertyName)const;";
@@ -471,8 +471,8 @@ FunctionDefList *Array::GetFunctions(const char *Type) const
     s +="virtual bool SaveAsText(Iterator *I,CryString &ToStream) const;";
     s +="virtual EmptyObject *Add(EmptyObject *Item,size_t Size);";
     s +="virtual EmptyObject *AddOwned(EmptyObject *Item,size_t Size);";
-    s +="virtual CryObject *Add(CryObject *Item);";
-    s +="virtual CryObject *AddOwned(CryObject *Item);";
+    s +="virtual Object *Add(Object *Item);";
+    s +="virtual Object *AddOwned(Object *Item);";
     s +="virtual bool IsEmpty(const Iterator *I) const;";
     s +="virtual void SetItemOwnerShip(Iterator *I,bool Owned);";
     s +="virtual bool GetItemOwnerShip(const Iterator *I) const;";
@@ -611,7 +611,7 @@ size_t Array::GetItemSize(Iterator *I) const
 
 void Array::GetEleType(String &Result) const
 {
-	Result = "CryArray::Eleptr";
+	Result = "Array::Eleptr";
 }
 
 void Array::SetItemOwnerShip(Iterator *I,bool IsOwned)
@@ -865,7 +865,7 @@ void IntArray::DestroyArrayItem(Array *Owner,EmptyObject *Item)
 EmptyObject *IntArray::CreateArrayItem(Array *Owner,bool *IsObject)
 {
 	if (IsObject) {
-		throw Exception(this,"Cannot create CryObject for Set");
+		throw Exception(this,"Cannot create Object for Set");
 	}
 	return (EmptyObject *)new int;
 }
@@ -1068,25 +1068,25 @@ FunctionDefList *DoubleArray::GetFunctions(const char *Type) const
 	// otherwise get any functions in subclasses
 	FunctionDefList *l = SimpleArray::GetFunctions();
 	String s;
-	s += "// Class CryDoubleArray;";
+	s += "// Class DoubleArray;";
 	char *search;
 	s +="void SetSize(size_t _Size);";
-	s +="CryString *GetFunctions() const;";
-	s +="virtual CryObject *Dup()const;";
-	s +="virtual void DestroyArrayItem(CryArray *Owner,EmptyObject *Item);";
-	s +="virtual EmptyObject *CreateArrayItem(CryArray *Owner,bool *IsObject);";
-	s +="virtual bool LoadAsText(int i,CryString &FromStream);";
-	s +="virtual bool SaveAsText(int i,CryString &ToStream) const;";
-	s +="virtual bool LoadAsText(Iterator *I,CryString &FromStream);";
-	s +="virtual bool SaveAsText(Iterator *I,CryString &ToStream) const;";
+	s +="String *GetFunctions() const;";
+	s +="virtual Object *Dup()const;";
+	s +="virtual void DestroyArrayItem(Array *Owner,EmptyObject *Item);";
+	s +="virtual EmptyObject *CreateArrayItem(Array *Owner,bool *IsObject);";
+	s +="virtual bool LoadAsText(int i,String &FromStream);";
+	s +="virtual bool SaveAsText(int i,String &ToStream) const;";
+	s +="virtual bool LoadAsText(Iterator *I,String &FromStream);";
+	s +="virtual bool SaveAsText(Iterator *I,String &ToStream) const;";
 	s +="const double operator [](int i);";
 	s +="void SetValue(int i,double v);";
 	s +="double GetValue(int i) const;";
 	s +="void Clear();";
-	s +="virtual bool SetProperty(const char *PropertyName,const CryString &PropertyValue);";
-	s +="virtual bool SetPropertyAsObject(const char *PropertyName,CryObject *Value);";
-	s +="virtual bool SetPropertyAsObject(CryProperty *Value);";
-	s +="virtual const char *GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const;";
+	s +="virtual bool SetProperty(const char *PropertyName,const String &PropertyValue);";
+	s +="virtual bool SetPropertyAsObject(const char *PropertyName,Object *Value);";
+	s +="virtual bool SetPropertyAsObject(Property *Value);";
+	s +="virtual const char *GetProperty(const PropertyParser &PropertyName,String &Result) const;";
 	s +="virtual bool HasProperty(const char *PropertyName)const;";
 	s +="virtual int GetPropertyCount() const;";
 	s +="virtual PropertyList* PropertyNames() const;";

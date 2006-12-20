@@ -37,9 +37,9 @@ using namespace std;
 
 In order to be used by XML classes must have at least
 
-// functions needed by CryObject
-   virtual void CopyTo(CryObject *Dest) const;  //copies contents of this to Dest
-   virtual CryObject *Dup() const; // creates a duplicate of this object
+// functions needed by Object
+   virtual void CopyTo(Object *Dest) const;  //copies contents of this to Dest
+   virtual Object *Dup() const; // creates a duplicate of this object
 
 // functions needed by CryNamedObject
     virtual const char* ChildClassName() const {     return TCryBPNetContainer; }
@@ -65,12 +65,12 @@ In order to be used by XML classes must have at least
    virtual void Clear();
    virtual EmptyObject *Add(EmptyObject *Item,size_t Size);
    virtual EmptyObject *AddOwned(EmptyObject *Item,size_t Size);
-   virtual CryObject *Add(CryObject *Item);    // returns Item
-   virtual CryObject *AddOwned(CryObject *Item);   // gives ownership to list
+   virtual Object *Add(Object *Item);    // returns Item
+   virtual Object *AddOwned(Object *Item);   // gives ownership to list
    virtual void SetItemOwnerShip(Iterator *I,bool Owned);
    virtual bool GetItemOwnerShip(Iterator *I) const;
    virtual size_t GetItemSize(Iterator *I) const;
-   virtual bool IsCryObject(const Iterator *I) const;
+   virtual bool IsObject(const Iterator *I) const;
    virtual bool LoadAsText(Iterator *I,CryString *FromStream);
    virtual bool SaveAsText(Iterator *I,CryString *ToStream) const;
 
@@ -131,12 +131,12 @@ StdFunctionsNoDup(XMLNode,List);
 };
 
 /// Interface class for XML 
-class CryXML : protected List
+class XML : protected List
 {
 public:
 StdFunctionsNoDup(XML,List);
-    CryXML(const char *Name = ""){ /*head = */ AddOwned(new XMLNode(Name));}
-    virtual ~CryXML() { /*delete head;*/ }
+    XML(const char *Name = ""){ /*head = */ AddOwned(new XMLNode(Name));}
+    virtual ~XML() { /*delete head;*/ }
         
 	/*! Save this xml tree to a stream (xml format) */
     virtual void SaveTo(Stream &ToStream) const { XMLNode *head = (XMLNode *) FirstNode()->Item; head->SaveTo(ToStream); }

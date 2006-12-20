@@ -17,7 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "CryObject.h"
+#include "ClassObject.h"
 namespace Crystal
 {
 using namespace std;
@@ -38,7 +38,7 @@ public:
     Exception(const char *FormatStr,...);
     Exception(const Object *Object,const char *FormatStr,...);
     Exception(const Object *Object,const Exception &E);
-    //    CryException(const CryObject *Object,const CryException &E1,const CryException &E2);
+    //    CryException(const Object *Object,const CryException &E1,const CryException &E2);
     operator const char *() const;
     Exception(const Object *Object,int ErrorNumber,const char *FormatStr,...);
     Exception(const Object *Object,const char *sError,const long value);

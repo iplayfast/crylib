@@ -70,8 +70,8 @@ Object *CodeFactory::Create(const PropertyParser &PropertyName,CodeFactory *Pare
     }
     //	if (PropertyName=="VarName")
     //		return 0;
-    if (CryFactory::GetMaxCount()) {
-        Object *c = CryFactory::Create(PropertyName,Parent);   
+	if (Factory::GetMaxCount()) {
+        Object *c = Factory::Create(PropertyName,Parent);   
         return c;
     } else
         return 0;
@@ -89,7 +89,7 @@ void CodeFactory::CopyTo(Object &Dest) const  //copies contents of this to Dest
         Cast->Name = Name;
         Cast->Parent = Parent;
     }
-    CryFactory::CopyTo(Dest);
+    Factory::CopyTo(Dest);
 }
 
 Object *CodeFactory::Create(const PropertyParser &PropertyName,Object *Parent)
@@ -104,7 +104,7 @@ Object *CodeFactory::Create(const PropertyParser &PropertyName,Object *Parent)
     }
     if (IsA(PropertyName))
         return this;
-    return CryFactory::Create(PropertyName,Parent);
+    return Factory::Create(PropertyName,Parent);
 }
 const char *CodeFactory::GetName() const
 {
@@ -120,7 +120,7 @@ void CodeFactory::AddProduct(const PropertyParser &PropertyName)
 }
 void CodeFactory::AddFactory(CodeFactory *f)
 {
-    CryFactory::AddFactory(f);
+    Factory::AddFactory(f);
 }
 bool CodeFactory::CanBuildProduct(const PropertyParser &PropertyName)
 {
@@ -134,14 +134,14 @@ void CodeFactory::Clear(const PropertyParser &PropertyName)
 }
 bool CodeFactory::IsA(const char *ClassName) const    // can the object map to a ClassName
 {
-    return(strcmp(ClassName,CCodeFactory)==0) || (strcmp(ClassName,Name.AsPChar())==0) || CryFactory::IsA(ClassName);
+    return(strcmp(ClassName,CCodeFactory)==0) || (strcmp(ClassName,Name.AsPChar())==0) || Factory::IsA(ClassName);
 }
 
 
 void CodeFactory::Sort(int SortType)
 {
     // Only one type of sort so SortType doesn't apply
-    CryFactory **NewArray = new CryFactory*[GetMaxCount()];
+    Factory **NewArray = new Factory*[GetMaxCount()];
 
     for (int i=0;i<GetMaxCount();i++) {
         NewArray[i] = GetFactory(i);
@@ -246,7 +246,7 @@ const String *CodeFactory::GetImp(const PropertyParser &PropertyName) const
 }
 int CodeFactory::GetPropertyCount() const
 {
-	return CryFactory::GetPropertyCount() + 2; // Name and Products
+	return Factory::GetPropertyCount() + 2; // Name and Products
 };
 const char * CodeFactory::GetProperty(const PropertyParser &PropertyName,String &Result) const
 {
@@ -267,7 +267,7 @@ const char * CodeFactory::GetProperty(const PropertyParser &PropertyName,String 
 		Result = _IsProperty ? "Yes" : "No";
 		return Result.AsPChar();
 	}
-	return CryFactory::GetProperty(PropertyName,Result);
+	return Factory::GetProperty(PropertyName,Result);
 };
 
 	/// will return a property represented as an object, useful for classes which contain properties that are dynamically allocated, as a property that is dynamic is a Object and therefore callable
@@ -284,7 +284,7 @@ Object *CodeFactory::GetCopyOfPropertyAsObject(const PropertyParser &PropertyNam
 	/// will return a pointer to the property if the property is an Object (or decendent)
 Object *CodeFactory::_GetPropertyAsObject(const PropertyParser &PropertyName) const
 {
-	return CryFactory::_GetPropertyAsObject(PropertyName);
+	return Factory::_GetPropertyAsObject(PropertyName);
 }
 
 bool  CodeFactory::SetProperty(const PropertyParser &PropertyName,const char *PropertyValue)
@@ -310,13 +310,13 @@ bool  CodeFactory::SetProperty(const PropertyParser &PropertyName,const char *Pr
 		}
 		return true;
 	}
-	return CryFactory::SetProperty(PropertyName,PropertyValue);
+	return Factory::SetProperty(PropertyName,PropertyValue);
 }
 
 
 PropertyList *CodeFactory::PropertyNames() const
 {
-	PropertyList *pn = CryFactory::PropertyNames();
+	PropertyList *pn = Factory::PropertyNames();
 	pn->AddPropertyByName("Name",this);
 	pn->AddPropertyByName("Products",this);
 	pn->AddPropertyByName("IsPointer",this);
@@ -330,13 +330,13 @@ bool CodeFactory::HasProperty(const PropertyParser &PropertyName) const
 	(PropertyName=="Products") ||
 	(PropertyName=="IsPointer") ||
 	(PropertyName=="IsProperty") ||
-	CryFactory::HasProperty(PropertyName);
+	Factory::HasProperty(PropertyName);
 }
 bool CodeFactory::GetIsPropertyContainer(const PropertyParser &PropertyName) const
 {
 	if (PropertyName=="Products")
 		return true;
-	return CryFactory::GetIsPropertyContainer(PropertyName);
+	return Factory::GetIsPropertyContainer(PropertyName);
 }
 
 Object *CodeFactory::Create(Stream &FromStream)

@@ -238,8 +238,8 @@ FunctionDefList *Container::GetFunctions(const char *Type) const
     s += "virtual CryString *GetFunctions();";
     s += "virtual EmptyObject *Add(EmptyObject *Item,size_t Size) = 0;";
     s += "virtual EmptyObject *AddOwned(EmptyObject *Item,size_t Size) = 0;";
-    s += "virtual CryObject *Add(CryObject *Item) = 0;";
-    s += "virtual CryObject *AddOwned(CryObject *Item) = 0;";
+    s += "virtual Object *Add(Object *Item) = 0;";
+    s += "virtual Object *AddOwned(Object *Item) = 0;";
     s += "virtual void SetItemOwnerShip(Iterator *I,bool Owned) = 0;";
     s += "virtual bool GetItemOwnerShip(const Iterator *I) const = 0;";
     s += "virtual size_t GetItemSize(Iterator *I) const = 0;";
@@ -257,7 +257,7 @@ FunctionDefList *Container::GetFunctions(const char *Type) const
 
 #ifdef VALIDATING
 
-    s += "virtual bool Test(bool Verbose,CryObject &Object,bool  (CallBack)(bool Verbose,const char *Result,bool fail));";
+	s += "virtual bool Test(bool Verbose,Object &_Object,bool  (CallBack)(bool Verbose,const char *Result,bool fail));";
 #endif
 
     l->LoadFromString(s,";");
