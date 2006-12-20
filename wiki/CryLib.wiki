@@ -23,36 +23,45 @@ Some of the functions which Object defines are
 }}}
 This function a pointer to a string stating the current class Name. For example Object (not String which would be a child class)
 
+{{{
     virtual const char *ChildClassName() const;
+}}}
 This function returns a pointer to a string stating the ChildClassName, For exampleEG CryString (not Object which is the base class)
 
 To illustrate this consider the following code:
+{{{
 String a;
 Object *o = &a;
 const char *ClassName = o->ClassName();  // returns "Object"
 const char *ChildClassName = o->ChildClassName(); // returns "String"
+}}}
 
 Often a class is passed using the least common denomintator (ie Object) so these functions are useful to find out what type of class you are dealing with.
 
+{{{
     virtual bool IsA(const char *ClassName) const;    // can the object map to a ClassName
-
+}}}
 IsA is another useful function for finding out if a class inherits from another.  
 
+{{{
 String a;
    a->IsA(CObject); // returns true
    a->IsA(XML);  // returns false
- 
+}}}
 
+{{{
      virtual bool CanDup() const;
-
+}}}
 Which asks can this function duplicate itself? This is useful for sub-classes which may not be able to duplicate. eg a file stream class.
 
+{{{
     virtual void CopyTo(Object &Dest) const;
-
+}}}
 Which copies the data of the current object (or class derived from it) to the Object Dest.  This obviously must make sense for the object, but for the most part it works as you would expect. You couldn't for example, copy a string to a neural net and expect the classes to know what to do with it, but you could copy a neural net to an XML class, and copy the XML class to the string, (and do the reverse as well).
 
+{{{
     const char *GetProperty(const char *PropertyName,String &Result) const;
-
+}}}
 GetProperty will return a const char * and a Result showing the property's value, usually the const char * will point to the first character of the Result, however in the case of a property that is an array, the returned const char * will point to a "*", and the result will return a "[]"
 String for example has:
 1. property "Value" which has the value of whatever the string contains.
@@ -60,101 +69,34 @@ String for example has:
 3. When DEBUG is defined property "ObjectID" which has the number representing this object.
 
 
-
-
+{{{
     virtual const cbyte* GetRaw() const;
-
+}}}
 This is the backdoor to get at data. For string it returns the characters in the string. Sometimes it's just easier to use the backdoor then the front.
 
-
+{{{
    virtual int Compare(int CompareType,const Object *Test1,const Object *Test2) const;
-
+}}}
 Will return a value showing a comparison result using CompareType. Used by derived classes
 in order to have comparisons which makes sense to the class.  CompareType is used to allow different types of comparisons within a class.
-
+Other compare functions abound
+{{{
 	virtual int CompareLogical(int CompareType,const Object *Test) const;
+
     /// returns bool value of LessThen as determined by CompareLogical
     virtual bool LessThen(int CompareType,const Object *Test) const;
+
 	/// returns bool value of GreaterThen as determined by CompareLogical
 	virtual bool GreaterThen(int CompareType,const Object *Test) const;
+
 	/// returns bool value of EqualTo as determined by CompareLogical
 	virtual bool EqualTo(int CompareType,const Object *Test) const;
+}}}
 
-	/*! IsContainer is true when the object in question can contain
-     accessable instances of data or objects
-     ie streams are not containers, but lists and arrays are
-     */
+{{{
     virtual bool IsContainer() const;
+}}}
+IsContainer is true when the object in question can contain accessable instances of data or objects.IE Streams are not containers, but lists and arrays are.
+    
 
-	/// will return the value of a property, or if the property is an array, a text string representing the array
-	virtual Property *GetPropertyAsCryProperty(const PropertyParser &PropertyName) const;
-	/// will return a property represented as an object, useful for classes which contain properties that are dynamically allocated, as a property that is dynamic is a Object and therefore callable
-	virtual Object *GetCopyOfPropertyAsObject(const PropertyParser &PropertyName) const;
-	/// will return a pointer to the property if the property is an Object (or decendent)
-	virtual Object *_GetPropertyAsObject(const PropertyParser &PropertyName) const;
-	/// will return whether or not the property named in PropertyName is a container
-    virtual bool GetIsPropertyContainer(const PropertyParser &PropertyName) const;
-
-    /*! will return a const char * and a Result showing the property's value, usually the const char * will point to the first character of the Result, however in the case of a property that is an array, the const char * will point to a "*", and the result will return a "[]"
-    in this case you will need to use GetPropertyAsCryProperty
-    */
-    in this case you will need to use GetPropertyAsCryProperty
-    */
-    virtual const char *GetProperty(const PropertyParser &PropertyName,String &Result) const;
-
-    /// returns true if the class in question has the property
-    virtual bool HasProperty(const PropertyParser &PropertyName) const;
-    /*! returns true if the class in question can have the property. Useful for determining if a class can accept dynamic properties */
-	virtual bool CanHaveProperty(const PropertyParser &PropertyName) const;
-    /// The count of the properties a class has
-    virtual int GetPropertyCount() const;
-
-    /*! Make a list of all property names, the function is called from the parent class through each inheritance until it reaches this class, at which point a list is created and filled with any properties on the way back through the inheritance */
-	virtual PropertyList* PropertyNames() const;
-
-    /// set the value of a property
-    virtual bool SetProperty(const PropertyParser &PropertyName,const char *PropertyValue);
-    virtual bool SetPropertyAsObject(Property *Value);
-    /*! save (in xml format) to a stream, stream pays attention to it's mode and will compress the data if mode is SObject, if it's SText, it saves as text.*/
-    virtual void SaveTo(Stream &ToStream) const; // xml save
-    /// load a previously saved (in xml format) stream
-    virtual void LoadFrom(const Stream &FromStream); // xml load
-	/// create an object (or container of objects) from the stream
-	virtual Object *Create(Stream &FromStream);
-
-	/*! will create an object of the Type named in Type. In container classes where the Type is the contained object, the Parent must be the appropriete container type or a derived class which can create the object (if the default class can't) */
-	virtual Object *Create(const PropertyParser &PropertyName,Object *Parent=0);
-	/*! will create an object of the Type named in Type. In container classes where the Type is the contained object, the Parent must be the appropriete container type or a derived class which can create the object (if the default class can't) */
-	static Object *ClassCreate(const PropertyParser &PropertyName,Object *Parent=0);
-
-	virtual bool CanCreate(const PropertyParser &PropertyName) const;
-	static bool ClassCanCreate(const PropertyParser &PropertyName);
-
-    //virtual size_t printf(const char *format,...)= 0;
-    //virtual CryStream * sprintf(CryStream *s,const char *format,...)= 0;
-
-    /*!  Will call "IteratedFunction" for each item in the container class, passing Control
-    to each item. Returns false if the iteration was aborted early
-    */
-    bool IterateThroughAll(Container *Container,EmptyObject *Control);
-
-    /*! IteratedFunction is called for each item in the container (from IteratedThroughAll)
-     returns false if iteration should stop
-     */
-	virtual bool IteratedFunction(EmptyObject *Control,EmptyObject *Item);
-
-	Object &operator =(const Object &From);
-	Object &operator =(const Object *From);
-	virtual bool Sortable() const { return false;}
-	virtual void Sort(int CompareType=0) { };
-
-
-
-
-
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+This is just a small taste of the functionality available with this class system. It is by no means complete, but is already useful. 
