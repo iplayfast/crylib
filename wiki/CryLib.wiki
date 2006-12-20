@@ -10,8 +10,9 @@ Crylib is an object oriented library based on the idea that all classes eventual
 Object doesn't normally contain any data although it can contain an ObjectID if DEBUG is defined. Object instead defines all the interfaces of the classes that inherit from it. 
 
 Object itself inherits from EmptyObject which is simply
+{{{
 struct EmptyObject {};
-
+}}}
 No data, no functions just a name to hang your code on. 
 
 Each class also has a #define of it's class name. The name is the letter C plus the name of the class, so for instance Object is CObject, String is CString.
@@ -62,7 +63,7 @@ Which copies the data of the current object (or class derived from it) to the Ob
 {{{
     const char *GetProperty(const char *PropertyName,String &Result) const;
 }}}
-GetProperty will return a const char * and a Result showing the property's value, usually the const char * will point to the first character of the Result, however in the case of a property that is an array, the returned const char * will point to a "*", and the result will return a "[]"
+GetProperty will return a {{{const char * }}}and a Result showing the property's value, usually the const char * will point to the first character of the Result, however in the case of a property that is an array, the returned const char * will point to a "*", and the result will return a "[]"
 String for example has:
 1. property "Value" which has the value of whatever the string contains.
 2. property "Terminator" which has the value of the terminating character (usually '\0')
