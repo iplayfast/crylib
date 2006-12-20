@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2003 by Chris Bruner                                    *
+ *   Copyright (C) 2006 by Chris Bruner                                    *
  *   chris@Martha.crystal.com                                              *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -1084,7 +1084,7 @@ Object *HeaderFactory::Create(const PropertyParser &PropertyName,CodeFactory *Pa
         String s;
         //        s.printf("/*! ToDo Make this loadable from an external file (for other peoples copyright notices */\n");
         s.printf("//****************************************************\n");
-        s.printf("//Copyright 2004\n");
+		s.printf("//Copyright 2006\n");
         s.printf("// Crystal Software (Canada) Inc.\n");
         s.printf("//****************************************************\n");
         SetHeadImp(PropertyName,s);
@@ -1229,7 +1229,7 @@ Object *IncludesFactory::Create(const PropertyParser &PropertyName,CodeFactory *
 
 		Parent->AppendHeadImp("\n//Class Instance Includes");
 
-		Parent->Create("Includes",Parent);
+ //		Parent->Create("Includes",Parent);
 		CompositeIterator a(Parent);
 		if (a.GotoFirst())
 			do
@@ -1358,6 +1358,7 @@ bool InheritedFactory::IsA(const char *ClassName) const    // can the object map
 
 Object *InheritedFactory::Create(const PropertyParser &PropertyName,CodeFactory *Parent)
 {
+
 	if ((PropertyName==CInheritedFactory) && (!Parent->IsA(CClassBuilder)))
 	{
 		return this;

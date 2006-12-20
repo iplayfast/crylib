@@ -2,95 +2,79 @@ object ClassBuilderFrm: TClassBuilderFrm
   Left = 0
   Top = 0
   Caption = 'ClassBuilderFrm'
-  ClientHeight = 933
-  ClientWidth = 1134
+  ClientHeight = 713
+  ClientWidth = 867
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
-  Font.Height = -14
+  Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
   Menu = MainMenu1
   OldCreateOrder = False
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  PixelsPerInch = 120
-  TextHeight = 17
+  PixelsPerInch = 96
+  TextHeight = 13
   object PageControl1: TPageControl
     Left = 0
     Top = 0
-    Width = 1134
-    Height = 203
+    Width = 867
+    Height = 155
     ActivePage = SetBaseClass
     Align = alTop
     TabOrder = 0
     object SetBaseClass: TTabSheet
       Caption = 'Set Base Class'
       object SetBaseClassBT: TButton
-        Left = 38
-        Top = 18
-        Width = 141
-        Height = 33
+        Left = 29
+        Top = 14
+        Width = 108
+        Height = 25
         Caption = 'Set Base Class'
         TabOrder = 0
         OnClick = SetBaseClassBTClick
       end
       object IncludeStubs: TCheckBox
-        Left = 52
-        Top = 73
-        Width = 326
-        Height = 22
+        Left = 40
+        Top = 56
+        Width = 249
+        Height = 17
         Caption = 'Include Stubs for non-virtual functions'
         TabOrder = 1
       end
       inline NameED: TLabelEdit
-        Left = 460
-        Top = 4
-        Width = 270
-        Height = 55
+        Left = 352
+        Top = 3
+        Width = 206
+        Height = 42
         TabOrder = 2
         TabStop = True
-        ExplicitLeft = 460
-        ExplicitTop = 4
-        ExplicitWidth = 270
-        ExplicitHeight = 55
+        ExplicitLeft = 352
+        ExplicitTop = 3
         inherited Label1: TLabel
-          Left = 31
-          Top = 21
-          Width = 35
-          Height = 17
+          Width = 27
           Caption = 'Name'
-          ExplicitLeft = 31
-          ExplicitTop = 21
-          ExplicitWidth = 35
-          ExplicitHeight = 17
+          ExplicitWidth = 27
         end
         inherited Edit1: TEdit
-          Left = 94
-          Top = 17
-          Width = 158
-          Height = 25
           Text = 'MyNewClass'
-          ExplicitLeft = 94
-          ExplicitTop = 17
-          ExplicitWidth = 158
-          ExplicitHeight = 25
         end
       end
       object ClassTypeCB: TComboBox
-        Left = 230
-        Top = 21
-        Width = 190
-        Height = 25
+        Left = 176
+        Top = 16
+        Width = 145
+        Height = 21
         Style = csDropDownList
-        ItemHeight = 17
+        ItemHeight = 13
         TabOrder = 3
       end
       object Button1: TButton
-        Left = 256
-        Top = 136
-        Width = 75
-        Height = 25
+        Left = 196
+        Top = 104
+        Width = 57
+        Height = 19
         Caption = 'Button1'
         TabOrder = 4
         OnClick = Button1Click
@@ -100,56 +84,50 @@ object ClassBuilderFrm: TClassBuilderFrm
       Caption = 'Add Variable'
       Enabled = False
       ImageIndex = 1
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object ArrayAmountLb: TLabel
-        Left = 600
-        Top = 101
-        Width = 50
-        Height = 17
+        Left = 459
+        Top = 77
+        Width = 38
+        Height = 13
         Alignment = taCenter
         AutoSize = False
         Caption = '0'
       end
       inline VariableName: TLabelEdit
-        Left = 460
-        Top = 4
-        Width = 270
-        Height = 55
+        Left = 352
+        Top = 3
+        Width = 206
+        Height = 42
         TabOrder = 0
         TabStop = True
-        ExplicitLeft = 460
-        ExplicitTop = 4
-        ExplicitWidth = 270
-        ExplicitHeight = 55
+        ExplicitLeft = 352
+        ExplicitTop = 3
         inherited Label1: TLabel
-          Left = 4
-          Top = 21
-          Width = 85
-          Height = 17
+          Left = 3
+          Width = 68
           Caption = 'Variable Name'
-          ExplicitLeft = 4
-          ExplicitTop = 21
-          ExplicitWidth = 85
-          ExplicitHeight = 17
+          ExplicitLeft = 3
+          ExplicitWidth = 68
         end
         inherited Edit1: TEdit
-          Left = 101
-          Top = 17
-          Width = 158
+          Left = 77
           Height = 25
           Text = 'MyVariableName'
           OnExit = UpdateStatus
           OnKeyDown = VariableNameEdit1KeyDown
-          ExplicitLeft = 101
-          ExplicitTop = 17
-          ExplicitWidth = 158
+          ExplicitLeft = 77
           ExplicitHeight = 25
         end
       end
       object RadioGroup1: TRadioGroup
         Left = 0
-        Top = 4
-        Width = 195
-        Height = 89
+        Top = 3
+        Width = 149
+        Height = 68
         Caption = 'Variable Type'
         ItemIndex = 0
         Items.Strings = (
@@ -159,49 +137,49 @@ object ClassBuilderFrm: TClassBuilderFrm
         OnClick = UpdateStatus
       end
       object PropertyCB: TCheckBox
-        Left = 774
-        Top = 12
-        Width = 127
-        Height = 22
+        Left = 592
+        Top = 9
+        Width = 97
+        Height = 17
         Caption = 'Property'
         TabOrder = 2
         OnClick = UpdateStatus
       end
       object TypePointer: TCheckBox
-        Left = 774
-        Top = 42
-        Width = 127
-        Height = 22
+        Left = 592
+        Top = 32
+        Width = 97
+        Height = 17
         Caption = 'Type Pointer'
         TabOrder = 3
         OnClick = UpdateStatus
       end
       object PointerToArray: TCheckBox
-        Left = 774
-        Top = 73
-        Width = 127
-        Height = 22
+        Left = 592
+        Top = 56
+        Width = 97
+        Height = 17
         Caption = 'Pointer To Array'
         Enabled = False
         TabOrder = 4
         OnClick = UpdateStatus
       end
       object ClassType2CB: TComboBox
-        Left = 230
-        Top = 21
-        Width = 190
+        Left = 176
+        Top = 16
+        Width = 145
         Height = 25
         Style = csDropDownList
         DropDownCount = 20
-        ItemHeight = 17
+        ItemHeight = 0
         TabOrder = 5
         OnChange = UpdateStatus
       end
       object ArrayCount: TTrackBar
-        Left = 527
-        Top = 56
-        Width = 196
-        Height = 37
+        Left = 403
+        Top = 43
+        Width = 150
+        Height = 28
         Hint = 'Array of Variables'
         Max = 100
         Min = 1
@@ -212,55 +190,49 @@ object ClassBuilderFrm: TClassBuilderFrm
         OnChange = ArrayCountChange
       end
       object AddVariable: TButton
-        Left = 7
-        Top = 101
-        Width = 188
-        Height = 32
+        Left = 5
+        Top = 77
+        Width = 144
+        Height = 25
         Caption = 'Add Variable'
         TabOrder = 8
         OnClick = AddVariableClick
       end
       object VariableTypeCB: TComboBox
-        Left = 230
-        Top = 52
-        Width = 190
+        Left = 176
+        Top = 40
+        Width = 145
         Height = 25
         Style = csDropDownList
-        ItemHeight = 17
+        ItemHeight = 0
         TabOrder = 7
         OnChange = UpdateStatus
       end
       inline DefaultValue: TCheckedLabel
-        Left = 492
-        Top = 128
-        Width = 388
-        Height = 34
+        Left = 376
+        Top = 98
+        Width = 297
+        Height = 26
         TabOrder = 9
         TabStop = True
-        ExplicitLeft = 492
-        ExplicitTop = 128
-        ExplicitWidth = 388
-        ExplicitHeight = 34
+        ExplicitLeft = 376
+        ExplicitTop = 98
+        ExplicitWidth = 297
+        ExplicitHeight = 26
         inherited CheckBox1: TCheckBox
-          Left = 31
-          Top = -3
-          Width = 127
-          Height = 23
+          Left = 24
+          Top = -2
           Caption = 'Default Value'
-          ExplicitLeft = 31
-          ExplicitTop = -3
-          ExplicitWidth = 127
-          ExplicitHeight = 23
+          ExplicitLeft = 24
+          ExplicitTop = -2
         end
         inherited Edit1: TEdit
-          Left = 166
-          Top = -3
-          Width = 158
+          Left = 127
+          Top = -2
           Height = 25
           Text = ''
-          ExplicitLeft = 166
-          ExplicitTop = -3
-          ExplicitWidth = 158
+          ExplicitLeft = 127
+          ExplicitTop = -2
           ExplicitHeight = 25
         end
       end
@@ -269,19 +241,23 @@ object ClassBuilderFrm: TClassBuilderFrm
       Caption = 'Remove Variable'
       Enabled = False
       ImageIndex = 2
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Label1: TLabel
-        Left = 31
-        Top = 42
-        Width = 169
-        Height = 17
+        Left = 24
+        Top = 32
+        Width = 133
+        Height = 13
         Caption = 'Name of variable to remove'
       end
       object RemoveVariableCB: TComboBox
-        Left = 272
-        Top = 38
-        Width = 190
+        Left = 208
+        Top = 29
+        Width = 145
         Height = 25
-        ItemHeight = 17
+        ItemHeight = 0
         TabOrder = 0
         Text = 'RemoveVariableCB'
       end
@@ -289,9 +265,9 @@ object ClassBuilderFrm: TClassBuilderFrm
   end
   object TreeView1: TTreeView
     Left = 0
-    Top = 203
-    Width = 1134
-    Height = 711
+    Top = 155
+    Width = 867
+    Height = 539
     Align = alClient
     AutoExpand = True
     Indent = 19
@@ -302,8 +278,8 @@ object ClassBuilderFrm: TClassBuilderFrm
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Top = 914
-    Width = 1134
+    Top = 694
+    Width = 867
     Height = 19
     Panels = <
       item

@@ -455,13 +455,10 @@
         <FILE FILENAME="..\Common\ClassStream.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="ClassStream" FORMNAME="" DESIGNCLASS=""/>
         <FILE FILENAME="..\Common\ClassString.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="ClassString" FORMNAME="" DESIGNCLASS=""/>
         <FILE FILENAME="..\Common\CodeFactory.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="CodeFactory" FORMNAME="" DESIGNCLASS=""/>
-        <FILE FILENAME="..\Common\CryArray.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="CryArray" FORMNAME="" DESIGNCLASS=""/>
         <FILE FILENAME="..\Common\CryFunctionDef.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="CryFunctionDef" FORMNAME="" DESIGNCLASS=""/>
         <FILE FILENAME="..\Common\CryBackProp.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="CryBackProp" FORMNAME="" DESIGNCLASS=""/>
         <FILE FILENAME="..\Common\CryFuzzy.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="CryFuzzy" FORMNAME="" DESIGNCLASS=""/>
         <FILE FILENAME="..\Common\CryNN.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="CryNN" FORMNAME="" DESIGNCLASS=""/>
-        <FILE FILENAME="..\Common\CryObject.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="CryObject" FORMNAME="" DESIGNCLASS=""/>
-        <FILE FILENAME="..\Common\CryXML.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="CryXML" FORMNAME="" DESIGNCLASS=""/>
         <FILE FILENAME="..\Common\HeadImp.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="HeadImp" FORMNAME="" DESIGNCLASS=""/>
         <FILE FILENAME="..\Common\PrimInstance.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="PrimInstance" FORMNAME="" DESIGNCLASS=""/>
         <FILE FILENAME="..\Common\zlib\zutil.c" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="zutil" FORMNAME="" DESIGNCLASS=""/>
@@ -478,6 +475,9 @@
         <FILE FILENAME="..\Common\CryPattern.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="CryPattern" FORMNAME="" DESIGNCLASS=""/>
         <FILE FILENAME="..\Common\HugeInt.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="HugeInt" FORMNAME="" DESIGNCLASS=""/>
         <FILE FILENAME="..\Common\CrySet.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="CrySet" FORMNAME="" DESIGNCLASS=""/>
+        <FILE FILENAME="..\Common\ClassXML.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="ClassXML" FORMNAME="" DESIGNCLASS=""/>
+        <FILE FILENAME="..\Common\ClassArray.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="ClassArray" FORMNAME="" DESIGNCLASS=""/>
+        <FILE FILENAME="..\Common\ClassObject.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="ClassObject" FORMNAME="" DESIGNCLASS=""/>
       </FILELIST>
       <IDEOPTIONS>
         <VersionInfo>
