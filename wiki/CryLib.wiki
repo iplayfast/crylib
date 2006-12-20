@@ -18,7 +18,9 @@ Each class also has a #define of it's class name. The name is the letter C plus 
 
 Some of the functions which Object defines are
 
-    *{{{const char* ClassName() const;}}}*
+{{{
+   const char* ClassName() const;
+}}}
 This function a pointer to a string stating the current class Name. For example Object (not String which would be a child class)
 
     virtual const char *ChildClassName() const;
