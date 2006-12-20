@@ -586,11 +586,11 @@ TestDecorator::TestDecorator()
     return 0;
 }
 */
-void CryFactory::DeleteFactoryDescribed(const char *Description)
+void Factory::DeleteFactoryDescribed(const char *Description)
 {
-    CryFactory **OldArray = Array;
+    Factory **OldArray = Array;
     int _MaxCount = MaxCount;
-    Array = new CryFactory*[0];
+    Array = new Factory*[0];
     MaxCount = 0;
     for(int i=_MaxCount-1;i>-1;i--)// do in reverse order so that when added is in correct order
     {
@@ -601,37 +601,37 @@ void CryFactory::DeleteFactoryDescribed(const char *Description)
     }
     delete []OldArray;
 };
-void CryFactory::DeleteHeldFactories()
+void Factory::DeleteHeldFactories()
 {
     for(int i=0;i<MaxCount;i++)
         delete Array[i];
     MaxCount = 0;
     delete []Array;
-	Array = new CryFactory*[0];
+	Array = new Factory*[0];
 };
-CryFactory::~CryFactory()
+Factory::~Factory()
 {
 	DeleteHeldFactories();
 	delete []Array;
 }
 
-EmptyObject *CryFactory::GetAtIterator(const Iterator *I) const
+EmptyObject *Factory::GetAtIterator(const Iterator *I) const
 {
 	FactoryIterator *fI = (FactoryIterator *)I;
-	CryFactory *cf = (CryFactory *) fI->GetOrigContainer();
+	Factory *cf = (Factory *) fI->GetOrigContainer();
 	return cf->Array[fI->Index];
 };
 
 // IsObject, IsOwned and Size are not used
-void CryFactory::SetAtIterator(const Iterator *I,EmptyObject *Item,bool IsObject,bool IsOwned,size_t Size) 
+void Factory::SetAtIterator(const Iterator *I,EmptyObject *Item,bool IsObject,bool IsOwned,size_t Size) 
 {
 	FactoryIterator *fI = (FactoryIterator *)I;
-	CryFactory *cf = (CryFactory *) fI->GetOrigContainer();
-	cf->Array[fI->Index] =(CryFactory *) Item;
+	Factory *cf = (Factory *) fI->GetOrigContainer();
+	cf->Array[fI->Index] =(Factory *) Item;
 }
 
 
-CryFactory *CryFactory::FindFactory(const char *FactoryName) const
+Factory *Factory::FindFactory(const char *FactoryName) const
 {
     for(int i=0;i<MaxCount;i++)
     {
@@ -642,10 +642,10 @@ CryFactory *CryFactory::FindFactory(const char *FactoryName) const
 }
 
 /// Newest factory is always added as the first
-void CryFactory::AddFactory(CryFactory *f)
+void Factory::AddFactory(Factory *f)
 {
     MaxCount++;
-    CryFactory **NewArray = new CryFactory*[MaxCount];
+    Factory **NewArray = new Factory*[MaxCount];
     for(int i=0;i<MaxCount-1;i++)
         NewArray[i+1] = Array[i];
     NewArray[0] = f;
@@ -655,7 +655,7 @@ void CryFactory::AddFactory(CryFactory *f)
     //      Array[i]->Describe();
 }
 
-Object *CryFactory::Create(const PropertyParser &PropertyName,Object *Parent)
+Object *Factory::Create(const PropertyParser &PropertyName,Object *Parent)
 {
     // first Factory that can create what the thing matches returns thing
     for(int i=0;i<MaxCount;i++)
@@ -667,25 +667,25 @@ Object *CryFactory::Create(const PropertyParser &PropertyName,Object *Parent)
     }
     return 0;
 };
-PropertyList *CryFactory::PropertyNames() const
+PropertyList *Factory::PropertyNames() const
 {
     PropertyList *pn = Container::PropertyNames();
     return pn;
     //  pn->AddOwned(new CryString("Values"));
 };
 
-int CryFactory::GetPropertyCount() const
+int Factory::GetPropertyCount() const
 {
     return Container::GetPropertyCount();
 };
 
-Object *CryFactory::GetCopyOfPropertyAsObject(const PropertyParser &PropertyName) const
+Object *Factory::GetCopyOfPropertyAsObject(const PropertyParser &PropertyName) const
 {
 	return Container::GetCopyOfPropertyAsObject(PropertyName);
 }
-void CryFactory::Sort(int CompareType)
+void Factory::Sort(int CompareType)
 {
-	CryFactory **Array;
+	Factory **Array;
 bool finished=false;	// simple bubble sort, re-implement a better sort when I have more time
 	while(!finished)
 	{
@@ -694,7 +694,7 @@ bool finished=false;	// simple bubble sort, re-implement a better sort when I ha
 		{
 			if (Compare(CompareType,Array[i],Array[i+1])<0)
 			{
-			CryFactory *f = Array[i];
+			Factory *f = Array[i];
 				Array[i] = Array[i+1];
 				Array[i+1] = f;
 				finished = false;
@@ -703,7 +703,7 @@ bool finished=false;	// simple bubble sort, re-implement a better sort when I ha
 	}
 }
 
-const char * CryFactory::GetProperty(const PropertyParser &PropertyName,String &Result) const
+const char * Factory::GetProperty(const PropertyParser &PropertyName,String &Result) const
 {
 	Result.Clear();
 	if (PropertyName=="Values")   // intercept crycontainer's property for our own
@@ -714,21 +714,21 @@ const char * CryFactory::GetProperty(const PropertyParser &PropertyName,String &
 	else
 		return Container::GetProperty(PropertyName,Result);
 };
-bool  CryFactory::SetProperty(const PropertyParser &PropertyName,const char *PropertyValue)
+bool  Factory::SetProperty(const PropertyParser &PropertyName,const char *PropertyValue)
 {
 	return Container::SetProperty(PropertyName,PropertyValue);
 };
 
-Object *CryOFactory::Create(const PropertyParser &PropertyName,Object *Parent)
+Object *OFactory::Create(const PropertyParser &PropertyName,Object *Parent)
 {
-    Object *Return = CryFactory::Create(PropertyName,Parent);
+    Object *Return = Factory::Create(PropertyName,Parent);
     if (!Return)
         return Object::Create(PropertyName,Parent);
     else
         return Return;
 };
 
-List *CryFactory::GetProducts() const
+List *Factory::GetProducts() const
 {
     String s;
     List *l = new List();
@@ -737,21 +737,21 @@ List *CryFactory::GetProducts() const
         s += Array[i]->Describe();
         s += "|";
 
-        if (Array[i]->IsA(CCryFactory))
+        if (Array[i]->IsA(CFactory))
             l->AddOwned(Array[i]->GetProducts());
     }
     s.LoadListFromString("|",l);
     return l;
 };
 
-Object *CryOFactory::Create(const char *FactoryName,const PropertyParser &PropertyName,Object *Parent)
+Object *OFactory::Create(const char *FactoryName,const PropertyParser &PropertyName,Object *Parent)
 {
-    return CryFactory::Create(FactoryName,PropertyName,Parent);
+    return Factory::Create(FactoryName,PropertyName,Parent);
 }
 
 
 /// returns a Object or 0
-Object *CryFactory::Create(const char *FactoryName,const PropertyParser &PropertyName,Object *Parent)
+Object *Factory::Create(const char *FactoryName,const PropertyParser &PropertyName,Object *Parent)
 {
     Object *Return;
     if (PropertyName=="")
@@ -764,7 +764,7 @@ Object *CryFactory::Create(const char *FactoryName,const PropertyParser &Propert
     /// if can not match exact factory so ask each factory to make it, see which one succeeds (if any)
     return Create(PropertyName,Parent);
 }
-bool CryFactory::CanCreate(const PropertyParser &PropertyName) const
+bool Factory::CanCreate(const PropertyParser &PropertyName) const
 {
     CompositeIterator a(this);
     if (a.GotoFirst())

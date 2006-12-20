@@ -72,7 +72,7 @@ public:
 //    virtual bool IsAbstract() const;
     virtual void CopyTo(Object &Dest) const;   //copies contents of this to Dest
     const String *GetName() const;
-    //    virtual CryObject *Dup() const;  /// creates a duplicate of this object
+    //    virtual Object *Dup() const;  /// creates a duplicate of this object
     virtual size_t Size() const;
 }
 ;  //CryProperty

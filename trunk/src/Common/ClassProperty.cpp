@@ -134,8 +134,8 @@ FunctionDefList *Property::GetFunctions(const char *Type) const
 	s += "virtual bool HasProperty(const char *PropertyName) const;";
 	s += "bool SetProperty(const char*PropertyName,const char *PropertyValue);";
 	s += "virtual CryList *PropertyNames() const;";
-	s += "virtual void CopyTo(CryObject &Dest) const;";
-	s += "virtual CryObject *Dup() const;";
+	s += "virtual void CopyTo(Object &Dest) const;";
+	s += "virtual Object *Dup() const;";
 	s += "virtual size_t Size() const;";
 	l->LoadFromString(s,";");
 	return l;
@@ -158,11 +158,10 @@ const char *Property::GetProperty(const PropertyParser &PropertyName,String &Res
 	{
 		return GetProperty(Result);
 	}
-/*	else
+	else
 	{
-		return CryObject::GetProperty(PropertyName,Result);
+		return Object::GetProperty(PropertyName,Result);
 	}
-	*/
 }
 
 bool Property::SetProperty(const PropertyParser &PropertyName,const char *PropertyValue)
@@ -189,6 +188,7 @@ bool Property::SetProperty(const PropertyParser &PropertyName,const Object* Prop
 			Value = PropertyValue->Dup();
 		// normally we throw an exception, but CryProperty is a special case, as it's properties are user definable
 //			throw CryException(this,ExceptionUnknownProperty,"Unknown Property ",PropertyName.AsPChar());
+			return true;
 		}
 	}
 
@@ -196,13 +196,13 @@ bool Property::SetProperty(const PropertyParser &PropertyName,const Object* Prop
 
 PropertyList *Property::PropertyNames() const
 {
-//	PropertyList *n = CryObject::PropertyNames();
+//	PropertyList *n = Object::PropertyNames();
 	// avoid ObjectID as it's not valid for properties
 	PropertyList *n = new PropertyList();
-	if (GetName()!="")
+	if (*GetName()!="")
 	{
 	Object *v = GetValue()->Dup();
-	const char *N = GetName()->AsPChar();
+//	const char *N = GetName()->AsPChar();
 		n->AddProperty(GetName()->AsPChar(),v);
 		delete v;
 	}

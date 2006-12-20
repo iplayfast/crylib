@@ -17,7 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "CryObject.h"
+#include "ClassObject.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -27,8 +27,8 @@
 #define strcasecmp stricmp
 #endif
 
-#include "CryXML.h"
-#include "CryArray.h"
+#include "ClassXML.h"
+#include "ClassArray.h"
 #include "CryFuzzy.h"
 #include "CryBackProp.h"
 #include "BitArray.h"
@@ -154,24 +154,24 @@ bool Object::Test(bool Verbose,Object &ThisObject, bool (CallBack)(bool Verbose,
         {
             Object *co=0;
             {
-                CryXML x;
+                XML x;
 
                 try
                 {
                     x.LoadFrom(ThisObject);
 
-                    if (!CallBack(Verbose,"CryXML Loaded Object without problems",Fail))
-                    {
-                        return false;
-                    }
-                }
+					if (!CallBack(Verbose,"XML Loaded Object without problems",Fail))
+					{
+						return false;
+					}
+				}
 
-                catch (Exception &e)
-                {
-                    Fail=true;
+				catch (Exception &e)
+				{
+					Fail=true;
 
-                    if (!CallBack(Verbose,"CryXML Loaded Object with problems",Fail))
-                    {
+					if (!CallBack(Verbose,"XML Loaded Object with problems",Fail))
+					{
                         return false;
                     }
                 }
@@ -250,8 +250,8 @@ bool Object::Test(bool Verbose,Object &ThisObject, bool (CallBack)(bool Verbose,
     return !Fail;
 
     /*
-    virtual void SaveTo(CryStream *ToStream);
-    virtual void LoadFrom(CryStream *FromStream);
+    virtual void SaveTo(Stream *ToStream);
+    virtual void LoadFrom(Stream *FromStream);
 	virtual void CopyTo(Object *Dest) const =0;  //copies contents of this to Dest
     virtual Object *Dup() const =0; // creates a duplicate of this object
     int GetCopyCount() const {  return CopyCount; }
@@ -469,34 +469,34 @@ FunctionDefList *Object::GetFunctions(const
 
     s+= "virtual bool Event(EObject EventNumber,Context::IO &Context);";
 
-    //    s+= "Object *LoadItem(CryStream &FromStream);";
-    s+= "virtual CryString *GetFunctions() const;";
+    //    s+= "Object *LoadItem(Stream &FromStream);";
+    s+= "virtual String *GetFunctions() const;";
 
     s+= "virtual bool IsContainer() const;";
 
-    s+= "virtual CryProperty *GetPropertyAsCryProperty(const char *PropertyName) const;";
+    s+= "virtual Property *GetPropertyAsProperty(const char *PropertyName) const;";
 
-    s+= "virtual const char *GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const = 0;";
+    s+= "virtual const char *GetProperty(const PropertyParser &PropertyName,String &Result) const = 0;";
 
     s+= "virtual bool HasProperty(const char *PropertyName) const;";
 
     s+= "virtual int GetPropertyCount() const;";
 
-    s+= "virtual CryList *PropertyNames() const;";
+    s+= "virtual List *PropertyNames() const;";
 
     s+= "virtual bool SetProperty(const char *PropertyName,const char *PropertyValue) = 0;";
 
-    s+= "virtual bool SetPropertyAsObject(CryProperty *Value);";
+    s+= "virtual bool SetPropertyAsObject(Property *Value);";
 
-    s+= "virtual void SaveTo(CryStream &ToStream) const;";
+    s+= "virtual void SaveTo(Stream &ToStream) const;";
 
-    s+= "virtual void LoadFrom(CryStream &FromStream);";
+    s+= "virtual void LoadFrom(Stream &FromStream);";
 
-    s+= "virtual Object *Create(CryStream &FromStream);";
+    s+= "virtual Object *Create(Stream &FromStream);";
 
     s+= "virtual Object *Create(const char *Type,Object *Parent=0);";
 
-    s+= "bool IterateThroughAll(CryContainer *Container,EmptyObject *Control);";
+    s+= "bool IterateThroughAll(Container *Container,EmptyObject *Control);";
 
     s+= "virtual bool IteratedFunction(EmptyObject *Control,EmptyObject *Item);";
 
@@ -763,7 +763,7 @@ bool Object::ClassCanCreate(const
 	return (PropertyName==CMemStream) ||
 		   (PropertyName==CXML) ||
 		   (PropertyName==CXMLNode) ||
-		   (PropertyName==CCryFileStream) ||
+		   (PropertyName==CFileStream) ||
 		   (PropertyName==CString) ||
 		   (PropertyName==CProperty) ||
 		   (PropertyName==CList) ||
@@ -771,9 +771,9 @@ bool Object::ClassCanCreate(const
 		   (PropertyName==CDoubleArray) ||
 		   (PropertyName==CFunctionDef) ||
 		   (PropertyName==CFunctionDefList) ||
-		   (PropertyName==CCryFuzzy) ||
+		   (PropertyName==CFuzzy) ||
 		   (PropertyName==CBitArray) ||
-		   (PropertyName==CCryBPNetContainer) ||
+		   (PropertyName==CBPNetContainer) ||
 		   (PropertyName==CBackPropagateLayer) ||
 		   (PropertyName==CHugeInt);
 }
@@ -782,14 +782,14 @@ bool Object::ClassCanCreate(const
 /*!
 	Create can create
 	MemStream,
-	CryFileStream,
-	CryString,
-	CryProperty,
-	CryList,
+	FileStream,
+	String,
+	Property,
+	List,
 	PropertyList,
-	CryDoubleArray,
-	CryFuzzy,
-	CryBPNetContainer
+	DoubleArray,
+	Fuzzy,
+	BPNetContainer
 	BackPropagateLayer
 	HugeInt
 */
@@ -804,11 +804,11 @@ Object *Object::ClassCreate(const
 	if (PropertyName==CMemStream)
 		return (Object *) new MemStream();
 	if (PropertyName==CXML)
-		return (Object *)new CryXML();
+		return (Object *)new XML();
 	if (PropertyName==CXMLNode)
 		return (Object *)new XMLNode();
-	if (PropertyName==CCryFileStream)
-		return (Object *)new CryFileStream();
+	if (PropertyName==CFileStream)
+		return (Object *)new FileStream();
 	if (PropertyName==CString)
 		return (Object *)new String();
 	if (PropertyName==CProperty)
@@ -823,8 +823,8 @@ Object *Object::ClassCreate(const
 		return (FunctionDef *)new FunctionDef();
 	if (PropertyName==CFunctionDefList)
 		return (FunctionDefList *) new FunctionDefList();
-	if (PropertyName==CCryFuzzy)
-		return (Object *)new CryFuzzy();
+	if (PropertyName==CFuzzy)
+		return (Object *)new Fuzzy();
 	if (PropertyName==CBitArray)
 		return (BitArray *) new BitArray();
 	if (PropertyName==CStrategy)
@@ -842,10 +842,10 @@ Object *Object::ClassCreate(const
 		if (Parent==0 || Parent->IsA(CDecorator))
 			return  new Decorator((Decorator *)Parent);
 	}
-	if (PropertyName==CCryFactory)
-		return new CryFactory();
-	if (PropertyName==CCryOFactory)
-		return new CryOFactory();
+	if (PropertyName==CFactory)
+		return new Factory();
+	if (PropertyName==COFactory)
+		return new OFactory();
 	if (PropertyName==CCommandHolder)
 		return new CommandHolder();
 	if (PropertyName==CCommandHolderSender)
@@ -880,7 +880,7 @@ Object *Object::ClassCreate(const
 void Object::SaveTo(Stream &ToStream) const
 
 {
-	CryXML xml;
+	XML xml;
 	xml.LoadFrom(*this);
 	switch (ToStream.GetMode())
 	{
@@ -911,7 +911,7 @@ void Object::SaveTo(Stream &ToStream) const
 
 void Object::LoadFrom(const Stream &FromStream)
 {
-	CryXML xml;
+	XML xml;
 	switch (FromStream.GetMode())
 	{
 		case
@@ -944,7 +944,7 @@ void Object::LoadFrom(const Stream &FromStream)
 Object *Object::Create(Stream &FromStream)
 
 {
-    CryXML xml;
+    XML xml;
 
     switch (FromStream.GetMode())
     {
@@ -1043,8 +1043,8 @@ Object *Object::CreateItemType(const
 
 	if (PropertyName==CList)
 		return new List();
-	if (PropertyName==CCryFileStream)
-		return new CryFileStream();
+	if (PropertyName==CFileStream)
+		return new FileStream();
 	if (PropertyName==CMemStream)
 		return new MemStream();
 	if (PropertyName==CString)
@@ -1061,10 +1061,10 @@ Object *Object::CreateItemType(const
 		return new Observable();
 	if (PropertyName==CDecorator)
 		return new Decorator(0);
-	if (PropertyName==CCryFactory)
-		return new CryFactory();
-	if (PropertyName==CCryOFactory)
-		return new CryOFactory();
+	if (PropertyName==CFactory)
+		return new Factory();
+	if (PropertyName==COFactory)
+		return new OFactory();
 	if (PropertyName==CCommandHolder)
 		return new CommandHolder();
 	if (PropertyName==CCommandHolderSender)

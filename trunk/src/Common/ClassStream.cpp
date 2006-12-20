@@ -237,8 +237,8 @@ bool Stream::Test(bool Verbose,Object &Object,bool (CallBack)(bool Verbose, cons
     return Object::Test(Verbose,Object,CallBack);
 
     /*
-        virtual void CopyTo(CryObject *Object) const;
-        virtual CryObject *Dup() const =0; // creates a duplicate of this object
+        virtual void CopyTo(Object *Object) const;
+        virtual Object *Dup() const =0; // creates a duplicate of this object
 
         virtual void SetTerminator(char Terminator_) {  Terminator[0] = Terminator_; Terminator[1] = '\0'; }
         virtual char GetTerminator() const {  return Terminator[0]; }
@@ -276,7 +276,7 @@ bool Stream::Test(bool Verbose,Object &Object,bool (CallBack)(bool Verbose, cons
         virtual void Close(bool ExceptOnError=true)=0;
         virtual void Flush() =0;
         virtual bool IsA(const char *ClassName) const;    // can the object map to a ClassName
-        virtual bool Event(CryObject::EObject EventNumber,CryObject::Context::IO &Context);
+        virtual bool Event(Object::EObject EventNumber,Object::Context::IO &Context);
         virtual bool Event(EObject EventNumber,Context::UIO &Context);
         virtual int scanf(const char *format,...)=0;
         virtual size_t printf(const char *format,...)=0;
@@ -286,7 +286,7 @@ bool Stream::Test(bool Verbose,Object &Object,bool (CallBack)(bool Verbose, cons
         virtual bool SetProperty(CryString *PropertyName,CryString *PropertyValue);
         virtual bool HasProperty(const char *PropertyName);
         virtual const char *GetProperty(const CryPropertyParser &PropertyName,CryString *Result) const;
-        virtual int GetPropertyCount() {  return CryObject::GetPropertyCount() + 2; }
+        virtual int GetPropertyCount() {  return Object::GetPropertyCount() + 2; }
         virtual CryList *PropertyNames();
         */
 }
@@ -329,10 +329,10 @@ FunctionDefList *Stream::GetFunctions(const char *Type) const
     s += "virtual CryString *GetFunctions() const;";
     s += "virtual size_t Read(char *ToBuffer,size_t Size) const = 0;";
     s += "virtual size_t Write(const char *FromBuffer,size_t Size) = 0;";
-    s += "virtual void CopyTo(CryObject &Dest) const;";
+    s += "virtual void CopyTo(Object &Dest) const;";
     s += "virtual void CopyToStream(Stream &Dest) const;";
     s += "virtual bool CanDup() const;";
-    s += "virtual CryObject *Dup() const = 0;";
+    s += "virtual Object *Dup() const = 0;";
     s += "virtual void SetTerminator(char Terminator_);";
     s += "virtual char GetTerminator() const;";
     s += "virtual size_t ReadTI(char *ToBuffer,size_t Size) const;";
@@ -360,7 +360,7 @@ FunctionDefList *Stream::GetFunctions(const char *Type) const
     s += "virtual bool IsOpen() const = 0;";
     s += "virtual void Flush() = 0;";
     s += "virtual bool IsA(const char *ClassName) const;";
-    s += "virtual bool Event(CryObject::EObject EventNumber,CryObject::Context::IO &Context);";
+    s += "virtual bool Event(Object::EObject EventNumber,Object::Context::IO &Context);";
     s += "virtual bool Event(EObject EventNumber,Context::UIO &Context);";
     s += "virtual int scanf(const char *format,...) const = 0;";
     s += "virtual size_t printf(const char *format,...) = 0;";
@@ -371,7 +371,7 @@ FunctionDefList *Stream::GetFunctions(const char *Type) const
     s += "virtual CryList *PropertyNames() const;";
 #ifdef VALIDATING
 
-    s += "virtual bool Test(bool Verbose,CryObject &Object,bool (CallBack)(bool Verbose,const char *Result,bool fail));";
+	s += "virtual bool Test(bool Verbose,Object &Object,bool (CallBack)(bool Verbose,const char *Result,bool fail));";
 #endif
 
     l->LoadFromString(s,";");

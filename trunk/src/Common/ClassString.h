@@ -67,7 +67,7 @@ virtual int GetPropertyCount() const;
     /// Simplify whitespace in string
     String& simplify();
 
-    //    virtual CryObject *Dup() const;
+    //    virtual Object *Dup() const;
     virtual size_t Read(Stream *ToStream,size_t Size) const;
     virtual size_t Write(const Stream *FromStream,size_t Size);
     virtual size_t Read(Stream *ToStream) const;

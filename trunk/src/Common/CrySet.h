@@ -14,10 +14,10 @@
 #include	<string.h>
 #include	<stdlib.h>
 //Crystal files
-#include	"CryObject.h"
+#include	"ClassObject.h"
 #include	"ClassException.h"
 #include	"ClassContainer.h"
-#include	"CryArray.h"
+#include	"ClassArray.h"
 
 
 //Class Header

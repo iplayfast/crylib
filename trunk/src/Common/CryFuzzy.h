@@ -22,8 +22,8 @@
 #include <stdio.h>
 #include <iostream>
 #include <math.h>
-#include "CryObject.h"
-#include "CryArray.h"
+#include "ClassObject.h"
+#include "ClassArray.h"
 #include "ClassString.h"
 
 #ifndef FUZZY_DEF
@@ -32,7 +32,7 @@
 namespace Crystal   {
 using namespace std;
 
-#define CCryFuzzy    "CryFuzzy"
+#define CFuzzy    "Fuzzy"
 
 
 struct VC
@@ -42,7 +42,7 @@ struct VC
 };
 
 /// A Fuzzy Logic Implimenation
-class CryFuzzy : public Array
+class Fuzzy : public Array
 {
 struct TFuzzyXY : public EmptyObject
 {
@@ -54,15 +54,15 @@ struct TFuzzyXY : public EmptyObject
 protected:
     TFuzzyXY *Index(int i) const { return (TFuzzyXY *) this->GetItem(i);}
     virtual void DestroyArrayItem(Array *Owner,EmptyObject *Item);	//derived class object destructor
-    virtual EmptyObject *CreateArrayItem(Array *Owner,bool *IsCryObject);			//derived class object creator
+    virtual EmptyObject *CreateArrayItem(Array *Owner,bool *IsObject);			//derived class object creator
 
 public:
-StdFunctionsNoDup(CryFuzzy,Array);
+StdFunctionsNoDup(Fuzzy,Array);
 virtual Object *Dup()const;
-    CryFuzzy();
-	CryFuzzy(const CryFuzzy &c);
-    CryFuzzy(const CryFuzzy *p);
-    virtual ~CryFuzzy();
+    Fuzzy();
+	Fuzzy(const Fuzzy &c);
+    Fuzzy(const Fuzzy *p);
+    virtual ~Fuzzy();
 
     int AddPoint(float x,float y);	// adds a point to the fuzzy table, returns index of point added
     float Value(float x) const;  // returns a y value for an x into the table
@@ -72,7 +72,7 @@ virtual Object *Dup()const;
 	float LowestRange()const; // returns the lowest x
     float HighestRange()const; // returns the highest x
     void SwapXY();
-    float Equality(CryFuzzy &t)const;
+    float Equality(Fuzzy &t)const;
     void Normalize(float factor);    // remove values that would normally fall within the range of factor
     void IncreaseSamples(); // add additional values (of the calculated value to data)
     void SaveFuzzToStream(int i,Stream *ToStream) const; // write 1 datapoint to the stream
@@ -81,16 +81,16 @@ virtual Object *Dup()const;
     int AppendFuzzFromStream(Stream &Stream);
 
 	void SimpleInhibit(float InhibitPercent);
-	void CopyAndInhibit(CryFuzzy &Fuzzy);
-	void CopyAndInhibitTemp(CryFuzzy &Fuzzy,CryFuzzy &Temp);
+	void CopyAndInhibit(Fuzzy &Fuzzy);
+	void CopyAndInhibitTemp(Fuzzy &Fuzzy,Fuzzy &Temp);
 
 	 // will reduce all values so that v is the maximum (useful for converting raw data into value between the range 0.0 to 1.0
 	void Range(float Floor,float Ceil);
 
 	// these function operate on fuzzy values in the range of 0.0 to 1.0 (0==false, 1==true)
-	float Or(const CryFuzzy &f, float v)const;
-	float And(CryFuzzy f, float v)const;
-	float XOr(CryFuzzy f, float v)const;
+	float Or(const Fuzzy &f, float v)const;
+	float And(Fuzzy f, float v)const;
+	float XOr(Fuzzy f, float v)const;
 	float Not(float v)const;
 
    virtual bool LoadAsText(int i,String &FromStream);
@@ -131,7 +131,7 @@ virtual bool Test(bool Verbose,Object &Object,bool (CallBack)(bool Verbose,const
 
 #ifdef __BORLANDC__
 using namespace std;
-	ostream & operator<<( std::ostream &os, Crystal::CryFuzzy& f );
+	ostream & operator<<( std::ostream &os, Crystal::Fuzzy& f );
 #endif
 
 #endif //FUZZY_DEF

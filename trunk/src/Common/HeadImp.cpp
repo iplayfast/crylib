@@ -94,7 +94,7 @@ void HeadImp::Clear()
     Imp->Clear();
 }
 
-	/// will return a property represented as an object, useful for classes which contain properties that are dynamically allocated, as a property that is dynamic is a CryObject and therefore callable
+	/// will return a property represented as an object, useful for classes which contain properties that are dynamically allocated, as a property that is dynamic is a Object and therefore callable
 Object *HeadImp::GetCopyOfPropertyAsObject(const PropertyParser &PropertyName) const
 {
 	if (PropertyName=="Declaration")
@@ -103,7 +103,7 @@ Object *HeadImp::GetCopyOfPropertyAsObject(const PropertyParser &PropertyName) c
 		return Imp->Dup();
 	return Object::GetCopyOfPropertyAsObject(PropertyName);
 }
-	/// will return a pointer to the property if the property is an CryObject (or decendent)
+	/// will return a pointer to the property if the property is an Object (or decendent)
 Object *HeadImp::_GetPropertyAsObject(const PropertyParser &PropertyName) const
 {
 	if (PropertyName=="Declaration")

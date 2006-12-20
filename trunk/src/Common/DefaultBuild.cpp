@@ -19,8 +19,8 @@
  ***************************************************************************/
 #include <ctype.h>
 #include "ClassBuilder.h"
-#include "CryObject.h"
-#include "CryArray.h"
+#include "ClassObject.h"
+#include "ClassArray.h"
 #include "CryBackProp.h"
 #include "CryFuzzy.h"
 using namespace Crystal;
@@ -75,13 +75,13 @@ public:
     {
         return true;
     }
-    virtual int DoStrategy(CryObject *Sender) const
+	virtual int DoStrategy(Object *Sender) const
     {
         _ClassState cs = Start;
         if (Sender->IsA(TEle))
         {
             Update(cs,(_Ele *)Sender);
-            return -1;
+			return -1;
         }
         throw CryException("Passed wrong class to DefaultBuildState DoStrategy");
     }
@@ -581,7 +581,7 @@ bool BSB_Initial::Update(_ClassState &ClassState,_Ele *Ele)
         return true;
     case MidMid:
         if (*GetInheritTypeStr()=="TCryDoubleArray")
-            ScratchPad1().ExclusiveAppend("#include\t\"CryArray.h\"\n");
+			ScratchPad1().ExclusiveAppend("#include\t\"ClassArray.h\"\n");
         if (*GetInheritTypeStr()=="TCryBPNetContainer")
             ScratchPad1().ExclusiveAppend("#include\t\"CryBackProp.h\"\n");
         if (*GetInheritTypeStr()=="TCryFuzzy")
@@ -605,7 +605,7 @@ bool BSB_Initial::Update(_ClassState &ClassState,_Ele *Ele)
                     s = GetName();
                 Body.printf("\n#include \"%s.h\"\n",s.AsPChar());
             }
-            Body.printf("#include \"CryXML.h\"\t//Needed for SetDefaultValues\n");
+			Body.printf("#include \"ClassXML.h\"\t//Needed for SetDefaultValues\n");
             Body.printf("\n\nusing namespace Crystal;\n");
             Declare.printf("namespace Crystal {\nusing namespace Crystal;\n\n");//}
             Declare.printf("class %s : public %s\n",GetName(),InheritType());
@@ -644,7 +644,7 @@ bool BSB_IteratedFunctions::Update(_ClassState &ClassState,_Ele *Ele)
     DeclareComment.printf("\n// **************************************************************\n");
     DeclareComment.printf("// Iterator functions available because this is a container class\n");
     DeclareComment.printf("// **************************************************************\n");
-    Declare.printf("CryContainer::Iterator *LocIterator;\n");
+	Declare.printf("Container::Iterator *LocIterator;\n");
     if (EleType[0]!='\0')// we are using a fixed type of _Ele
     {
         Declare.printf("\n/*!  IControl is only set up as an example of an easy way to have the Iterated function called for multiple reasons\n");
@@ -687,8 +687,8 @@ bool BSB_IteratedFunctions::Update(_ClassState &ClassState,_Ele *Ele)
             }
 
         }
-        Declare.printf("\n/*! If thing at current location is in CryObject */\n");
-        Declare.printf("\tbool I_IsCryObject() { return LocIterator->IsCryObject(); }\n");
+        Declare.printf("\n/*! If thing at current location is in Object */\n");
+        Declare.printf("\tbool I_IsObject() { return LocIterator->IsObject(); }\n");
         Declare.printf("\n/*! If thing at current location is owned by the Container (ie the container delete's it */\n");
         Declare.printf("\tbool I_IsOwned() { return LocIterator->IsOwned(); }\n");
         if (EleType[0]!='\0')
@@ -1153,7 +1153,7 @@ bool BSB_InheritedFunctions::Update(_ClassState &ClassState,_Ele *Ele)
             Ele->GetValue("Declare",Declare);
             fd.Parse(Declare);
             Declare = fd.GetDeclaration();
-            fd.Parse("virtual CryObject *Dup() const");
+            fd.Parse("virtual Object *Dup() const");
             declare = fd.GetDeclaration();
             if (Declare != declare)
                 return false;
@@ -1175,7 +1175,7 @@ bool BSB_InheritedFunctions::Update(_ClassState &ClassState,_Ele *Ele)
                    Ele->GetValue("Declare",Declare);
                    fd.Parse(Declare);
                    Declare = fd.GetDeclaration();
-                  fd.Parse("virtual void CopyTo(CryObject &Dest) const");
+                  fd.Parse("virtual void CopyTo(Object &Dest) const");
                   declare = fd.GetDeclaration();
          
                   if (Declare != declare)
@@ -1233,7 +1233,7 @@ bool BSB_CopyToParts::Update(_ClassState &ClassState,_Ele *Ele)
                 Ele->GetValue("Declare",Declare);
                 fd.Parse(Declare);
                 Declare = fd.GetDeclaration();
-                fd.Parse("virtual void CopyTo(CryObject &Dest) const");
+                fd.Parse("virtual void CopyTo(Object &Dest) const");
                 declare = fd.GetDeclaration();
 
                 if (Declare != declare)
@@ -1296,7 +1296,7 @@ bool BSB_CopyToParts::Update(_ClassState &ClassState,_Ele *Ele)
             Ele->GetValue("Declare",Declare);
             fd.Parse(Declare);
             Declare = fd.GetDeclaration();
-            fd.Parse("virtual void CopyTo(CryObject &Dest) const");
+            fd.Parse("virtual void CopyTo(Object &Dest) const");
             declare = fd.GetDeclaration();
 
             if (Declare != declare)
@@ -1357,7 +1357,7 @@ bool BSB_GetFunctions::Update(_ClassState &ClassState,_Ele *Ele)
             ScratchPad1().printf("%s\n",id);
             ScratchPad1().printf("{\nCryFunctionDefList *l = %s::GetFunctions();\n",InheritType());
             ScratchPad1().printf("\tif (Type && !IsA(Type))\n\t\treturn l;\n");
-            ScratchPad1().printf("CryString s;\n\ts += \"//  %s;\"\n",ClassName());
+            ScratchPad1().printf("String s;\n\ts += \"//  %s;\"\n",ClassName());
             _Ele *Ele;
             CryContainer::Iterator *LocIterator = GetCB()->CreateIterator();
             if (LocIterator->GotoFirst())
@@ -1560,10 +1560,10 @@ class BSB_FinalOutput : public Strategy
     ClassBuilder *Parent;
 public:
     BSB_FinalOutput(ClassBuilder *_Parent)
-    {
+	{
         Parent = _Parent;
     }
-    virtual int DoStrategy(CryObject *Sender) const
+	virtual int DoStrategy(Object *Sender) const
     {
         Parent->Sort();
         if (Sender->IsA(TTwoStreams))

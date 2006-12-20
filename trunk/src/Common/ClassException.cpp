@@ -84,7 +84,7 @@ int Exception::GetErrno() const
     return _errno;
 }
 
-/*CryException::CryException(const CryObject *Object,const CryException &E1,const CryException &E2)
+/*CryException::CryException(const Object *_Object,const CryException &E1,const CryException &E2)
 {
  
     Error = new char[strlen(E1) + strlen(E2) + 1];

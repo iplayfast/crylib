@@ -29,9 +29,9 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <ctype.h>
-#include "CryObject.h"
-#include "CryXML.h"
-#include "CryArray.h"
+#include "ClassObject.h"
+#include "ClassXML.h"
+#include "ClassArray.h"
 #include "CryFuzzy.h"
 #include "CryBackProp.h"
 #include "hugeint.h"

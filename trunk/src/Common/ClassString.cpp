@@ -43,7 +43,7 @@ bool String::Test(bool Verbose,Object &Object,bool (CallBack)(bool Verbose,const
         return true;
     {
         char Result[200];
-        sprintf(Result,"\nCryObject Testing:\nObject of ClassName %s,ChildClassName %s",
+        sprintf(Result,"\nObject Testing:\nObject of ClassName %s,ChildClassName %s",
                 Object.ClassName(),Object.ChildClassName());
         if (!CallBack(Verbose,Result,fail))
             return false;
@@ -72,7 +72,7 @@ bool String::Test(bool Verbose,Object &Object,bool (CallBack)(bool Verbose,const
             virtual operator const char *() const { return (const char *)GetRaw(); }
 			CryString operator &() { return *this; }
             char operator [](unsigned int Offset) const;
-            virtual CryObject *Dup() const{ CryString *Result = new CryString(); CopyTo(*Result); return Result; } // creates a duplicate of this object
+            virtual Object *Dup() const{ CryString *Result = new CryString(); CopyTo(*Result); return Result; } // creates a duplicate of this object
             virtual size_t Read(CryStream *ToStream,size_t Size) const;
             virtual size_t Write(const CryStream *FromStream,size_t Size);
             virtual size_t Read(CryStream *ToStream) const { return Read(ToStream,Size()); }
@@ -120,13 +120,13 @@ bool String::Test(bool Verbose,Object &Object,bool (CallBack)(bool Verbose,const
          
             virtual const char *GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const;
         #ifdef VALIDATING
-        virtual bool Test(bool Verbose,CryObject &Object,bool (CallBack)(bool Verbose,const char *Result,bool fail));
+        virtual bool Test(bool Verbose,Object &Object,bool (CallBack)(bool Verbose,const char *Result,bool fail));
         #endif
         */
         String a;
         const char *ErrorStr;
-        char *emptyconst = "CryString a; make empty string test";
-        char *nonemptyconst = "CryString a(\"test\") contructor";
+		char *emptyconst = "String a; make empty string test";
+		char *nonemptyconst = "String a(\"test\") contructor";
         char *copyconst = "copy constructor";
         char *cleartest = "Clear test, assignment of const char,Length";
         {
@@ -767,81 +767,81 @@ FunctionDefList *String::GetFunctions(const char *Type) const
 	   return MemStream::GetFunctions(Type);
 	// otherwise get any functions in subclasses
 	FunctionDefList *l = MemStream::GetFunctions();
-    String s;
-    s += "// Class CryString;";
-    s += "virtual void Clear();";
-    s += "virtual CryString *GetFunctions() const;";
-    s += "virtual void Clear(int amount);";
-    s += "virtual size_t Length() const;";
-    s += "virtual void SetLength(int i);";
-    s += "virtual CryList *PropertyNames() const;";
-    s += "virtual int GetPropertyCount() const;";
-    s += "CryString &Delete(unsigned int start,int amount);";
+	String s;
+	s += "// Class String;";
+	s += "virtual void Clear();";
+	s += "virtual String *GetFunctions() const;";
+	s += "virtual void Clear(int amount);";
+	s += "virtual size_t Length() const;";
+	s += "virtual void SetLength(int i);";
+	s += "virtual List *PropertyNames() const;";
+	s += "virtual int GetPropertyCount() const;";
+	s += "String &Delete(unsigned int start,int amount);";
     s += "const char* ClassName() const;";
     s += "virtual const char *ChildClassName() const;";
     s += "virtual operator const char *() const;";
-    s += "CryString operator &();";
-    s += "CryString& simplify();";
-    s += "virtual CryObject *Dup() const;";
-    s += "virtual size_t Read(CryStream *ToStream,size_t Size) const;";
-    s += "virtual size_t Write(const CryStream *FromStream,size_t Size);";
-    s += "virtual size_t Read(CryStream *ToStream) const;";
-    s += "virtual size_t Write(const CryStream *FromStream);";
+    s += "String operator &();";
+    s += "String& simplify();";
+    s += "virtual Object *Dup() const;";
+    s += "virtual size_t Read(Stream *ToStream,size_t Size) const;";
+    s += "virtual size_t Write(const Stream *FromStream,size_t Size);";
+    s += "virtual size_t Read(Stream *ToStream) const;";
+    s += "virtual size_t Write(const Stream *FromStream);";
     s += "virtual size_t Read(char *ToBuffer,size_t t) const;";
     s += "virtual size_t Write(const char *FromBuffer,size_t t);";
     s += "virtual size_t WriteNStr(const char *Buffer);";
     s += "virtual size_t ReadNStr(char *Buffer,size_t MaxLength) const;";
-    s += "const char *strstr(CryString &s) const;";
+    s += "const char *strstr(String &s) const;";
     s += "const char *strstr(const char *s) const;";
-    s += "int strncmp(CryString &s,size_t n) const;";
+    s += "int strncmp(String &s,size_t n) const;";
     s += "int strncmp(const char *s,size_t n) const;";
-    s += "int strcmp(CryString &s) const;";
+    s += "int strcmp(String &s) const;";
     s += "int strcmp(const char *s) const;";
-    s += "const char *strcat(CryString &s);";
+    s += "const char *strcat(String &s);";
     s += "const char *strcat(const char *s);";
     s += "const char *FormatHex(cbyte *data,size_t length);";
     s += "EmptyObject *GetAddress();";
     s += "bool operator ==(const char *s) const;";
     s += "bool operator !=(const char *s) const;";
-    s += "CryString & operator +=(const char *s);";
+    s += "String & operator +=(const char *s);";
     s += "virtual bool IsOpen() const;";
     s += "virtual int scanf(const char *format,...) const;";
     s += "virtual size_t printf(const char *format,...);";
-    s += "virtual CryString &Insert(int Index,const char *Text);";
-    s += "virtual CryString &TrimLeft();";
-    s += "virtual CryString &TrimRight();";
-    s += "virtual CryString &Trim();";
-    s += "virtual CryString &Replace(const char *_Search,const char *_Replace);";
-    s += "virtual CryString &ReplaceAppend(const char *_Search,const char *_Replace,const char *_Append=0);";
+    s += "virtual String &Insert(int Index,const char *Text);";
+    s += "virtual String &TrimLeft();";
+    s += "virtual String &TrimRight();";
+    s += "virtual String &Trim();";
+    s += "virtual String &Replace(const char *_Search,const char *_Replace);";
+    s += "virtual String &ReplaceAppend(const char *_Search,const char *_Replace,const char *_Append=0);";
     s += "int SeekTextFromStart(const char *SearchString) const;";
     s += "int SeekTextFromCurrent(const char *SearchString) const;";
     s += "virtual void Close(bool ExceptOnError=true);";
     s += "virtual bool Convert(int *i) const;";
     s += "virtual bool Convert(char *b,int len) const;";
     s += "virtual bool IsA(const char *ClassName) const;";
-    s += "CryString & operator =(const char *text);";
-    s += "CryString & operator = (const CryString *v);";
-    s += "CryString & operator = (const CryString &v);";
+    s += "String & operator =(const char *text);";
+    s += "String & operator = (const String *v);";
+    s += "String & operator = (const String &v);";
     s += "void SetValue(const char * _Value);";
     s += "virtual size_t Size() const;";
     s += "virtual bool HasProperty(const char *PropertyName) const;";
-    s += "virtual const char *GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const;";
-    s += "CryList *ListFromString(const char *Separator) const;";
-    s += "CryList *LoadListFromString(const char *Separator,CryList *ListToLoad) const;";
-    s += "virtual CryString &Insert(int Index,const char *Text);";
+    s += "virtual const char *GetProperty(const PropertyParser &PropertyName,String &Result) const;";
+    s += "List *ListFromString(const char *Separator) const;";
+    s += "List *LoadListFromString(const char *Separator,List *ListToLoad) const;";
+    s += "virtual String &Insert(int Index,const char *Text);";
 #ifdef VALIDATING
 
-    s += "virtual bool Test(bool Verbose,CryObject &Object,bool (CallBack)(bool Verbose,const char *Result,bool fail));";
+    s += "virtual bool Test(bool Verbose,Object &Object,bool (CallBack)(bool Verbose,const char *Result,bool fail));";
 #endif
 
     l->LoadFromString(s,";");
     return l;
 }
 
-/*CryString::CryString(const char *Value)
+/*String::String(const char *Value)
 {
     size_t len = strlen(Value);
-    CryMemStream::Write(Value,len+1);
+    MemStream::Write(Value,len+1);
     SetPosition(len);
     SetTerminator('\0');
 } */
@@ -871,10 +871,10 @@ String::String(const char *FormatStr,...)
     SetLength(strlen(c));
 }
 
-/*char CryString::operator[](unsigned int Offset) const
+/*char String::operator[](unsigned int Offset) const
 {
     if ((Offset>Length()))
-        throw CryException(this,"out of range error");
+        throw Exception(this,"out of range error");
     return GetRaw()[Offset];
  
 } */
@@ -1109,15 +1109,15 @@ size_t String::Write(const char *FromBuffer,size_t t)
     if (FromBuffer[t-1]=='\0')
         t--;
     size_t s = MemStream::Write(FromBuffer,t);
-    //        CryMemStream::Write("",1);
+    //        MemStream::Write("",1);
     //    SetRaw(s+p,'\0');
     size_t p = GetPosition();
     LookLikeString();
     SetPosition(p);
     return s;
 }
-/*! returns a list of CryStrings made up from String separated by Separater (eg convert text with \n to list of strings)
-The CryStrings do not contain the separator
+/*! returns a list of Strings made up from String separated by Separater (eg convert text with \n to list of strings)
+The Strings do not contain the separator
 */
 List *String::ListFromString(const char *Separator) const
 {

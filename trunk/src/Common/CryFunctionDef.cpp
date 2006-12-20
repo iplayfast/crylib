@@ -1,6 +1,6 @@
 
 #include "CryFunctionDef.h"
-#include "CryXML.h"
+#include "ClassXML.h"
 #include "ClassString.h"
 #include "ClassFunction.h"
 
@@ -15,7 +15,7 @@ void BuilderFunctionDef::SetDefaultValues()
 String xml( "<CryString Value=\"\" />\
 ");
 	xml.Replace("\\\"","\"");// replace \" with "  
-CryXML x;
+XML x;
 	x.LoadFrom(xml);
 	x.SaveTo(*this);
 }
@@ -62,7 +62,7 @@ void ListFunctionDef::SetDefaultValues()
 String xml( "<CryList />\
 ");
 	xml.Replace("\\\"","\"");// replace \" with "  
-CryXML x;
+XML x;
 	x.LoadFrom(xml);
 	x.SaveTo(*this);
 }

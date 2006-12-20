@@ -18,9 +18,9 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "CryObject.h"
+#include "ClassObject.h"
 #include "ClassBuilder.h"
-#include "CryXML.h"
+#include "ClassXML.h"
 #include "CryBackProp.h"
 
 //#define DIAGNOSE

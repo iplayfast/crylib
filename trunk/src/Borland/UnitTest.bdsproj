@@ -31,7 +31,7 @@
         <property category="build.node" name="lastconfig" value="Debug_Build"/>
         <property category="build.node" name="name" value="UnitTest.exe"/>
         <property category="build.node" name="packages" value="vcl;vclx;dbrtl;Rave65VCL;bdertl;rtl;vcldb;adortl;dbxcds;dbexpress;vclib;ibxpress;xmlrtl;vclactnband;inet;IntrawebDB_80_100;Intraweb_80_100;vclie;inetdbbde;inetdbxpress;IndyCore;IndySystem;bcbsmp;soaprtl;dsnap;IndyProtocols;bcbie;teeui;teedb;tee;vcldbx"/>
-        <property category="build.node" name="sparelibs" value="rtl.lib vcl.lib vclx.lib xmlrtl.lib vclactnband.lib  vclie.lib"/>
+        <property category="build.node" name="sparelibs" value="rtl.lib vcl.lib vclx.lib xmlrtl.lib vclactnband.lib vclie.lib"/>
         <property category="build.node" name="use_packages" value="1"/>
         <property category="build.platform" name="active" value="win32"/>
         <property category="build.platform" name="win32.Debug_Build.toolset" value="win32b"/>
@@ -246,16 +246,16 @@
         <FILE FILENAME="..\Common\ClassStream.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="ClassStream" FORMNAME="" DESIGNCLASS=""/>
         <FILE FILENAME="..\Common\ClassString.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="ClassString" FORMNAME="" DESIGNCLASS=""/>
         <FILE FILENAME="..\Common\CodeFactory.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="CodeFactory" FORMNAME="" DESIGNCLASS=""/>
-        <FILE FILENAME="..\Common\CryArray.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="CryArray" FORMNAME="" DESIGNCLASS=""/>
+        <FILE FILENAME="..\Common\ClassArray.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="ClassArray" FORMNAME="" DESIGNCLASS=""/>
         <FILE FILENAME="..\Common\CryBackProp.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="CryBackProp" FORMNAME="" DESIGNCLASS=""/>
         <FILE FILENAME="..\Common\CryFunctionDef.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="CryFunctionDef" FORMNAME="" DESIGNCLASS=""/>
         <FILE FILENAME="..\Common\CryFuzzy.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="CryFuzzy" FORMNAME="" DESIGNCLASS=""/>
         <FILE FILENAME="..\Common\CryNN.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="CryNN" FORMNAME="" DESIGNCLASS=""/>
-        <FILE FILENAME="..\Common\CryObject.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="CryObject" FORMNAME="" DESIGNCLASS=""/>
+        <FILE FILENAME="..\Common\ClassObject.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="ClassObject" FORMNAME="" DESIGNCLASS=""/>
         <FILE FILENAME="..\Common\CryPattern.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="CryPattern" FORMNAME="" DESIGNCLASS=""/>
         <FILE FILENAME="..\Common\CryPatterns.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="CryPatterns" FORMNAME="" DESIGNCLASS=""/>
         <FILE FILENAME="..\Common\CrySet.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="CrySet" FORMNAME="" DESIGNCLASS=""/>
-        <FILE FILENAME="..\Common\CryXML.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="CryXML" FORMNAME="" DESIGNCLASS=""/>
+        <FILE FILENAME="..\Common\ClassXML.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="ClassXML" FORMNAME="" DESIGNCLASS=""/>
         <FILE FILENAME="..\Common\DefaultBuild.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="DefaultBuild" FORMNAME="" DESIGNCLASS=""/>
         <FILE FILENAME="..\Common\Factest.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="Factest" FORMNAME="" DESIGNCLASS=""/>
         <FILE FILENAME="..\Common\HeadImp.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="HeadImp" FORMNAME="" DESIGNCLASS=""/>

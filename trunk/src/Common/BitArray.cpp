@@ -6,7 +6,7 @@
 
 
 #include "BitArray.h"
-#include "CryXML.h"	//Needed for SetDefaultValues
+#include "ClassXML.h"	//Needed for SetDefaultValues
 #include "ClassFunction.h"
 #include "ClassException.h"
 

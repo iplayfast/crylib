@@ -5,7 +5,7 @@
 #include "CryBackProp.h"
 #include "ClassFileStream.h"
 #include "CryFuzzy.h"
-#include "CryXML.h"
+#include "ClassXML.h"
 #include "CryNN.h"
 #include "HugeInt.h"
 #include "PrimeTab.h"
@@ -31,7 +31,7 @@ HugeInt SomePrimes[2095];
 int SomePrimesCount;
 void LoadSomePrimes()
 {
-CryFileStream f;
+FileStream f;
 String s;
     f.Open("primes.txt","r");
     f.SetTerminator('\n');
@@ -65,7 +65,7 @@ HugeInt n,d;
 }
 
     LoadSomePrimes();
-CryBPNetContainer bp;
+BPNetContainer bp;
     bp.AddLayer(MaxHugeIntBits);   // input is digits
     bp.AddLayer(MaxHugeIntBits);
     bp.AddLayer(MaxHugeIntBits * 2);

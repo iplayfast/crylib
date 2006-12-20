@@ -6,7 +6,7 @@
 #include <cstdlib>
 #include "CryBackProp.h"
 #include "CryFuzzy.h"
-#include "CryXML.h"
+#include "ClassXML.h"
 #include "CryNN.h"
 #include "HugeInt.h"
 #include "HugeDouble.h"
@@ -40,7 +40,7 @@ int TestFuzzyMain(int argc, char* argv[])
 {
 try
 {
-CryBPNetContainer bp;
+BPNetContainer bp;
 #ifdef VALIDATING
 String a;
 //	a.Test(true,&a,CallBack);
@@ -72,7 +72,7 @@ CryFileStream fs;
 }
 */
 return 0;	// bp done
-CryFuzzy f;
+Fuzzy f;
     f.AddPoint(4.0,-5.0);
     f.AddPoint(1.3,-6.0);
     f.AddPoint(4.0,-5.0);
@@ -84,9 +84,9 @@ List list;
 List *l1 = new List;
     list.AddOwned(l1);
     l1->Add(&f);
-CryFileStream fs;
+FileStream fs;
     fs.Open("fuzzy.xml","w");
-CryXML x("obj");
+XML x("obj");
     x.LoadFrom(list);
     x.SaveTo(fs);
     fs.Close();
@@ -95,7 +95,7 @@ CryXML x("obj");
 try
 {
 List l;
-CryFileStream fs;
+FileStream fs;
 #ifdef VALIDATING
 fs.Test(false,fs,CallBack);
 l.Test(true,l,CallBack);
@@ -114,24 +114,24 @@ catch(Exception &E)
     f.AddPoint(40.0,-50.0);
     f.AddPoint(400.0,-500.0);
 {
-CryFileStream fs;
+FileStream fs;
     fs.Open("fuzzy.xml","w");
-CryXML x("obj");
+XML x("obj");
     x.LoadFrom(f);
     x.SaveTo(fs);
 	fs.Close();
 }       // Test Fuzzy saved to fuzzy.xml
 {
-CryFileStream fs;
+FileStream fs;
     fs.Open("fuzzy.xml","r");
-CryXML x("obj");
+XML x("obj");
     x.LoadFrom(fs);
    fs.Close();      // x has xml representation of Test Fuzzy
 {
-    CryFuzzy *nf  = (CryFuzzy *)x.CreateObjectFromNode();
-    CryFileStream fs1;
+    Fuzzy *nf  = (Fuzzy *)x.CreateObjectFromNode();
+    FileStream fs1;
     fs1.Open("testfuzzy.xml","w");
-    CryXML nx("obj");
+    XML nx("obj");
     nx.LoadFrom(*nf);
     delete nf;
     nx.SaveTo(fs1);
@@ -150,7 +150,7 @@ CryXML x("obj");
     cout << "Fuzzy Value are " << f << endl;
     f.Normalize(0.01);
     cout << "Fuzzy Value are " << f << endl;
-CryFuzzy g(f);
+Fuzzy g(f);
     g.AddPoint(4.0,-4.0);
     cout << "Fuzzy Value are:" << endl <<
         "f:" << f << endl <<
@@ -184,7 +184,7 @@ XWVU  TSRQ PONM LKJI HGFE DCBA
 
 void CreateAINETXML()
 {
-  CryBPNetContainer ai;
+  BPNetContainer ai;
   ai.AddLayer(2); 	// 2 inputs
   ai.AddLayer(4);     // 2 calcs
   ai.AddLayer(1);     // 1 output
@@ -198,9 +198,9 @@ void CreateAINETXML()
   double OutData[4];
   double TargetData[4] = {0,1,1,0};	// xor
     ai.STTrainNet(5000,4,InData,4,TargetData);
-    CryFileStream fs;
+    FileStream fs;
         fs.Open("ainet.xml","w");
-    CryXML x;
+    XML x;
         x.LoadFrom(ai);
         x.SaveTo(fs);
         fs.Close();
@@ -463,18 +463,18 @@ char *teststr = "Hello, Hello world. This is a test of the emerging broad corpin
   return 0;
   //CreateAINETXML();
   ClassBuilder cb;
-  cb.SetBaseClass(CCryFuzzy,true,true,"MyFuzzy");
+  cb.SetBaseClass(CFuzzy,true,true,"MyFuzzy");
 //  cb.SetBaseClass(TCryBPNetContainer);
 //  cb.SetName("ListFunctionDef");
   cb.SetFilename("CryTestDef");
-  cb.AddClassInstance(CCryFuzzy,"MyFuzzy",10,true,true,true,true,"0");
+  cb.AddClassInstance(CFuzzy,"MyFuzzy",10,true,true,true,true,"0");
   cb.SaveSource();
   {
-  CryFileStream std;
+  FileStream std;
   	std.Open("stdout","w");
-//  CryObject::Context context;
+//  Object::Context context;
   	//context.IO.In.InSave.ToStream = std;
-  //cb.Event(CryObject::ESaveStream,context);
+  //cb.Event(Object::ESaveStream,context);
   }
   }
   catch(Exception &e)

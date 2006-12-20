@@ -32,7 +32,7 @@ namespace Crystal {
 #define CSetProperty "SetProperty"
 #define CGetProperty "GetProperty"
 
-class CodeFactory : public CryFactory
+class CodeFactory : public Factory
 {
     PropertyList Products;
 
@@ -40,7 +40,7 @@ class CodeFactory : public CryFactory
     bool _IsPointer;
     int SortValue;
 	int Count;
-    void AddFactory(CryFactory *f)
+    void AddFactory(Factory *f)
     {}
 	
     String Name;
@@ -100,7 +100,7 @@ StdFunctionsIsAbstractFalse();
     virtual Object *Create(Stream &FromStream);
     virtual Object *Create(const char *FactoryName,const PropertyParser &PropertyName,Object *Parent=0)
     {
-      return CryFactory::Create(FactoryName,PropertyName,Parent);
+      return Factory::Create(FactoryName,PropertyName,Parent);
     }
 
 };
