@@ -987,7 +987,7 @@ bool BPNetContainer::Test(bool Verbose,Object &Object,bool (CallBack)(bool Verbo
             {
                 OutData[i] = 4500;
 				bp->SimulateNet(&InData[i*2],&OutData[i],&TargetData[i],0);
-				int v = OutData[i]+0.5;
+				int v = (int)OutData[i]+0.5;
 				Fail = v!=TargetData[i];
 				sprintf(Result,"In %f,%f Expected %f Out %f\n",_InData[i][0],_InData[i][1],TargetData[i],OutData[i]);
                 if (!CallBack(Verbose,Result,Fail))
@@ -1035,7 +1035,7 @@ bool BPNetContainer::Test(bool Verbose,Object &Object,bool (CallBack)(bool Verbo
                 {
                     OutData[i] = 4500;
 					bp1->SimulateNet(&InData[i*2],&OutData[i],&TargetData[i],0);
-					int v = OutData[i]+0.5;
+					int v =(int) OutData[i]+0.5;
 					Fail = v!=TargetData[i];
                     sprintf(Result,"In %f,%f Expected %f Out %f\n",_InData[i][0],_InData[i][1],TargetData[i],OutData[i]);
                     if (!CallBack(Verbose,Result,Fail))

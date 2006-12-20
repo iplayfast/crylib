@@ -10,7 +10,7 @@ using namespace Crystal;
 //---------------------------------------------------------------------------
 bool/* __cdecl */FormCallBack(bool Verbose,const char *Result,bool fail)
 {
-CryString s;
+String s;
 	s.printf("%s %s",Result,fail ? "Fail" : "Pass");
   	printf("%s",s.AsPChar());
 	if (fail)
@@ -24,12 +24,12 @@ void StringTest()
 {
 try
 {
-CryString a;
+String a;
 	a.Test(true,a,FormCallBack);
 }
-catch(CryException &E)
+catch(Exception &E)
 {
-CryString s;
+String s;
 	s ="Exception Caught: ";
 	s += E;
 	printf("%s",s.AsPChar());
@@ -41,15 +41,15 @@ void BackPropTest()
 {
 try
 {
-CryBPNetContainer bp;
+BPNetContainer bp;
 #ifdef VALIDATING
 	bp.Test(true,bp,FormCallBack);
 #endif
 
 }
-catch(CryException &E)
+catch(Exception &E)
 {
-CryString s;
+String s;
 	s ="Exception Caught: ";
 	s += E;
 	printf("%s",s.AsPChar());
@@ -61,15 +61,15 @@ void TemplateTest()
 {
 try
 {
-CryTArray<int> a;
+TArray<int> a;
 #ifdef VALIDATING
 	a.Test(true,a,FormCallBack);
 #endif
 
 }
-catch(CryException &E)
+catch(Exception &E)
 {
-CryString s;
+String s;
 	s ="Exception Caught: ";
 	s += E;
 	printf("%s",s.AsPChar());
@@ -84,9 +84,9 @@ try
 CrySet a;
 	a.Test(true,a,FormCallBack);
 }
-catch(CryException &E)
+catch(Exception &E)
 {
-CryString s;
+String s;
 	s ="Exception Caught: ";
 	s += E;
 	printf("%s",s.AsPChar());
