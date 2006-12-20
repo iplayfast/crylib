@@ -606,10 +606,10 @@ bool Stream::Event(EObject EventNumber,Context::UIO &Context)
         Out.OutWriteT.Size = WriteTI(In.InWriteT.Buffer,In.InWriteT.Size);
         return true;
     case EReadStream:
-        Out.OutReadStream.Size = Read(In.InReadStream.Stream,In.InReadStream.Size);
+        Out.OutReadStream.Size = Read(In.InReadStream._Stream,In.InReadStream.Size);
         return true;
     case EWriteStream:
-        Out.OutWriteStream.Size = Write(In.InWriteStream.Stream,In.InWriteStream.Size);
+        Out.OutWriteStream.Size = Write(In.InWriteStream._Stream,In.InWriteStream.Size);
         return true;
     case EWriteNStr:
         Out.OutWriteStr.Size = WriteNStr(In.InWriteStr.Text);

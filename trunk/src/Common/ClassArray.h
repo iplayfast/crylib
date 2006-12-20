@@ -21,6 +21,7 @@
 #ifndef ARRAY_DEF
 #define ARRAY_DEF
 #include <stdlib.h>
+#include "ClassObject.h"
 #include "ClassContainer.h"
 #include "ClassException.h"
 #include "ClassString.h"
@@ -225,7 +226,7 @@ class TArray : public SimpleArray
 	virtual EmptyObject *GetAtIterator(const Iterator *I) const
 	{
 		return (EmptyObject *) &Values[IteratorValue(I)];
-    }
+    	}
 	virtual bool IsObject(const Iterator *I) const
 	{
 		return false;
@@ -239,12 +240,12 @@ public:
 		/*! will create an object of the Type named in Type. In container classes where the Type is the contained object, the Parent must be the appropriete container type or a derived class which can create the object (if the default class can't) */
 	virtual Object *Create(const PropertyParser &PropertyName,Object *Parent=0)
 	{
-		return CrySimpleArray::Create(PropertyName,Parent);
+		return SimpleArray::Create(PropertyName,Parent);
 //		throw Exception("Create needs to be added from CryTArray");
 	}
 	static Object *ClassCreate(const PropertyParser &PropertyName,Object *Parent=0)
 	{
-		return CrySimpleArray::Create(PropertyName,Parent);
+		return SimpleArray::Create(PropertyName,Parent);
 //		throw Exception("ClassCreate needs to be added from CryTArray");
 	}
 
@@ -520,36 +521,25 @@ void CryTArray<CryString>::GetEleType(CryString &Result) const
 	}
   */
 	/*! will create an object of the Type named in Type. In container classes where the Type is the contained object, the Parent must be the appropriete container type or a derived class which can create the object (if the default class can't) */
-Object *TArray<int>::Create(const PropertyParser &PropertyName,Object *Parent)
-{
+template<>
+Object *TArray<int>::Create(const PropertyParser &PropertyName,Object *Parent);
+/*{
 
 	if (PropertyName==CTArray)
 		return new TArray<int>();
 	return SimpleArray::Create(PropertyName,Parent);
-}
+}*/
 template<>
-void TArray<int>::GetEleType(String &Result) const
-{
-	Result = "int";
-} 
+void TArray<int>::GetEleType(String &Result) const;
 
 template<>
-bool TArray<int>::LoadAsText(int i,String &FromStream)
-{
-	int v;
-	FromStream.scanf("%d ",&v);
-	SetValue(i,v);
-	FromStream.Delete(0,FromStream.Pos(" "));
-	FromStream.TrimLeft();
-	return true;
-}
+bool TArray<int>::LoadAsText(int i,String &FromStream);
 template<>
-bool TArray<int>::SaveAsText(int i,String &ToStream) const
-{
+bool TArray<int>::SaveAsText(int i,String &ToStream) const;
+/*{
 	ToStream.printf("%d ",Values[i]);
 	return true;
-}
-template<>
+}*/
 /*const char *TArray<int>::GetProperty(const PropertyParser &PropertyName,String &Result) const
 {
 	if (PropertyName=="Type")
@@ -590,62 +580,16 @@ bool TArray<int>::SetProperty(const PropertyParser &PropertyName,const char *Pro
 }
 */
 	/*! will create an object of the Type named in Type. In container classes where the Type is the contained object, the Parent must be the appropriete container type or a derived class which can create the object (if the default class can't) */
-Object *TArray<float>::Create(const PropertyParser &PropertyName,Object *Parent)
-{
-
-	if (PropertyName==CTArray)
-		return new TArray<float>();
-	return SimpleArray::Create(PropertyName,Parent);
-}
-
 template<>
-void TArray<float>::GetEleType(String &Result) const
-{
-	Result = "float";
-} 
+Object *TArray<float>::Create(const PropertyParser &PropertyName,Object *Parent);
 template<>
-bool TArray<float>::SetProperty(const PropertyParser &PropertyName,const char *PropertyValue)
-{
-	if (PropertyName=="CurrentCount")
-	{
-		SetValue(CurrentCount,atoi(PropertyValue));
-		return true;
-	}
-	return SimpleArray::SetProperty(PropertyName,PropertyValue);
-
-/*float v;
-	sscanf(PropertyValue,"%f ",v);
-	SetValue(CurrentCount,v);
-	return true;
-*/	
-}
-
+void TArray<float>::GetEleType(String &Result) const;
 template<>
-bool TArray<float>::LoadAsText(int i,String &FromStream)
-{
-	float v;
-	FromStream.scanf("%f ",&v);
-	SetValue(i,v);
-	return true;
-}
+bool TArray<float>::SetProperty(const PropertyParser &PropertyName,const char *PropertyValue);
 template<>
-bool TArray<float>::SaveAsText(int i,String &ToStream) const
-{
-	ToStream.printf("%f ",Values[i]);
-	return true;
-}
-/*
-template<typename T>
-void CryTArray<T>::RemoveAtIterator(Iterator *LI)
-{
-	unsigned int i = IteratorValue(LI);
-	for(;i<CurrentCount-1;i++)
-	{
-		Values[i] = Values[i+1];
-	}
-	return;
-}
-*/
+bool TArray<float>::LoadAsText(int i,String &FromStream);
+template<>
+bool TArray<float>::SaveAsText(int i,String &ToStream) const;
 
 /// An Array class. Array elements are pointed to, and are created in the derived classes
 class Array : public SimpleArray
@@ -759,7 +703,7 @@ StdFunctionsNoDup(Array,SimpleArray);
     {
         return (Object *)Add(Item,true,true,0);
     }   // gives ownership to list
-    EmptyObject *Array::DupItem(const Array::ElePtr  *Node) const;
+    EmptyObject *DupItem(const Array::ElePtr  *Node) const;
     virtual void SetItemOwnerShip(Iterator *I,bool Owned);
     virtual bool GetItemOwnerShip(const Iterator *I) const;
     virtual bool IsObject(const Iterator *I) const;

@@ -149,7 +149,7 @@ public:
 		};
 		struct _Object
 		{
-			Object *Object;
+			Object *_Object;
 		};
 		struct _int
 		{

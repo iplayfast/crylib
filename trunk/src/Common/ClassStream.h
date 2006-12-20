@@ -76,7 +76,7 @@ struct Context : public Object::Context
         };
         struct _StreamSize
         {
-            Stream *Stream;
+            Stream *_Stream;
             size_t Size;
         };
         struct _char

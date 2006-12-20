@@ -727,11 +727,11 @@ ELoadStream:
             break;
 
 ECopyTo:
-            CopyTo(*Context.In.InCopyTo.Object);  //copies contents of this to Dest
+            CopyTo(*Context.In.InCopyTo._Object);  //copies contents of this to Dest
             break;
 
 EDup:
-            Context.Out.OutDup.Object = Dup();
+            Context.Out.OutDup._Object = Dup();
             break;
 
 ESize:
