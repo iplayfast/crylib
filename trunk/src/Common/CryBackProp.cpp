@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2003 by Chris Bruner                                    *
+ *   Copyright (C) 2006 by Chris Bruner                                    *
  *   chris@Martha.crystal.com                                              *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -987,13 +987,13 @@ bool BPNetContainer::Test(bool Verbose,Object &Object,bool (CallBack)(bool Verbo
             {
                 OutData[i] = 4500;
 				bp->SimulateNet(&InData[i*2],&OutData[i],&TargetData[i],0);
-				int v = (int)OutData[i]+0.5;
+				int v = (OutData[i]+0.5)>1 ? 1 : 0;
 				Fail = v!=TargetData[i];
 				sprintf(Result,"In %f,%f Expected %f Out %f\n",_InData[i][0],_InData[i][1],TargetData[i],OutData[i]);
-                if (!CallBack(Verbose,Result,Fail))
-                    return false;
-            }
-            if ((Verbose) && (!CallBack(Verbose,"\nSaving to XML",Fail)))
+				if (!CallBack(Verbose,Result,Fail))
+					return false;
+			}
+			if ((Verbose) && (!CallBack(Verbose,"\nSaving to XML",Fail)))
 				return false;
 			MemStream fs;
 			{
@@ -1035,10 +1035,10 @@ bool BPNetContainer::Test(bool Verbose,Object &Object,bool (CallBack)(bool Verbo
                 {
                     OutData[i] = 4500;
 					bp1->SimulateNet(&InData[i*2],&OutData[i],&TargetData[i],0);
-					int v =(int) OutData[i]+0.5;
+					int v = (OutData[i]+0.5)>1 ? 1 : 0;
 					Fail = v!=TargetData[i];
-                    sprintf(Result,"In %f,%f Expected %f Out %f\n",_InData[i][0],_InData[i][1],TargetData[i],OutData[i]);
-                    if (!CallBack(Verbose,Result,Fail))
+					sprintf(Result,"In %f,%f Expected %f Out %f\n",_InData[i][0],_InData[i][1],TargetData[i],OutData[i]);
+					if (!CallBack(Verbose,Result,Fail))
                         return false;
                 }
                 delete bp1;

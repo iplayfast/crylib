@@ -10,13 +10,13 @@
 #pragma link "CheckLabel"
 #pragma link "labelEditfrm"
 #pragma resource "*.dfm"
-#include "CryObject.h"
+#include "ClassObject.h"
 #include "ClassString.h"
 #include "ClassException.h"
 #include "ClassBuilder.h"
 #include "ClassFileStream.h"
 #include "BitArray.h"
-#include "CryXML.h"
+#include "ClassXML.h"
 #include "ClassFunction.h"
 #include "HugeInt.h"
 
@@ -39,7 +39,7 @@ void __fastcall TClassBuilderFrm::SetBaseClassBTClick(TObject *Sender)
 {
 	try
 	{
-		CryString a(ClassTypeCB->Items->Strings[ClassTypeCB->ItemIndex].c_str());
+		Crystal::String a(ClassTypeCB->Items->Strings[ClassTypeCB->ItemIndex].c_str());
 		delete ANewClass;
 		ANewClass = new ClassBuilder();
 		ANewClass->SetBaseClass(a,IncludeStubs->Checked,true,NameED->Edit1->Text.c_str());
@@ -54,7 +54,7 @@ void __fastcall TClassBuilderFrm::SetBaseClassBTClick(TObject *Sender)
 		UpdateStatus(Sender);
 		PageControl1->ActivePage = AddVariables;
 	}
-	catch(CryException &e)
+	catch(Crystal::Exception &e)
 	{
 		const char *cp = e;
 		AnsiString a;
@@ -92,50 +92,50 @@ void __fastcall TClassBuilderFrm::FormCreate(TObject *Sender)
 	RemoveVariable->Enabled = false;
 
 	ClassTypeCB->Clear();
-	ClassTypeCB->AddItem(TCryObject,0);
-	ClassTypeCB->Text = TCryObject;                                        	
+	ClassTypeCB->AddItem(CObject,0);
+	ClassTypeCB->Text = CObject;
 
-	ClassTypeCB->AddItem(TCryContainer,0);
-	ClassTypeCB->AddItem(TCryStream,0);
-	ClassTypeCB->AddItem(TCryMemStream,0);
-	ClassTypeCB->AddItem(TCryFileStream,0);
-	ClassTypeCB->AddItem(TCryString,0);
-	ClassTypeCB->AddItem(TCryProperty,0);
-	ClassTypeCB->AddItem(TCryList,0);
-	ClassTypeCB->AddItem(TCryPropertyList,0);
-	// From CryArray
-	ClassTypeCB->AddItem(TCrySimpleArray,0);
-	ClassTypeCB->AddItem(TCryArray,0);
-	ClassTypeCB->AddItem(TCryDoubleArray,0);
+	ClassTypeCB->AddItem(CContainer,0);
+	ClassTypeCB->AddItem(CStream,0);
+	ClassTypeCB->AddItem(CMemStream,0);
+	ClassTypeCB->AddItem(CFileStream,0);
+	ClassTypeCB->AddItem(CString,0);
+	ClassTypeCB->AddItem(CProperty,0);
+	ClassTypeCB->AddItem(CList,0);
+	ClassTypeCB->AddItem(CPropertyList,0);
+	// From Array
+	ClassTypeCB->AddItem(CSimpleArray,0);
+	ClassTypeCB->AddItem(CArray,0);
+	ClassTypeCB->AddItem(CDoubleArray,0);
 	// From BitArray
-	ClassTypeCB->AddItem(TBitArray,0);
+	ClassTypeCB->AddItem(CBitArray,0);
 
-	// from CryXml
-	ClassTypeCB->AddItem(TCryXMLNode,0);
-	ClassTypeCB->AddItem(TCryXML,0);
-	// From CryFuzzy
-	ClassTypeCB->AddItem(TCryFuzzy,0);
-	// From CryBackProp
+	// from Xml
+	ClassTypeCB->AddItem(CXMLNode,0);
+	ClassTypeCB->AddItem(CXML,0);
+	// From Fuzzy
+	ClassTypeCB->AddItem(CFuzzy,0);
+	// From BackProp
 //	ClassTypeCB->AddItem("BackPropagateLayer",0);
-	ClassTypeCB->AddItem(TCryBPNetContainer,0);
+	ClassTypeCB->AddItem(CBPNetContainer,0);
 
-	ClassTypeCB->AddItem(TCryFunctionDef,0);
-	ClassTypeCB->AddItem(TCryFunctionDefList,0);
+	ClassTypeCB->AddItem(CFunctionDef,0);
+	ClassTypeCB->AddItem(CFunctionDefList,0);
 	// from HugeINt
-	ClassTypeCB->AddItem(THugeInt,0);
-	// from CryPattern
-	ClassTypeCB->AddItem(TStrategy,0);
-	ClassTypeCB->AddItem(TStrategyHolder,0);
-	ClassTypeCB->AddItem(TStrategyHolderSender,0);
-	ClassTypeCB->AddItem(TObserver,0);
-	ClassTypeCB->AddItem(TObservable,0);
-	ClassTypeCB->AddItem(TDecorator,0);
-	ClassTypeCB->AddItem(TCryFactory,0);
-	ClassTypeCB->AddItem(TCryOFactory,0);
-	ClassTypeCB->AddItem(TCommandHolder,0);
-	ClassTypeCB->AddItem(TCommandHolderSender,0);
-	ClassTypeCB->AddItem(TCompositeIterator,0);
-	ClassTypeCB->AddItem(TState,0);
+	ClassTypeCB->AddItem(CHugeInt,0);
+	// from Pattern
+	ClassTypeCB->AddItem(CStrategy,0);
+	ClassTypeCB->AddItem(CStrategyHolder,0);
+	ClassTypeCB->AddItem(CStrategyHolderSender,0);
+	ClassTypeCB->AddItem(CObserver,0);
+	ClassTypeCB->AddItem(CObservable,0);
+	ClassTypeCB->AddItem(CDecorator,0);
+	ClassTypeCB->AddItem(CFactory,0);
+	ClassTypeCB->AddItem(COFactory,0);
+	ClassTypeCB->AddItem(CCommandHolder,0);
+	ClassTypeCB->AddItem(CCommandHolderSender,0);
+	ClassTypeCB->AddItem(CCompositeIterator,0);
+	ClassTypeCB->AddItem(CState,0);
 
 	ClassTypeCB->ItemIndex = 0;
 
@@ -154,14 +154,14 @@ void __fastcall TClassBuilderFrm::FormCreate(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TClassBuilderFrm::RefreshView(void)
 {
-	CryString SourceHeader,SourceBody;
+	Crystal::String SourceHeader,SourceBody;
 	SourceHeader.SetLength(10000);
 	ANewClass->SaveHeaderBody(SourceHeader,SourceBody);
 
 	TTreeNode *pt=0,*body,*name,*type,*value,*count,*bc,*pn,*MainTree,*SourceTree;
-	//    const CryString *Body,*Name,*Type,*BaseClass,*pPropertyName,*Value;
-	CryString InheriteName;
-	CryString CountDefineName;
+	//    const String *Body,*Name,*Type,*BaseClass,*pPropertyName,*Value;
+	Crystal::String InheriteName;
+	Crystal::String CountDefineName;
 	//    int *iPtype,Count;
 	//    ClassBuilder::PropertyType _PropertyType,LastPT = ClassBuilder::Unknown;
 
@@ -170,15 +170,15 @@ void __fastcall TClassBuilderFrm::RefreshView(void)
 	{
 		SourceTree = TreeView1->Items->AddChild(name,"Complete Source Code:");
 		body = TreeView1->Items->AddChild(SourceTree,"Header:");
-		CryString s;
+		Crystal::String s;
 		s = SourceHeader;
 		s.Replace("\t","   ");
 		s.SetTerminator('\n');
 		while(s.Size())
 		{
-			CryString t;
+			Crystal::String t;
 			t.SetTerminator('\n');
-			t.WriteTE((CryString *)s.GetAddress(),500);
+			t.WriteTE((Crystal::String *)s.GetAddress(),500);
 			s.Delete(0,t.Size()+1);
 			s.SeekFromStart(0);
 			t.Trim();
@@ -195,9 +195,9 @@ void __fastcall TClassBuilderFrm::RefreshView(void)
 		s.SetTerminator('\n');
 		while(s.Size())
 		{
-			CryString t;
+			Crystal::String t;
 			t.SetTerminator('\n');
-			t.WriteTE((CryString *)s.GetAddress(),500);
+			t.WriteTE((Crystal::String *)s.GetAddress(),500);
 			s.Delete(0,t.Size()+1);
 			s.SeekFromStart(0);
 			t.Trim();
@@ -210,31 +210,31 @@ void __fastcall TClassBuilderFrm::RefreshView(void)
 		n = TreeView1->Items->GetFirstNode();
 		n->Expand(true);
 /*
-CryContainer::Iterator *I = ANewClass->_CreateIterator();
+Container::Iterator *I = ANewClass->_CreateIterator();
 	if (ANewClass->GotoFirst(I))
 		do
 		{
-			CryString PropertyType;
-			CryString PrimitiveType;
-			CryString EleName;
-			CryString Declare;
-			CryString DeclareComment;
-			CryString Body;
-			CryString BodyComment;
-			CryString Name;
-			CryString _Value;
-			CryString IsProperty;
-			CryString Count;
-			CryString CountDefineName;
-			CryString BaseClass;
-			CryString PropertyName;
+			String PropertyType;
+			String PrimitiveType;
+			String EleName;
+			String Declare;
+			String DeclareComment;
+			String Body;
+			String BodyComment;
+			String Name;
+			String _Value;
+			String IsProperty;
+			String Count;
+			String CountDefineName;
+			String BaseClass;
+			String PropertyName;
 			int iCount;
 
 			_Ele *Ele = (_Ele *)ANewClass->Get(I);
 
 			if (Ele)
 			{
-				const CryString *sPropertyType;
+				const String *sPropertyType;
 				// Inherited,Local,ClassPtr,ClassLocal,ClassPtrProp,ClassLocalProp
 				InheriteName.Clear();
 				/// When building a class these aspects of it are analyised
@@ -266,20 +266,20 @@ CryContainer::Iterator *I = ANewClass->_CreateIterator();
 				if (name == 0)
 					name = TreeView1->Items->appendItem(MainTree,InheriteName.AsPChar());
 
-				name = TreeView1->Items->appendItem(name,CryString("Property:%s",EleName.AsPChar()).AsPChar());
+				name = TreeView1->Items->appendItem(name,String("Property:%s",EleName.AsPChar()).AsPChar());
 				//if ((LastPT != _PropertyType) || (_PropertyType!=ClassBuilder::Inherited))
-				pt = TreeView1->Items->appendItem(name,CryString("PropertyType %s", PropertyType.AsPChar()).AsPChar());
+				pt = TreeView1->Items->appendItem(name,String("PropertyType %s", PropertyType.AsPChar()).AsPChar());
 
 				if ((PropertyType == "Property") ||
 						(PropertyType == "Primitive"))
-					value = TreeView1->Items->appendItem(name,CryString("Value %s",_Value.AsPChar()).AsPChar());
+					value = TreeView1->Items->appendItem(name,String("Value %s",_Value.AsPChar()).AsPChar());
 				if (PropertyType != "ClassPtr")
 				{
 					body = AddStrings(name,DeclareComment,"Header Comment:");
 					body = AddStrings(name,Declare,"Header:");
 					body = AddStrings(name,BodyComment,"Body Comment:");
 					body = AddStrings(name,Body,"Body:");
-					CryString s;
+					String s;
 					s.printf("Name = %s, Default value = %s",EleName.AsPChar(), _Value.AsPChar());
 					body = AddStrings(name,s,"Misc:");
 				}
@@ -339,9 +339,9 @@ bool AddingClass = (RadioGroup1->ItemIndex==0);
 			VariableNameEditedYet = false;
 			UpdateStatus(Sender);
 	}
-	catch(CryException &e)
+	catch(Crystal::Exception &e)
 	{
-		ShowMessage((const char *)CryString("Adding Class/Variable Instance Error %s",(const char *)e));
+		ShowMessage((const char *)Crystal::String("Adding Class/Variable Instance Error %s",(const char *)e));
 	}
 	return;
 }
@@ -349,7 +349,7 @@ bool AddingClass = (RadioGroup1->ItemIndex==0);
 
 void __fastcall TClassBuilderFrm::UpdateStatus(TObject *Sender)
 {
-	CryString s;
+	Crystal::String s;
 	if (RadioGroup1->ItemIndex==0)// adding a class
 		s.printf("My%s%d",ClassType2CB->Items->Strings[ClassType2CB->ItemIndex].c_str(),PropertyCount);
 	else
@@ -358,15 +358,15 @@ void __fastcall TClassBuilderFrm::UpdateStatus(TObject *Sender)
 		VariableName->Edit1->Text = (const char *)s;
 	}
 
-	CryString Comment = "// ";
-	CryString Type = VariableTypeCB->Items->Strings[VariableTypeCB->ItemIndex].c_str();
-	CryString Name = VariableName->Edit1->Text.c_str();
+	Crystal::String Comment = "// ";
+	Crystal::String Type = VariableTypeCB->Items->Strings[VariableTypeCB->ItemIndex].c_str();
+	Crystal::String Name = VariableName->Edit1->Text.c_str();
 	if (RadioGroup1->ItemIndex==0)
 		Type = 	ClassType2CB->Items->Strings[ClassType2CB->ItemIndex].c_str();
-	CryString Array = "";
+	Crystal::String Array = "";
 	if (ArrayCount->Position>1)
 		Array.printf("[%s_LEN]",(const char *) Name);
-	CryString Pointers = (TypePointer->Checked ? "*" : "");
+	Crystal::String Pointers = (TypePointer->Checked ? "*" : "");
 	Pointers += PointerToArray->Checked ? "*" : "";
 	if (TypePointer->Checked)
 		Comment += " Pointer to ";
@@ -377,9 +377,9 @@ void __fastcall TClassBuilderFrm::UpdateStatus(TObject *Sender)
 	Comment += Type;
 	if (PropertyCB->Checked)
 	{
-    	Comment+= " coded as a property";    
+		Comment+= " coded as a property";
 	}
-	CryString r;
+	Crystal::String r;
 	r.printf("%s %s%s%s;   %s",(const char *)Type,
 										(const char *) Pointers,
 										(const char *)Name,
@@ -415,14 +415,14 @@ void __fastcall TClassBuilderFrm::MenuItem_OpenClick(TObject *Sender)
 	try
 	{
 		OpenDialog1->Title = "Open ClassBuilder file";
-		CryString filename = ANewClass->GetFilename();
+		Crystal::String filename = ANewClass->GetFilename();
 		filename += ".xml";
 		OpenDialog1->FileName =(const char *) filename;
 		if(OpenDialog1->Execute())
 		{
-			CryString file;
+			Crystal::String file;
 			file = OpenDialog1->FileName.c_str();
-			CryString cfile(file);
+			Crystal::String cfile(file);
 			cfile.Replace(".xml","");
 			delete ANewClass;
 			ANewClass = new ClassBuilder();
@@ -435,9 +435,9 @@ void __fastcall TClassBuilderFrm::MenuItem_OpenClick(TObject *Sender)
 			UpdateStatus(Sender);
 		}
 	}
-	catch(CryException &e)
+	catch(Crystal::Exception &e)
 	{
-	CryString s = "Error on open: ";
+	Crystal::String s = "Error on open: ";
 		s += e;
 		ShowMessage((const char *)s);
 	}
@@ -475,7 +475,7 @@ void __fastcall TClassBuilderFrm::MenuItem_SaveAsClick(TObject *Sender)
 		if(!SaveDialog1->Execute())
 			return;
 		//setCurrentPattern(savedialog.getCurrentPattern());
-		CryString file; file = SaveDialog1->FileName.c_str();
+		Crystal::String file; file = SaveDialog1->FileName.c_str();
 		if (access(file,0)==0) {
 			if (Application->MessageBox("Overwrite Document?","File Exists",MB_YESNO)==IDNO)
 				return;
@@ -486,9 +486,9 @@ void __fastcall TClassBuilderFrm::MenuItem_SaveAsClick(TObject *Sender)
 		ANewClass->SaveSource();
 		RefreshView();
 	}
-	catch(CryException &e)
+	catch(Crystal::Exception &e)
 	{
-	CryString a;
+	Crystal::String a;
 		a = "Error Saving"; a += e;
 		ShowMessage((const char *) a);
 	}

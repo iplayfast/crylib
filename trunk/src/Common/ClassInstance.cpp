@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2003 by Chris Bruner                                    *
+ *   Copyright (C) 2006 by Chris Bruner                                    *
  *   chris@Martha.crystal.com                                              *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
