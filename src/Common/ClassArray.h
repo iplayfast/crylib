@@ -239,12 +239,12 @@ public:
 		/*! will create an object of the Type named in Type. In container classes where the Type is the contained object, the Parent must be the appropriete container type or a derived class which can create the object (if the default class can't) */
 	virtual Object *Create(const PropertyParser &PropertyName,Object *Parent=0)
 	{
-		return CrySimpleArray::Create(PropertyName,Parent);
+		return SimpleArray::Create(PropertyName,Parent);
 //		throw Exception("Create needs to be added from CryTArray");
 	}
 	static Object *ClassCreate(const PropertyParser &PropertyName,Object *Parent=0)
 	{
-		return CrySimpleArray::Create(PropertyName,Parent);
+		return SimpleArray::Create(PropertyName,Parent);
 //		throw Exception("ClassCreate needs to be added from CryTArray");
 	}
 
@@ -439,14 +439,14 @@ TArray<T> &Delete(int start,int amount)
 	virtual bool Test(bool Verbose,Object &Object,bool  (CallBack)(bool Verbose,const char *Result,bool fail))
 {
 /* need to code tests for the following functions
-	StdFunctionsNoDup(CryTArray,CrySimpleArray);
+	StdFunctionsNoDup(CryTArray,SimpleArray);
 	void SetSize(size_t _Size);
 	virtual Object *Dup()const; // creates a duplicate of this object
 	CryTArray<T> &Delete(int start,int amount);
 
 	virtual void Clear() { CurrentCount = 0; }
 
-	CryTArray(int _Size=100) : CrySimpleArray(sizeof(T))
+	CryTArray(int _Size=100) : SimpleArray(sizeof(T))
 	{
 		Values = new T[_Size];
 		SetMax(_Size);
@@ -458,8 +458,8 @@ TArray<T> &Delete(int start,int amount)
 	}
 
 	virtual void RemoveAtIterator(Iterator *LI);
-	virtual bool LoadAsText(int i,CryString &FromStream);
-	virtual bool SaveAsText(int i,CryString &ToStream) const;
+	virtual bool LoadAsText(int i,String &FromStream);
+	virtual bool SaveAsText(int i,String &ToStream) const;
 	void SetItem(unsigned int i,EmptyObject *Item,bool IsObject,bool IsOwned,size_t Size)
 	{
 		SetValue(i,*(T*)Item);
@@ -488,7 +488,8 @@ TArray<T> &Delete(int start,int amount)
 
 
 	/*! will create an object of the Type named in Type. In container classes where the Type is the contained object, the Parent must be the appropriete container type or a derived class which can create the object (if the default class can't) */
-Object *TArray<int>::Create(const PropertyParser &PropertyName,Object *Parent)
+template<>
+inline Object *TArray<int>::Create(const PropertyParser &PropertyName,Object *Parent)
 {
 
 	if (PropertyName==CTArray)
@@ -496,13 +497,13 @@ Object *TArray<int>::Create(const PropertyParser &PropertyName,Object *Parent)
 	return SimpleArray::Create(PropertyName,Parent);
 }
 template<>
-void TArray<int>::GetEleType(String &Result) const
+inline void TArray<int>::GetEleType(String &Result) const
 {
 	Result = "int";
 } 
 
 template<>
-bool TArray<int>::LoadAsText(int i,String &FromStream)
+inline bool TArray<int>::LoadAsText(int i,String &FromStream)
 {
 	int v;
 	FromStream.scanf("%d ",&v);
@@ -512,7 +513,7 @@ bool TArray<int>::LoadAsText(int i,String &FromStream)
 	return true;
 }
 template<>
-bool TArray<int>::SaveAsText(int i,String &ToStream) const
+inline bool TArray<int>::SaveAsText(int i,String &ToStream) const
 {
 	ToStream.printf("%d ",Values[i]);
 	return true;
@@ -521,7 +522,7 @@ bool TArray<int>::SaveAsText(int i,String &ToStream) const
 
 	/*! will create an object of the Type named in Type. In container classes where the Type is the contained object, the Parent must be the appropriete container type or a derived class which can create the object (if the default class can't) */
 template<>
-Object *TArray<float>::Create(const PropertyParser &PropertyName,Object *Parent)
+inline Object *TArray<float>::Create(const PropertyParser &PropertyName,Object *Parent)
 {
 
 	if (PropertyName==CTArray)
@@ -530,12 +531,12 @@ Object *TArray<float>::Create(const PropertyParser &PropertyName,Object *Parent)
 }
 
 template<>
-void TArray<float>::GetEleType(String &Result) const
+inline void TArray<float>::GetEleType(String &Result) const
 {
 	Result = "float";
 }
 template<>
-bool TArray<float>::SetProperty(const PropertyParser &PropertyName,const char *PropertyValue)
+inline bool TArray<float>::SetProperty(const PropertyParser &PropertyName,const char *PropertyValue)
 {
 	if (PropertyName=="CurrentCount")
 	{
@@ -546,7 +547,7 @@ bool TArray<float>::SetProperty(const PropertyParser &PropertyName,const char *P
 }
 
 template<>
-bool TArray<float>::LoadAsText(int i,String &FromStream)
+inline bool TArray<float>::LoadAsText(int i,String &FromStream)
 {
 	float v;
 	FromStream.scanf("%f ",&v);
@@ -554,7 +555,7 @@ bool TArray<float>::LoadAsText(int i,String &FromStream)
 	return true;
 }
 template<>
-bool TArray<float>::SaveAsText(int i,String &ToStream) const
+inline bool TArray<float>::SaveAsText(int i,String &ToStream) const
 {
 	ToStream.printf("%f ",Values[i]);
 	return true;
@@ -589,7 +590,7 @@ class Array : public SimpleArray
 	virtual void DestroyArrayItem(Array *Owner,EmptyObject *Item) = 0;
 	/// derived class will handle the creation of objects contained in array
 	virtual EmptyObject *CreateArrayItem(Array *Owner,bool *IsObject) = 0;
-	// derived class will handle the display in CryStream the objects contained in array (text assumed)
+	// derived class will handle the display in Stream the objects contained in array (text assumed)
 	virtual void SaveItemTo(const Array *Owner,EmptyObject *FromItem,Stream &ToStream) const = 0;
 	// derived class will handle the loading of an Object from the stream, objectmust have already been created
 	virtual EmptyObject *LoadItemFrom(Array *Owner,EmptyObject *ToItem,Stream &FromStream) = 0;
@@ -684,7 +685,7 @@ StdFunctionsNoDup(Array,SimpleArray);
     {
         return (Object *)Add(Item,true,true,0);
     }   // gives ownership to list
-    EmptyObject *Array::DupItem(const Array::ElePtr  *Node) const;
+    EmptyObject *DupItem(const Array::ElePtr  *Node) const;
     virtual void SetItemOwnerShip(Iterator *I,bool Owned);
     virtual bool GetItemOwnerShip(const Iterator *I) const;
     virtual bool IsObject(const Iterator *I) const;
@@ -853,8 +854,8 @@ public:
 //Inherited Functions
 virtual void DestroyArrayItem(Array *Owner,EmptyObject *Item);
 virtual EmptyObject *CreateArrayItem(Array *Owner,bool *IsObject);
-//virtual void SaveItemTo(const CryArray *Owner,EmptyObject *FromItem,CryStream &ToStream) const;
-//virtual EmptyObject *LoadItemFrom(CryArray *Owner,EmptyObject *ToItem,CryStream &FromStream);
+//virtual void SaveItemTo(const CryArray *Owner,EmptyObject *FromItem,Stream &ToStream) const;
+//virtual EmptyObject *LoadItemFrom(CryArray *Owner,EmptyObject *ToItem,Stream &FromStream);
 virtual bool LoadAsText(int i,String &FromStream);
 virtual bool SaveAsText(int i,String &ToStream) const;
 virtual void GetEleType(String &Result) const;
