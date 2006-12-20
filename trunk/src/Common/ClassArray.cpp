@@ -322,81 +322,6 @@ Object * CryTemplateArray<T>::Dup() const
 		n->Values[i] = Values[i];
 	return n;
 } */
-	/*! will create an object of the Type named in Type. In container classes where the Type is the contained object, the Parent must be the appropriete container type or a derived class which can create the object (if the default class can't) */
-template<>
-Object *TArray<float>::Create(const PropertyParser &PropertyName,Object *Parent)
-{
-
-	if (PropertyName==CTArray)
-		return new TArray<float>();
-	return SimpleArray::Create(PropertyName,Parent);
-}
-
-
-template<>
-void TArray<float>::GetEleType(String &Result) const
-{
-	Result = "float";
-} 
-template<>
-bool TArray<float>::SetProperty(const PropertyParser &PropertyName,const char *PropertyValue)
-{
-	if (PropertyName=="CurrentCount")
-	{
-		SetValue(CurrentCount,atoi(PropertyValue));
-		return true;
-	}
-	return SimpleArray::SetProperty(PropertyName,PropertyValue);
-}
-template<>
-bool TArray<float>::LoadAsText(int i,String &FromStream)
-{
-	float v;
-	FromStream.scanf("%f ",&v);
-	SetValue(i,v);
-	return true;
-}
-template<>
-bool TArray<float>::SaveAsText(int i,String &ToStream) const
-{
-	ToStream.printf("%f ",Values[i]);
-	return true;
-}
-
-template<>
-bool TArray<int>::SaveAsText(int i,String &ToStream) const
-{
-	ToStream.printf("%d ",Values[i]);
-	return true;
-}
-
-template<>
-Object *TArray<int>::Create(const PropertyParser &PropertyName,Object *Parent)
-{
-
-	if (PropertyName==CTArray)
-		return new TArray<int>();
-	return SimpleArray::Create(PropertyName,Parent);
-}
-
-template<>
-void TArray<int>::GetEleType(String &Result) const
-{
-	Result = "int";
-} 
-
-template<>
-bool TArray<int>::LoadAsText(int i,String &FromStream)
-{
-	int v;
-	FromStream.scanf("%d ",&v);
-	SetValue(i,v);
-	FromStream.Delete(0,FromStream.Pos(" "));
-	FromStream.TrimLeft();
-	return true;
-}
-
-
 #ifdef VALIDATING
 /*template<>
 bool CryTemplateArray<int>::Test(bool Verbose,Object &Object,bool (CallBack)(bool Verbose,const char *Result,bool fail))
@@ -1100,14 +1025,8 @@ bool DoubleArray::LoadAsText(int i,String &FromStream)
 	FromStream.scanf("%f ",&v);
 	SetValue(i,v);
 	return true;
-	
-	if (i>=0 && i < GetMax())
-	{
-		Values[i] = v;
-		return true;
-	}
-	return false;
 }
+                                        
 bool DoubleArray::SaveAsText(int i,String &ToStream) const
 {
 	ToStream.printf("%f ",Values[i]);
