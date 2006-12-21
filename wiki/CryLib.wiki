@@ -7,7 +7,7 @@ Crylib is an object oriented library based on the idea that all classes eventual
 
 = Details =
 
-Object doesn't normally contain any data although it can contain an ObjectID if DEBUG is defined. Object instead defines all the interfaces of the classes that inherit from it. 
+Object doesn't normally contain any data. (If DEBUG is defined an exception is made in that an integer named ObjectID is added).  Object instead defines all the interfaces of the classes that inherit from it. 
 
 Object itself inherits from EmptyObject which is simply
 {{{
