@@ -3,7 +3,7 @@
 
 = Introduction =
 
-Crylib is an object oriented library based on the idea that all classes eventually have as their base class Object.
+Crylib is an object oriented [http://www.crystalsoftware.org/docs/html/index.html library] based on the idea that all classes eventually have as their base class Object.
 
 = Details =
 
