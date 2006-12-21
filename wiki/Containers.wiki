@@ -1,0 +1,34 @@
+#summary Understanding Containers
+
+= Introduction =
+
+Containers in CryLib have the base class [http://www.crystalsoftware.org/docs/html/classCrystal_1_1Container.html Container] which includes Iterator. A container is any class which can contain other classes, (such as a hash, array, or list). 
+
+
+= Details =
+
+Typical code when using a container is
+{{{
+void Observable::NotifyObservers(int ObserverID)
+{
+    if (!Changed)
+        return;
+
+    Iterator *I = _CreateIterator(); // container function
+    if (I->GotoFirst())  // container function
+    {
+        do
+        {
+            Observer *b = (Observer *)I->Get();  // container function
+            b->NotifyObservers(this,ObserverID);
+        }
+        while(I->GotoNext()); // container function
+    }
+    DeleteIterator(I);  // container function
+    Changed = false;
+}
+}}}
+
+In this case the container is a container of Observer classes. Each one is being notified. Note the following.
+1. It doesn't matter what type of container is here, they all have the base class container so all will work the same way, even though they may be different types of containers.
+2. The iterator is created and destroyed by the container. This allows different types of containers to traverse them using whatever method works best for the container.(list,array etc).
