@@ -1,2 +1,1 @@
-#summary See Properties
-See Properties
+See [Understanding Properties]
