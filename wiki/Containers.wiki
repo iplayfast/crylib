@@ -30,5 +30,5 @@ void Observable::NotifyObservers(int ObserverID)
 }}}
 
 In this case the container is a container of Observer classes. Each one is being notified. Note the following.
-#. It doesn't matter what type of container is here, they all have the base class container so all will work the same way, even though they may be different types of containers.
-#. The iterator is created and destroyed by the container. This allows different types of containers to traverse them using whatever method works best for the container.(list,array etc).
+  #. It doesn't matter what type of container is here, they all have the base class container so all will work the same way, even though they may be different types of containers.
+  #. The iterator is created and destroyed by the container. This allows different types of containers to traverse them using whatever method works best for the container.(list,array etc).
