@@ -36,8 +36,8 @@ object ClassBuilderFrm: TClassBuilderFrm
         OnClick = SetBaseClassBTClick
       end
       object IncludeStubs: TCheckBox
-        Left = 40
-        Top = 56
+        Left = 29
+        Top = 81
         Width = 249
         Height = 17
         Caption = 'Include Stubs for non-virtual functions'
@@ -67,8 +67,10 @@ object ClassBuilderFrm: TClassBuilderFrm
         Width = 145
         Height = 21
         Style = csDropDownList
+        DropDownCount = 30
         ItemHeight = 13
         TabOrder = 3
+        OnChange = ClassTypeCBChange
       end
       object Button1: TButton
         Left = 196
@@ -79,15 +81,25 @@ object ClassBuilderFrm: TClassBuilderFrm
         TabOrder = 4
         OnClick = Button1Click
       end
+      object TemplateType: TComboBox
+        Left = 176
+        Top = 43
+        Width = 145
+        Height = 21
+        ItemHeight = 13
+        ItemIndex = 0
+        TabOrder = 5
+        Text = 'int'
+        Items.Strings = (
+          'int'
+          'float'
+          'String')
+      end
     end
     object AddVariables: TTabSheet
       Caption = 'Add Variable'
       Enabled = False
       ImageIndex = 1
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object ArrayAmountLb: TLabel
         Left = 459
         Top = 77
@@ -115,12 +127,10 @@ object ClassBuilderFrm: TClassBuilderFrm
         end
         inherited Edit1: TEdit
           Left = 77
-          Height = 25
           Text = 'MyVariableName'
           OnExit = UpdateStatus
           OnKeyDown = VariableNameEdit1KeyDown
           ExplicitLeft = 77
-          ExplicitHeight = 25
         end
       end
       object RadioGroup1: TRadioGroup
@@ -168,10 +178,10 @@ object ClassBuilderFrm: TClassBuilderFrm
         Left = 176
         Top = 16
         Width = 145
-        Height = 25
+        Height = 21
         Style = csDropDownList
         DropDownCount = 20
-        ItemHeight = 0
+        ItemHeight = 13
         TabOrder = 5
         OnChange = UpdateStatus
       end
@@ -202,9 +212,9 @@ object ClassBuilderFrm: TClassBuilderFrm
         Left = 176
         Top = 40
         Width = 145
-        Height = 25
+        Height = 21
         Style = csDropDownList
-        ItemHeight = 0
+        ItemHeight = 13
         TabOrder = 7
         OnChange = UpdateStatus
       end
@@ -229,11 +239,9 @@ object ClassBuilderFrm: TClassBuilderFrm
         inherited Edit1: TEdit
           Left = 127
           Top = -2
-          Height = 25
           Text = ''
           ExplicitLeft = 127
           ExplicitTop = -2
-          ExplicitHeight = 25
         end
       end
     end
@@ -241,10 +249,6 @@ object ClassBuilderFrm: TClassBuilderFrm
       Caption = 'Remove Variable'
       Enabled = False
       ImageIndex = 2
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Label1: TLabel
         Left = 24
         Top = 32
@@ -256,8 +260,8 @@ object ClassBuilderFrm: TClassBuilderFrm
         Left = 208
         Top = 29
         Width = 145
-        Height = 25
-        ItemHeight = 0
+        Height = 21
+        ItemHeight = 13
         TabOrder = 0
         Text = 'RemoveVariableCB'
       end

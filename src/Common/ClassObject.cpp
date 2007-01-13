@@ -793,8 +793,7 @@ bool Object::ClassCanCreate(const
 	BackPropagateLayer
 	HugeInt
 */
-Object *Object::ClassCreate(const
-                                  PropertyParser &PropertyName,Object *Parent)
+Object *Object::ClassCreate(const PropertyParser &PropertyName,Object *Parent)
 {
     Object *NewObject = 0;
     // first create the object

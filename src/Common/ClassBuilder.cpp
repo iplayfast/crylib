@@ -594,6 +594,13 @@ ClassBuilder::ClassBuilder() : CodeFactory(0,"ClassBuilder")
 	AddProduct("Source");
 }
 
+Object *ClassBuilder::ClassCreate(const PropertyParser &PropertyName,Object *Parent)
+{
+	if (PropertyName==CClassBuilder)
+		return new ClassBuilder();
+	return CodeFactory::ClassCreate(PropertyName,Parent);
+}
+
 ClassBuilder::~ClassBuilder()
 {
 	delete p;
@@ -616,14 +623,38 @@ void ClassBuilder::WriteHI(const char *text)
     WriteHeader(text);
     WriteImp(text);
 }*/
+
+
 void ClassBuilder::SetBaseClass(const char *Type,bool AddStubs,bool AddVirtuals,const char *_ClassName)
 {
     Object *p1;
     SetName(_ClassName);
     FunctionDefList *AbstractFunctions = 0;
     try
-    {
-        p1 = Object::Create(Type);
+	{
+		if (strcmp(Type,CTArray)==0)	// template class
+		{
+		if (TemplateType=="int")
+		{
+			p1 = new TArray<int>;
+			TemplateType = "TArray<int>";
+		}
+		else
+			if (TemplateType=="float")
+			{
+				p1 = new TArray<float>;
+				TemplateType = "TArray<float>";
+			}
+			else
+				if (TemplateType=="String")
+				{
+					p1 = new TArray<String>;
+					TemplateType = "TArray<String>";
+				}
+				else throw Exception("unknown Template Type");
+		}
+		else
+			p1 = Object::Create(Type);
         _IsAbstract = false;
     }
     catch(Exception &e)
@@ -800,31 +831,31 @@ Object *ClassBuilder::Create(const PropertyParser &PropertyName,CodeFactory *Par
 	if (PropertyName==CPropertyFactory)
     {
         PropertyFactory *pf = (PropertyFactory *) FindFactory(PropertyName);
-        if (!pf)
-        {
-            String Name,Value;
-            pf = new PropertyFactory(this,&Name,&Value);
-            AddFactory(pf);
-        }
-        return pf;
-    }
+		if (!pf)
+		{
+			String Name,Value;
+			pf = new PropertyFactory(this,&Name,&Value);
+			AddFactory(pf);
+		}
+		return pf;
+	}
 
 	if (PropertyName==CHeaderFactory)
-    {
+	{
 		HeaderFactory *hf = (HeaderFactory *) FindFactory(CHeaderFactory);
-        if (!hf)
-        {
-            hf = new HeaderFactory(this,0);
-            AddFactory(hf);
-        }
-        return hf;
-    }
-    return CodeFactory::Create(PropertyName,Parent);
+		if (!hf)
+		{
+			hf = new HeaderFactory(this,0);
+			AddFactory(hf);
+		}
+		return hf;
+	}
+	return CodeFactory::Create(PropertyName,Parent);
 }
 
 int ClassBuilder::GetPropertyCount() const
 {
-    return CodeFactory::GetPropertyCount()+1;
+	return CodeFactory::GetPropertyCount()+1;
 }
 /// will return a pointer to a dup of the property
 Object *ClassBuilder::GetCopyOfPropertyAsObject(const PropertyParser &PropertyName) const
@@ -838,31 +869,42 @@ Object *ClassBuilder::_GetPropertyAsObject(const PropertyParser &PropertyName) c
 
 bool ClassBuilder::GetIsPropertyContainer(const PropertyParser &PropertyName) const
 {
-    if (PropertyName=="ClassType")
-        return false;
-    else
-        return CodeFactory::GetIsPropertyContainer(PropertyName);
+	if (PropertyName=="ClassType")
+		return false;
+	else
+		return CodeFactory::GetIsPropertyContainer(PropertyName);
 }
 const char * ClassBuilder::GetProperty(const PropertyParser &PropertyName,String &Result) const
 {
-    if (PropertyName=="ClassType")
-    {
-        Result = p->ChildClassName();
-        return Result.AsPChar();
-    }
-    return CodeFactory::GetProperty(PropertyName,Result);
+	if (PropertyName=="ClassType")
+	{
+		Result = p->ChildClassName();
+		return Result.AsPChar();
+	}
+	if (PropertyName=="TemplateType")
+	{
+		Result = TemplateType;
+		return Result.AsPChar();
+	}
+	return CodeFactory::GetProperty(PropertyName,Result);
 }
 
 bool  ClassBuilder::SetProperty(const PropertyParser &PropertyName,const char *PropertyValue)
 {
-    if (PropertyName=="ClassType")
-    { // we don't add stubs here because this is coming from a saved version, which will have already defined them
-        String Name;
-        Object::GetProperty("Name",Name);
-        SetBaseClass(PropertyValue,false,false,Name);
-        return true;
-    }
-    return CodeFactory::SetProperty(PropertyName,PropertyValue);
+	if (PropertyName=="ClassType")
+	{ // we don't add stubs here because this is coming from a saved version, which will have already defined them
+		String Name;
+		Object::GetProperty("Name",Name);
+		SetBaseClass(PropertyValue,false,false,Name);
+		return true;
+	}
+	if (PropertyName=="TemplateType")
+	{
+		TemplateType = PropertyValue;
+		return true;
+	}
+
+	return CodeFactory::SetProperty(PropertyName,PropertyValue);
 
 }
 
@@ -870,17 +912,19 @@ PropertyList *ClassBuilder::PropertyNames() const
 {
 	PropertyList *pn = CodeFactory::PropertyNames();
 	pn->AddPropertyByName("ClassType",this);
+	pn->AddPropertyByName("TemplateType",this);
 	return pn;
 };
 bool ClassBuilder::HasProperty(const PropertyParser &PropertyName) const
 {
 	return (PropertyName=="ClassType") ||
-           CodeFactory::HasProperty(PropertyName);
+			(PropertyName=="TemplateType") ||
+		   CodeFactory::HasProperty(PropertyName);
 }
 
 void ClassBuilder::Build()
 {
-    Create("Header",this);
+	Create("Header",this);
 }
 void ClassBuilder::AssignInheritedElements()
 {
@@ -927,7 +971,10 @@ void ClassBuilder::SetName(const char *NewClassName)
 }*/
 const char *ClassBuilder::GetInheritType()
 {
-    return InheritType.AsPChar();
+	if (InheritType==CTArray)
+		return TemplateType.AsPChar();
+
+	return InheritType.AsPChar();
 }
 void ClassBuilder::SaveHeaderBody(Stream &ToStreamHeader,Stream &ToStreamBody)
 {

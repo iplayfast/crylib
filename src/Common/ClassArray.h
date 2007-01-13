@@ -535,7 +535,7 @@ inline void TArray<float>::GetEleType(String &Result) const
 {
 	Result = "float";
 }
-template<>
+/*template<>
 inline bool TArray<float>::SetProperty(const PropertyParser &PropertyName,const char *PropertyValue)
 {
 	if (PropertyName=="CurrentCount")
@@ -545,13 +545,15 @@ inline bool TArray<float>::SetProperty(const PropertyParser &PropertyName,const 
 	}
 	return SimpleArray::SetProperty(PropertyName,PropertyValue);
 }
-
+*/
 template<>
 inline bool TArray<float>::LoadAsText(int i,String &FromStream)
 {
 	float v;
 	FromStream.scanf("%f ",&v);
 	SetValue(i,v);
+	FromStream.Delete(0,FromStream.Pos(" "));
+	FromStream.TrimLeft();
 	return true;
 }
 template<>

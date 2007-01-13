@@ -72,11 +72,21 @@ bool Fail=true;
 			break;
 		case 2:
 			{
-				Crystal::String a;
+				TArray<float> a;
+				for (int i=10;i<40;i++)
+					a.SetValue(i,i * 1.5);
+				a.SetValue(5,20.2);
+				a.SetValue(0,30.2);
 				Fail = a.Test(true,a,FormCallBack);
 			}
 			break;
 		case 3:
+			{
+				Crystal::String a;
+				Fail = a.Test(true,a,FormCallBack);
+			}
+			break;
+		case 4:
 			{
 			CrySet a;
 			a.Add(5);
@@ -91,31 +101,31 @@ bool Fail=true;
 			Fail = a.Test(true,a,FormCallBack);
 			}
 			break;
-		case 4:
+		case 5:
 			{
 				List a;
 				Fail = a.Test(true,a,FormCallBack);
 			}
 			break;
-		case 5:
+		case 6:
 			{
 				Strategy a;
 				Fail = a.Test(true,a,FormCallBack);
 			}
 			break;
-		case 6:
+		case 7:
 			{
 				Observer a;
 				Fail = a.Test(true,a,FormCallBack);
 			}
 			break;
-		case 7:
+		case 8:
 			{
 				BPNetContainer bp;
 				Fail = bp.Test(true,bp,FormCallBack);
 			}
 			break;
-		case 8:
+		case 9:
 			{
 				BitArray a;
 				Fail = a.Test(true,a,FormCallBack);

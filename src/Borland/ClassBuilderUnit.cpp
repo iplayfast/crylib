@@ -42,6 +42,7 @@ void __fastcall TClassBuilderFrm::SetBaseClassBTClick(TObject *Sender)
 		Crystal::String a(ClassTypeCB->Items->Strings[ClassTypeCB->ItemIndex].c_str());
 		delete ANewClass;
 		ANewClass = new ClassBuilder();
+		ANewClass->SetProperty("TemplateType",TemplateType->Text.c_str());
 		ANewClass->SetBaseClass(a,IncludeStubs->Checked,true,NameED->Edit1->Text.c_str());
 		//        ANewClass->SetName(NameField->getText().text());
 
@@ -106,6 +107,7 @@ void __fastcall TClassBuilderFrm::FormCreate(TObject *Sender)
 	// From Array
 	ClassTypeCB->AddItem(CSimpleArray,0);
 	ClassTypeCB->AddItem(CArray,0);
+	ClassTypeCB->AddItem(CTArray,0);
 	ClassTypeCB->AddItem(CDoubleArray,0);
 	// From BitArray
 	ClassTypeCB->AddItem(CBitArray,0);
@@ -149,7 +151,7 @@ void __fastcall TClassBuilderFrm::FormCreate(TObject *Sender)
 	VariableTypeCB->AddItem("double",0);
 
 	VariableTypeCB->ItemIndex = 0;
-
+	ClassTypeCBChange(Sender);
 }
 //---------------------------------------------------------------------------
 void __fastcall TClassBuilderFrm::RefreshView(void)
@@ -517,6 +519,12 @@ void __fastcall TClassBuilderFrm::Button1Click(TObject *Sender)
 		ANewClass->SaveSource();
 		RefreshView();
 
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TClassBuilderFrm::ClassTypeCBChange(TObject *Sender)
+{
+	TemplateType->Visible = (ClassTypeCB->Text == CTArray);	
 }
 //---------------------------------------------------------------------------
 

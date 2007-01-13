@@ -40,10 +40,11 @@ object Form1: TForm1
     ItemHeight = 12
     Items.Strings = (
       'Object'
-      'Array'
-      'CryString'
+      'Array<int>'
+      'Array<float>'
+      'String'
       'CrySet'
-      'CryList'
+      'List'
       'Strategy Pattern'
       'Observer Pattern'
       'BackProp Nural Net'
