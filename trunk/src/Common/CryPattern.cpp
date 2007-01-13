@@ -614,6 +614,12 @@ Factory::~Factory()
 	DeleteHeldFactories();
 	delete []Array;
 }
+Object *Factory::ClassCreate(const PropertyParser &PropertyName,Object *Parent)
+{
+	if (PropertyName==CFactory)
+		return new Factory();
+	return Container::ClassCreate(PropertyName,Parent);
+}
 
 EmptyObject *Factory::GetAtIterator(const Iterator *I) const
 {

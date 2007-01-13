@@ -52,6 +52,7 @@ StdFunctionsClassName(CodeFactory);
 StdFunctionsChildClassName(CodeFactory);
 StdFunctionsDup(CodeFactory);
 StdFunctionsIsAbstractFalse();
+	Object *ClassCreate(const PropertyParser &PropertyName,Object *Parent);
 
     CodeFactory(CodeFactory *_Parent,const char *_Name);	// ProductCount is the number of products a factory can produce
     CodeFactory *GetParent() const;

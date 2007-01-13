@@ -53,19 +53,21 @@ class ClassBuilder : public CodeFactory
 {
 	Object *p;
     bool _IsAbstract;	// Is this needed, since ClassBuilder only creates non-abstract classes?
-    String InheritType;
-    String Filename;
-    void SetDefaultBodies(FunctionDefList *AbstractFunctions); // will setup default bodies of functions
-    void AssignInheritedElements();
-    //CryString ClassName;
+	String InheritType;
+	String TemplateType;	// only used for templated classes (eg CTArray)
+	String Filename;
+	void SetDefaultBodies(FunctionDefList *AbstractFunctions); // will setup default bodies of functions
+	void AssignInheritedElements();
+	//CryString ClassName;
 public:
 StdFunctionsNoDup(ClassBuilder,CodeFactory);
-    ClassBuilder();
-    ~ClassBuilder();
-    const Object *Getp() const;
-    void AppendHBOutput(const char *s);
-    void Build();
-    void SetBaseClass(const char *Type,bool AddStubs,bool AddVirtuals,const char *ClassName);
+	ClassBuilder();
+	~ClassBuilder();
+	const Object *Getp() const;
+	void AppendHBOutput(const char *s);
+	void Build();
+	Object *ClassCreate(const PropertyParser &PropertyName,Object *Parent);
+	void SetBaseClass(const char *Type,bool AddStubs,bool AddVirtuals,const char *ClassNameconst);
     void AddClassInstance(const char *ClassType,const char *ClassName,int count,bool IsProperty,bool IsPointer,bool IsArrayPointer,bool HasDefault,const char *DefaultValue);
     void AddPrimInstance(const char *PrimType,const char *PrimName,const char *DefaultValue, int Count,bool IsProperty,bool IsPointer,bool IsArrayPointer);
     void Remove(const char *Description);

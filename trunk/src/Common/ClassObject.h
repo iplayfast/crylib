@@ -323,9 +323,14 @@ public:
 
 	virtual bool Test(bool Verbose,Object &Object,bool  (CallBack)(bool Verbose,const char *Result,bool fail));
 #endif
-}
-;  // Object
+};  // Object
 
+
+
+
+/*!	OwnedObject is Owned by another object, and knows it.
+	Container classes use this object as a base
+*/
 class OwnedObject : public Object
 {
 Object *Owner;

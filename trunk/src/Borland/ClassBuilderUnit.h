@@ -59,6 +59,7 @@ __published:	// IDE-managed Components
 	TSaveDialog *SaveDialog1;
 	TCheckedLabel *DefaultValue;
 	TButton *Button1;
+	TComboBox *TemplateType;
 	void __fastcall SetBaseClassBTClick(TObject *Sender);
 	void __fastcall ArrayCountChange(TObject *Sender);
 	void __fastcall FormCreate(TObject *Sender);
@@ -73,6 +74,7 @@ __published:	// IDE-managed Components
 	void __fastcall Exit1Click(TObject *Sender);
 	void __fastcall FormDestroy(TObject *Sender);
 	void __fastcall Button1Click(TObject *Sender);
+	void __fastcall ClassTypeCBChange(TObject *Sender);
 private:	// User declarations
 Crystal::ClassBuilder *ANewClass;
 int PropertyCount;

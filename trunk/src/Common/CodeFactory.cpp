@@ -34,6 +34,14 @@ CodeFactory::CodeFactory(CodeFactory *_Parent,const char *_Name)    // ProductCo
     Products.SetOwner(this);
     //AddProduct("Source");
 }
+
+Object *CodeFactory::ClassCreate(const PropertyParser &PropertyName,Object *Parent)
+{
+	if (PropertyName==CCodeFactory && Parent->IsA(CCodeFactory))
+		return new CodeFactory((CodeFactory *)Parent,"NoName");
+	return Factory::ClassCreate(PropertyName,Parent);
+}
+
 CodeFactory *CodeFactory::GetParent() const
 {
     return Parent;

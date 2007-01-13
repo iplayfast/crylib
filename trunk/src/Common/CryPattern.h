@@ -379,6 +379,7 @@ our things will always be CryObjects
 		virtual int GetPropertyCount() const;
 		virtual Object *GetCopyOfPropertyAsObject(const PropertyParser &PropertyName) const;
 
+
 		virtual const char * GetProperty(const PropertyParser &PropertyName,String &Result) const;
 		virtual bool  SetProperty(const PropertyParser &PropertyName,const char *PropertyValue);
 
@@ -445,6 +446,7 @@ our things will always be CryObjects
 		}
 	public:
 		// The factory part
+		Object *ClassCreate(const PropertyParser &PropertyName,Object *Parent);
 		virtual Object *Create(const PropertyParser &PropertyName,Object *Parent);
 		virtual List *GetProducts() const;
 		//void AddFactory(Factory *f);
