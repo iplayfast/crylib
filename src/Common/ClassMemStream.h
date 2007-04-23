@@ -17,7 +17,8 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-
+#ifndef _ClassMemStream_
+#define _ClassMemStream_
 #include <stdarg.h>
 #include "ClassStream.h"
 namespace Crystal
@@ -35,7 +36,7 @@ class MemStreamIterator : public StreamIterator
         MemStreamIterator(const Container *container);
     };
 
-    char *Buffer;   // where the actual data is held
+	char *Buffer;   // where the actual data is held
     // current position in the stream
     size_t Position;
     /// total length of the buffer
@@ -149,11 +150,13 @@ public:
     virtual void RemoveAtIterator(Iterator *I);
     /// abstract function used by subclasses to count the number of items held by the container
     virtual size_t Count() const;
-    virtual EmptyObject *Add(EmptyObject *Item,size_t Size);
-    virtual EmptyObject *AddOwned(EmptyObject *Item,size_t Size);
-    virtual Object *Add(Object *Item);
-    virtual Object *AddOwned(Object *Item);
+	virtual EmptyObject *Add(EmptyObject *Item,size_t Size);
+	virtual EmptyObject *AddOwned(EmptyObject *Item,size_t Size);
+	virtual Object *Add(Object *Item);
+	virtual Object *AddOwned(Object *Item);
 }
 ;  // CryMemStream
 #endif // TCryMemSteam
 }
+#endif // _ClassMemStream_
+

@@ -17,9 +17,10 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-
+#ifndef _ClassString_
+#define _ClassString_
 #include "ClassMemStream.h"
-#include "ClassList.h"
+//#include "ClassList.h"
 namespace Crystal
 {
 using namespace std;
@@ -28,6 +29,7 @@ using namespace std;
 #ifdef __BORLANDC__
 #define strcasecmp stricmp
 #endif
+class List;
 /// string handling as though it were a stream
 class String : public MemStream
 {
@@ -143,3 +145,5 @@ virtual int GetPropertyCount() const;
 ;//String
 #endif	// CString
 }
+#endif //_ClassString_
+

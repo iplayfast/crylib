@@ -263,7 +263,7 @@ void BPNet::SetAllWeights()	// allocate the actual array of doubles
             if (i<AllWeightsSize)
                 NewWeights[i] = AllWeights[i];
             else
-                NewWeights[i] = RandomDouble(-1,1);
+				NewWeights[i] = RandomDouble(-1,1);
         }
         delete []AllWeights;
     }
@@ -296,11 +296,6 @@ void BPNet::SaveItemTo(const Array *Owner,EmptyObject *FromItem,Stream &ToStream
 		n.LoadFrom(*l);
 		n.SaveTo(ToStream);
 		return;
-  //  MemStream *ms = (MemStream *)ToStream;
-
-	ToStream.printf("%d %d ",l->GetID(),l->LayerSize);
-	if (l->GetID()<0)
-		ToStream.printf("Uninitialized");
 }
 // derived class will handle the loading of an Object from the stream, objectmust have already been created
 EmptyObject *BPNet::LoadItemFrom(Array *Owner,EmptyObject *ToItem,Stream &FromStream)
@@ -441,7 +436,7 @@ int BPNet::GetLayerSize(int LayerNumber) const
 BackPropagateLayer *BPNet::SetLayerSize(int LayerNumber,int LayerSize)
 {
 	BackPropagateLayer *l;
-	if (this->Count()>LayerNumber)
+	if (this->Count()>(unsigned)LayerNumber)
 	   l = (BackPropagateLayer *)GetItem(LayerNumber);
 	else
 	{
@@ -534,7 +529,8 @@ Object *BPNetContainer::GetCopyOfPropertyAsObject(const PropertyParser &Property
 	if (PropertyName=="Layer")
 	{
 	String Result;
-	const char *c = Container::GetProperty("*Values",Result);
+//	const char *c =		// for debugging purposes, commented out to avoid warnings
+	Container::GetProperty("*Values",Result);
 	XMLNode *x = new XMLNode(PropertyName);
 		x->LoadFrom(Result);
 		return x;
@@ -636,11 +632,12 @@ String PropertyValue;
 	XML x;
 	String s = _PropertyValue;
 		x.LoadFrom(s);
-		BackPropagateLayer *l = (BackPropagateLayer *) x.CreateObjectFromNode(this);
+//		BackPropagateLayer *l = (BackPropagateLayer *)		// for debugging purposes, commented out to avoid warnings
+			x.CreateObjectFromNode(this);
 		return true;
 
-	PropertyParser NewPropertyName("Values");
-		return BPNet::SetProperty(NewPropertyName,PropertyValue);
+//	PropertyParser NewPropertyName("Values");
+//		return BPNet::SetProperty(NewPropertyName,PropertyValue);
 	}
 
 	return BPNet::SetProperty(PropertyName,PropertyValue);
@@ -878,7 +875,6 @@ void BPNetContainer::STTrainNet(int EPochs,int LengthIn,double *SampleIn,int Len
 bool BPNetContainer::Test(bool Verbose,Object &Object,bool (CallBack)(bool Verbose,const char *Result,bool fail))
 {
 	char Result[200];
-
 	bool Fail = false;
 
 	String spn,spv,stemp;

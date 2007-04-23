@@ -51,6 +51,7 @@ public:
     virtual Object *Dup() const; // creates a duplicate of this object
     virtual const cbyte* GetRaw() const;
 	virtual FunctionDefList *GetFunctions(const char *Type=0) const;
+
     //    const char* ClassName() const;
 
     //    virtual const char *ChildClassName() const;

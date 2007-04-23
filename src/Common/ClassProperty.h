@@ -21,6 +21,7 @@
 #include "ClassList.h"
 #include "ClassString.h"
 
+
 namespace Crystal
 {
 using namespace std;
@@ -51,17 +52,21 @@ public:
 
 	void SetValue(const char *_Value);
 	void SetValue(const Object *_Value);
+	void SetValueOwned(Object *_Value);
     void SetName(const char *_Name);
     void SetNameValue(const char *_Name,const char *_Value)
     {
-        SetValue(_Value);
+		SetValue(_Value);
         SetName(_Name);
-    }
+	}
 	const Object *GetValue() const;
 	const char *GetValue(String &Result) const;	// return string value or Object name if not CryString
 	Object*_GetValue() const;
     virtual const char *GetProperty(const PropertyParser &PropertyName,String &Result) const;
 	virtual const char *GetProperty(String &Result) const;
+	bool GetIsPropertyContainer(const PropertyParser &PropertyName) const;
+	Object *GetCopyOfPropertyAsObject(const	PropertyParser &PropertyName) const;
+
 	virtual const cbyte* GetRaw() const;
     //    virtual const char *ChildClassName() const;
 	virtual bool HasProperty(const PropertyParser &PropertyName) const;
@@ -93,6 +98,7 @@ public:
 	void GetPlainProperty(String &Result) const;
 	void Get(String &Result) const;
 };
+
 
 /// PropertyList will load in the properties of some object
 /*! it is useful for
@@ -144,7 +150,9 @@ public:
 	/// add a new property and value to the list
 	void AddProperty(const char *Name,const char *value);
 	/// add a new property to the list (property is owned by list);
-	void AddProperty(const char *Name,Object *Value);
+	void AddProperty(const char *Name,const Object *Value);
+	/// add a new property to the list (property is owned by list, Value is owned by Property);
+	void AddPropertyOwned(const char *Name,Object *Value);
 	/// add a new property to the list (property is owned by list);
 	void AddProperty(String *Name,String *Value);
 	/// add a new property to the list, by giving the name and object that it came from. (Object is asked for Property value)

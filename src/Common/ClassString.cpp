@@ -868,7 +868,10 @@ String::String(const char *FormatStr,...)
     //SetPosition(len);
     SeekToStart();
     const char *c = (const char *)GetRaw();
-    SetLength(strlen(c));
+	SetLength(strlen(c));
+#ifdef DEBUG
+	IsA("");	// initialize ObjectType debug data
+#endif
 }
 
 /*char String::operator[](unsigned int Offset) const

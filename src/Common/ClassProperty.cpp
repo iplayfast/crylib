@@ -59,6 +59,14 @@ Property::Property(Property &Copy)
 	};
 }
 
+Object *Property::GetCopyOfPropertyAsObject(const PropertyParser &PropertyName) const
+{
+	if (PropertyName==*GetName())
+		return Value->Dup();//GetCopyOfPropertyAsObject(PropertyName);
+	else
+		return Object::GetCopyOfPropertyAsObject(PropertyName);
+}
+
 Property::~Property()
 {
 	delete Value;
@@ -76,6 +84,10 @@ void Property::SetValue(const Object *_Value)
 {
 	delete Value;
 	Value = _Value->Dup();
+}
+void Property::SetValueOwned(Object *_Value)
+{
+	Value = _Value;
 }
 void Property::SetName(const char *_Name)
 {
@@ -123,7 +135,7 @@ FunctionDefList *Property::GetFunctions(const char *Type) const
     // otherwise get any functions in subclasses
     FunctionDefList *l = Object::GetFunctions();
     String s;
-    s += "//  Class CryProperty;";
+	s += "//  Class CryProperty;";
 	s += "virtual CryString *GetFunctions() const;";
 	s += "void SetValue(const char * _Value);";
 	s += "const CryString &GetValue() const;";
@@ -148,14 +160,25 @@ const char *Property::GetProperty(String &Result) const
 		Result = (String *)Value;
 		return Result.AsPChar();
 	}
-	Result = Value->ChildClassName();
+	Value->SaveTo(Result);
+//	Result = Value->ChildClassName();
 	return Result.AsPChar();
+}
+
+bool Property::GetIsPropertyContainer(const PropertyParser &PropertyName) const
+{
+	if (PropertyName==*GetName())
+		return Value->IsContainer();
+	else
+		return Object::GetIsPropertyContainer(PropertyName);
 }
 
 const char *Property::GetProperty(const PropertyParser &PropertyName,String &Result) const
 {
 	if (PropertyName==*GetName())	// if PropertyName is not the stored one, see if this classes property is what is being requested
 	{
+		if (Value->IsContainer())
+			return Value->GetProperty("Values",Result);
 		return GetProperty(Result);
 	}
 	else
@@ -201,10 +224,8 @@ PropertyList *Property::PropertyNames() const
 	PropertyList *n = new PropertyList();
 	if (*GetName()!="")
 	{
-	Object *v = GetValue()->Dup();
-//	const char *N = GetName()->AsPChar();
-		n->AddProperty(GetName()->AsPChar(),v);
-		delete v;
+		n->AddProperty(GetName()->AsPChar(),GetValue());
+//		delete v;
 	}
 	return n;
 }
@@ -490,6 +511,7 @@ void PropertyList::RenameProperty(const char *OldName,const char *NewName)
 		throw(Exception("RenameProperty %s not present in PropertyList",OldName));
 }
 
+
 const char *PropertyList::GetProperty(const PropertyParser &PropertyName,String &Result) const
 {
 	if (HasProperty(PropertyName))
@@ -552,8 +574,7 @@ void PropertyList::AddPropertyByName(const char *Name,const Object *object)
 {
 String *v = new String();
 	object->GetProperty(Name,*v);
-	AddProperty(Name,v);
-	delete v;
+	AddPropertyOwned(Name,v);
 }
 
 void PropertyList::AddProperty(const char *PropertyName,const char *Value)
@@ -563,7 +584,7 @@ void PropertyList::AddProperty(const char *PropertyName,const char *Value)
 	Property *p = new Property(PropertyName,Value);
 	AddOwned(p);
 }
-void PropertyList::AddProperty(const char *Name,Object *Value)
+void PropertyList::AddProperty(const char *Name,const Object *Value)
 {
 	if (HasProperty(Name))
 		throw(Exception("Property %s already present in PropertyList",Name));
@@ -571,6 +592,15 @@ void PropertyList::AddProperty(const char *Name,Object *Value)
 	p->SetValue(Value);
 	AddOwned(p);
 }
+void PropertyList::AddPropertyOwned(const char *Name,Object *Value)
+{
+	if (HasProperty(Name))
+		throw(Exception("Property %s already present in PropertyList",Name));
+	Property *p = new Property(Name);
+	p->SetValueOwned(Value);
+	AddOwned(p);
+}
+
 void PropertyList::AddProperty(String *Name,String *Value)
 {
 	if (HasProperty(Name->AsPChar()))

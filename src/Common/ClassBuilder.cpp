@@ -67,23 +67,23 @@ class CryContainerNAbstract : public Container
 	{
 		return 0;
 	}
-	virtual void SetAtIterator(const Iterator *I,EmptyObject *Item,bool IsObject,bool IsOwned,size_t Size = 0) 
+	virtual void SetAtIterator(const Iterator *I,EmptyObject *Item,bool IsObject,bool IsOwned,size_t Size = 0)
 	{
 	}
 
-    virtual EmptyObject *AddOwned(EmptyObject *Item,size_t Size)
-    {
-        return 0;
-    }
-    virtual Object *Dup()const
-    {
-        return 0;
-    }
-    virtual Object *Add(Object *Item)
-    {
-        return  0;
-    }
-    virtual Object *AddOwned(Object *Item)
+	virtual EmptyObject *AddOwned(EmptyObject *Item,size_t Size)
+	{
+		return 0;
+	}
+	virtual Object *Dup()const
+	{
+		return 0;
+	}
+	virtual Object *Add(Object *Item)
+	{
+		return  0;
+	}
+	virtual Object *AddOwned(Object *Item)
     {
         return 0;
     }
@@ -227,18 +227,18 @@ class CryStreamNAbstract : public Stream
         return 0;
     }
 
-    virtual EmptyObject *Add(EmptyObject *Item,size_t Size)
-    {
-        return 0;
-    }
-    virtual EmptyObject *AddOwned(EmptyObject *Item,size_t Size)
-    {
-        return 0;
-    }
-    virtual Object *Add(Object *Item)
-    {
-        return Item;
-    }    // returns Item
+	virtual EmptyObject *Add(EmptyObject *Item,size_t Size)
+	{
+		return 0;
+	}
+	virtual EmptyObject *AddOwned(EmptyObject *Item,size_t Size)
+	{
+		return 0;
+	}
+	virtual Object *Add(Object *Item)
+	{
+		return Item;
+	}    // returns Item
     virtual Object *AddOwned(Object *Item)
     {
         return Item;
@@ -374,21 +374,37 @@ class CrySimpleArrayNAbstract : public SimpleArray
         return false;
     }
     virtual EmptyObject *Add(EmptyObject *Item,size_t Size)
+	{
+		return 0;
+	}
+	virtual EmptyObject *AddOwned(EmptyObject *Item,size_t Size)
+	{
+		return 0;
+	}
+	virtual Object *Add(Object *Item)
+	{
+		return  0;
+	}
+	virtual Object *AddOwned(Object *Item)
     {
         return 0;
     }
-    virtual EmptyObject *AddOwned(EmptyObject *Item,size_t Size)
-    {
-        return 0;
-    }
-    virtual Object *Add(Object *Item)
-    {
-        return  0;
-    }
-    virtual Object *AddOwned(Object *Item)
-    {
-        return 0;
-    }
+    virtual EmptyObject *Add(EmptyObject *Item,size_t Size,int Index)
+	{
+		return 0;
+	}
+	virtual EmptyObject *AddOwned(EmptyObject *Item,size_t Size,int Index)
+	{
+		return 0;
+	}
+	virtual Object *Add(Object *Item,int Index)
+	{
+		return  0;
+	}
+	virtual Object *AddOwned(Object *Item,int Index)
+	{
+		return 0;
+	}
 	void SetSize(size_t _Size)
 	{
 	}
@@ -442,18 +458,18 @@ class CrySimpleArrayNAbstract : public SimpleArray
 /// Dummy class with stubs for virtual functions
 class CryArrayNAbstract : public Array
 {
-    virtual EmptyObject *Add(EmptyObject *Item,size_t Size)
-    {
-        return 0;
-    }
-    virtual EmptyObject *AddOwned(EmptyObject *Item,size_t Size)
-    {
-        return 0;
-    }
-    virtual Object *Add(Object *Item)
-    {
-        return  0;
-    }
+	virtual EmptyObject *Add(EmptyObject *Item,size_t Size)
+	{
+		return 0;
+	}
+	virtual EmptyObject *AddOwned(EmptyObject *Item,size_t Size)
+	{
+		return 0;
+	}
+	virtual Object *Add(Object *Item)
+	{
+		return  0;
+	}
     virtual Object *AddOwned(Object *Item)
     {
         return 0;
@@ -654,7 +670,7 @@ void ClassBuilder::SetBaseClass(const char *Type,bool AddStubs,bool AddVirtuals,
 				else throw Exception("unknown Template Type");
 		}
 		else
-			p1 = Object::Create(Type);
+			p1 = Object::Create(Type,0);
         _IsAbstract = false;
     }
     catch(Exception &e)

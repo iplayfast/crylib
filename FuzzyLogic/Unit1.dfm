@@ -2,7 +2,7 @@ object Form1: TForm1
   Left = 0
   Top = 0
   Caption = 'Form1'
-  ClientHeight = 655
+  ClientHeight = 693
   ClientWidth = 709
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -105,13 +105,13 @@ object Form1: TForm1
   end
   object Logic: TPanel
     Left = 0
-    Top = 477
+    Top = 515
     Width = 709
     Height = 178
     Align = alBottom
     Color = clRed
     TabOrder = 1
-    ExplicitTop = 458
+    ExplicitTop = 496
     object Label3: TLabel
       Left = 11
       Top = 37
@@ -472,10 +472,10 @@ object Form1: TForm1
     Left = 0
     Top = 412
     Width = 709
-    Height = 65
+    Height = 103
     Align = alClient
     TabOrder = 4
-    ExplicitHeight = 46
+    ExplicitHeight = 84
   end
   object MainMenu1: TMainMenu
     Left = 608
@@ -489,6 +489,10 @@ object Form1: TForm1
       object Open1: TMenuItem
         Caption = '&Open...'
         OnClick = Open1Click
+      end
+      object Import1: TMenuItem
+        Caption = 'Import'
+        OnClick = Import1Click
       end
       object Save1: TMenuItem
         Caption = '&Save'
@@ -534,5 +538,10 @@ object Form1: TForm1
     Filter = 'Include|*.h|Text|*.txt'
     Left = 648
     Top = 88
+  end
+  object ImportOpenTextFileDialog2: TOpenTextFileDialog
+    Filter = 'CSV|*.csv|Text|*.txt|Anything|*.*'
+    Left = 640
+    Top = 120
   end
 end

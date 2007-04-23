@@ -9,7 +9,8 @@
 #pragma resource "*.dfm"
 TForm1 *Form1;
 #include "TFuzzy.h"
-
+#include "Unit4.h"
+#include <ctype.h>
 
 //---------------------------------------------------------------------------
 __fastcall TForm1::TForm1(TComponent* Owner)
@@ -283,7 +284,54 @@ void __fastcall TForm1::New1Click(TObject *Sender)
 	Refresh(Sender);
 }
 //---------------------------------------------------------------------------
-
+void TForm1::ParseLine(int WhichFuzzy,TEdit *Name,char *Buffer)
+{
+char *tok = strtok(Buffer," {,}");
+int state=0;
+int values;
+int x,y;
+	// states are 0 pre,1 struct, 2 type,3 name, 4
+	while(tok)
+	{
+		switch(state)
+		{
+			case 0:	if (strcmp(tok,"struct")==0)
+						state =1;
+					break;
+			case 1: if (strcmp(tok,"TFuzzy")==0)
+						state = 2;
+					break;
+			case 2: Fuzzy1Name->Text = tok;
+					state = 3;
+					break;
+			case 3:	if (isdigit(tok[0]))
+					{
+						sscanf(tok,"%d",&values);
+						state = 4;
+					}
+					break;
+			case 4:
+					if (isdigit(tok[0]))
+					{
+						sscanf(tok,"%d",&x);
+						state = 5;
+					}
+					break;
+			case 5:
+					if (isdigit(tok[0]))
+					{
+						sscanf(tok,"%d",&y);
+						values--;
+						if (values)
+							state = 4;
+						else
+							state = 0;
+						MyFuzzy[WhichFuzzy].TFuzzyAddPoint(x,y);
+					}
+		}
+		tok = strtok(0," {,}");
+	}
+}
 void __fastcall TForm1::Open1Click(TObject *Sender)
 {
 	if (OpenTextFileDialog1->Execute())
@@ -294,47 +342,18 @@ void __fastcall TForm1::Open1Click(TObject *Sender)
 		int c;
 		char ch1,ch2;
 		char Buffer[200];
-        	SaveTextFileDialog1->FileName = OpenTextFileDialog1->FileName;
+			SaveTextFileDialog1->FileName = OpenTextFileDialog1->FileName;
 			New1Click(Sender);
 			OneFuzzyLogic1Click(Sender);
-			fgets(Buffer,199,F);	// intro (ignore)
-			fgets(Buffer,199,F);	// Fuzzy1 Name
-			Fuzzy1Name->Text = Buffer+2;
-			fgets(Buffer,199,F);	// number of items
-			sscanf(Buffer+2,"%d",&c);
-			for(int i=0;i<c;i++)
-			{
-			float x,y;
-				fgets(Buffer,199,F);
-				sscanf(Buffer+2,"%f,%f",&x,&y);
-				MyFuzzy[0].TFuzzyAddPoint(x,y);
-			}
-			fgets(Buffer,199,F);	// Fuzzy2 Name
-			Fuzzy2Name->Text = Buffer;
-			fgets(Buffer,199,F);	// number of items for second fuzzy
-			sscanf(Buffer+2,"%d",&c);
-			for(int i=0;i<c;i++)
-			{
-			float x,y;
-				fgets(Buffer,199,F);
-				sscanf(Buffer+2,"%f,%f",&x,&y);
-				MyFuzzy[1].TFuzzyAddPoint(x,y);
-				FuzzyLogicOperations1Click(Sender);
-			}
-			fgets(Buffer,199,F);
-			if ((Buffer[0]=='/') && (Buffer[1]=='/'))
-			{
-			int max;
-				sscanf(Buffer+2,"%d",&max);
-				UpDown1->Position = (max / 1000) * 1000;
-				max %= 1000;
-				UpDown2->Position = (max / 100) * 100;
-				max %= 100;
-				UpDown3->Position = (max / 10) * 10;
-				max %= 10;
-				UpDown4->Position = max;
-				UpDown1Click(Sender, 0);
-			}
+			fgets(Buffer,199,F);	 // include statement
+
+			fgets(Buffer,199,F);	// first structure
+			MyFuzzy[0].Clear();
+			MyFuzzy[1].Clear();
+			TwoFuzzyLogics1Click(Sender);
+			ParseLine(0,Fuzzy1Name,Buffer);
+			fgets(Buffer,199,F);	// Second structure
+			ParseLine(1,Fuzzy2Name,Buffer);
 			fclose(F);
 		}
 		Refresh(Sender);
@@ -352,7 +371,7 @@ void __fastcall TForm1::Save1Click(TObject *Sender)
 	if (a.Pos(".h")==0)
 		a = a + ".h";
 	TFileStream *f = new TFileStream(a,fmCreate);
-		a = "// The next lines are used by the fuzzy editor to save and load data\n";
+/*		a = "// The next lines are used by the fuzzy editor to save and load data\n";
 		f->Write(a.c_str(),a.Length());
 		a = "//";
 		a += Fuzzy1Name->Text;
@@ -401,29 +420,58 @@ void __fastcall TForm1::Save1Click(TObject *Sender)
 
 		a = "\n\n//The next section is code which can be included to set the values of Fuzzy1 and Fuzzy2\n";
 		f->Write(a.c_str(),a.Length());
-		a = "\nextern TFuzzy Fuzzy1;\nextern TFuzzy Fuzzy2;\n\nvoid LoadFuzzies()\n{\n";
-		f->Write(a.c_str(),a.Length());
+//struct TFuzzy F3 = { 3 ,{{ 2,500},{30,200},{40,102}}};
+*/
+		a = "#include \"TFuzzy.h\"\n";
+		a += "struct TFuzzy ";
+		a += Fuzzy1Name->Text;
+		a += " = { ";
+		a += MyFuzzy[0].Count();
+		a += ",{";
 		for(int i=0;i<MyFuzzy[0].Count();i++)
 		{
 		TFuzzyXY *v = MyFuzzy[0].GetItem(i);
-		a = "   TFuzzyAddPoint(Fuzzy1,";
-		a += v->x;
-		a += ",";
-		a += v->y;
-		a += ");\n";
-		f->Write(a.c_str(),a.Length());
+			if (i)	a +=",";
+			a += "{";
+			a += v->x;
+			a += ",";
+			a += v->y;
+			a += "}";
 		}
+		a += "}};\n";
+		f->Write(a.c_str(),a.Length());
+
+
+		a = "struct TFuzzy ";
+		a += Fuzzy2Name->Text;
+		a += " = { ";
+		a += MyFuzzy[1].Count();
+		a += ",{";
 		for(int i=0;i<MyFuzzy[1].Count();i++)
 		{
 		TFuzzyXY *v = MyFuzzy[1].GetItem(i);
-		a = "   TFuzzyAddPoint(Fuzzy2,";
-		a += v->x;
-		a += ",";
-		a += v->y;
-		a += ");\n";
-		f->Write(a.c_str(),a.Length());
+			if (i)	a +=",";
+			a += "{";
+			a += v->x;
+			a += ",";
+			a += v->y;
+			a += "}";
 		}
-		a = "}\n\n";
+		a += "}};\n\n";
+		a += "// Easy access routines\n";
+		a += "VALUE_TYPE get";
+		a += Fuzzy1Name->Text;
+		a += "Value(VALUE_TYPE inValue)\n{\n  return Value(&";
+		a += Fuzzy1Name->Text;
+		a += ",inValue);\n}\n";
+
+
+		a += "VALUE_TYPE get";
+		a += Fuzzy2Name->Text;
+		a += "Value(VALUE_TYPE inValue)\n{\n  return Value(&";
+		a += Fuzzy2Name->Text;
+		a += ",inValue);\n}\n";
+
 		f->Write(a.c_str(),a.Length());
 
 		delete f;
@@ -521,6 +569,85 @@ void __fastcall TForm1::FuzzyLogicOperations1Click(TObject *Sender)
 	OneFuzzyLogic1->Checked = false;
 	TwoFuzzyLogics1->Checked = false;
 	FuzzyLogicOperations1->Checked = true;
+	Refresh(Sender);
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::Import1Click(TObject *Sender)
+{
+	if (ImportOpenTextFileDialog2->Execute())
+	{
+		if (Form4->ShowModal()==mrCancel)
+			return;
+
+	int col;
+	{
+	AnsiString acol = Form4->Column->Text;
+	char *ch = acol.c_str();
+		col = 0;
+		while(*ch)
+		{
+			col *=26;
+			col += toupper(*ch)-'A';
+			ch++;
+		}
+	}
+	int row = StrToInt(Form4->Row->Text);
+	int FN;
+		if (Form4->RadioButton1->Checked)
+			FN = 0;
+		else
+			FN = 1;
+	FILE *F = fopen(ImportOpenTextFileDialog2->FileName.c_str(),"rt");
+		if (F)
+		{
+		int c,r=0;
+		char ch1,ch2;
+		char Buffer[200];
+			if (FN==0)
+				Button3Click(Sender);
+			else
+				Button4Click(Sender);
+			while(!feof(F))
+			{
+				fgets(Buffer,199,F);	// first structure
+				r++;
+				if (r<row)
+                	continue;
+				char *tok = Buffer;
+				c = 0;
+				while(c<col)
+				{
+					tok = strchr(tok,',');
+					if (tok==0) break;
+					tok++;
+					c++;
+				}
+				if (col==c)
+				{
+				int x,y;
+					if (isdigit(tok[0])|| (tok[0]=='-'))
+					{
+						tok = strtok(tok,",");
+						char *ch = strchr(tok,'\n');
+							if (ch)
+								*ch = '\0';
+						x = StrToInt(tok);
+							tok=strtok(0,",");
+						if (tok && isdigit(tok[0]))
+						{
+							ch = strchr(tok,'\n');
+							if (ch)
+								*ch = '\0';
+							y = StrToInt(tok);
+							MyFuzzy[FN].TFuzzyAddPoint(x,y);
+						}
+					}
+				}
+			}
+		}
+		fclose(F);
+	}
 	Refresh(Sender);
 }
 //---------------------------------------------------------------------------

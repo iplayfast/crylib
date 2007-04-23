@@ -901,15 +901,25 @@ Object *Stream::StreamIterator::Dup() const
 
 Object *Stream::Add(Object *Item)    // returns Item
 {
-    String s;
-    Item->SaveTo(s);
-    Write(s.AsPChar(),s.GetLength());
-    return Item;
+	String s;
+	Item->SaveTo(s);
+	Write(s.AsPChar(),s.GetLength());
+	return Item;
 }
 Object *Stream::AddOwned(Object *Item)   // gives ownership to list
 {
     delete Add(Item); // So we add the text equivilent and then delete it
     return 0;
+}
+EmptyObject *Stream::Add(EmptyObject *Item,size_t Size)
+{
+	Write((char *)Item,Size);
+	return Item;
+}
+EmptyObject *Stream::AddOwned(EmptyObject *Item,size_t Size)
+{
+	Add(Item,Size);
+	delete Item;
 }
 
 bool Stream::LoadAsText(Iterator *I,String &FromStream)

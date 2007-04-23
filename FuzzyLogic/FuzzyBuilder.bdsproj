@@ -14,7 +14,7 @@
 		</Source>
 		<BCBPROJECT>
       <project version="10.0">
-        <property category="build.config" name="active" value="0"/>
+        <property category="build.config" name="active" value="1"/>
         <property category="build.config" name="count" value="1"/>
         <property category="build.config" name="excludedefaultforzero" value="0"/>
         <property category="build.config.0" name="builddir" value="Debug"/>
@@ -336,6 +336,7 @@
         <FILE FILENAME="FuzzyBuilder.res" CONTAINERID="ResTool" LOCALCOMMAND="" UNITNAME="FuzzyBuilder.res" FORMNAME="" DESIGNCLASS=""/>
         <FILE FILENAME="Unit1.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="Unit1" FORMNAME="Form1" DESIGNCLASS="" ADDITIONAL="Unit1.h"/>
         <FILE FILENAME="TFuzzy.c" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="TFuzzy" FORMNAME="" DESIGNCLASS=""/>
+        <FILE FILENAME="Unit4.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="Unit4" FORMNAME="Form4" DESIGNCLASS="" ADDITIONAL="Unit4.h"/>
       </FILELIST>
       <IDEOPTIONS>
         <VersionInfo>

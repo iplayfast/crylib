@@ -78,43 +78,44 @@ void XMLNode::SaveTo(Stream &ToStream) const
         for (int i=0;i<ToStream.Tag;i++)	//add some indenting
             ToStream.printf("  ");
         ToStream.printf("</%s>\n",(const char *)Type);// footer
-    }
-    else
-    {
-        if (Type!="")
-            ToStream.printf("/>\n");//end of header + footer
-    }
+	}
+	else
+	{
+		if (Type!="")
+			ToStream.printf("/>\n");//end of header + footer
+	}
 }
 
 void XMLNode::SaveTo(Object &ToObject) const
 {
-    if (!ToObject.IsA(Type))
-    {
-        ToObject.IsA(Type);
-        throw Exception(this,ExceptionSaveToDifferentType,"SaveTo Object of different Type");
-    }
-    PropertyList::PropertyIterator * pi = _Attributes->CreateIterator();
-    if (pi->GotoFirst())
-    {
-        do
-        {
+int Index =0;	// used if ToObject is an array
+	if (!ToObject.IsA(Type))
+	{
+		ToObject.IsA(Type);
+		throw Exception(this,ExceptionSaveToDifferentType,"SaveTo Object of different Type");
+	}
+	PropertyList::PropertyIterator * pi = _Attributes->CreateIterator();
+	if (pi->GotoLast())
+	{
+		do
+		{
 
-            const char *c = pi->GetName()->AsPChar();
+			const char *c = pi->GetName()->AsPChar();
 
 //        if (ToObject.HasProperty(p->GetName()))
-            if (ToObject.CanHaveProperty(c))
-            {
-                String Result;
-                pi->GetValue(Result);
-                ToObject.SetProperty(c,Result.AsPChar());
+			if (ToObject.CanHaveProperty(c))
+			{
+				String Result;
+				pi->GetValue(Result);
+				ToObject.SetProperty(c,Result.AsPChar());
 
-            }
-        }
-		while (pi->GotoNext());
+			}
+		}
+		while (pi->GotoPrev());
 	}
 	_Attributes->DeleteIterator(pi);
 	List::ListIterator *li = SubNodes.CreateIterator();
-	if (li->GotoFirst())
+	if (li->GotoLast())
 	{
 		do
 		{
@@ -143,26 +144,84 @@ void XMLNode::SaveTo(Object &ToObject) const
 				}
 				else
 				{
+					if (current->Type=="data")
+					{
+					String Result;
+						PropertyList::PropertyIterator *ai = current->_Attributes->CreateIterator();
+						if (ai->GotoLast())
+						{
+							do
+							{
+								String Value;
+								const char *Name = ai->GetName()->AsPChar();
+								const char *_Value = ai->GetValue(Value);
+								size_t Size;
+								Value.scanf("%d ",&Size);
+								int pos = Value.Pos(" ",Value.Tell())+1;
+									if (pos<=Value.Length())
+										Value.SeekFromStart(pos);
+								char *Buffer = (char *) ::operator new(Size);
+//								char *Buffer = new char[Size];		// This might cause problems due to delete []Item needed for arrays.
+								for(size_t i =0;i<Size;i++)
+								{
+								int tmp;
+									Value.scanf("%X ",&tmp);
+									Buffer[i] = (char )tmp;
+									pos = Value.Pos(" ",Value.Tell())+1;
+									if (pos<=Value.Length())
+										Value.SeekFromStart(pos);
+								}
+								Container *c = (Container *) &ToObject;
+								if (c->IsA(CSimpleArray))
+								{
+								SimpleArray *s = (SimpleArray *)c;
+									s->AddOwned((EmptyObject *)Buffer,Size,Index++);
+								}
+								else
+									c->AddOwned((EmptyObject *)Buffer,Size);
+							}
+							while (ai->GotoPrev());
+						}
+						current->_Attributes->DeleteIterator(ai);
+					}
+					else
+					{
 					Object *o =  // useful when debugging
-						current->CreateObjectFromNode(&ToObject);// Object Created goes into the continer ToObject
+						current->CreateObjectFromNode(&ToObject);
+						Container *c = (Container *) &ToObject;
+						c->AddOwned(o);
+					}
 				}
 			}
 			else // The object isn't a container so the property must be one
-            {
-                Object *o = current->CreateObjectFromNode(&ToObject);
-                if (o->IsA(CProperty))
-                {
-                    ToObject.SetPropertyAsObject((Property *)o);
-                    delete o;
-                }
-                else
-                {
-                    delete o;
-                    throw Exception("Setting Unknown ObjectType as Property");
-                }
-            }
-        }
-		while (li->GotoNext());
+			{
+				Object *o = current->CreateObjectFromNode(&ToObject);
+				if (ToObject.IsA(CProperty))
+				{
+				Property *p = (Property *)&ToObject;
+					p->SetName(Name);
+					p->SetValueOwned(o);
+				}
+				else
+				{
+					if (o->IsA(CProperty))
+					{
+					Property *p =(Property *)o;
+					const char *c= *p->GetName();
+						if (ToObject.CanHaveProperty(c))
+						{
+							ToObject.SetPropertyAsObject(p);
+						}
+					}
+					else
+					{
+					delete o;
+					throw Exception("Setting Unknown ObjectType as Property");
+					}
+				}
+			}
+		}
+		while (li->GotoPrev());
 	}
 	SubNodes.DeleteIterator(li);
 }
@@ -170,7 +229,7 @@ void XMLNode::SaveTo(Object &ToObject) const
 // load this Node and subnodes from the stream
 void XMLNode::LoadFrom(const Stream &FromStream)
 {
-    bool	 WithinQuote = false,GettingEndName = false,GettingEquals=false,GettingAttribute = false;
+	bool	 WithinQuote = false,GettingEndName = false,GettingEquals=false,GettingAttribute = false;
     bool GettingAttributeValue = false,FoundLetter = false,AtStart = true,Escaped = false,AddChar;
 
 #ifdef DEBUGGING
@@ -388,7 +447,7 @@ if (pn->Sortable())       /* TODO : Need to reimplment this for CryPropertyList 
     PropertyList::PropertyIterator *i = pn->CreateIterator();
     try
     {
-        String Result;
+		String Result;
 //       Type = FromObject.ChildClassName();
         if (i->GotoFirst())
         {
@@ -455,7 +514,7 @@ if (pn->Sortable())       /* TODO : Need to reimplment this for CryPropertyList 
                     {
                         if (FromObject.IsContainer())
 						{
-						String NewC;
+					 /*	String NewC;
 							NewC = "*";
 							NewC += c;
 							FromObject.GetProperty(NewC,Result);
@@ -463,8 +522,8 @@ if (pn->Sortable())       /* TODO : Need to reimplment this for CryPropertyList 
 							n->Type = "Property";
 							n->AddAttribute(c,Result);
 							SubNodes.AddOwned(n);
-
-/*							Container *cc = (Container *)&FromObject;
+*/
+							Container *cc = (Container *)&FromObject;
 							Container::Iterator *I = cc->_CreateIterator();
 							if (cc->GotoFirst(I))
 								do
@@ -479,28 +538,29 @@ if (pn->Sortable())       /* TODO : Need to reimplment this for CryPropertyList 
 									{
 										String e;
 										String t;
-										cc->GetEleType(t);
+//										cc->GetEleType(t);
 										n->Type = "";
-										if (!cc->SaveAsText(I,e))  // try to save it to e
-										{
+										t.printf("data ");
+//										if (!cc->SaveAsText(I,e))  // try to save it to e
+//										{
 											size_t size = I->GetItemSize();
 											char *c = (char *)I->Get();
 											e.printf("%d ",size);
 											for (size_t i=0;i<size;i++)
-												e.printf("%d ",c[i]);
-										}
+												e.printf("0x%X ",0xff & c[i]);
+  //										}
 										n->AddAttribute(t,e); // add property name and value
-										n->Type = "";
+										n->Type = "data";
 //										n->LoadFrom(e);
 									}
 									SubNodes.AddOwned(n);
 								}
 								while (cc->GotoNext(I));
 							cc->DeleteIterator(I);
-*/
+
 						}
-                        else    // The object isn't a container so the property must be one
-                        {
+						else    // The object isn't a container so the property must be one
+						{
 							XMLNode *n = new XMLNode(c);
 							PropertyParser PropertyName(item->AsPChar());
 							Property *o = FromObject.GetPropertyAsCryProperty(PropertyName);

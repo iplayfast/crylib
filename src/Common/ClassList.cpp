@@ -149,14 +149,6 @@ List::ListNode *List::_NextNode(const ListNode *n) const
 	return n->Next;
 }
 
-bool List::Sortable()const
-{
-	return true;
-}
-bool List::IsContainer() const
-{
-	return true;
-}
 
 EmptyObject *List::DupItem(const ListNode *Node) const
 {
@@ -305,7 +297,6 @@ bool List::SaveAsText(Iterator *I,String &ToStream) const
 			ToStream.printf("%d ",c[i]);
 	}
 	return true;
-
 }
 
 bool List::GotoLast(Iterator *LI) const
@@ -783,12 +774,34 @@ const char *List::GetProperty(const PropertyParser &PropertyName,String &Result)
 	else
 		return Container::GetProperty(PropertyName,Result);
 }
+const char *MyList::GetProperty(const PropertyParser &PropertyName,String &Result) const
+{
+	Result.Clear();
+	if (PropertyName=="Values")   // intercept container's property for our own
+	{
+		Result = "[]";  // if Result != what is returned, it's a special situation
+		return "*";
+	}
+	else
+		return Container::GetProperty(PropertyName,Result);
+}
+	/*! will create an object of the Type named in Type. In container classes where the Type is the contained object, the Parent must be the appropriete container type or a derived class which can create the object (if the default class can't) */
+Object *MyList::ClassCreate(const PropertyParser &PropertyName,Object *Parent)
+{
+Object *NewObject;
+	if (PropertyName==CMyList)
+		return new MyList();
+	return Container::ClassCreate(PropertyName,Parent);
+}
 
 PropertyList *List::PropertyNames() const
 {
 	PropertyList *n = Container::PropertyNames();
 	return n;
-}/*
+}
+
+
+/*
  * This is the actual sort function. Notice that it returns the new
  * head of the list. (It has to, because the head will not
  * generally be the same element after the sort.) So unlike sorting
@@ -882,6 +895,109 @@ void List::Sort(int CompareType)
 		Tail = Head;
 			while(Tail->Next)
 				Tail = Tail->Next;
+			return;
+		}
+		// Otherwise repeat, merging lists twice the size
+		insize *= 2;
+	}
+}
+/*
+ * This is the actual sort function. Notice that it returns the new
+ * head of the list. (It has to, because the head will not
+ * generally be the same element after the sort.) So unlike sorting
+ * an array, where you can do
+ *
+ *     sort(myarray);
+ *
+ * you now have to do
+ *
+ *     list = listsort(mylist);
+ */
+void MyList::Sort(int CompareType)	//  /* TODO : Testing needed */
+{
+cListNodeI p,q,e,tail,oldhead;
+list <ListNode *> NewHead;
+list <ListNode *> NewTail;
+	int insize, nmerges, psize, qsize, i;
+
+	if (Head.begin()==Head.end())
+		return;
+
+	insize = 1;
+
+	while (1)
+	{
+		p = Head.begin();
+
+		nmerges = 0;  /* count number of merges we do in this pass */
+
+		while (p!=Head.end())
+		{
+			nmerges++;  /* there exists a merge to be done */
+			/* step `insize' places along from p */
+			q = p;
+			psize = 0;
+			for (i = 0; (i < insize) && (q != Head.end()); i++)
+			{
+				psize++;
+				q++;
+			}
+
+			// if q hasn't fallen off end, we have two lists to merge
+			qsize = insize;
+
+			// now we have two lists; merge them
+			while ((psize > 0) || (qsize > 0 && q!=Head.end()))
+			{
+				// decide whether next element of merge comes from p or q
+				if (psize == 0)
+				{
+					e = q; q++; qsize--;// p is empty; e must come from q.
+				}
+				else
+				if (qsize == 0 || q==Head.end())
+				{
+					e = p; p++; psize--;  // q is empty; e must come from p.
+
+				}
+				else
+				{
+				int cr;
+					if ((*p)->IsObject && (*q)->IsObject)
+						cr = Compare(CompareType,(Object *)(*p)->Item,(Object *)(*q)->Item);
+					else
+						cr = Compare2(CompareType,(*p)->Item,(*q)->Item);
+					if (cr <= 0)
+					{
+						e = p; p++; psize--;// First element of p is lower (or same) e must come from p.
+					}
+					else
+					{
+						e = q; q++; qsize--;// First element of q is lower; e must come from q.
+					}
+				}
+
+				// add the next element to the merged list
+				if (NewTail.begin() != NewTail.end())
+					NewTail.push_front(*e);
+				else
+					NewHead.push_front(*e);
+				NewTail.push_front(*e);
+			}
+		// now p has stepped `insize' places along, and q has too
+		p = q;
+		} // while
+
+		// If we have done only one merge, we're finished.
+		if (nmerges <= 1)   // allow for nmerges==0, the empty list case
+		{
+		Head.clear();
+		p = NewTail.begin();
+		while(p!=NewTail.end())
+			Head.push_front(*p++);
+		p = NewHead.begin();
+		while(p!=NewHead.end())
+			Head.push_front(*p++);
 			return;
 		}
 		// Otherwise repeat, merging lists twice the size

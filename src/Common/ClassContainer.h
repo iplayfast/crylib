@@ -134,6 +134,7 @@ class Iterator : public Object//EmptyObject
 		bool IsOwned() const;
 		bool IsEmpty() const;
 		EmptyObject *Get() const;
+		Object *GetObject() const;	// if current iterator isn't at an object will give exception
 		//void Set(EmptyObject *Item,bool IsObject,bool IsOwned,size_t Size = 0);
 
 		bool GotoFirst();
@@ -141,6 +142,14 @@ class Iterator : public Object//EmptyObject
 		bool GotoNext();
 		bool GotoLast();
 		bool GotoN(int N);
+		bool GotoFirstObject(const char *Type=CObject);
+		bool GotoPrevObject(const char *Type=CObject);
+		bool GotoNextObject(const char *Type=CObject);
+		bool GotoLastObject(const char *Type=CObject);
+		bool GotoFirstNonObject();
+		bool GotoPrevNonObject();
+		bool GotoNextNonObject();
+		bool GotoLastNonObject();
 
 		size_t GetItemSize();
 		//bool LoadAsText(CryString *FromStream) { return OrigContainer->LoadAsText(this,FromStream); }
@@ -163,7 +172,9 @@ class Iterator : public Object//EmptyObject
         {
             return TIterator;
         }
-    };
+	};
 };
+
+
 #endif //TCryContainer
 }

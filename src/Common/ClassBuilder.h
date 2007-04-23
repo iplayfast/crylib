@@ -81,7 +81,7 @@ StdFunctionsNoDup(ClassBuilder,CodeFactory);
 	virtual void LoadSource();
 	virtual Object *Create(const PropertyParser &PropertyName,Object *Parent);
 	virtual Object *Create(const PropertyParser &PropertyName,CodeFactory *Parent);
-	virtual Object *Create(const char *FactoryName,const PropertyParser &PropertyName,Object *Parent=0)
+	virtual Object *Create(const char *FactoryName,const PropertyParser &PropertyName,Object *Parent)
 	{
 	  return Factory::Create(FactoryName,PropertyName,Parent);
 	}

@@ -122,13 +122,12 @@ struct EmptyObject
 	Duplicate itself, copy itself and create any of the subclasses in the library
 	It can also build a list of properties that the dirived classes use.
 */
-
-
 class Object : public EmptyObject    // functions only, no data (abstract)
 {
 #ifdef DEBUG
 public:
-int ObjectID;
+int ObjectID;		// exception to the rule only for debugging. ObjectID get's inc'd every time an object is created, so you can use it to track objects in the debugger
+char ObjectType[30];	// again only for debugging will have the Text version of the object type
 private:
 #endif
 	Object (Object &nono);	// made private to prevent derived copy constructors, this might not be necessary
@@ -198,62 +197,62 @@ public:
     /// will interpert an EObject and act upon the Context
     virtual bool Event(EObject EventNumber,Context::IO &Context);
 
-    Object();
+	Object();
     virtual ~Object();
-    /// can this function duplicate itself? This is useful for sub-classes which may not be able to duplicate. eg a file stream class.
-    virtual bool CanDup() const;
+	/// can this function duplicate itself? This is useful for sub-classes which may not be able to duplicate. eg a file stream class.
+	virtual inline bool CanDup() const { return true; }
 	///copies contents of this to Dest
-    virtual void CopyTo(Object &Dest) const;
+	virtual void CopyTo(Object &Dest) const;
 	/// creates a duplicate of this object (no data so it's easy!)
-    virtual Object *Dup() const;
-    /// returns the size of an object (in this case 0)
-    virtual size_t Size() const;
-    /// will attempt to create an object of the type specified in PropertyName
-    virtual Object *CreateItemType(const PropertyParser &PropertyName);
+	virtual Object *Dup() const;
+	/// returns the size of an object (in this case 0)
+	virtual size_t Size() const;
+	/// will attempt to create an object of the type specified in PropertyName
+	virtual Object *CreateItemType(const PropertyParser &PropertyName);
 
-    /// returns a pointer to a string stating the current class Name, Eg Object (not CryString which would be a child class)
-    const char* ClassName() const;
-    /// returns a pointer to a string stating the ChildClassName, EG CryString (not Object which is the base class)
-    virtual const char *ChildClassName() const;
-    /// attempt to return the class's main data type as a cbyte *
-    virtual const cbyte* GetRaw() const;
-    /// get the class data in a raw state as a char *
-    virtual const char *AsPChar() const;
+	/// returns a pointer to a string stating the current class Name, Eg Object (not CryString which would be a child class)
+	const char* ClassName() const;
+	/// returns a pointer to a string stating the ChildClassName, EG CryString (not Object which is the base class)
+	virtual const char *ChildClassName() const;
+	/// attempt to return the class's main data type as a cbyte *
+	virtual const cbyte* GetRaw() const;
+	/// get the class data in a raw state as a char *
+	virtual const char *AsPChar() const;
 
 	/*! returns true if the object can map to the class name.
-    for example TCryString is true for Object, CryStream,CryMemStream and CryString*/
-    virtual bool IsA(const char *ClassName) const;    // can the object map to a ClassName
+	for example TCryString is true for Object, CryStream,CryMemStream and CryString*/
+	virtual bool IsA(const char *ClassName) const;    // can the object map to a ClassName
 
-    virtual bool IsAbstract() const;
-    // not used?  fixme
-    //Object *LoadItem(CryStream &FromStream);
-    /// returns a list of public functions for a class (including the abstract ones)
-    virtual FunctionDefList *GetFunctions(const char *Type=0) const;
+	virtual bool IsAbstract() const;
+	// not used?  fixme
+	//Object *LoadItem(CryStream &FromStream);
+	/// returns a list of public functions for a class (including the abstract ones)
+	virtual FunctionDefList *GetFunctions(const char *Type=0) const;
 
-    /*! returns a list of the abstract functions for a class
-    	as this function is virtual it will go to any decendants first, and each of them
-    	calls it's base GetFunctions After all the functions are retrieved, 
-    	all the virtual fuctions are collected, which have not been overrode by non-virtual
-    	functions  */
-    virtual FunctionDefList *GetAbstractFunctions(const char *Type) const;
+	/*! returns a list of the abstract functions for a class
+		as this function is virtual it will go to any decendants first, and each of them
+		calls it's base GetFunctions After all the functions are retrieved,
+		all the virtual fuctions are collected, which have not been overrode by non-virtual
+		functions  */
+	virtual FunctionDefList *GetAbstractFunctions(const char *Type) const;
 
 	virtual int Compare(int CompareType,const Object *Test1,const Object *Test2) const;
 	/*! will return a value showing a comparison result using CompareType. Used by derived classes
 		in order to have comparisons which makes sense to the class.  CompareType is used to allow different types of comparisons within a class
 	*/
 	virtual int CompareLogical(int CompareType,const Object *Test) const;
-    /// returns bool value of LessThen as determined by CompareLogical
-    virtual bool LessThen(int CompareType,const Object *Test) const;
+	/// returns bool value of LessThen as determined by CompareLogical
+	virtual bool LessThen(int CompareType,const Object *Test) const;
 	/// returns bool value of GreaterThen as determined by CompareLogical
 	virtual bool GreaterThen(int CompareType,const Object *Test) const;
 	/// returns bool value of EqualTo as determined by CompareLogical
 	virtual bool EqualTo(int CompareType,const Object *Test) const;
 
 	/*! IsContainer is true when the object in question can contain
-     accessable instances of data or objects
-     ie streams are not containers, but lists and arrays are
-     */
-    virtual bool IsContainer() const;
+	 accessable instances of data or objects
+	 ie streams are not containers, but lists and arrays are
+	 */
+	virtual bool IsContainer() const;
 	/// will return the value of a property, or if the property is an array, a text string representing the array
 	virtual Property *GetPropertyAsCryProperty(const PropertyParser &PropertyName) const;
 	/// will return a property represented as an object, useful for classes which contain properties that are dynamically allocated, as a property that is dynamic is a Object and therefore callable
@@ -261,57 +260,60 @@ public:
 	/// will return a pointer to the property if the property is an Object (or decendent)
 	virtual Object *_GetPropertyAsObject(const PropertyParser &PropertyName) const;
 	/// will return whether or not the property named in PropertyName is a container
-    virtual bool GetIsPropertyContainer(const PropertyParser &PropertyName) const;
+	virtual bool GetIsPropertyContainer(const PropertyParser &PropertyName) const;
 
-    /*! will return a const char * and a Result showing the property's value, usually the const char * will point to the first character of the Result, however in the case of a property that is an array, the const char * will point to a "*", and the result will return a "[]"
-    in this case you will need to use GetPropertyAsCryProperty
-    */
-    const char *GetProperty(const char *PropertyName,String &Result) const;
+	/*! will return a const char * and a Result showing the property's value, usually the const char * will point to the first character of the Result, however in the case of a property that is an array, the const char * will point to a "*", and the result will return a "[]"
+	in this case you will need to use GetPropertyAsCryProperty
+	*/
+	const char *GetProperty(const char *PropertyName,String &Result) const;
 
-    /*! will return a const char * and a Result showing the property's value, usually the const char * will point to the first character of the Result, however in the case of a property that is an array, the const char * will point to a "*", and the result will return a "[]"
-    in this case you will need to use GetPropertyAsCryProperty
-    */
-    virtual const char *GetProperty(const PropertyParser &PropertyName,String &Result) const;
+	/*! will return a const char * and a Result showing the property's value, usually the const char * will point to the first character of the Result, however in the case of a property that is an array, the const char * will point to a "*", and the result will return a "[]"
+	in this case you will need to use GetPropertyAsCryProperty
+	*/
+	virtual const char *GetProperty(const PropertyParser &PropertyName,String &Result) const;
 
-    /// returns true if the class in question has the property
-    virtual bool HasProperty(const PropertyParser &PropertyName) const;
-    /*! returns true if the class in question can have the property. Useful for determining if a class can accept dynamic properties */
+	/// returns true if the class in question has the property
+	virtual bool HasProperty(const PropertyParser &PropertyName) const;
+	/*! returns true if the class in question can have the property. Useful for determining if a class can accept dynamic properties */
 	virtual bool CanHaveProperty(const PropertyParser &PropertyName) const;
-    /// The count of the properties a class has
-    virtual int GetPropertyCount() const;
+	/// The count of the properties a class has
+	virtual int GetPropertyCount() const;
 
-    /*! Make a list of all property names, the function is called from the parent class through each inheritance until it reaches this class, at which point a list is created and filled with any properties on the way back through the inheritance */
+	/*! Make a list of all property names, the function is called from the parent class through each inheritance until it reaches this class, at which point a list is created and filled with any properties on the way back through the inheritance */
 	virtual PropertyList* PropertyNames() const;
 
-    /// set the value of a property
-    virtual bool SetProperty(const PropertyParser &PropertyName,const char *PropertyValue);
-    virtual bool SetPropertyAsObject(Property *Value);
-    /*! save (in xml format) to a stream, stream pays attention to it's mode and will compress the data if mode is SObject, if it's SText, it saves as text.*/
-    virtual void SaveTo(Stream &ToStream) const; // xml save
-    /// load a previously saved (in xml format) stream
-    virtual void LoadFrom(const Stream &FromStream); // xml load
+	/// set the value of a property
+	virtual bool SetProperty(const PropertyParser &PropertyName,const char *PropertyValue);
+	virtual bool SetPropertyAsObject(Property *Value);
+	/*! save (in xml format) to a stream, stream pays attention to it's mode and will compress the data if mode is SObject, if it's SText, it saves as text.*/
+	virtual void SaveTo(Stream &ToStream) const; // xml save
+	/// load a previously saved (in xml format) stream
+	virtual void LoadFrom(const Stream &FromStream); // xml load
 	/// create an object (or container of objects) from the stream
 	virtual Object *Create(Stream &FromStream);
 
 	/*! will create an object of the Type named in Type. In container classes where the Type is the contained object, the Parent must be the appropriete container type or a derived class which can create the object (if the default class can't) */
-	virtual Object *Create(const PropertyParser &PropertyName,Object *Parent=0);
+	static Object *ClassCreate(const PropertyParser &PropertyName,Object *Parent);
 	/*! will create an object of the Type named in Type. In container classes where the Type is the contained object, the Parent must be the appropriete container type or a derived class which can create the object (if the default class can't) */
-	static Object *ClassCreate(const PropertyParser &PropertyName,Object *Parent=0);
+	virtual Object *Create(const PropertyParser &PropertyName,Object *Parent)
+	{
+		return ClassCreate(PropertyName,Parent);
+	}
 
 	virtual bool CanCreate(const PropertyParser &PropertyName) const;
 	static bool ClassCanCreate(const PropertyParser &PropertyName);
 
-    //virtual size_t printf(const char *format,...)= 0;
-    //virtual CryStream * sprintf(CryStream *s,const char *format,...)= 0;
+	//virtual size_t printf(const char *format,...)= 0;
+	//virtual CryStream * sprintf(CryStream *s,const char *format,...)= 0;
 
-    /*!  Will call "IteratedFunction" for each item in the container class, passing Control
-    to each item. Returns false if the iteration was aborted early
-    */
-    bool IterateThroughAll(Container *Container,EmptyObject *Control);
+	/*!  Will call "IteratedFunction" for each item in the container class, passing Control
+	to each item. Returns false if the iteration was aborted early
+	*/
+	bool IterateThroughAll(Container *Container,EmptyObject *Control);
 
-    /*! IteratedFunction is called for each item in the container (from IteratedThroughAll)
-     returns false if iteration should stop
-     */
+	/*! IteratedFunction is called for each item in the container (from IteratedThroughAll)
+	 returns false if iteration should stop
+	 */
 	virtual bool IteratedFunction(EmptyObject *Control,EmptyObject *Item);
 
 	Object &operator =(const Object &From);
@@ -323,8 +325,8 @@ public:
 
 	virtual bool Test(bool Verbose,Object &Object,bool  (CallBack)(bool Verbose,const char *Result,bool fail));
 #endif
-};  // Object
 
+};  // Object
 
 
 
@@ -341,7 +343,7 @@ public:
 	Object *GetOwner() const { return Owner; }
 /*! will create an object of the Type named in Type. In container classes where the Type is the contained object, the
 	Parent must be the appropriete container type or a derived class which can create the object (if the default class can't) */
-	virtual Object *Create(const PropertyParser &PropertyName,Object *Parent=0);
+	virtual Object *Create(const PropertyParser &PropertyName,Object *Parent);
 	virtual Object *Create(Stream &e) { return Object::Create(e); }
 };
 

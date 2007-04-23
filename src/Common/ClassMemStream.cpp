@@ -274,19 +274,19 @@ size_t MemStream::Count() const
 
 EmptyObject *MemStream::Add(EmptyObject *Item,size_t Size)
 {
-    Write((const char *)Item,Size);
-    return Item;
+	Write((const char *)Item,Size);
+	return Item;
 }
 
 EmptyObject *MemStream::AddOwned(EmptyObject *Item,size_t Size)
 {
-    Write((const char *)Item,Size);
-    return Item;
+	Write((const char *)Item,Size);
+	return Item;
 }
 
 Object *MemStream::Add(Object *Item)
 {
-    return Stream::Add(Item);
+	return Stream::Add(Item);
 }    // returns Item
 
 Object *MemStream::AddOwned(Object *Item)

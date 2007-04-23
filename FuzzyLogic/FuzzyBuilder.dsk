@@ -1,38 +1,107 @@
 [Closed Files]
-File_0=TSourceModule,'c:\bds\4.0\include\dinkumware\exception',0,1,1,61,22,0,0,,
-File_1=TSourceModule,'C:\Documents and Settings\Chris\My Documents\CryLIb\crylib\src\Common\ClassStream.cpp',0,1,1,1,1,0,0,,
-File_2=TSourceModule,'C:\Documents and Settings\Chris\My Documents\CryLIb\crylib\src\Common\HugeInt.cpp',0,1,1,34,17,0,0,,
-File_3=TSourceModule,'C:\Documents and Settings\Chris\My Documents\CryLIb\crylib\src\Common\Utility.cpp',0,1,49,1,1,0,0,,
-File_4=TSourceModule,'C:\Documents and Settings\Chris\My Documents\CryLIb\crylib\src\Common\CryXML.cpp',0,1,1,1,1,0,0,,
-File_5=TSourceModule,'C:\Documents and Settings\Chris\My Documents\CryLIb\crylib\src\Common\CryBackProp.cpp',0,1,1,1,1,0,0,,
-File_6=TSourceModule,'C:\Documents and Settings\Chris\My Documents\CryLIb\crylib\src\Common\ClassFunction.cpp',0,1,1,1,1,0,0,,
-File_7=TSourceModule,'C:\Documents and Settings\Chris\My Documents\CryLIb\crylib\src\Common\ClassProperty.cpp',0,1,203,1,223,0,0,,
-File_8=TSourceModule,'C:\Documents and Settings\Chris\My Documents\CryLIb\crylib\src\Common\CryFunctionDef.cpp',0,1,1,1,1,0,0,,
-File_9=TSourceModule,'C:\Documents and Settings\Chris\My Documents\CryLIb\crylib\src\Common\CryPattern.cpp',0,1,1,49,27,0,0,,
+File_0=TSourceModule,'C:\Documents and Settings\Chris\My Documents\gridcam.h',0,1,1,16,6,0,0,,
+File_1=TSourceModule,'F:\RamRod\booya2007\booya\grid.c',0,1,49,1,80,0,0,,
+File_2=TSourceModule,'C:\Documents and Settings\Chris\My Documents\CryLib\crylib\Testing\test.csv',0,1,1,24,2,0,0,,
+File_3=TSourceModule,'F:\RamRod\booya2007\booya\user_SerialDrv.c',0,1,1,1,1,0,0,,
+File_4=TSourceModule,'F:\RamRod\booya2007\booya\camera.c',0,1,1,1,1,0,0,,
+File_5=TSourceModule,'c:\bds\4.0\include\dinkumware\exception',0,1,1,61,22,0,0,,
+File_6=TSourceModule,'C:\Documents and Settings\Chris\My Documents\CryLIb\crylib\src\Common\ClassStream.cpp',0,1,1,1,1,0,0,,
+File_7=TSourceModule,'C:\Documents and Settings\Chris\My Documents\CryLIb\crylib\src\Common\HugeInt.cpp',0,1,1,34,17,0,0,,
+File_8=TSourceModule,'C:\Documents and Settings\Chris\My Documents\CryLIb\crylib\src\Common\Utility.cpp',0,1,49,1,1,0,0,,
+File_9=TSourceModule,'C:\Documents and Settings\Chris\My Documents\CryLIb\crylib\src\Common\CryXML.cpp',0,1,1,1,1,0,0,,
 
 [Modules]
-Module0=C:\Documents and Settings\Chris\My Documents\CryLib\crylib\FuzzyLogic\FuzzyBuilder.bdsproj
-Module1=C:\Documents and Settings\Chris\My Documents\CryLIb\crylib\FuzzyLogic\Unit1.cpp
-Module2=c:\DriveTurretPitchFuzzyValues.h
-Module3=C:\Documents and Settings\Chris\My Documents\CryLIb\crylib\FuzzyLogic\TFuzzy.h
-Module4=C:\Documents and Settings\Chris\My Documents\CryLIb\crylib\FuzzyLogic\TFuzzy.c
-Module5=C:\Documents and Settings\Chris\My Documents\CryLIb\crylib\src\Common\CryFuzzy.h
-Module6=c:\bds\4.0\include\vcl\TeEngine.hpp
-Module7=C:\Documents and Settings\Chris\My Documents\CryLIb\crylib\src\Common\CryObject.h
-Module8=C:\Documents and Settings\Chris\My Documents\CryLIb\crylib\src\Common\ClassProperty.h
-Module9=default.htm
-Count=10
+Module0=F:\RamRod\booya2007\booya\user_routines.c
+Module1=C:\Documents and Settings\Chris\My Documents\CryLib\crylib\FuzzyLogic\FuzzyBuilder.bdsproj
+Module2=F:\RamRod\booya2007\booya\terminal.c
+Module3=F:\RamRod\booya2007\booya\user_routines_fast.c
+Module4=F:\RamRod\booya2007\booya\JoyStick.h
+Module5=F:\RamRod\booya2007\booya\grid.h
+Module6=c:\DriveTurretPitchFuzzyValues.h
+Module7=C:\Documents and Settings\Chris\My Documents\CryLIb\crylib\FuzzyLogic\Unit1.cpp
+Module8=F:\RamRod\booya2007\booya\tracking.c
+Module9=F:\RamRod\booya2007\booya\terminal.h
+Module10=F:\RamRod\booya2007\booya\camera_menu.c
+Module11=F:\RamRod\booya2007\booya\TFuzzy.c
+Module12=F:\RamRod\booya2007\booya\eeprom.c
+Module13=C:\Documents and Settings\Chris\My Documents\CryLib\crylib\FuzzyLogic\Unit4.cpp
+Module14=C:\Documents and Settings\Chris\My Documents\CryLib\crylib\Testing\test.h
+Module15=C:\Documents and Settings\Chris\My Documents\CryLIb\crylib\FuzzyLogic\TFuzzy.h
+Module16=C:\Documents and Settings\Chris\My Documents\CryLIb\crylib\FuzzyLogic\TFuzzy.c
+Module17=C:\Documents and Settings\Chris\My Documents\CryLIb\crylib\src\Common\CryFuzzy.h
+Module18=c:\bds\4.0\include\vcl\TeEngine.hpp
+Module19=C:\Documents and Settings\Chris\My Documents\CryLIb\crylib\src\Common\ClassProperty.h
+Module20=F:\RamRod\booya2007\booya\encoder.c
+Module21=F:\RamRod\booya2007\booya\ifi_startup.c
+Module22=F:\RamRod\booya2007\booya\ifi_utilities.c
+Module23=F:\RamRod\booya2007\booya\main.c
+Module24=F:\RamRod\booya2007\booya\serial_ports.c
+Module25=F:\RamRod\booya2007\booya\tracking_menu.c
+Module26=default.htm
+Count=27
 EditWindowCount=1
+
+[F:\RamRod\booya2007\booya\user_routines.c]
+ModuleType=TSourceModule
+FormState=0
+FormOnTop=0
 
 [C:\Documents and Settings\Chris\My Documents\CryLib\crylib\FuzzyLogic\FuzzyBuilder.bdsproj]
 ModuleType=TBaseProject
+
+[F:\RamRod\booya2007\booya\terminal.c]
+ModuleType=TSourceModule
+FormState=0
+FormOnTop=0
+
+[F:\RamRod\booya2007\booya\user_routines_fast.c]
+ModuleType=TSourceModule
+FormState=0
+FormOnTop=0
+
+[F:\RamRod\booya2007\booya\JoyStick.h]
+ModuleType=TSourceModule
+
+[F:\RamRod\booya2007\booya\grid.h]
+ModuleType=TSourceModule
+
+[c:\DriveTurretPitchFuzzyValues.h]
+ModuleType=TSourceModule
 
 [C:\Documents and Settings\Chris\My Documents\CryLIb\crylib\FuzzyLogic\Unit1.cpp]
 ModuleType=TSourceModule
 FormState=1
 FormOnTop=0
 
-[c:\DriveTurretPitchFuzzyValues.h]
+[F:\RamRod\booya2007\booya\tracking.c]
+ModuleType=TSourceModule
+FormState=0
+FormOnTop=0
+
+[F:\RamRod\booya2007\booya\terminal.h]
+ModuleType=TSourceModule
+
+[F:\RamRod\booya2007\booya\camera_menu.c]
+ModuleType=TSourceModule
+FormState=0
+FormOnTop=0
+
+[F:\RamRod\booya2007\booya\TFuzzy.c]
+ModuleType=TSourceModule
+FormState=0
+FormOnTop=0
+
+[F:\RamRod\booya2007\booya\eeprom.c]
+ModuleType=TSourceModule
+FormState=0
+FormOnTop=0
+
+[C:\Documents and Settings\Chris\My Documents\CryLib\crylib\FuzzyLogic\Unit4.cpp]
+ModuleType=TSourceModule
+FormState=1
+FormOnTop=0
+
+[C:\Documents and Settings\Chris\My Documents\CryLib\crylib\Testing\test.h]
 ModuleType=TSourceModule
 
 [C:\Documents and Settings\Chris\My Documents\CryLIb\crylib\FuzzyLogic\TFuzzy.h]
@@ -49,18 +118,45 @@ ModuleType=TSourceModule
 [c:\bds\4.0\include\vcl\TeEngine.hpp]
 ModuleType=TSourceModule
 
-[C:\Documents and Settings\Chris\My Documents\CryLIb\crylib\src\Common\CryObject.h]
-ModuleType=TSourceModule
-
 [C:\Documents and Settings\Chris\My Documents\CryLIb\crylib\src\Common\ClassProperty.h]
 ModuleType=TSourceModule
+
+[F:\RamRod\booya2007\booya\encoder.c]
+ModuleType=TSourceModule
+FormState=0
+FormOnTop=0
+
+[F:\RamRod\booya2007\booya\ifi_startup.c]
+ModuleType=TSourceModule
+FormState=0
+FormOnTop=0
+
+[F:\RamRod\booya2007\booya\ifi_utilities.c]
+ModuleType=TSourceModule
+FormState=0
+FormOnTop=0
+
+[F:\RamRod\booya2007\booya\main.c]
+ModuleType=TSourceModule
+FormState=0
+FormOnTop=0
+
+[F:\RamRod\booya2007\booya\serial_ports.c]
+ModuleType=TSourceModule
+FormState=0
+FormOnTop=0
+
+[F:\RamRod\booya2007\booya\tracking_menu.c]
+ModuleType=TSourceModule
+FormState=0
+FormOnTop=0
 
 [default.htm]
 ModuleType=TURLModule
 
 [EditWindow0]
-ViewCount=11
-CurrentEditView=C:\Documents and Settings\Chris\My Documents\CryLib\crylib\FuzzyLogic\FuzzyBuilder.cpp
+ViewCount=28
+CurrentEditView=F:\RamRod\booya2007\booya\user_routines.c
 View0=0
 View1=1
 View2=2
@@ -72,6 +168,23 @@ View7=7
 View8=8
 View9=9
 View10=10
+View11=11
+View12=12
+View13=13
+View14=14
+View15=15
+View16=16
+View17=17
+View18=18
+View19=19
+View20=20
+View21=21
+View22=22
+View23=23
+View24=24
+View25=25
+View26=26
+View27=27
 PercentageSizes=1
 Create=1
 Visible=1
@@ -112,15 +225,37 @@ CustomEditViewType=TDisassemblyEditView
 [View2]
 CustomEditViewType=TEditView
 Module=C:\Documents and Settings\Chris\My Documents\CryLIb\crylib\FuzzyLogic\Unit1.cpp
-CursorX=42
-CursorY=490
-TopLine=479
+CursorX=1
+CursorY=613
+TopLine=593
 LeftCol=1
 Elisions=
-Bookmarks={1,322,14}
+Bookmarks={1,651,21}
 EditViewName=C:\Documents and Settings\Chris\My Documents\CryLIb\crylib\FuzzyLogic\Unit1.cpp
 
 [View3]
+CustomEditViewType=TEditView
+Module=C:\Documents and Settings\Chris\My Documents\CryLib\crylib\FuzzyLogic\Unit4.cpp
+CursorX=23
+CursorY=5
+TopLine=1
+LeftCol=1
+Elisions=
+Bookmarks=
+EditViewName=Borland.FormDesignerView
+
+[View4]
+CustomEditViewType=TEditView
+Module=C:\Documents and Settings\Chris\My Documents\CryLib\crylib\Testing\test.h
+CursorX=32
+CursorY=13
+TopLine=1
+LeftCol=1
+Elisions=
+Bookmarks=
+EditViewName=C:\Documents and Settings\Chris\My Documents\CryLib\crylib\Testing\test.h
+
+[View5]
 CustomEditViewType=TEditView
 Module=c:\DriveTurretPitchFuzzyValues.h
 CursorX=10
@@ -131,7 +266,7 @@ Elisions=
 Bookmarks=
 EditViewName=c:\DriveTurretPitchFuzzyValues.h
 
-[View4]
+[View6]
 CustomEditViewType=TEditView
 Module=c:\bds\4.0\include\vcl\TeEngine.hpp
 CursorX=40
@@ -142,18 +277,194 @@ Elisions=
 Bookmarks=
 EditViewName=c:\bds\4.0\include\vcl\TeEngine.hpp
 
-[View5]
+[View7]
 CustomEditViewType=TEditView
 Module=C:\Documents and Settings\Chris\My Documents\CryLib\crylib\FuzzyLogic\FuzzyBuilder.cpp
 CursorX=28
-CursorY=27
+CursorY=29
 TopLine=1
 LeftCol=1
 Elisions=
 Bookmarks=
 EditViewName=C:\Documents and Settings\Chris\My Documents\CryLib\crylib\FuzzyLogic\FuzzyBuilder.cpp
 
-[View6]
+[View8]
+CustomEditViewType=TEditView
+Module=F:\RamRod\booya2007\booya\user_routines_fast.c
+CursorX=1
+CursorY=1
+TopLine=1
+LeftCol=1
+Elisions=
+Bookmarks=
+EditViewName=F:\RamRod\booya2007\booya\user_routines_fast.c
+
+[View9]
+CustomEditViewType=TEditView
+Module=F:\RamRod\booya2007\booya\user_routines.c
+CursorX=1
+CursorY=355
+TopLine=337
+LeftCol=1
+Elisions=
+Bookmarks=
+EditViewName=F:\RamRod\booya2007\booya\user_routines.c
+
+[View10]
+CustomEditViewType=TEditView
+Module=F:\RamRod\booya2007\booya\eeprom.c
+CursorX=11
+CursorY=10
+TopLine=1
+LeftCol=1
+Elisions=
+Bookmarks=
+EditViewName=F:\RamRod\booya2007\booya\eeprom.c
+
+[View11]
+CustomEditViewType=TEditView
+Module=F:\RamRod\booya2007\booya\camera_menu.c
+CursorX=1
+CursorY=1
+TopLine=1
+LeftCol=1
+Elisions=
+Bookmarks=
+EditViewName=F:\RamRod\booya2007\booya\camera_menu.c
+
+[View12]
+CustomEditViewType=TEditView
+Module=F:\RamRod\booya2007\booya\tracking_menu.c
+CursorX=1
+CursorY=1
+TopLine=1
+LeftCol=1
+Elisions=
+Bookmarks=
+EditViewName=
+
+[View13]
+CustomEditViewType=TEditView
+Module=F:\RamRod\booya2007\booya\tracking.c
+CursorX=81
+CursorY=84
+TopLine=421
+LeftCol=1
+Elisions=
+Bookmarks=
+EditViewName=F:\RamRod\booya2007\booya\tracking.c
+
+[View14]
+CustomEditViewType=TEditView
+Module=F:\RamRod\booya2007\booya\TFuzzy.c
+CursorX=1
+CursorY=1
+TopLine=1
+LeftCol=1
+Elisions=
+Bookmarks=
+EditViewName=F:\RamRod\booya2007\booya\TFuzzy.c
+
+[View15]
+CustomEditViewType=TEditView
+Module=F:\RamRod\booya2007\booya\terminal.c
+CursorX=59
+CursorY=42
+TopLine=31
+LeftCol=1
+Elisions=
+Bookmarks=
+EditViewName=F:\RamRod\booya2007\booya\terminal.c
+
+[View16]
+CustomEditViewType=TEditView
+Module=F:\RamRod\booya2007\booya\terminal.h
+CursorX=55
+CursorY=32
+TopLine=1
+LeftCol=1
+Elisions=
+Bookmarks=
+EditViewName=F:\RamRod\booya2007\booya\terminal.h
+
+[View17]
+CustomEditViewType=TEditView
+Module=F:\RamRod\booya2007\booya\JoyStick.h
+CursorX=76
+CursorY=26
+TopLine=1
+LeftCol=1
+Elisions=
+Bookmarks=
+EditViewName=F:\RamRod\booya2007\booya\JoyStick.h
+
+[View18]
+CustomEditViewType=TEditView
+Module=F:\RamRod\booya2007\booya\serial_ports.c
+CursorX=1
+CursorY=1
+TopLine=1
+LeftCol=1
+Elisions=
+Bookmarks=
+EditViewName=
+
+[View19]
+CustomEditViewType=TEditView
+Module=F:\RamRod\booya2007\booya\main.c
+CursorX=1
+CursorY=1
+TopLine=1
+LeftCol=1
+Elisions=
+Bookmarks=
+EditViewName=
+
+[View20]
+CustomEditViewType=TEditView
+Module=F:\RamRod\booya2007\booya\ifi_utilities.c
+CursorX=1
+CursorY=1
+TopLine=1
+LeftCol=1
+Elisions=
+Bookmarks=
+EditViewName=
+
+[View21]
+CustomEditViewType=TEditView
+Module=F:\RamRod\booya2007\booya\ifi_startup.c
+CursorX=1
+CursorY=1
+TopLine=1
+LeftCol=1
+Elisions=
+Bookmarks=
+EditViewName=
+
+[View22]
+CustomEditViewType=TEditView
+Module=F:\RamRod\booya2007\booya\encoder.c
+CursorX=1
+CursorY=1
+TopLine=1
+LeftCol=1
+Elisions=
+Bookmarks=
+EditViewName=
+
+[View23]
+CustomEditViewType=TEditView
+Module=F:\RamRod\booya2007\booya\grid.h
+CursorX=1
+CursorY=9
+TopLine=1
+LeftCol=1
+Elisions=
+Bookmarks=
+EditViewName=F:\RamRod\booya2007\booya\grid.h
+
+[View24]
 CustomEditViewType=TEditView
 Module=C:\Documents and Settings\Chris\My Documents\CryLIb\crylib\src\Common\ClassProperty.h
 CursorX=1
@@ -164,29 +475,29 @@ Elisions=
 Bookmarks=
 EditViewName=C:\Documents and Settings\Chris\My Documents\CryLIb\crylib\src\Common\ClassProperty.h
 
-[View7]
+[View25]
 CustomEditViewType=TEditView
 Module=C:\Documents and Settings\Chris\My Documents\CryLIb\crylib\FuzzyLogic\TFuzzy.c
-CursorX=65
-CursorY=281
-TopLine=260
+CursorX=50
+CursorY=59
+TopLine=54
 LeftCol=1
 Elisions=
-Bookmarks={1,286,14}
+Bookmarks={1,286,6}
 EditViewName=C:\Documents and Settings\Chris\My Documents\CryLIb\crylib\FuzzyLogic\TFuzzy.c
 
-[View8]
+[View26]
 CustomEditViewType=TEditView
 Module=C:\Documents and Settings\Chris\My Documents\CryLIb\crylib\FuzzyLogic\TFuzzy.h
-CursorX=57
-CursorY=33
-TopLine=22
+CursorX=27
+CursorY=5
+TopLine=1
 LeftCol=1
 Elisions=
 Bookmarks=
 EditViewName=C:\Documents and Settings\Chris\My Documents\CryLIb\crylib\FuzzyLogic\TFuzzy.h
 
-[View9]
+[View27]
 CustomEditViewType=TEditView
 Module=C:\Documents and Settings\Chris\My Documents\CryLIb\crylib\src\Common\CryFuzzy.h
 CursorX=1
@@ -197,21 +508,11 @@ Elisions=
 Bookmarks=
 EditViewName=C:\Documents and Settings\Chris\My Documents\CryLIb\crylib\src\Common\CryFuzzy.h
 
-[View10]
-CustomEditViewType=TEditView
-Module=C:\Documents and Settings\Chris\My Documents\CryLIb\crylib\src\Common\CryObject.h
-CursorX=9
-CursorY=33
-TopLine=1
-LeftCol=1
-Elisions=
-Bookmarks=
-EditViewName=C:\Documents and Settings\Chris\My Documents\CryLIb\crylib\src\Common\CryObject.h
-
 [Watches]
-Count=2
-Watch0='data',256,0,18,1,0,'Watches'
-Watch1='data->Data',256,4,18,1,0,'Watches'
+Count=3
+Watch0='tok',256,0,18,1,0,'Watches'
+Watch1='Buffer',256,0,18,1,0,'Watches'
+Watch2='MyFuzzy[0]',256,0,18,1,0,'Watches'
 
 [WatchWindow]
 WatchColumnWidth=120
@@ -236,7 +537,7 @@ StayOnTop=0
 
 [Breakpoints]
 Count=1
-Breakpoint0='C:\Documents and Settings\Chris\My Documents\CryLIb\crylib\FuzzyLogic\Unit1.cpp',345,'',0,1,'',1,0,0,'',1,'','','',0
+Breakpoint0='C:\Documents and Settings\Chris\My Documents\CryLIb\crylib\FuzzyLogic\Unit1.cpp',148,'',0,1,'',1,0,0,'',1,'','','',0
 
 [AddressBreakpoints]
 Count=0
@@ -734,44 +1035,6 @@ ClientWidth=1112
 ClientHeight=3424
 TBDockHeight=3665
 LRDockWidth=1162
-Dockable=1
-StayOnTop=0
-
-[fmGrepResults]
-PercentageSizes=1
-Create=1
-Visible=0
-Docked=0
-State=0
-Left=3425
-Top=3825
-Width=3150
-Height=2641
-MaxLeft=-6
-MaxTop=-10
-ClientWidth=3100
-ClientHeight=2400
-TBDockHeight=2641
-LRDockWidth=3150
-Dockable=1
-StayOnTop=0
-
-[fmMacroLibrary]
-PercentageSizes=1
-Create=1
-Visible=0
-Docked=0
-State=0
-Left=3938
-Top=3263
-Width=2119
-Height=3464
-MaxLeft=-6
-MaxTop=-10
-ClientWidth=2069
-ClientHeight=3223
-TBDockHeight=3464
-LRDockWidth=2119
 Dockable=1
 StayOnTop=0
 

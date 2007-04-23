@@ -348,7 +348,7 @@ Container::Iterator::Iterator(const Container *oc )
 
 bool Container::Iterator::IsObject() const
 {
-    return OrigContainer->IsObject(this);
+	return OrigContainer->IsObject(this);
 }
 
 bool Container::Iterator::IsOwned() const
@@ -374,9 +374,18 @@ bool Container::Iterator::IsContainer() const
 	}
 	return false; // not an object so not a container
 }
+
 EmptyObject *Container::Iterator::Get() const
 {
 	return OrigContainer->GetAtIterator(this);
+}
+
+Object *Container::Iterator::GetObject() const	// if current iterator isn't at an object will give exception
+{
+	if (OrigContainer->IsObject(this))
+		return (Object *)Get();
+	throw Exception(this,"Object not found at this iterator");
+
 }
 
 //void CryContainer::Iterator::Set(EmptyObject *Item,bool IsObject,bool IsOwned,size_t Size) 
@@ -409,13 +418,100 @@ bool Container::Iterator::GotoLast()
 
 size_t Container::Iterator::GetItemSize()
 {
-    return OrigContainer->GetItemSize(this);
+	return OrigContainer->GetItemSize(this);
+}
+bool Container::Iterator::GotoFirstObject(const char *Type)
+{
+	if (!OrigContainer->GotoFirst(this))
+		return false;
+	if (IsObject())
+	{
+	Object *r = GetObject();
+		if (r->IsA(Type))
+			return true;
+	}
+	return GotoNextObject(Type);
+}
+bool Container::Iterator::GotoNextObject(const char *Type)
+{
+	while(1)	// loop until object is found or not
+	{
+		if (!OrigContainer->GotoNext(this))
+			return false;
+		if (IsObject())
+		{
+			Object *r = GetObject();
+			if (r->IsA(Type))
+				return true;
+		}
+	}
+}
+bool Container::Iterator::GotoLastObject(const char *Type)
+{
+	if (!OrigContainer->GotoLast(this))
+		return false;
+	if (IsObject())
+	{
+	Object *r = GetObject();
+		if (r->IsA(Type))
+			return true;
+	}
+	return GotoPrevObject();
+}
+
+bool Container::Iterator::GotoPrevObject(const char *Type)
+{
+	while(1)	// loop until object is found or not
+	{
+		if (!OrigContainer->GotoPrev(this))
+			return false;
+		if (IsObject())
+		{
+			Object *r = GetObject();
+			if (r->IsA(Type))
+				return true;
+		}
+	}
+}
+
+bool Container::Iterator::GotoFirstNonObject()
+{
+	if (!OrigContainer->GotoFirst(this))
+		return false;
+	if (!IsObject()) return true;
+	return GotoNextNonObject();
+}
+bool Container::Iterator::GotoNextNonObject()
+{
+	while(1)	// loop until object is found or not
+	{
+		if (!OrigContainer->GotoNext(this))
+			return false;
+		if (!IsObject()) return true;
+	}
+}
+bool Container::Iterator::GotoLastNonObject()
+{
+	if (!OrigContainer->GotoLast(this))
+		return false;
+	if (!IsObject()) return true;
+	return GotoPrevNonObject();
+}
+
+bool Container::Iterator::GotoPrevNonObject()
+{
+	while(1)	// loop until object is found or not
+	{
+		if (!OrigContainer->GotoPrev(this))
+			return false;
+		if (!IsObject()) return true;
+	}
 }
 
 //bool LoadAsText(CryString *FromStream) { return OrigContainer->LoadAsText(this,FromStream); }
 bool Container::Iterator::SaveAsText(String &ToStream)
 {
-    return OrigContainer->SaveAsText(this,ToStream);
+	return OrigContainer->SaveAsText(this,ToStream);
 }
 
 const Container *Container::Iterator::GetOrigContainer() const
