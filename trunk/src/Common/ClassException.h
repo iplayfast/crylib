@@ -17,6 +17,9 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#ifndef _ClassException_
+#define _ClassException_
+
 #include "ClassObject.h"
 namespace Crystal
 {
@@ -57,3 +60,4 @@ public:
 };
 #endif
 }
+#endif // _ClassException_

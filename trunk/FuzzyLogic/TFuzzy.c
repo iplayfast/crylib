@@ -4,7 +4,7 @@ void TFuzzyInit(struct TFuzzy *data)
 {
 	data->DataLength = 0;
 }
-int TFuzzyAdd(struct TFuzzy *data,float X,float Y)
+int TFuzzyAdd(struct TFuzzy *data,VALUE_TYPE X,VALUE_TYPE Y)
 {
 int r = data->DataLength;
 	data->Data[data->DataLength].x = X;
@@ -34,7 +34,7 @@ void TFuzzyAddFuzzyp(struct TFuzzy *data,const struct TFuzzyXY *f)
 	TFuzzyAdd(data,f->x,f->y);
 }
 
-void TFuzzySetValueAt(struct TFuzzy *data,int i,float x,float y)
+void TFuzzySetValueAt(struct TFuzzy *data,int i,VALUE_TYPE x,VALUE_TYPE y)
 {
 	data->Data[i].x = x; data->Data[i].y = y;
 }
@@ -56,7 +56,7 @@ int TFuzzyCount(struct TFuzzy *data)
 }
 
 	// adds a point to the fuzzy table, returns index of point added
-int TFuzzyAddPoint(struct TFuzzy *data,float x,float y)
+int TFuzzyAddPoint(struct TFuzzy *data,VALUE_TYPE x,VALUE_TYPE y)
 {
 int i;
 struct TFuzzyXY *t,*n;
@@ -94,10 +94,10 @@ struct TFuzzyXY *t,*n;
 
 }
 
-float Value(const struct TFuzzy *data,float x)
+VALUE_TYPE Value(const struct TFuzzy *data,VALUE_TYPE x)
 {
 int i,l,Previous,Next;
-float	m;
+VALUE_TYPE	m;
 const struct TFuzzyXY *t;
 	l = data->DataLength;
 	Previous = 0;
@@ -126,12 +126,25 @@ const struct TFuzzyXY *t;
 		p = GetItemc(data,Previous);
 		n = GetItemc(data,Next);
 		  // result = mx + b;
-		  m = (n->y - p->y) / (n->x - p->x);
-		  return m * (x - p->x) + p->y;
+#ifdef USE_INT
+		  m =(VALUE_SCALE * (n->y - p->y)) / (n->x - p->x);
+		  {
+		  VALUE_TYPE r = (m * (x - p->x) + p->y)/VALUE_SCALE;
+		  if (r<=0)
+		  {
+			m =(VALUE_SCALE * (p->y - n->y)) / (p->x - n->x);
+			r = (m * (x - n->x) + n->y)/VALUE_SCALE;
+		  }
+		  return r;
+		  }
+#else
+		  m =(n->y - p->y) / (n->x - p->x);
+		  return (m * (x - p->x) + p->y);
+#endif
 	};
 }
 
-int TFuzzySetValueXY(struct TFuzzy *data,float x,float y) // Sets a point to the fuzzy table, returns index of point added
+int TFuzzySetValueXY(struct TFuzzy *data,VALUE_TYPE x,VALUE_TYPE y) // Sets a point to the fuzzy table, returns index of point added
 {
 int i;
 struct TFuzzyXY *t;
@@ -153,20 +166,20 @@ struct TFuzzyXY *t;
 };
 
  // returns a y value for the index into the table
-float ValueAt(const struct TFuzzy *data,unsigned int idx)
+VALUE_TYPE ValueAt(const struct TFuzzy *data,unsigned int idx)
 {
 	return GetItemc(data,idx)->y;
 }
  // returns a x value for the index into the table
-float IndexAt(const struct TFuzzy *data,unsigned int idx )
+VALUE_TYPE IndexAt(const struct TFuzzy *data,unsigned int idx )
 {
 	return GetItemc(data,idx)->x;
 }
-float LowestRange(const struct TFuzzy *data) // returns the lowest x
+VALUE_TYPE LowestRange(const struct TFuzzy *data) // returns the lowest x
 {
 	return GetItemc(data,0)->x;
 }
-float HighestRange(const struct TFuzzy *data)// returns the highest x
+VALUE_TYPE HighestRange(const struct TFuzzy *data)// returns the highest x
 {
   return GetItemc(data,data->DataLength-1)->x;
 }
@@ -177,10 +190,10 @@ int i;
 	TFuzzySetValueAt(data,i,ValueAt(data,i),IndexAt(data,i));
 }
 
-float TFuzzyEquality(struct TFuzzy *data,struct TFuzzy *t)
+VALUE_TYPE TFuzzyEquality(struct TFuzzy *data,struct TFuzzy *t)
 {
 int i;
-float	v,v1,result;
+VALUE_TYPE	v,v1,result;
 	result = 0.0;
 	if (t->DataLength<data->DataLength)
 	{
@@ -220,10 +233,10 @@ float	v,v1,result;
 };
 
 // remove values that would normally fall within the range of factor
-void Optimize(struct TFuzzy *data,float factor)
+void Optimize(struct TFuzzy *data,VALUE_TYPE factor)
 {
 int i,j;
-float	r,va,v,s1,s2,factor2;
+VALUE_TYPE	r,va,v,s1,s2,factor2;
 struct TFuzzyXY *n,*p;
 
   i = 1;
@@ -268,7 +281,7 @@ struct TFuzzyXY *n,*p;
 void TFuzzyIncreaseSamples(struct TFuzzy *data)
 {
 int i;
-float	x1,x2,y;
+VALUE_TYPE	x1,x2,y;
 	for(i=0;i<data->DataLength-1;i+=2)
 	{
 		x1 = IndexAt(data,i);
@@ -278,9 +291,9 @@ float	x1,x2,y;
 	}
 }
 
-float InhibitValue(const struct TFuzzy *data,float In,float InhibitPercent)
+VALUE_TYPE InhibitValue(const struct TFuzzy *data,VALUE_TYPE In,VALUE_TYPE InhibitPercent)
 {
-float	v1,v2,v3,v4;
+VALUE_TYPE	v1,v2,v3,v4;
 int i;
 	v1 = 0.0;
 	for(i=In-10;i<In;i++)
@@ -299,10 +312,10 @@ int i;
 	return v2;
 }
 
-void TFuzzySimpleInhibit(struct TFuzzy *data,float InhibitPercent)
+void TFuzzySimpleInhibit(struct TFuzzy *data,VALUE_TYPE InhibitPercent)
 {
 int i;
-float	v1,v2,v3,v4;
+VALUE_TYPE	v1,v2,v3,v4;
 	v1 = ValueAt(data,0);
   v2 = ValueAt(data,1);
   v3 = ValueAt(data,2);
@@ -327,7 +340,7 @@ struct TFuzzy temp;
 }
 void CopyAndInhibitTemp(struct TFuzzy *data,const struct TFuzzy *Fuzzy,struct TFuzzy *Temp)
 {
-float l,h,r,d;
+VALUE_TYPE l,h,r,d;
 	data->DataLength=0;
 	l = LowestRange(Fuzzy);
 	h = HighestRange(Fuzzy);
@@ -360,14 +373,14 @@ float l,h,r,d;
 	};
 }
 
-void TFuzzyRange(struct TFuzzy *data,float Floor,float Ceil)
+void TFuzzyRange(struct TFuzzy *data,VALUE_TYPE Floor,VALUE_TYPE Ceil)
 {
-float v;
+VALUE_TYPE v;
 int Size = data->DataLength;
 	if (Size==0) return;
 	{
-	float min = GetItemc(data,0)->y;
-	float max;
+	VALUE_TYPE min = GetItemc(data,0)->y;
+	VALUE_TYPE max;
 	int i;
 	struct TFuzzyXY *t;
 		// find the minimum value of the y axis
@@ -395,47 +408,47 @@ int Size = data->DataLength;
 	}
 }
 
-float Or(const struct TFuzzy *data,const struct TFuzzy *f, float v)
+VALUE_TYPE Or(const struct TFuzzy *data,const struct TFuzzy *f, VALUE_TYPE v)
 {
-float r1,r2;
+VALUE_TYPE r1,r2;
 	r1 = Value(f,v);
 	r2 = Value(data,v);
 	if (r1>r2) return r1;
 	else return r2;
 }
-float OrResult(const struct TFuzzy *data,float In,float CurrentResult)
+VALUE_TYPE OrResult(const struct TFuzzy *data,VALUE_TYPE In,VALUE_TYPE CurrentResult)
 {
-float r2;
+VALUE_TYPE r2;
 	r2 = Value(data,In);
 	if (CurrentResult>r2) return CurrentResult;
 	else return r2;
 }
-float And(const struct TFuzzy *data,const struct TFuzzy *f, float v)
+VALUE_TYPE And(const struct TFuzzy *data,const struct TFuzzy *f, VALUE_TYPE v)
 {
-float r1,r2;
+VALUE_TYPE r1,r2;
 	r1 = Value(f,v);
 	r2 = Value(data,v);
 	if (r1<r2) return r1;
 	else return r2;
 }
-float AndResult(const struct TFuzzy *data,float In,float CurrentResult)
+VALUE_TYPE AndResult(const struct TFuzzy *data,VALUE_TYPE In,VALUE_TYPE CurrentResult)
 {
-float r2;
+VALUE_TYPE r2;
 	r2 = Value(data,In);
 	if (CurrentResult<r2) return CurrentResult;
 	else return r2;
 }
 
-float XOr(const struct TFuzzy *data,const struct TFuzzy *f, float v)
+VALUE_TYPE XOr(const struct TFuzzy *data,const struct TFuzzy *f, VALUE_TYPE v)
 {
-float r1,r2;
+VALUE_TYPE r1,r2;
 	r1 = Value(f,v);
 	r2 = Value(data,v);
 	if (r1<r2) return r2 - r1;
 	else return r1 - r2;
 }
 
-float Not(const struct TFuzzy *data,float v,float TrueValue)
+VALUE_TYPE Not(const struct TFuzzy *data,VALUE_TYPE v,VALUE_TYPE TrueValue)
 {
 	return TrueValue - Value(data,v);
 }

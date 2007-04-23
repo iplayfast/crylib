@@ -84,6 +84,8 @@ __published:	// IDE-managed Components
 	TLabel *LogicInText;
 	TEdit *Fuzzy1Name;
 	TEdit *Fuzzy2Name;
+	TMenuItem *Import1;
+	TOpenTextFileDialog *ImportOpenTextFileDialog2;
 	void __fastcall Refresh(TObject *Sender);
 	void __fastcall Button2Click(TObject *Sender);
 	void __fastcall Input1Change(TObject *Sender);
@@ -114,10 +116,12 @@ __published:	// IDE-managed Components
 	void __fastcall OneFuzzyLogic1Click(TObject *Sender);
 	void __fastcall TwoFuzzyLogics1Click(TObject *Sender);
 	void __fastcall FuzzyLogicOperations1Click(TObject *Sender);
+	void __fastcall Import1Click(TObject *Sender);
 private:	// User declarations
 	void GridClear();
 	void UpdateLogic();
 	float LogicFunctionResult(float In);
+	void ParseLine(int WhichFuzzy,TEdit *Name,char *Buffer);
 public:		// User declarations
 ClassFuzzy MyFuzzy[2];
 TTrackBar *Active;	// used to determine which the user is currently moving

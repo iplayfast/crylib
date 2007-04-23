@@ -103,6 +103,17 @@ bool Fail=true;
 			break;
 		case 5:
 			{
+			MyList ml;
+			ml.IsA("");	// initialize ObjectType debug data
+
+			Crystal::String NotOwned = "Item Not Owned";
+				ml.AddOwned((EmptyObject *)(new int(42)),sizeof(int *));
+				ml.AddOwned(new Crystal::String("Item 1"));
+				ml.AddOwned(new Crystal::String("Item 2"));
+				ml.AddOwned(new Crystal::String("Item 3"));
+				ml.Add(&NotOwned);
+				ml.FirstNode();
+				ml.Test(true,ml,FormCallBack);
 				List a;
 				Fail = a.Test(true,a,FormCallBack);
 			}
@@ -121,6 +132,11 @@ bool Fail=true;
 			break;
 		case 8:
 			{
+			{
+			BackPropagateNetwork b;
+				Fail = b.Test(true,b,FormCallBack);
+			}
+
 				BPNetContainer bp;
 				Fail = bp.Test(true,bp,FormCallBack);
 			}

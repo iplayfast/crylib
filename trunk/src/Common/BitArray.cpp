@@ -233,12 +233,12 @@ EmptyObject *BitArray::GetAtIterator(const Iterator *I) const
 {
     throw Exception("Cannot Retrieve EmptyObject * from BitArray");
 }
-EmptyObject *BitArray::AddOwned(EmptyObject *Item,size_t Size)
+EmptyObject *BitArray::AddOwned(EmptyObject *Item,size_t Size,int Index)
 {
-    throw Exception("Cannot Add EmptyObject * to BitArray");
+	throw Exception("Cannot Add EmptyObject * to BitArray");
 }
 
-EmptyObject *BitArray::Add(EmptyObject *Item,size_t Size)
+EmptyObject *BitArray::Add(EmptyObject *Item,size_t Size,int Index)
 {
     throw Exception("Cannot Add EmptyObject * to BitArray");
 }

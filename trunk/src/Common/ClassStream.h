@@ -18,6 +18,9 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#ifndef _ClassStream_
+#define _ClassStream_
+
 #include "ClassContainer.h"
 
 namespace Crystal
@@ -119,7 +122,7 @@ struct Context : public Object::Context
             _BuffInt    InWriteT;
             _int    OutStreamedClass;
             _BuffClassName InStreamedClass;
-            _size_t OutReadStream;
+			_size_t OutReadStream;
             _StreamSize InReadStream;
             _size_t OutWriteStream;
             _StreamSize InWriteStream;
@@ -157,7 +160,7 @@ struct Context : public Object::Context
                   ETell,EEof,EOpen,EClose,
                   ELast};
     StdFunctionsAbstract(Stream,Container);
-    //    const char* ClassName() const;
+	//    const char* ClassName() const;
     //virtual const char *ChildClassName() const;
     virtual int Seek(int offset,int whence) const= 0;
     virtual int SeekToStart() const;
@@ -195,45 +198,48 @@ struct Context : public Object::Context
 
     virtual char *StreamedClass(char ClassNameBuffer[TMaxClassNameSize]) const; // will LoadFrom the Buffer with the name of the next class in the stream to LoadFrom
     virtual size_t Read(Stream *ToStream,size_t Size) const= 0;
-    virtual size_t Write(const Stream *FromStream,size_t Size)= 0;
-    virtual size_t Read(Stream *ToStream) const;
-    virtual size_t Write(const Stream *FromStream);
-    virtual size_t WriteNStr(const char *Buffer);
-    virtual size_t ReadNStr(char *Buffer,size_t MaxLength) const;
-    virtual size_t WriteStr(const char *Buffer);
-    virtual size_t ReadStr(char *Buffer,size_t MaxLength) const;
-    virtual size_t Size() const = 0;
-    virtual size_t Tell() const = 0;
-    virtual bool Eof() const = 0;
-    virtual bool Open(const char *Name,const char *Operation,bool ExceptOnError=true)= 0;
-    virtual void Close(bool ExceptOnError=true)= 0;
-    virtual bool IsOpen() const = 0;
-    virtual void Flush() = 0;
-    virtual bool Event(Object::EObject EventNumber,Object::Context::IO &Context);
-    virtual bool Event(EObject EventNumber,Context::UIO &Context);
-    virtual int scanf(const char *format,...) const = 0;
-    virtual size_t printf(const char *format,...)= 0;
-    virtual int fgetc() const;
-    // if this class contains the property name, it will attempt to load it
-    // if all is well returns true
-    virtual bool SetProperty(const PropertyParser &PropertyName,const char *PropertyValue);
-    virtual bool HasProperty(const PropertyParser &PropertyName) const;
-    virtual const char *GetProperty(const PropertyParser &PropertyName,String &Result) const;
-    virtual int GetPropertyCount() const;
+	virtual size_t Write(const Stream *FromStream,size_t Size)= 0;
+	virtual size_t Read(Stream *ToStream) const;
+	virtual size_t Write(const Stream *FromStream);
+	virtual size_t WriteNStr(const char *Buffer);
+	virtual size_t ReadNStr(char *Buffer,size_t MaxLength) const;
+	virtual size_t WriteStr(const char *Buffer);
+	virtual size_t ReadStr(char *Buffer,size_t MaxLength) const;
+	virtual size_t Size() const = 0;
+	virtual size_t Tell() const = 0;
+	virtual bool Eof() const = 0;
+	virtual bool Open(const char *Name,const char *Operation,bool ExceptOnError=true)= 0;
+	virtual void Close(bool ExceptOnError=true)= 0;
+	virtual bool IsOpen() const = 0;
+	virtual void Flush() = 0;
+	virtual bool Event(Object::EObject EventNumber,Object::Context::IO &Context);
+	virtual bool Event(EObject EventNumber,Context::UIO &Context);
+	virtual int scanf(const char *format,...) const = 0;
+	virtual size_t printf(const char *format,...)= 0;
+	virtual int fgetc() const;
+	// if this class contains the property name, it will attempt to load it
+	// if all is well returns true
+	virtual bool SetProperty(const PropertyParser &PropertyName,const char *PropertyValue);
+	virtual bool HasProperty(const PropertyParser &PropertyName) const;
+	virtual const char *GetProperty(const PropertyParser &PropertyName,String &Result) const;
+	virtual int GetPropertyCount() const;
 	virtual PropertyList* PropertyNames() const;
 
 #ifdef VALIDATING
 
-    virtual bool Test(bool Verbose,Object &Object,bool (CallBack)(bool Verbose,const char *Result,bool fail));
+	virtual bool Test(bool Verbose,Object &Object,bool (CallBack)(bool Verbose,const char *Result,bool fail));
 #endif
 
-    void GetEleType(String &Result) const;
-    /// Container fucntions
-    virtual Object *Add(Object *Item);    // returns Item
-    virtual Object *AddOwned(Object *Item);   // gives ownership to list
-    virtual void SetItemOwnerShip(Iterator *I,bool Owned);
+	void GetEleType(String &Result) const;
+	/// Container fucntions
+	virtual Object *Add(Object *Item);    // returns Item
+	virtual Object *AddOwned(Object *Item);   // gives ownership to list
+	virtual EmptyObject *Add(EmptyObject *Item,size_t Size);
+	virtual EmptyObject *AddOwned(EmptyObject *Item,size_t Size);
+
+	virtual void SetItemOwnerShip(Iterator *I,bool Owned);
     virtual bool GetItemOwnerShip(const Iterator *I) const;
-    virtual size_t GetItemSize(Iterator *I) const;
+	virtual size_t GetItemSize(Iterator *I) const;
     virtual bool IsObject(const Iterator *I) const;
     virtual bool LoadAsText(Iterator *I,String &FromStream);
     virtual bool SaveAsText(Iterator *I,String &ToStream) const;
@@ -241,3 +247,4 @@ struct Context : public Object::Context
 ;//CryStream
 #endif
 }
+#endif // _ClassStream_

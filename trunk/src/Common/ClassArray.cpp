@@ -70,10 +70,10 @@ FunctionDefList *SimpleArray::GetFunctions(const char *Type) const
 	s +="virtual bool SaveAsText(int i,CryString &ToStream) const = 0;";
     s +="virtual bool LoadAsText(Iterator *I,CryString &FromStream);";
     s +="virtual bool SaveAsText(Iterator *I,CryString &ToStream) const;";
-    s +="virtual EmptyObject *GetAtIterator(const Iterator *I) const = 0;";
-    s +="virtual void Clear();";
-    s +="virtual size_t GetItemSize(Iterator *I) const;";
-    s +="virtual void SetMax(size_t m);";
+	s +="virtual EmptyObject *GetAtIterator(const Iterator *I) const = 0;";
+	s +="virtual void Clear();";
+	s +="virtual size_t GetItemSize(Iterator *I) const;";
+	s +="virtual void SetMax(size_t m);";
 	s +="int GetMax() const;";
 	s +="bool GetAllowResize() const;";
 	s +="virtual const char* ChildClassName() const;";
@@ -538,41 +538,41 @@ void Array::SetMax(size_t m)
 	size_t i;
     for(i=0;i<m;i++)
         NewPtr[i].Item = 0;
-    for(i=m;i<MaxCount;i++)
-    {
-        DestroyArrayItem(this,pPtr[i].Item);
-    }
-    if (MaxCount>m)
-        MaxCount = m;
-    for(i=0;i<MaxCount;i++)
-        NewPtr[i].Item = pPtr[i].Item;
-    SimpleArray::SetMax(m);
-    if (CurrentCount>MaxCount)
-        CurrentCount = MaxCount;
-    delete pPtr;
-    pPtr = NewPtr;
+	for(i=m;i<MaxCount;i++)
+	{
+		DestroyArrayItem(this,pPtr[i].Item);
+	}
+	if (MaxCount>m)
+		MaxCount = m;
+	for(i=0;i<MaxCount;i++)
+		NewPtr[i].Item = pPtr[i].Item;
+	SimpleArray::SetMax(m);
+	if (CurrentCount>MaxCount)
+		CurrentCount = MaxCount;
+	delete pPtr;
+	pPtr = NewPtr;
 }
 
 void Array::SetSize(size_t n) // set the number currently in use (either grow or shrink)
 {
-    if (n>MaxCount)
-    {
-        if (AllowResize)
-        {
-            SetMax(MaxCount + n);
-        }
-        else
-            throw(Exception(String("Setting Current Array Count %d  higher then MaxArray Count %d",n,MaxCount)));
-    }
-    while (CurrentCount>n)
-    {
-        if (pPtr[CurrentCount].IsOwned)
-        {
-            if (pPtr[CurrentCount].IsAutoCreated)
-                DestroyArrayItem(this,pPtr[CurrentCount].Item);
-            else
+	if (n>MaxCount)
+	{
+		if (AllowResize)
+		{
+			SetMax(MaxCount + n);
+		}
+		else
+			throw(Exception(String("Setting Current Array Count %d  higher then MaxArray Count %d",n,MaxCount)));
+	}
+	while (CurrentCount>n)
+	{
+		if (pPtr[CurrentCount].IsOwned)
+		{
+			if (pPtr[CurrentCount].IsAutoCreated)
+				DestroyArrayItem(this,pPtr[CurrentCount].Item);
+			else
 				delete pPtr[CurrentCount].Item;
-        }
+		}
         pPtr[CurrentCount].Item = 0;
         CurrentCount--;
     }
@@ -616,20 +616,20 @@ void Array::GetEleType(String &Result) const
 
 void Array::SetItemOwnerShip(Iterator *I,bool IsOwned)
 {
-    int i = IteratorValue(I);
-    pPtr[i].IsOwned = IsOwned;
+	int i = IteratorValue(I);
+	pPtr[i].IsOwned = IsOwned;
 }
 
 bool Array::GetItemOwnerShip(const Iterator *I) const
 {
-    int i = IteratorValue(I);
-    return pPtr[i].IsOwned;
+	int i = IteratorValue(I);
+	return pPtr[i].IsOwned;
 }
 
 EmptyObject *Array::Add(EmptyObject *Item,bool IsObject,bool IsOwned,size_t Size)
 {
 	if (Item==0)
-		throw Exception(this,"AddOwned Null ptr added");
+		throw Exception(this,"Add Null ptr added");
 
 	size_t n = CurrentCount + 1;
 	if (n>MaxCount)
@@ -648,6 +648,11 @@ EmptyObject *Array::Add(EmptyObject *Item,bool IsObject,bool IsOwned,size_t Size
 	pPtr[CurrentCount].IsAutoCreated = false;
 	CurrentCount = n;
 	return Item;
+}
+EmptyObject *Array::AddIndex(EmptyObject *Item,bool IsObject,bool IsOwned,size_t Size,int Index)
+{
+	SetItem(Index,Item,IsObject,IsOwned,Size);
+   	return Item;
 }
 
 EmptyObject *Array::GetItem(unsigned int i)const //indexed from 0
@@ -670,6 +675,12 @@ unsigned i = IteratorValue(I);
 
 void Array::SetItem(unsigned int i,EmptyObject *Item,bool IsObject,bool IsOwned,size_t Size)
 {
+	if (i==CurrentCount && AllowResize)	// allow a resize of 1 greater then current amount
+	{
+		Add(Item,IsObject,IsOwned,Size);
+		return;
+	}
+
 	if (i>=CurrentCount)
 	{
 		if (CurrentCount==0)
@@ -842,7 +853,7 @@ int *n = new int[_Size];
 		n[i] = Values[i];
 	for(unsigned int i=CopyAmount;i<_Size;i++)
 		n[i] = 0;
-	delete Values;
+	delete []Values;
 	CurrentCount = _Size;
 	Values = n;
 }
@@ -893,7 +904,8 @@ void IntArray::GetEleType(String &Result) const
 
 EmptyObject *IntArray::GetAtIterator(const Iterator *I) const
 {
-		return NULL;
+const SimpleArray::ArrayIterator *ai = (const SimpleArray::ArrayIterator *)I;
+	return (EmptyObject *)&Values[ai->i];
 }
 void IntArray::SetAtIterator(const Iterator *I,EmptyObject *Item,bool IsObject,bool IsOwned,size_t Size)
 {
@@ -917,31 +929,58 @@ void IntArray::Clear()
 }
 EmptyObject *IntArray::Add(EmptyObject *Item,size_t Size)
 {
- return 0;	// to do fill in the stub
+	throw Exception(this,"EmptyObject *IntArray::Add(EmptyObject *Item,size_t Size) not implemented");
+//	return SimpleArray::Add(Item,Size);
 }
 EmptyObject *IntArray::AddOwned(EmptyObject *Item,size_t Size)
 {
- return 0;	// to do fill in the stub
+	throw Exception(this,"EmptyObject *IntArray::AddOwned(EmptyObject *Item,size_t Size) not implemented");
+//	return SimpleArray::Add(Item,sizeof(int));
 }
 Object *IntArray::Add(Object *Item)    // returns Item
 {
- return 0;	// to do fill in the stub
+	throw Exception(this,"Object *IntArray::Add(Object *Item)    // returns Item not implemented");
+//	return SimpleArray::Add(Item);
 }
 Object *IntArray::AddOwned(Object *Item)   // gives ownership to list
 {
- return 0;	// to do fill in the stub
+	throw Exception(this,"Object *IntArray::AddOwned(Object *Item)   // gives ownership to list not implemented");
+//	return SimpleArray::Add(Item);
+}
+EmptyObject *IntArray::Add(EmptyObject *Item,size_t Size,int Index)
+{
+	throw Exception(this,"EmptyObject *IntArray::Add(EmptyObject *Item,size_t Size,int Index) not implemented");
+//	return SimpleArray::Add(Item,sizeof(int),Index);
+}
+EmptyObject *IntArray::AddOwned(EmptyObject *Item,size_t Size,int Index)
+{
+int v = *(int *)Item;
+	Values[Index]=v;
+	return Item;
+//	throw Exception(this,"EmptyObject *IntArray::AddOwned(EmptyObject *Item,size_t Size,int Index) not implemented");
+//	return SimpleArray::AddOwned(Item,sizeof(int),Index);
+}
+Object *IntArray::Add(Object *Item,int Index)    // returns Item
+{
+	throw Exception(this,"Cannot add Object to IntArray");
+}
+Object *IntArray::AddOwned(Object *Item,int Index)   // gives ownership to list
+{
+	throw Exception(this,"Cannot add Object to IntArray");
 }
 void IntArray::SetItemOwnerShip(Iterator *I,bool Owned)
 {
-
+	return;
+//	SimpleArray::SetItemOwnerShip(I,Owned);
 }
 bool IntArray::GetItemOwnerShip(const Iterator *I) const
-{
- return false;	// to do fill in the stub
+{		// ints are alway owned
+//	return SimpleArray::GetItemOwnerShip(I);
+	return true;
 }
 bool IntArray::IsObject(const Iterator *I) const
 {
- return false;	// to do fill in the stub
+ return false;	// integers are not objects
 }
 //bool LoadAsText(Iterator *I,CryString &FromStream) = 0;
 //bool SaveAsText(Iterator *I,CryString &ToStream) const = 0;
@@ -964,7 +1003,11 @@ void IntArray::CopyTo(Object &Dest) const
 	if (Dest.IsA(CIntArray))
 	{
 		// Copy this classes variables first
-//		CryIntArray *CastDest = (CryIntArray *)&Dest;
+	IntArray *CastDest = (IntArray *)&Dest;
+		CastDest->SetSize(Size());
+		for(int i = 0;i<Size();i++)
+			CastDest->SetValue(i,GetValue(i));
+		return;
 
 	}
 //Now copy the base class
@@ -989,9 +1032,14 @@ bool IntArray::SetProperty(const PropertyParser &PropertyName,const char *Proper
 }
 
 
-const char *IntArray::GetProperty(const char *PropertyName,String &Result) const
+const char *IntArray::GetProperty(const PropertyParser &PropertyName,String &Result) const
 {
- return 0;	// to do fill in the stub
+	if (PropertyName=="Size")
+	{
+		Result.printf("%d ",CurrentCount);
+		return Result;
+	}
+	return SimpleArray::GetProperty(PropertyName,Result);
 }
 
 

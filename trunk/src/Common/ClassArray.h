@@ -18,8 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef ARRAY_DEF
-#define ARRAY_DEF
+#ifndef _ClassArray_
+#define _ClassArray_
 #include <stdlib.h>
 #include "ClassContainer.h"
 #include "ClassException.h"
@@ -107,7 +107,7 @@ StdFunctionsNoDup(SimpleArray,Container);
 	virtual bool GotoFirst(Iterator *AI) const
 	{
 		((ArrayIterator *)AI)->i = 0;
-		return CurrentCount>0;                        
+		return CurrentCount>0;
 	}
 	virtual bool GotoNext(Iterator *I) const
 	{
@@ -148,6 +148,15 @@ StdFunctionsNoDup(SimpleArray,Container);
 	{
 		return SaveAsText(((ArrayIterator *)I)->i,ToStream);
 	}
+	virtual EmptyObject *Add(EmptyObject *Item,size_t Size)=0;
+	virtual EmptyObject *AddOwned(EmptyObject *Item,size_t Size)=0;
+	virtual Object *Add(Object *Item)=0;
+	virtual Object *AddOwned(Object *Item)=0;
+
+	virtual Object *AddOwned(Object *Item,int Index)=0;
+	virtual Object *Add(Object *Item,int Index)=0;
+	virtual EmptyObject *Add(EmptyObject *Item,size_t Size,int Index)=0;
+	virtual EmptyObject *AddOwned(EmptyObject *Item,size_t Size,int Index)=0;
 
 	// this class may be used for other things, so this is not used
 	virtual EmptyObject *GetAtIterator(const Iterator *I) const = 0;
@@ -171,7 +180,7 @@ StdFunctionsNoDup(SimpleArray,Container);
 	virtual void SetSize(size_t _Size)	=0;
 
 
-	
+
 	virtual size_t GetItemSize(Iterator *I) const
 	{
 		return ElementSize;
@@ -200,19 +209,44 @@ class TArray : public SimpleArray
 	// not used
 	virtual EmptyObject *Add(EmptyObject *Item,size_t Size)
 	{
+		SetValue(CurrentCount,*(T *)Item);
+		return Item;
+	};
+	virtual EmptyObject *Add(EmptyObject *Item,size_t Size,int Index)
+	{
+		SetValue(Index,*(T *)Item);
 		return Item;
 	};
 	virtual EmptyObject *AddOwned(EmptyObject *Item,size_t Size)
 	{
+		SetValue(CurrentCount,*(T *)Item);
+		return Item;
+	};
+	virtual EmptyObject *AddOwned(EmptyObject *Item,size_t Size,int Index)
+	{
+		SetValue(Index,*(T *)Item);
 		return Item;
 	};
 
 	virtual Object *Add(Object *Item)
 	{
+		SetValue(CurrentCount,*(T *)Item);
+		return Item;
+	};
+	virtual Object *Add(Object *Item,int Index)
+	{
+		if (Index!=-1)
+			SetValue(Index,*(T *)Item);
 		return Item;
 	};
 	virtual Object *AddOwned(Object *Item)
 	{
+		SetValue(CurrentCount,*(T *)Item);
+		return Item;
+	};
+	virtual Object *AddOwned(Object *Item,int Index)
+	{
+		SetValue(Index,*(T *)Item);
 		return Item;
 	};
 	virtual void SetItemOwnerShip(Iterator *I,bool Owned)
@@ -602,6 +636,7 @@ class Array : public SimpleArray
 protected:
 	virtual ~Array();									// derived class's destructor should SetCurrent(0); for proper cleanup
 	EmptyObject *Add(EmptyObject *Item,bool IsObject,bool IsOwned,size_t Size = 0);
+	EmptyObject *AddIndex(EmptyObject *Item,bool IsObject,bool IsOwned,size_t Size,int Index);
 public:
 StdFunctionsNoDup(Array,SimpleArray);
 	Array(size_t ElementSize = 1);
@@ -620,17 +655,17 @@ StdFunctionsNoDup(Array,SimpleArray);
 	void SetMax(size_t m);			// set the number that can be made
 	void SetSize(size_t n); // set the number currently in use (either grow or shrink)
 	//  size_t GetSize() const { return CurrentCount; }
-    int DeleteItem(unsigned int i);
-    virtual void CopyTo(Array &Dest) const;  //copies contents of this to Dest
-    void Sort(int (Compare) (const void *ele1,const void *ele2));
+	int DeleteItem(unsigned int i);
+	virtual void CopyTo(Array &Dest) const;  //copies contents of this to Dest
+	void Sort(int (Compare) (const void *ele1,const void *ele2));
 
-    virtual void CopyTo(Object &Dest) const;  //copies contents of this to Dest
-    /// logically a virtual function since the elements contained cannot be known in advance (eg  save and load text functions)
-    virtual Object *Dup()const = 0;
+	virtual void CopyTo(Object &Dest) const;  //copies contents of this to Dest
+	/// logically a virtual function since the elements contained cannot be known in advance (eg  save and load text functions)
+	virtual Object *Dup()const = 0;
 
-    virtual const cbyte* GetRaw() const
-    {
-        return (const cbyte*) &pPtr[0];
+	virtual const cbyte* GetRaw() const
+	{
+		return (const cbyte*) &pPtr[0];
     }
 #ifdef VALIDATING
     virtual bool Test(bool Verbose,Object &Object,bool (CallBack)(bool Verbose,const char *Result,bool Fail));
@@ -658,43 +693,60 @@ StdFunctionsNoDup(Array,SimpleArray);
 	virtual void SetItem(unsigned int i,EmptyObject *Item,bool IsObject,bool IsOwned,size_t Size = 0);
 	virtual bool LoadAsText(int i,String &FromStream) = 0;
 	virtual bool SaveAsText(int i,String &ToStream) const = 0;
-    virtual bool LoadAsText(Iterator *I,String &FromStream)
-    {
-        return SimpleArray::LoadAsText(I,FromStream);
-    }
-    virtual bool SaveAsText(Iterator *I,String &ToStream) const
-    {
-        return SimpleArray::SaveAsText(I,ToStream);
-    }
-    // if owned Item is deleted, else returned
-    virtual void RemoveAtIterator(Iterator *LI);
-
-    /* ToDo: make these */
-    // Arrays have these functions in order to faciltate streaming
-    virtual EmptyObject *Add(EmptyObject *Item,size_t Size)
-    {
-        return Add(Item,false,false,Size);
+	virtual bool LoadAsText(Iterator *I,String &FromStream)
+	{
+		return SimpleArray::LoadAsText(I,FromStream);
 	}
-    virtual EmptyObject *AddOwned(EmptyObject *Item,size_t Size)
-    {
-        return Add(Item,false,true,Size);
-    }
-    virtual Object *Add(Object *Item)
-    {
-        return (Object *)Add(Item,true,false,0);
-    }    // returns Item
-    virtual Object *AddOwned(Object *Item)
-    {
-        return (Object *)Add(Item,true,true,0);
-    }   // gives ownership to list
-    EmptyObject *DupItem(const Array::ElePtr  *Node) const;
-    virtual void SetItemOwnerShip(Iterator *I,bool Owned);
-    virtual bool GetItemOwnerShip(const Iterator *I) const;
-    virtual bool IsObject(const Iterator *I) const;
-    virtual bool IsEmpty(const Iterator *I) const;
+	virtual bool SaveAsText(Iterator *I,String &ToStream) const
+	{
+		return SimpleArray::SaveAsText(I,ToStream);
+	}
+	// if owned Item is deleted, else returned
+	virtual void RemoveAtIterator(Iterator *LI);
+
+	/* ToDo: make these */
+	// Arrays have these functions in order to faciltate streaming
+	virtual EmptyObject *Add(EmptyObject *Item,size_t Size)
+	{
+		return Add(Item,false,false,Size);
+	}
+	virtual EmptyObject *Add(EmptyObject *Item,size_t Size,int Index)
+	{
+		return AddIndex(Item,false,false,Size,Index);
+	}
+
+	virtual EmptyObject *AddOwned(EmptyObject *Item,size_t Size)
+	{
+		return Add(Item,false,true,Size);
+	}
+	virtual EmptyObject *AddOwned(EmptyObject *Item,size_t Size,int Index)
+	{
+		return AddIndex(Item,false,true,Size,Index);
+	}
+	virtual Object *Add(Object *Item)
+	{
+		return (Object *)Add(Item,true,false,0);
+	}    // returns Item
+	virtual Object *Add(Object *Item,int Index)
+	{
+		return (Object *)AddIndex(Item,true,false,0,Index);
+	}    // returns Item
+	virtual Object *AddOwned(Object *Item)
+	{
+		return (Object *)Add(Item,true,true,0);
+	}   // gives ownership to list
+	virtual Object *AddOwned(Object *Item,int Index)
+	{
+		return (Object *)AddIndex(Item,true,true,0,Index);
+	}   // gives ownership to list
+	EmptyObject *DupItem(const Array::ElePtr  *Node) const;
+	virtual void SetItemOwnerShip(Iterator *I,bool Owned);
+	virtual bool GetItemOwnerShip(const Iterator *I) const;
+	virtual bool IsObject(const Iterator *I) const;
+	virtual bool IsEmpty(const Iterator *I) const;
 	virtual void SetIsObject(Iterator *I,bool IsCO);
-    size_t GetItemSize(Iterator *I) const;
-    virtual void GetEleType(String &Result) const;
+	size_t GetItemSize(Iterator *I) const;
+	virtual void GetEleType(String &Result) const;
 
 	virtual void Clear();
 
@@ -712,6 +764,22 @@ class DoubleArray : public SimpleArray
 	virtual EmptyObject *LoadItemFrom(Array *Owner,EmptyObject *ToItem,Stream &FromStream)
 	{
 		return ToItem;
+	};
+	virtual EmptyObject *Add(EmptyObject *Item,size_t Size,int Index)
+	{
+		return Item;
+	};
+	virtual EmptyObject *AddOwned(EmptyObject *Item,size_t Size,int Index)
+	{
+		return Item;
+	};
+	virtual Object *Add(Object *Item,int Index)
+	{
+		return Item;
+	};
+	virtual Object *AddOwned(Object *Item,int Index)
+	{
+		return Item;
 	};
 	virtual EmptyObject *Add(EmptyObject *Item,size_t Size)
 	{
@@ -828,11 +896,6 @@ StdFunctionsNoDup(DoubleArray,SimpleArray);
 };
 
 
-class CryIntegerArray : public TArray<int>
-{
-public:
-
-};
 class IntArray : public SimpleArray
 {
 int *Values;
@@ -860,6 +923,20 @@ virtual EmptyObject *CreateArrayItem(Array *Owner,bool *IsObject);
 //virtual EmptyObject *LoadItemFrom(CryArray *Owner,EmptyObject *ToItem,Stream &FromStream);
 virtual bool LoadAsText(int i,String &FromStream);
 virtual bool SaveAsText(int i,String &ToStream) const;
+virtual bool LoadAsText(Iterator *I,String &FromStream)
+{
+	return LoadAsText(((ArrayIterator *)I)->i,FromStream);
+}
+virtual bool SaveAsText(Iterator *I,String &ToStream) const
+{
+	return SaveAsText(((ArrayIterator *)I)->i,ToStream);
+}
+virtual bool HasProperty(const PropertyParser &PropertyName)const
+{
+	return PropertyName=="Size" ||
+        SimpleArray::HasProperty(PropertyName);
+}
+
 virtual void GetEleType(String &Result) const;
 //virtual void DeleteIterator(Iterator *I) const;
 //virtual bool GotoFirst(Iterator *I) const;
@@ -874,12 +951,16 @@ virtual void SetAtIterator(const Iterator *I,EmptyObject *Item,bool IsObject,boo
 virtual void SetItem(unsigned int i,EmptyObject *Item,bool IsObject,bool IsOwned,size_t Size = 0);
 virtual void RemoveAtIterator(Iterator *LI);
 virtual void Clear();
-virtual const char *GetProperty(const char *PropertyName,String &Result) const;
-
+virtual const char *GetProperty(const PropertyParser &PropertyName,String &Result) const;
 virtual EmptyObject *Add(EmptyObject *Item,size_t Size);
-	virtual EmptyObject *AddOwned(EmptyObject *Item,size_t Size);
+virtual EmptyObject *AddOwned(EmptyObject *Item,size_t Size);
 virtual Object *Add(Object *Item);    // returns Item
 virtual Object *AddOwned(Object *Item);   // gives ownership to list
+virtual EmptyObject *Add(EmptyObject *Item,size_t Size,int Index);
+virtual EmptyObject *AddOwned(EmptyObject *Item,size_t Size,int Index);
+virtual Object *Add(Object *Item,int Index);    // returns Item
+virtual Object *AddOwned(Object *Item,int Index);   // gives ownership to list
+
 virtual void SetItemOwnerShip(Iterator *I,bool Owned);
 virtual bool GetItemOwnerShip(const Iterator *I) const;
 virtual bool IsObject(const Iterator *I) const;
@@ -904,8 +985,8 @@ virtual bool IsObject(const Iterator *I) const;
 
 
 //Class Footer
-}; // class CryIntArray
+}; // class IntArray
 
 
 } // end namespace Crystal
-#endif //ARRAY_DEF
+#endif //_ClassArray_

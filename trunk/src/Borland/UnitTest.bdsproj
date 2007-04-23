@@ -253,7 +253,6 @@
         <FILE FILENAME="..\Common\CryNN.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="CryNN" FORMNAME="" DESIGNCLASS=""/>
         <FILE FILENAME="..\Common\ClassObject.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="ClassObject" FORMNAME="" DESIGNCLASS=""/>
         <FILE FILENAME="..\Common\CryPattern.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="CryPattern" FORMNAME="" DESIGNCLASS=""/>
-        <FILE FILENAME="..\Common\CryPatterns.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="CryPatterns" FORMNAME="" DESIGNCLASS=""/>
         <FILE FILENAME="..\Common\CrySet.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="CrySet" FORMNAME="" DESIGNCLASS=""/>
         <FILE FILENAME="..\Common\ClassXML.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="ClassXML" FORMNAME="" DESIGNCLASS=""/>
         <FILE FILENAME="..\Common\DefaultBuild.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="DefaultBuild" FORMNAME="" DESIGNCLASS=""/>

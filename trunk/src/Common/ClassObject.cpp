@@ -227,6 +227,14 @@ bool Object::Test(bool Verbose,Object &ThisObject, bool (CallBack)(bool Verbose,
 
 				if (factorystring!=spn)
 				{
+FileStream a,b;
+	a.Open("factory.xml","w",false);
+	b.Open("spn.xml","w",false);
+	factorystring.CopyTo(a);
+	spn.CopyTo(b);
+	a.Close();
+	b.Close();
+
 					sprintf(Result,"\nObject failed XML save rebuild test");
 					Fail = true;
 				}
@@ -268,12 +276,6 @@ bool Object::Test(bool Verbose,Object &ThisObject, bool (CallBack)(bool Verbose,
 
 Object::~Object()
 {}
-
-bool Object::CanDup() const
-
-{
-    return true;
-}
 
 Object &Object::operator =(const
 
@@ -413,12 +415,6 @@ bool Object::SetProperty(const
     return false;
 }
 
-/*! will create an object of the Type named in Type. In container classes where the Type is the contained object, the Parent must be the appropriete container type */
-Object *Object::Create(const
-                             PropertyParser &PropertyName,Object *Parent)
-{
-    return ClassCreate(PropertyName,Parent);
-}
 
 bool Object::CanCreate(const
 
@@ -494,7 +490,7 @@ FunctionDefList *Object::GetFunctions(const
 
     s+= "virtual Object *Create(Stream &FromStream);";
 
-    s+= "virtual Object *Create(const char *Type,Object *Parent=0);";
+    s+= "virtual Object *Create(const char *Type,Object *Parent);";
 
     s+= "bool IterateThroughAll(Container *Container,EmptyObject *Control);";
 
@@ -582,13 +578,12 @@ cbyte* Object::GetRaw() const
     throw Exception(this,"Cannot GetRaw from Object");
 }
 
-bool Object::GetIsPropertyContainer(const
-
-                                       PropertyParser &PropertyName) const
+bool Object::GetIsPropertyContainer(const PropertyParser &PropertyName) const
 {
-    if (HasProperty(PropertyName))
-        return false; // generally properties are strings containing values, special case needs to be handled specially
-
+	if (HasProperty(PropertyName))
+	{
+		return false; // generally properties are strings containing values, special case needs to be handled specially
+	}
     throw Exception(this,ExceptionUnknownProperty,"Unknown Property \"%s\"",PropertyName.AsPChar());
 }
 
@@ -674,7 +669,8 @@ Object::Object()
 {
 #ifdef DEBUG
     ObjectID = ::ObjectID;
-    ::ObjectID++;
+	::ObjectID++;
+	strncpy(ObjectType,"Unknown",29);
 #endif
 }
 
@@ -692,8 +688,13 @@ char* Object::ChildClassName() const
 
 bool Object::IsA(const
 
-                    char *_ClassName) const // can the object map to a ClassName
+					char *_ClassName) const // can the object map to a ClassName
 {
+#ifdef DEBUG
+// this is done here instead of the constructor because it requires a virtual function, and the constructor doesn't have it set up yet.
+// consequently if you are debugging and need to see the Object type, you will have needed to call IsA before hand. (IsA("") works fine).
+	strncpy((char *)this->ObjectType,ChildClassName(),29);
+#endif
 	return strcmp(_ClassName,CObject)==0;
 }
 
@@ -814,10 +815,14 @@ Object *Object::ClassCreate(const PropertyParser &PropertyName,Object *Parent)
 		return (Object *)new Property("NoName");
 	if (PropertyName==CList)
 		return (Object *)new List();
+	if (PropertyName==CMyList)
+    	return (Object *)new MyList();
 	if (PropertyName==CPropertyList)
 		return (Object *)new PropertyList();
 	if (PropertyName==CDoubleArray)
 		return (Object *)new DoubleArray();
+	if (PropertyName==CIntArray)
+		return (Object *)new IntArray();
 	if (PropertyName==CFunctionDef)
 		return (FunctionDef *)new FunctionDef();
 	if (PropertyName==CFunctionDefList)
