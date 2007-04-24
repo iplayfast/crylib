@@ -3,7 +3,13 @@
 
 = Introduction =
 
-Crylib is an object oriented [http://www.crystalsoftware.org/docs/html/index.html library] based on the idea that all classes eventually have as their base class Object.
+Crylib is an object oriented [http://www.crystalsoftware.org/docs/html/index.html library] based on the following ideas:
+
+* that all classes eventually have as their base class Object.  
+* all classes have [properties] which have enough information to recreate the class.  (for example, think of button which has the property of a caption and colour, and possibly other things).
+* all properties can be serialized. 
+
+It contains many features also seen in stl, like containers and iterators, strings, streams and so on.
 
 = Details =
 
@@ -16,28 +22,39 @@ struct EmptyObject {};
 No data, no functions just a name to hang your code on. 
 
 Each class also has a #define of it's class name. The name is the letter C plus the name of the class, so for instance Object is CObject, String is CString.
+{{{
+#define CObject "Object"
+#define CString "String"
+}}}
+These defines are useful in the classes in order for a class to know about itself and it's parent classes.
 
 Some of the functions which Object defines are
 
 {{{
    const char* ClassName() const;
+   virtual const char *ChildClassName() const;
 }}}
-This function a pointer to a string stating the current class Name. For example Object (not String which would be a child class)
+
+This function a pointer to a string stating the current class Name or the child class name.
+ For example 
 
 {{{
-    virtual const char *ChildClassName() const;
-}}}
-This function returns a pointer to a string stating the ChildClassName, For exampleEG CryString (not Object which is the base class)
+void foo(Object *o)
+{
+  cout << "ClassName is " << o->ClassName();            // Object
+  cout << "ChildClassName is " << o->ChildClassName();   // String
+}
 
-To illustrate this consider the following code:
-{{{
-String a;
-Object *o = &a;
-const char *ClassName = o->ClassName();  // returns "Object"
-const char *ChildClassName = o->ChildClassName(); // returns "String"
+void bar()
+{
+String A;
+   foo(&A);
+}
+
 }}}
 
-Often a class is passed using the least common denomintator (ie Object) so these functions are useful to find out what type of class you are dealing with.
+
+Often a class is passed using the least common denomintator (ie Object) so these functions are useful to find out what type of class you are dealing with. If you know the class is a String, cast the Object to a String and start using the String functions.
 
 {{{
     virtual bool IsA(const char *ClassName) const;    // can the object map to a ClassName
@@ -46,8 +63,8 @@ IsA is another useful function for finding out if a class inherits from another.
 
 {{{
 String a;
-   a->IsA(CObject); // returns true
-   a->IsA(XML);  // returns false
+   a.IsA(CObject); // returns true
+   a.IsA(XML);  // returns false
 }}}
 
 {{{
@@ -58,8 +75,7 @@ Which asks can this function duplicate itself? This is useful for sub-classes wh
 {{{
     virtual void CopyTo(Object &Dest) const;
 }}}
-Which copies the data of the current object (or class derived from it) to the Object Dest.  This obviously must make sense for the object, but for the most part it works as you would expect. You couldn't for example, copy a string to a neural net and expect the classes to know what to do with it, but you could copy a neural net to an XML class, and copy the XML class to the string, (and do the reverse as well).
-
+Which copies the data of the current object (or class derived from it) to the Object Dest.  This obviously must make sense for the object, but for the most part it works as you would expect. You couldn't for example, copy a string to a neural net and expect the classes to know what to do with it, but you could copy a neural net to an XML class, and copy the XML class to the string or file, (and do the reverse as well).
 {{{
     const char *GetProperty(const char *PropertyName,String &Result) const;
 }}}
