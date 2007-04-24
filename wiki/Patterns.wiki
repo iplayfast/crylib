@@ -20,21 +20,21 @@ and
 
 
 
-To implement this in C++, we will have two main classes. The StrategyHolder
-and the Strategy. As we don't know the number of Strategies the StrategyHolder
-will need, that number will be passed in on the creation. StrategyHolder will
-access the strategies through an index. StrategyHolder never owns the strategy
+To implement this in C++, we will have two main classes. The !StrategyHolder
+and the Strategy. As we don't know the number of Strategies the !StrategyHolder
+will need, that number will be passed in on the creation. !StrategyHolder will
+access the strategies through an index. !StrategyHolder never owns the strategy
 so care must be taken to delete any created stratgies once they are finished
 with.
 
 {{{
 	class StrategyHolderSender : public StrategyHolder 
 }}}
-StrategyHolderSender is a variation of StrategyHolder in that all it's
+StrategyHolderSender is a variation of !StrategyHolder in that all it's
 strategy's Send pointers to a Object (originally from the calling function).
 It was kept separate from StrategyHolder so that there was no possiblity of mixing
 Strategy which need a sender with strategies without. The same strategy can be used for
-StrategyHolder and StrategyHolderSender, but only one type within each holder.
+StrategyHolder and !StrategyHolderSender, but only one type within each holder.
 
 The pattern has been extended so that strategies return a value.
 If the value >=0 then the value represents the next strategy to be called.
@@ -62,7 +62,7 @@ They can be created by initialization code. See example in code.
 
 *Factory Pattern*
 The Factory Method Pattern defines an interface for creating an object, but lets subclasses decide which class to instantiate. Factory Method lets a class defer instantiation to subclasses.
-
+{{{
 class thingsNeededInClass
 {
 	virtual thing* CreateThing1();
@@ -90,7 +90,7 @@ public:
 		Thing2 = class->CreateThing2();
 	}
 };
-
+}}}
 our things will always be Objects
 
 {{{
@@ -152,3 +152,4 @@ This has been implemented by allowing different strategys to represent the state
 {{{
 	class State : public StrategyHolderSender 
 }}}
+
