@@ -64,7 +64,7 @@ IsA is another useful function for finding out if a class inherits from another.
 {{{
 String a;
    a.IsA(CObject); // returns true
-   a.IsA(XML);  // returns false
+   a.IsA(CXML);  // returns false
 }}}
 
 {{{
