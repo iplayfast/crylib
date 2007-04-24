@@ -5,10 +5,10 @@
 Containers in CryLib have the base class [http://www.crystalsoftware.org/docs/html/classCrystal_1_1Container.html Container] which includes Iterator. A container is any class which can contain other classes, (such as a hash, array, or list). The CryLib library is similar to but not the same as the stl containers.
 
 It's features are:
-* knows the ownership of the contained items (individually).
-* if the container owns the items it will delete them when it is destroyed.
-* it can serialize the items it contains when it is serialized. (a list of strings can be serialied).
-* it can contain other containers.
+ #. knows the ownership of the contained items (individually).
+ #. if the container owns the items it will delete them when it is destroyed.
+ #. it can serialize the items it contains when it is serialized. (a list of strings can be serialied).
+ #. it can contain other containers.
 
 
 
