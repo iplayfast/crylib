@@ -5,9 +5,9 @@
 
 Crylib is an object oriented [http://www.crystalsoftware.org/docs/html/index.html library] based on the following ideas:
 
-#. that all classes eventually have as their base class Object.  
-#. all classes have [Properties] which have enough information to recreate the class.  (for example, think of button which has the property of a caption and colour, and possibly other things).
-#. all [Properties] can be serialized. 
+ * that all classes eventually have as their base class Object.  
+ * all classes have [Properties] which have enough information to recreate the class.  (for example, think of button which has the property of a caption and colour, and possibly other things).
+ * all [Properties] can be serialized. 
 
 It contains many features also seen in stl, like containers and iterators, strings, streams and so on.
 
@@ -85,9 +85,9 @@ const char *
 }}}
 and a Result showing the property's value, usually the returned char pointer will point to the first character of the Result, however in the case of a property that is an array, the returned char pointer will point to a {{{"*"}}}, and the result will return a "[]"
 String for example has:
- #. property "Value" which has the value of whatever the string contains.
- #. property "Terminator" which has the value of the terminating character (usually '\0')
- #. When DEBUG is defined property "ObjectID" which has the number representing this object.
+ * property "Value" which has the value of whatever the string contains.
+ * property "Terminator" which has the value of the terminating character (usually '\0')
+ * When DEBUG is defined property "ObjectID" which has the number representing this object.
 
 
 {{{
