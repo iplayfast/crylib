@@ -2,12 +2,19 @@
 
 = Introduction =
 
-Containers in CryLib have the base class [http://www.crystalsoftware.org/docs/html/classCrystal_1_1Container.html Container] which includes Iterator. A container is any class which can contain other classes, (such as a hash, array, or list). 
+Containers in CryLib have the base class [http://www.crystalsoftware.org/docs/html/classCrystal_1_1Container.html Container] which includes Iterator. A container is any class which can contain other classes, (such as a hash, array, or list). The CryLib library is similar to but not the same as the stl containers.
+
+It's features are:
+* knows the ownership of the contained items (individually).
+* if the container owns the items it will delete them when it is destroyed.
+* it can serialize the items it contains when it is serialized. (a list of strings can be serialied).
+* it can contain other containers.
+
 
 
 = Details =
 
-Typical code when using a container is
+Typical code when using a container is shown in the Observeable class which is a subclass of the List Container class.
 {{{
 void Observable::NotifyObservers(int ObserverID)
 {
@@ -32,3 +39,27 @@ void Observable::NotifyObservers(int ObserverID)
 In this case the container is a container of Observer classes. Each one is being notified. Note the following.
   #. It doesn't matter what type of container is here, they all have the base class container so all will work the same way, even though they may be different types of containers.
   #. The iterator is created and destroyed by the container. This allows different types of containers to traverse them using whatever method works best for the container.(list,array etc).
+  #. The typical pattern is
+{{{
+   if (I->GotoFirst())  // returns true if there is an item in the container
+   do
+   {
+     // do stuff with the item pointed to by I (using I->Get())
+   } while(I->GotoNext()) // returns true if there is another item in the container
+   // This can be reversed by using GotoLast and GotoPrev.
+}}}
+
+This pattern insures that you are always dealing with valid in the container.
+
+Another enhancement to the Iterators is the GotoFirstObject(Objectname),GotoNextObject and so on. If you have a list of Strings and integers you could deal with them separately by
+{{{
+   if (I->GotoFirstObject(CString))
+   do
+   {
+   } while(I->GotoNextObject(CString));
+   if (I->GotoFirstData())
+   do
+   {
+   } while(I->GotoNextData());
+}}}
+
