@@ -137,8 +137,8 @@ bool Fail=true;
 				Fail = b.Test(true,b,FormCallBack);
 			}
 
-				BPNetContainer bp;
-				Fail = bp.Test(true,bp,FormCallBack);
+//				BPNetContainer bp;
+//				Fail = bp.Test(true,bp,FormCallBack);
 			}
 			break;
 		case 9:

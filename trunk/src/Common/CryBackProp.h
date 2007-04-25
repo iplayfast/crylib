@@ -63,9 +63,9 @@ typedef vector <double>::const_iterator cWeightsI;
 						}
 						for(int i=0;i<SizePS;i++)
 						{
-							Weights.push_back(Size*10+i);//RandomDouble(-1,1));
-							WeightsSave.push_back(Size*10+i);//RandomDouble(-1,1));
-							dWeights.push_back(Size*10+i);//RandomDouble(-1,1));
+							Weights.push_back(RandomDouble(-1,1));
+							WeightsSave.push_back(RandomDouble(-1,1));
+							dWeights.push_back(RandomDouble(-1,1));
 						}
 					}
 };
@@ -82,6 +82,8 @@ double          Gain;          // - gain of sigmoid function
 double          Error;         // - total net error
 String Status;
 public:
+	Object *Parent;	// not used by this class, but possibly used by the callback, or other classes
+	void (*CallBack)(Object *Parent,String &Status);
 	_BackPropagateNetwork()
 	{
 		Alpha       = 0.9;
@@ -89,6 +91,7 @@ public:
 		Gain        = 1;
 		TestError = TrainError = MAX_DOUBLE;
 		LockLevel = 1;
+		CallBack = 0;
 	}
 	int Size() { return Layers.size(); }
   void SetAlpha(double a) { Alpha = a; }
@@ -340,12 +343,13 @@ void STTrainNet(int EPochs,int LengthIn,double *SampleIn,int LengthOut,double *S
 		//TestNet();	// uncomment if TestError doesn't get set
 		count++;
 		Status.printf("Trained %d EPochs, Current Test Error = %3.9f\n",count,TestError);
-
 		if (TestError < MinTestError)
 		{
-//			ShowStatus();
+		if (CallBack)
+			CallBack(Parent,Status);
 			Status.printf(" - saving Weights ...\n");
-//			ShowStatus();
+		if (CallBack)
+			CallBack(Parent,Status);
 			MinTestError = TestError;
 			SaveWeights();
 		}
@@ -354,7 +358,8 @@ void STTrainNet(int EPochs,int LengthIn,double *SampleIn,int LengthOut,double *S
 			if ((TestError < 1) || (TestError > 1.2 * MinTestError))
 			{
 				Status.printf(" - stopping Training and restoring Weights ...\n");
-//				ShowStatus();
+				if (CallBack)
+					CallBack(Parent,Status);
 				Stop = true;
 				RestoreWeights();
 			}
@@ -457,8 +462,6 @@ bool GetIsPropertyContainer(const PropertyParser &PropertyName) const
 Object *GetCopyOfPropertyAsObject(const PropertyParser &PropertyName) const
 {
 	if (PropertyName!="Layers") return Object::GetCopyOfPropertyAsObject(PropertyName);
-	Property *p = new Property();
-	p->SetName("Layers");
 	MyList *l = new MyList();
 	{    // saves the size of each layer
 	IntArray *ia = new IntArray(nn->Layers.size());
@@ -483,9 +486,12 @@ Object *GetCopyOfPropertyAsObject(const PropertyParser &PropertyName) const
 		}
 		l->AddOwned(nl);
 	}
+	Property *p = new Property();
+	p->SetName("Layers");
 	p->SetValueOwned(l);	// must wait until l is fully loaded before setting the property
 	return p;
 }
+
 bool SetPropertyAsObject(Property *Value)
 {
 	String Result;
@@ -515,6 +521,9 @@ bool SetPropertyAsObject(Property *Value)
 		// for each layer
 		for(BPLayerI From = nn->Layers.begin();From <nn->Layers.end();From++)
 		{
+		int LayerLength = From->LayerSize;
+		int LayerSize = From->Weights.end() - From->Weights.begin();
+        	
 			if (!iLayer->GotoNextObject(CMyList)) return false;
 			MyList *Weights = (MyList *) iLayer->Get();
 			MyList::Iterator *iWeights = Weights->CreateIterator();
@@ -523,13 +532,16 @@ bool SetPropertyAsObject(Property *Value)
 			double Weight;
 				String *s = (String *) iWeights->Get();
 				s->scanf("%lf ",&Weight);	// set weight[i] first
-				*w++ = Weight;
+				*w = Weight;
 				if (iWeights->GotoNextObject(CString))
 				{
 					String *s = (String *) iWeights->Get();
 					s->scanf("%lf ",&Weight);	// set dweight[i] next
-					*dw++ = Weight;
+					*dw = Weight;
 				}
+				else break;
+				if (!iWeights->GotoNextObject(CString))
+					break;
 			}
 		}
 		return true;
@@ -602,8 +614,19 @@ virtual Object *Create(const PropertyParser &PropertyName,Object *Parent)
 	return Object::Create(PropertyName,Parent);
 }
 
+bool (*pCallBack)(bool Verbose,const char *Result,bool fail);
+static void SimpleCallBack(Object *Parent,String &Status)
+{
+BackPropagateNetwork *p = (BackPropagateNetwork*)Parent;
+	p->pCallBack(true,Status.AsPChar(),false);
+};
+
 bool Test(bool Verbose,Object &Object,bool (CallBack)(bool Verbose,const char *Result,bool fail))
 {
+	pCallBack = CallBack;
+	nn->Parent = this;
+	nn->CallBack = SimpleCallBack;
+
 _BackPropagateNetwork::LayerI it = nn->Layers.end();
 
 bool Fail = false;
@@ -644,7 +667,7 @@ char Result[400];
 			//double TargetData[4] = {0,0,0,0};
 		if ((Verbose) && (!CallBack(Verbose,"\nInitial Training (will take some time)\n",Fail)))
 			return false;
-Object::Test(Verbose,*this,CallBack);
+		Object::Test(Verbose,*this,CallBack);
 		nn->STTrainNet(5000,4,InData,4,TargetData);
 //		nn->printWeights();
 		for(int i=0;i<4;i++)
