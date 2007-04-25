@@ -82,8 +82,8 @@ double          Gain;          // - gain of sigmoid function
 double          Error;         // - total net error
 String Status;
 public:
-	Object *Parent;	// not used by this class, but possibly used by the callback, or other classes
-	void (*CallBack)(Object *Parent,String &Status);
+	Object *Parent;	// not used by this class, used by the callback, or other classes
+	void (*CallBack)(Object *Parent,String &Status);	// must be set by an external class (as well as parent) in order to get a status when training
 	_BackPropagateNetwork()
 	{
 		Alpha       = 0.9;
@@ -126,8 +126,6 @@ public:
 			{
 				Sum += *w++ * *f++;
 			}
-			//    if ((-Gain * Sum)>500.0)
-			//        gint++;
 			Sum = 1.0 / (1.0 + (exp(-Gain * Sum)));
 			if (errno==ERANGE)
 				Sum = MAX_DOUBLE;
@@ -250,7 +248,7 @@ void RandomWeights()
 	{
 		for(Layer::WeightsI w = start->Weights.begin();w<start->Weights.end();w++)
 		{
-//			*w =RandomDouble(-1,1);
+			*w =RandomDouble(-1,1);
 		}
 	}
 }
@@ -613,7 +611,13 @@ virtual Object *Create(const PropertyParser &PropertyName,Object *Parent)
 
 	return Object::Create(PropertyName,Parent);
 }
+virtual Object *Create(Stream &FromStream)
+{
+	return Object::Create(FromStream);
+};
 
+
+#ifdef VALIDATING
 bool (*pCallBack)(bool Verbose,const char *Result,bool fail);
 static void SimpleCallBack(Object *Parent,String &Status)
 {
@@ -691,188 +695,37 @@ char Result[400];
 	}
 	return true;
 }
+#endif // VALIDATING
+// pass through functions
+  virtual size_t Size() const { return nn->Size() + Object::Size(); }
+  void SetAlpha(double a) { nn->SetAlpha(a); }
+  void SetEta(double e) { nn->SetEta(e); }
+  void SetGain(double g) { nn->SetGain(g); }
+  void AddLayer(int Size) { nn->AddLayer(Size); }
+  void Propagate(int _From,int _To,double Gain) { nn->Propagate(_From,_To,Gain); }
+  void BackPropagate(int _From,int _To,double Gain) { nn->BackPropagate(_From,_To,Gain); }
+  void ComputeOutputError(const double *Target) { nn->ComputeOutputError(Target); }
+  void AdjustWeights() { nn->AdjustWeights(); }
+  void PropagateNet() { nn->PropagateNet(); }
+  void BackPropagateNet() { nn->BackPropagateNet(); }
+  void GetOutput(double *Output) { nn->GetOutput(Output); }
+  void SetInput(const double *Input) { nn->SetInput(Input); }
+  void RandomWeights() { nn->RandomWeights(); }
+  void SaveWeights() { nn->SaveWeights(); }
+  void RestoreWeights() { nn->RestoreWeights(); }
+  void SimulateNet(const double *Input, double *Output,const double *Target, bool Training)
+  {
+	nn->SimulateNet(Input,Output,Target,Training);
+  }
+  void TrainNet(int Epochs,int LengthIn,double *SampleIn,int LengthOut,double *SampleOut)
+  {
+	nn->TrainNet(Epochs,LengthIn,SampleIn,LengthOut,SampleOut);
+  }
 
-};
-
-
-#define CBPNetContainer "BPNetContainer"
-#define CBackPropagateLayer "BackPropagateLayer"
-#define CBPNet	"BPNet"
-
-class BPNet;
-/// a layer class for use within the CryBackpropagation Class
-/*! The layer of the backpropagation net Weights are stored elsewhere, this class just stores the offsets into the weights array*/
-class BackPropagateLayer : public Object
-{
-					 /* A Layer OF A NET:                     */
-	int id;
-	BackPropagateLayer();	// can't access
-public:
-
-	int     LayerSize;     /* - number of units in this Layer       */
-	int		PreviousLayerSize;// handy to know
-	int		OutputStart;	// output of Nth unit
-	int		ErrorStart;		// error term of Nth unit
-	int		WeightStart;	// connection weights to Nth unit
-	int		WeightSaveStart;	// saved weights for intermediate results
-	int		dWeightStart;	// delta weights for momentum
-	BPNet *Owner;
-public:
-StdFunctionsNoDup(BackPropagateLayer,Object);
-
-virtual FunctionDefList *GetFunctions(const char *Type=0) const;
-
-BackPropagateLayer(BPNet *_Owner);
-void SetID(int i);
-int  GetID() const { return id; }
-virtual void CopyTo(Object &Object) const;
-virtual bool HasProperty(const PropertyParser &PropertyName)const;
-virtual int GetPropertyCount() const;
-virtual PropertyList* PropertyNames() const;
-virtual const char *GetProperty(const PropertyParser &PropertyName,String &Result) const;
-// if this class contains the property name, it will attempt to load it
-// if all is well returns true
-virtual bool SetProperty(const PropertyParser &PropertyName,const char *PropertyValue);
-};
-
-/// low level backpropagation array class
-class BPNet : public Array
-{
-public:// shit remove atfter testing
-double *AllWeights;
-int	AllWeightsSize;
-int LockLevel;
-protected:
-	void CopyFromWeights(const double *Source,int length);
-	void CopyToWeights(double *Dest,int length) const;
-	int GetAllWeightsSize() const { return AllWeightsSize; }
-public:
-StdFunctions(BPNet,Array);
-    virtual FunctionDefList *GetFunctions(const char *Type=0) const;
-
-	void SetAllWeights();	/// gets' called just before the network is trained, or as it is loaded
-	double *GetAllWeights() const { return AllWeights; }
-/// derived class will handle the destruction of objects contained in array
-	virtual void DestroyArrayItem(Array *Owner,EmptyObject *Layer) ;
-/// derived class will handle the creation of objects contained in array
-	virtual EmptyObject *CreateArrayItem(Array *Owner,bool *IsCryObject) ;
-/// derived class will handle the display in CryStream the objects contained in array (text assumed)
-	virtual void SaveItemTo(const Array *Owner,EmptyObject *FromItem,Stream &ToStream) const;
-/// derived class will handle the loading of an Object from the stream, objectmust have already been created
-	virtual EmptyObject *LoadItemFrom(Array *Owner,EmptyObject *ToItem,Stream &FromStream);
-	virtual bool LoadAsText(int i,String &FromStream) ;
-	/// will return whether or not the property named in PropertyName is a container
-	virtual bool GetIsPropertyContainer(const PropertyParser &PropertyName) const;
-	virtual bool LoadAsText(Iterator *I,String &FromStream)
-    {
-        return Array::LoadAsText(I,FromStream);
-    }
-   	virtual bool SaveAsText(int i,String &ToStream) const;
-    virtual bool SaveAsText(Iterator *I,String &ToStream) const
-    {
-        return Array::SaveAsText(I,ToStream);
-	}
-	BackPropagateLayer *SetLayerSize(int i,int Size);
-	int GetLayerSize(int i) const;
-	void Propagate(int From,int To,double Gain);
-    void BackPropagate(int From,int To,double Gain);
-    void RandomWeights(int LayerNumber);
-    void RandomWeights();
-
-    BackPropagateLayer * AddLayer(int Size);
-    void SetLockLevel(int n) { LockLevel = n; } // if retraining a new layer lock the old ones
-	int GetLockLevel() { return LockLevel; }
-	BPNet() : Array()	{	AllWeights = 0; LockLevel = 1; }
-    ~BPNet()  	{	Clear(); delete []AllWeights;	}
-   virtual void CopyTo(Array &Dest) const { Array::CopyTo(Dest);  } //copies contents of this to Dest
-    virtual void CopyTo(Object &Dest) const { Array::CopyTo(Dest);  }  //copies contents of this to Dest
-    virtual void GetEleType(String &Result) const;
-};
-
-/// backpropagation interface layer 
-class BPNetContainer : public BPNet
-{
-double TestError;
-double TrainError;
-double          Alpha;         /* - momentum factor                     */
-double          Eta;           /* - learning rate                       */
-double          Gain;          /* - gain of sigmoid function            */
-double          Error;         /* - total net error                     */
-String Status;
-void SaveWeights();
-void RestoreWeights();
-public:
-StdFunctions(BPNetContainer,BPNet);
-// DataSetup Functions
-  void SetAlpha(double a) { Alpha = a; }
-  void SetEta(double e) { Eta = e; }
-  void SetGain(double g) { Gain = g; }
-
-// functions needed by CryObject
-	virtual FunctionDefList *GetFunctions(const char *Type=0) const;
-
-   virtual void CopyTo(Object &Dest) const;  //copies contents of this to Dest
-// functions needed by CryNamedObject
-	virtual bool HasProperty(const PropertyParser &PropertyName)const;
-	/// will return a property represented as an object, useful for classes which contain properties that are dynamically allocated, as a property that is dynamic is a Object and therefore callable
-	virtual Object *GetCopyOfPropertyAsObject(const PropertyParser &PropertyName) const;
-
-	virtual int GetPropertyCount() const;
-	virtual PropertyList* PropertyNames() const;
-	virtual const char *GetProperty(const PropertyParser &PropertyName,String &Result) const;
-	// if this class contains the property name, it will attempt to load it
-	// if all is well returns true
-	virtual bool SetProperty(const PropertyParser &PropertyName,const char *PropertyValue);
-	/*! will create an object of the Type named in Type. In container classes where the Type is the contained object, the Parent must be the appropriete container type or a derived class which can create the object (if the default class can't) */
-	virtual Object *Create(const PropertyParser &PropertyName,Object *Parent);
-	virtual Object *Create(Stream &e) { return Object::Create(e); }
-
-// functions if multithreaded
-const char *GetStatus() const { return Status.AsPChar(); }
-virtual void ShowStatus() {/* printf("%s\n",Status.AsPChar());*/ }	// derived class could get updates with this
-// functions needed to run the network
-void TrainNet(int Epochs,int LengthIn,double *SampleIn,int LengthOut,double *SampleOut);
-void STTrainNet(int Epochs,int LengthIn,double *SampleIn,int LengthOut,double *SampleOut);
-void SimulateNet(const double* Input, double* Output,const double* Target, bool Training);
-void SetInput(const double* Input);
-void PropagateNet();
-void BackPropagateNet();
-void GetOutput(double* Output);
-void ComputeOutputError(const double* Target);
-void AdjustWeights();
-void RandomWeights();
-double GetError() const { return Error; }
-void printWeights();
-
-/*
-// functions needed by CryContainer
-   virtual Iterator *_CreateIterator() const;
-   virtual void DeleteIterator(Iterator *I) const;
-   virtual bool GotoFirst(Iterator *I) const;   // returns true if success
-   virtual bool GotoPrev(Iterator *I) const;   // returns true if success
-   virtual bool GotoNext(Iterator *I) const;    // returns true if success
-   virtual bool GotoLast(Iterator *Iterator) const;    // returns true if success
-   virtual EmptyObject *GetAtIterator(Iterator *I) const;
-   virtual size_t Count() const;
-   virtual void Clear();
-   virtual EmptyObject *Add(EmptyObject *Item,size_t Size);
-   virtual EmptyObject *AddOwned(EmptyObject *Item,size_t Size);
-   virtual CryObject *Add(CryObject *Item);    // returns Item
-   virtual CryObject *AddOwned(CryObject *Item);   // gives ownership to list
-   virtual void SetItemOwnerShip(Iterator *I,bool Owned);
-   virtual bool GetItemOwnerShip(Iterator *I) const;
-   virtual size_t GetItemSize(Iterator *I) const;
-   virtual bool IsCryObject(Iterator *I) const;
-   virtual bool LoadAsText(Iterator *I,CryString *FromStream);
-   virtual bool SaveAsText(Iterator *I,CryString *ToStream) const;*/
-   virtual void CopyTo(Array &Dest) const { Array::CopyTo(Dest);  } //copies contents of this to Dest
-   virtual void CopyTo(BPNetContainer &Dest) const { Object *n = &Dest; CopyTo(*n); }
-   void SetSize(size_t n); // set the number currently in use (either grow or shrink)
-// Actual class stuff
-    BPNetContainer();
- #ifdef VALIDATING
-virtual bool Test(bool Verbose,Object &Object,bool (CallBack)(bool Verbose,const char *Result,bool fail));
-#endif
+  void STTrainNet(int EPochs,int LengthIn,double *SampleIn,int LengthOut,double *SampleOut)
+  {
+	nn->STTrainNet(EPochs,LengthIn,SampleIn,LengthOut,SampleOut);
+  }
 
 };
 

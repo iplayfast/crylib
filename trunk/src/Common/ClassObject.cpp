@@ -782,8 +782,7 @@ bool Object::ClassCanCreate(const
 		   (PropertyName==CFunctionDefList) ||
 		   (PropertyName==CFuzzy) ||
 		   (PropertyName==CBitArray) ||
-		   (PropertyName==CBPNetContainer) ||
-		   (PropertyName==CBackPropagateLayer) ||
+		   (PropertyName==CBackPropagateNetwork) ||
 		   (PropertyName==CHugeInt);
 }
 

@@ -1256,9 +1256,7 @@ Object *IncludesFactory::Create(const Object *p,const PropertyParser &PropertyNa
 	AddInclude(p,CSimpleArray,CurrentIncludes,"ClassArray.h");
 	AddInclude(p,CDoubleArray,CurrentIncludes,"ClassArray.h");
 
-	AddInclude(p,CBPNetContainer,CurrentIncludes,"CryBackProp.h");
-	AddInclude(p,CBackPropagateLayer,CurrentIncludes,"CryBackProp.h");
-	AddInclude(p,CBPNet,CurrentIncludes,"CryBackProp.h");
+	AddInclude(p,CBackPropagateNetwork,CurrentIncludes,"CryBackProp.h");
 
 	AddInclude(p,CHugeInt,CurrentIncludes,"hugeint.h");
 

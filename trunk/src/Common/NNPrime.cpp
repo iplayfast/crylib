@@ -64,9 +64,9 @@ HugeInt n,d;
   printf("\n%s ",n.GetAsStr());
 }
 
-    LoadSomePrimes();
-BPNetContainer bp;
-    bp.AddLayer(MaxHugeIntBits);   // input is digits
+	LoadSomePrimes();
+BackPropagateNetwork bp;
+	bp.AddLayer(MaxHugeIntBits);   // input is digits
     bp.AddLayer(MaxHugeIntBits);
     bp.AddLayer(MaxHugeIntBits * 2);
     bp.SetAlpha(0.9);
@@ -103,7 +103,7 @@ BPNetContainer bp;
             }
           }
           bp.STTrainNet(5000,100,(double *)dTotal,100,(double *)dResults);
-          bp.printWeights();
+//          bp.printWeights();
         }
     return 0;
 }
