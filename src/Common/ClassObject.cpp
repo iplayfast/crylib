@@ -194,6 +194,13 @@ bool Object::Test(bool Verbose,Object &ThisObject, bool (CallBack)(bool Verbose,
 					{
 					String str;
 						x.SaveTo(str);
+	// useful for debugging
+{
+FileStream a;
+	a.Open("x.xml","w",false);
+	str.CopyTo(a);
+}
+
 						Fail = false;	// above failure may be valid (as designed)
 						co = x.CreateObjectFromNode(&ThisObject);
 					}
@@ -227,7 +234,8 @@ bool Object::Test(bool Verbose,Object &ThisObject, bool (CallBack)(bool Verbose,
 
 				if (factorystring!=spn)
 				{
-FileStream a,b;
+  // useful for debugging
+	FileStream a,b;
 	a.Open("factory.xml","w",false);
 	b.Open("spn.xml","w",false);
 	factorystring.CopyTo(a);
