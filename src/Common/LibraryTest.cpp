@@ -40,7 +40,7 @@ int TestFuzzyMain(int argc, char* argv[])
 {
 try
 {
-BPNetContainer bp;
+BackPropagateNetwork bp;
 #ifdef VALIDATING
 String a;
 //	a.Test(true,&a,CallBack);
@@ -184,7 +184,7 @@ XWVU  TSRQ PONM LKJI HGFE DCBA
 
 void CreateAINETXML()
 {
-  BPNetContainer ai;
+  BackPropagateNetwork ai;
   ai.AddLayer(2); 	// 2 inputs
   ai.AddLayer(4);     // 2 calcs
   ai.AddLayer(1);     // 1 output
