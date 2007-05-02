@@ -2,7 +2,7 @@ GotoLast
 
 = Introduction =
 
-For use in [Container] classes.
+For use in [Containers container classes].
 
 
 = Details =
