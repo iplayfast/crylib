@@ -10,8 +10,6 @@ It's features are:
  #. it can serialize the items it contains when it is serialized. (a list of strings can be serialied).
  #. it can contain other containers.
 
-
-
 = Details =
 
 Typical code when using a container is shown in the Observeable class which is a subclass of the List Container class.
@@ -36,30 +34,34 @@ void Observable::NotifyObservers(int ObserverID)
 }
 }}}
 
-In this case the container is a container of Observer classes. Each one is being notified. Note the following.
-  #. It doesn't matter what type of container is here, they all have the base class container so all will work the same way, even though they may be different types of containers.
+In this case the container contains pointers to Observer classes. Each one is being notified. Note the following.
+  #. It doesn't matter what type of container is here, they all have the base class container so all will work the same way, even though they may be different types of containers. This allows you to use any type of container (or derived) class with the same pattern.
   #. The iterator is created and destroyed by the container. This allows different types of containers to traverse them using whatever method works best for the container.(list,array etc).
-  #. The typical pattern is
+  #. In general the pattern is
 {{{
-   if (I->GotoFirst())  // returns true if there is an item in the container
+   if (I->GotoFirst())  // container isn't empty, and you can go to the first item
    do
    {
+
      // do stuff with the item pointed to by I (using I->Get())
+
    } while(I->GotoNext()) // returns true if there is another item in the container
-   // This can be reversed by using GotoLast and GotoPrev.
 }}}
 
-This pattern insures that you are always dealing with valid in the container.
+This can be reversed by using GotoLast and GotoPrev functions.
+
+This pattern insures that you are always dealing with a valid item in the container.
 
 Another enhancement to the Iterators is the GotoFirstObject(Objectname),GotoNextObject and so on. If you have a list of Strings and integers you could deal with them separately by
 {{{
+// deal with all the strings first
    if (I->GotoFirstObject(CString))
    do
    {
    } while(I->GotoNextObject(CString));
+// deal with all the integers next
    if (I->GotoFirstData())
    do
    {
    } while(I->GotoNextData());
 }}}
-
