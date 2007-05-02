@@ -66,9 +66,23 @@ Another enhancement to the Iterators is the GotoFirstObject(Objectname),GotoNext
    } while(I->GotoNextData());
 }}}
 
-*Iterator functions are:*
+*Iterator Functions are:*
   * GotoFirst,GotoFirstObject,GotoFirstData
   * GotoNext,GotoNextObject,GotoNextData
   * GotoLast,GotoLastObject,GotoLastData
   * GotoPrev,GotoPrevObject,GotoPrevData
-  * Get
+  * GotoN
+  * [Get],GetObject,IsObject,IsContainer,IsEmpty,
+  * [Dup]
+  * GetItemSize,GetItemType
+
+*Container Functions are:*
+  * All the of the Iterator, with the Iterator being passed in.
+  * [Add],AddOwned
+  * Count,Clear
+  * IterateThroughAll, IteratedFunction
+  * ...
+
+  * SetAtIterator,
+
+
