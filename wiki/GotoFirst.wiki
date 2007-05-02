@@ -1,0 +1,11 @@
+GotoFirst
+
+= Introduction =
+
+For use in [Containers container classes].
+
+
+= Details =
+
+An Iterator that is associated with a container will be moved to the First Item in the container.
+Will return true if successfull.
