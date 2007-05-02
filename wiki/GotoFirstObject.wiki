@@ -7,5 +7,6 @@ For use in [Containers container classes].
 
 = Details =
 
-An Iterator that is associated with a container will be moved to the FirstObject in the container.
+An Iterator that is associated with a container will be moved to the First Object in the container.  The Object type can be optionally specified.
+
 Will return true if successfull.
