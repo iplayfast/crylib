@@ -65,3 +65,10 @@ Another enhancement to the Iterators is the GotoFirstObject(Objectname),GotoNext
    {
    } while(I->GotoNextData());
 }}}
+
+*Iterator functions are:*
+GotoFirst,GotoFirstObject,GotoFirstData
+GotoNext,GotoNextObject,GotoNextData
+GotoLast,GotoLastObject,GotoLastData
+GotoPrev,GotoPrevObject,GotoPrevData
+Get
