@@ -2,10 +2,9 @@ GotoLast
 
 = Introduction =
 
-For use in [container] classes.
+For use in [Container] classes.
 
 
 = Details =
 
 An Iterator that is associated with a container will be moved to the Last Item in the container.
-
