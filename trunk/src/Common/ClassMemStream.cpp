@@ -278,10 +278,9 @@ EmptyObject *MemStream::Add(EmptyObject *Item,size_t Size)
 	return Item;
 }
 
-EmptyObject *MemStream::AddOwned(EmptyObject *Item,size_t Size)
+void MemStream::AddOwned(EmptyObject *Item,size_t Size)
 {
 	Write((const char *)Item,Size);
-	return Item;
 }
 
 Object *MemStream::Add(Object *Item)
@@ -289,9 +288,9 @@ Object *MemStream::Add(Object *Item)
 	return Stream::Add(Item);
 }    // returns Item
 
-Object *MemStream::AddOwned(Object *Item)
+void MemStream::AddOwned(Object *Item)
 {
-    return Stream::AddOwned(Item);
+	Stream::AddOwned(Item);
 }   // gives ownership to list
 
 

@@ -103,10 +103,12 @@ virtual Iterator *_CreateIterator() const
 }
 BitIterator *CreateIterator() const { return new BitIterator(this); }
 virtual EmptyObject *GetAtIterator(const Iterator *I) const;
-virtual EmptyObject *AddOwned(EmptyObject *Item,size_t Size,int Index=-1);
-virtual EmptyObject *Add(EmptyObject *Item,size_t Size,int Index=-1);
+virtual void AddOwned(EmptyObject *Item,size_t Size);
+virtual EmptyObject *Add(EmptyObject *Item,size_t Size);
+virtual void AddOwned(EmptyObject *Item,size_t Size,int Index);
+virtual EmptyObject *Add(EmptyObject *Item,size_t Size,int Index);
 virtual Object *Dup() const;
-virtual Object *AddOwned(Object *Item);
+virtual void AddOwned(Object *Item);
 virtual Object *Add(Object *Item);
 virtual FunctionDefList *GetFunctions(const char *Type=0) const;
 

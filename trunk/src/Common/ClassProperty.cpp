@@ -40,6 +40,7 @@ void Property::Init(const char *_Name,const char *_Value)
 		delete Value;
 		throw Exception("Out of memory creating CryProperty");
 	}
+
 }
 Property::Property(const char *_Name,const char *_Value)
 {
@@ -87,6 +88,7 @@ void Property::SetValue(const Object *_Value)
 }
 void Property::SetValueOwned(Object *_Value)
 {
+	delete Value;
 	Value = _Value;
 }
 void Property::SetName(const char *_Name)
@@ -124,17 +126,17 @@ bool Property::HasProperty(const PropertyParser &PropertyName) const
 #endif
 	if (*GetName()=="NoName")
 		return true;	// Properties can have any one Property, none has been assigned yet so go for it
-    return (PropertyName==*GetName()) || Object::HasProperty(PropertyName);
+	return (PropertyName==*GetName()) || Object::HasProperty(PropertyName);
 }
 
 FunctionDefList *Property::GetFunctions(const char *Type) const
 {
-    // if a type has been defined and it's not this class, check subclasses for it
-    if (Type && !IsA(Type))
-        return Object::GetFunctions(Type);
-    // otherwise get any functions in subclasses
-    FunctionDefList *l = Object::GetFunctions();
-    String s;
+	// if a type has been defined and it's not this class, check subclasses for it
+	if (Type && !IsA(Type))
+		return Object::GetFunctions(Type);
+	// otherwise get any functions in subclasses
+	FunctionDefList *l = Object::GetFunctions();
+	String s;
 	s += "//  Class CryProperty;";
 	s += "virtual CryString *GetFunctions() const;";
 	s += "void SetValue(const char * _Value);";
@@ -249,9 +251,9 @@ const String *Property::GetName() const
 
 Object *Property::Dup() const  /// creates a duplicate of this object
 {
-    Property *n = new Property(GetName()->AsPChar());
-    n->SetValue(Value);
-    return n;
+	Property *n = new Property(GetName()->AsPChar());
+	n->SetValue(Value);
+	return n;
 }
 
 size_t Property::Size() const
@@ -509,6 +511,25 @@ void PropertyList::RenameProperty(const char *OldName,const char *NewName)
 	DeleteIterator(it);
 	if (!HasProperty(OldName))
 		throw(Exception("RenameProperty %s not present in PropertyList",OldName));
+}
+void PropertyList::RemoveProperty(const char *Name)
+{
+	PropertyIterator *it = CreateIterator();
+	if (it->GotoFirst())
+	{
+		do
+		{
+			if (*it->GetName()==Name)
+			{
+				this->RemoveAtIterator(it);
+				DeleteIterator(it);
+				return;
+			}
+		} while(it->GotoNext());
+	}
+	DeleteIterator(it);
+	if (!HasProperty(Name))
+		throw(Exception("RemoveProperty %s not present in PropertyList",Name));
 }
 
 

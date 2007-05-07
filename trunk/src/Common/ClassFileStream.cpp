@@ -79,9 +79,9 @@ Object *FileStream::Add(Object *Item)
 	return Stream::Add(Item);
 }    // returns Item
 
-Object *FileStream::AddOwned(Object *Item)
+void FileStream::AddOwned(Object *Item)
 {
-	return Stream::AddOwned(Item);
+	Stream::AddOwned(Item);
 }   // gives ownership to list
 
 size_t FileStream::Count() const
@@ -368,10 +368,9 @@ EmptyObject *FileStream::Add(EmptyObject *Item,size_t Size)
 	Exception("Cannot use Add with FileStreams.");
 	return 0;
 }
-EmptyObject *FileStream::AddOwned(EmptyObject *Item,size_t Size)
+void FileStream::AddOwned(EmptyObject *Item,size_t Size)
 {
 	Exception("Cannot use AddOwned with FileStreams.");
-    return 0;
 }
 void FileStream::Clear()
 {

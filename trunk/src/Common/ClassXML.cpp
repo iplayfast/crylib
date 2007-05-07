@@ -88,7 +88,6 @@ void XMLNode::SaveTo(Stream &ToStream) const
 
 void XMLNode::SaveTo(Object &ToObject) const
 {
-int Index =0;	// used if ToObject is an array
 	if (!ToObject.IsA(Type))
 	{
 		ToObject.IsA(Type);
@@ -128,7 +127,7 @@ int Index =0;	// used if ToObject is an array
 					String Result;
 //					ToObject.SetProperty(current->Type.AsPChar(),current->_Attributes(Result));
 					PropertyList::PropertyIterator *ai = current->_Attributes->CreateIterator();
-					if (ai->GotoFirst())
+					if (ai->GotoLast())
 					{
 						do
 						{
@@ -137,7 +136,7 @@ int Index =0;	// used if ToObject is an array
 							const char *_Value = ai->GetValue(Value);
 							ToObject.SetProperty(Name,Value);
 						}
-						while (ai->GotoNext());
+						while (ai->GotoPrev());
 					}
 					current->_Attributes->DeleteIterator(ai);
 
@@ -153,15 +152,25 @@ int Index =0;	// used if ToObject is an array
 							do
 							{
 								String Value;
+								Container *c = (Container *) &ToObject;
 								const char *Name = ai->GetName()->AsPChar();
 								const char *_Value = ai->GetValue(Value);
 								size_t Size;
-								Value.scanf("%d ",&Size);
-								int pos = Value.Pos(" ",Value.Tell())+1;
+								int Index;
+								size_t pos;
+								if (c->IsA(CSimpleArray))
+								{
+									Value.scanf("%d ",&Index);
+									pos = Value.Pos(" ",Value.Tell())+1;
 									if (pos<=Value.Length())
 										Value.SeekFromStart(pos);
-								char *Buffer = (char *) ::operator new(Size);
+								}
+								Value.scanf("%d ",&Size);
+									pos = Value.Pos(" ",Value.Tell())+1;
+									if (pos<=Value.Length())
+										Value.SeekFromStart(pos);
 //								char *Buffer = new char[Size];		// This might cause problems due to delete []Item needed for arrays.
+								char *Buffer = (char *) ::operator new(Size); // so instead we create one item that's the size of Size
 								for(size_t i =0;i<Size;i++)
 								{
 								int tmp;
@@ -171,7 +180,6 @@ int Index =0;	// used if ToObject is an array
 									if (pos<=Value.Length())
 										Value.SeekFromStart(pos);
 								}
-								Container *c = (Container *) &ToObject;
 								if (c->IsA(CSimpleArray))
 								{
 								SimpleArray *s = (SimpleArray *)c;
@@ -442,7 +450,7 @@ void XMLNode::LoadFrom(const Object &FromObject)
 {
 	Type = FromObject.ChildClassName();
 	PropertyList *pn = FromObject.PropertyNames(); // creates a list of the property names
-if (pn->Sortable())       /* TODO : Need to reimplment this for CryPropertyList */
+	if (pn->Sortable())       /* TODO : Need to reimplment this for CryPropertyList */
 		pn->Sort(0);
     PropertyList::PropertyIterator *i = pn->CreateIterator();
     try
@@ -525,6 +533,7 @@ if (pn->Sortable())       /* TODO : Need to reimplment this for CryPropertyList 
 */
 							Container *cc = (Container *)&FromObject;
 							Container::Iterator *I = cc->_CreateIterator();
+							int index=0;// in case it's an array
 							if (cc->GotoFirst(I))
 								do
 								{
@@ -532,7 +541,8 @@ if (pn->Sortable())       /* TODO : Need to reimplment this for CryPropertyList 
 									//                        CryXMLNode *tSubNodes = new CryXMLNode(c);
 									if (I->IsObject())
 									{
-										n->LoadFrom(*(Object *)I->Get());
+									Object *o = (Object *)I->Get();
+									n->LoadFrom(*o);
 									}
 									else
 									{
@@ -543,6 +553,8 @@ if (pn->Sortable())       /* TODO : Need to reimplment this for CryPropertyList 
 										t.printf("data ");
 //										if (!cc->SaveAsText(I,e))  // try to save it to e
 //										{
+											if (cc->IsA(CSimpleArray))
+												e.printf("%d ",index++); // we need to include offset into array
 											size_t size = I->GetItemSize();
 											char *c = (char *)I->Get();
 											e.printf("%d ",size);

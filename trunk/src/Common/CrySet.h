@@ -27,6 +27,27 @@ using namespace Crystal;
 
 class CrySet : public TArray<int>
 {
+	virtual Object *Add(Object *Item,int Index) // not implemented
+	{
+		throw Exception(this,"Set's don't have indexes");
+	}
+	virtual EmptyObject *Add(EmptyObject *Item,size_t Size,int Index)
+	{
+		throw Exception(this,"Set's don't have indexes");
+	}
+
+	virtual Object *Add(Object *Item)
+	{
+		if (Item->IsA(CCrySet))
+		{
+			Union(*(CrySet *)Item);
+			return Item;
+		}
+		throw Exception(this,"Cannot Add to Set");
+	}
+
+
+
 public:
 	CrySet(int SetSize=10) : TArray<int>(SetSize) { }
 	StdFunctions(CrySet,TArray<int>);
@@ -62,6 +83,17 @@ public:
 		String v = PropertyValue;
 			return LoadAsText((int)Size(),v);
 		}
+		if (PropertyName=="Size")
+		{
+			SetAllowResize(true);
+			CurrentCount = 0;
+			int iCurrentCount = atoi(PropertyValue);
+			SetSize(iCurrentCount);
+			SetMax(iCurrentCount);
+			CurrentCount = iCurrentCount;
+			return true;
+		}
+
 		return TArray<int>::SetProperty(PropertyName,PropertyValue);
 	}
 	virtual bool SetPropertyAsObject(const PropertyParser &PropertyName,Object *Value)
@@ -74,19 +106,42 @@ public:
 	}
 	virtual const char *GetProperty(const PropertyParser &PropertyName,String &Result) const
 	{
+		if (PropertyName=="Size")
+		{
+			return TArray<int>::GetProperty("CurrentCount",Result);
+		}
 		return TArray<int>::GetProperty(PropertyName,Result);
 	}
 	virtual bool HasProperty(const PropertyParser &PropertyName)const
 	{
+		if (PropertyName=="Size") return true;
 		return TArray<int>::HasProperty(PropertyName);
 	}
 	virtual int GetPropertyCount() const
 	{
-		return TArray<int>::GetPropertyCount();
+		return Object::GetPropertyCount() +2;
 	}
 	virtual PropertyList* PropertyNames() const
 	{
-		return TArray<int>::PropertyNames();
+	PropertyList *list = Object::PropertyNames();
+		list->AddPropertyByName("Size",this);
+		list->AddPropertyByName("Values",this);
+		return list;
+	}
+	virtual EmptyObject *Add(EmptyObject *Item,size_t Size)
+	{
+		if (Size==sizeof(int))	// make an assumption
+		{
+			Add(*(int *)Item);
+			return Item;
+		}
+		throw Exception(this,"Don't know how to Add this to Set");
+	}
+
+	/// create an object (or container of objects) from the stream
+	virtual Object *Create(Stream &FromStream)
+	{
+		return OwnedObject::Create(FromStream);
 	}
 
 #ifdef VALIDATING

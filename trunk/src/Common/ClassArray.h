@@ -149,14 +149,14 @@ StdFunctionsNoDup(SimpleArray,Container);
 		return SaveAsText(((ArrayIterator *)I)->i,ToStream);
 	}
 	virtual EmptyObject *Add(EmptyObject *Item,size_t Size)=0;
-	virtual EmptyObject *AddOwned(EmptyObject *Item,size_t Size)=0;
+	virtual void AddOwned(EmptyObject *Item,size_t Size)=0;
 	virtual Object *Add(Object *Item)=0;
-	virtual Object *AddOwned(Object *Item)=0;
+	virtual void AddOwned(Object *Item)=0;
 
-	virtual Object *AddOwned(Object *Item,int Index)=0;
+	virtual void AddOwned(Object *Item,int Index)=0;
 	virtual Object *Add(Object *Item,int Index)=0;
 	virtual EmptyObject *Add(EmptyObject *Item,size_t Size,int Index)=0;
-	virtual EmptyObject *AddOwned(EmptyObject *Item,size_t Size,int Index)=0;
+	virtual void AddOwned(EmptyObject *Item,size_t Size,int Index)=0;
 
 	// this class may be used for other things, so this is not used
 	virtual EmptyObject *GetAtIterator(const Iterator *I) const = 0;
@@ -204,6 +204,7 @@ StdFunctionsNoDup(SimpleArray,Container);
 template<typename T>
 class TArray : public SimpleArray
 {
+
 	T *Values;
 	//int Size;
 	// not used
@@ -217,15 +218,14 @@ class TArray : public SimpleArray
 		SetValue(Index,*(T *)Item);
 		return Item;
 	};
-	virtual EmptyObject *AddOwned(EmptyObject *Item,size_t Size)
+	virtual void AddOwned(EmptyObject *Item,size_t Size)
 	{
 		SetValue(CurrentCount,*(T *)Item);
-		return Item;
 	};
-	virtual EmptyObject *AddOwned(EmptyObject *Item,size_t Size,int Index)
+	virtual void AddOwned(EmptyObject *Item,size_t Size,int Index)
 	{
 		SetValue(Index,*(T *)Item);
-		return Item;
+		delete Item;
 	};
 
 	virtual Object *Add(Object *Item)
@@ -239,15 +239,13 @@ class TArray : public SimpleArray
 			SetValue(Index,*(T *)Item);
 		return Item;
 	};
-	virtual Object *AddOwned(Object *Item)
+	virtual void AddOwned(Object *Item)
 	{
 		SetValue(CurrentCount,*(T *)Item);
-		return Item;
 	};
-	virtual Object *AddOwned(Object *Item,int Index)
+	virtual void AddOwned(Object *Item,int Index)
 	{
 		SetValue(Index,*(T *)Item);
-		return Item;
 	};
 	virtual void SetItemOwnerShip(Iterator *I,bool Owned)
 	{}
@@ -715,13 +713,13 @@ StdFunctionsNoDup(Array,SimpleArray);
 		return AddIndex(Item,false,false,Size,Index);
 	}
 
-	virtual EmptyObject *AddOwned(EmptyObject *Item,size_t Size)
+	virtual void AddOwned(EmptyObject *Item,size_t Size)
 	{
-		return Add(Item,false,true,Size);
+		Add(Item,false,true,Size);
 	}
-	virtual EmptyObject *AddOwned(EmptyObject *Item,size_t Size,int Index)
+	virtual void AddOwned(EmptyObject *Item,size_t Size,int Index)
 	{
-		return AddIndex(Item,false,true,Size,Index);
+		AddIndex(Item,false,true,Size,Index);
 	}
 	virtual Object *Add(Object *Item)
 	{
@@ -731,13 +729,13 @@ StdFunctionsNoDup(Array,SimpleArray);
 	{
 		return (Object *)AddIndex(Item,true,false,0,Index);
 	}    // returns Item
-	virtual Object *AddOwned(Object *Item)
+	virtual void AddOwned(Object *Item)
 	{
-		return (Object *)Add(Item,true,true,0);
+		Add(Item,true,true,0);
 	}   // gives ownership to list
-	virtual Object *AddOwned(Object *Item,int Index)
+	virtual void AddOwned(Object *Item,int Index)
 	{
-		return (Object *)AddIndex(Item,true,true,0,Index);
+		AddIndex(Item,true,true,0,Index);
 	}   // gives ownership to list
 	EmptyObject *DupItem(const Array::ElePtr  *Node) const;
 	virtual void SetItemOwnerShip(Iterator *I,bool Owned);
@@ -769,33 +767,33 @@ class DoubleArray : public SimpleArray
 	{
 		return Item;
 	};
-	virtual EmptyObject *AddOwned(EmptyObject *Item,size_t Size,int Index)
+	virtual void AddOwned(EmptyObject *Item,size_t Size,int Index)
 	{
-		return Item;
+		return ;
 	};
 	virtual Object *Add(Object *Item,int Index)
 	{
 		return Item;
 	};
-	virtual Object *AddOwned(Object *Item,int Index)
+	virtual void AddOwned(Object *Item,int Index)
 	{
-		return Item;
+		return ;
 	};
 	virtual EmptyObject *Add(EmptyObject *Item,size_t Size)
 	{
 		return Item;
 	};
-	virtual EmptyObject *AddOwned(EmptyObject *Item,size_t Size)
+	virtual void AddOwned(EmptyObject *Item,size_t Size)
 	{
-		return Item;
+		return ;
 	};
 	virtual Object *Add(Object *Item)
 	{
 		return Item;
 	};
-	virtual Object *AddOwned(Object *Item)
+	virtual void AddOwned(Object *Item)
 	{
-		return Item;
+		return ;
 	};
 	virtual void SetItemOwnerShip(Iterator *I,bool Owned)
 	{}
@@ -953,13 +951,13 @@ virtual void RemoveAtIterator(Iterator *LI);
 virtual void Clear();
 virtual const char *GetProperty(const PropertyParser &PropertyName,String &Result) const;
 virtual EmptyObject *Add(EmptyObject *Item,size_t Size);
-virtual EmptyObject *AddOwned(EmptyObject *Item,size_t Size);
+virtual void AddOwned(EmptyObject *Item,size_t Size);
 virtual Object *Add(Object *Item);    // returns Item
-virtual Object *AddOwned(Object *Item);   // gives ownership to list
+virtual void AddOwned(Object *Item);   // gives ownership to list
 virtual EmptyObject *Add(EmptyObject *Item,size_t Size,int Index);
-virtual EmptyObject *AddOwned(EmptyObject *Item,size_t Size,int Index);
+virtual void AddOwned(EmptyObject *Item,size_t Size,int Index);
 virtual Object *Add(Object *Item,int Index);    // returns Item
-virtual Object *AddOwned(Object *Item,int Index);   // gives ownership to list
+virtual void AddOwned(Object *Item,int Index);   // gives ownership to list
 
 virtual void SetItemOwnerShip(Iterator *I,bool Owned);
 virtual bool GetItemOwnerShip(const Iterator *I) const;

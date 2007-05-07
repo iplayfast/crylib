@@ -96,14 +96,17 @@ bool Object::Test(bool Verbose,Object &ThisObject, bool (CallBack)(bool Verbose,
 
 					i->GetValue(value);
 					Result.printf("\n  Property %d) %s = %s",count,item->AsPChar(),value.AsPChar());
-
-				} while (i->GotoNext());
-				if (!CallBack(Verbose,Result,Fail))
+					if (!CallBack(Verbose,Result,Fail))
+					{
+						pn->DeleteIterator(i);
 						return false;
-            }
-        }
+					}
+					Result = "";
+				} while (i->GotoNext());
+			}
+		}
 
-        pn->DeleteIterator(i);
+		pn->DeleteIterator(i);
 
         delete(pn);
 
@@ -803,8 +806,7 @@ bool Object::ClassCanCreate(const
 */
 Object *Object::ClassCreate(const PropertyParser &PropertyName,Object *Parent)
 {
-    Object *NewObject = 0;
-    // first create the object
+// first create the object
 
 	if (PropertyName==CObject)
 		return new Object();
@@ -1050,8 +1052,6 @@ bool Object::IterateThroughAll(Container *Container,EmptyObject *Control) // for
 Object *Object::CreateItemType(const
 									 PropertyParser &PropertyName)
 {
-	Object *NewObject;
-
 	if (PropertyName==CList)
 		return new List();
 	if (PropertyName==CFileStream)
@@ -1083,7 +1083,7 @@ Object *Object::CreateItemType(const
 	if (PropertyName==CCompositeIterator)
 		return new CompositeIterator(0);
 	if (PropertyName==CState)
-		NewObject = new State(1);
+		return new State(1);
 	throw Exception(this,"Trying to create instance of Unknown or Abstract Class %s",PropertyName.AsPChar());
 }
 

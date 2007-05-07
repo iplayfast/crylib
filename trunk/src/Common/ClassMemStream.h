@@ -151,9 +151,9 @@ public:
     /// abstract function used by subclasses to count the number of items held by the container
     virtual size_t Count() const;
 	virtual EmptyObject *Add(EmptyObject *Item,size_t Size);
-	virtual EmptyObject *AddOwned(EmptyObject *Item,size_t Size);
+	virtual void AddOwned(EmptyObject *Item,size_t Size);
 	virtual Object *Add(Object *Item);
-	virtual Object *AddOwned(Object *Item);
+	virtual void AddOwned(Object *Item);
 }
 ;  // CryMemStream
 #endif // TCryMemSteam

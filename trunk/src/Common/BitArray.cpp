@@ -233,7 +233,16 @@ EmptyObject *BitArray::GetAtIterator(const Iterator *I) const
 {
     throw Exception("Cannot Retrieve EmptyObject * from BitArray");
 }
-EmptyObject *BitArray::AddOwned(EmptyObject *Item,size_t Size,int Index)
+void BitArray::AddOwned(EmptyObject *Item,size_t Size)
+{
+	AddOwned(Item,Size,-1);
+}
+EmptyObject *BitArray::Add(EmptyObject *Item,size_t Size)
+{
+	return Add(Item,Size,-1);
+}
+
+void BitArray::AddOwned(EmptyObject *Item,size_t Size,int Index)
 {
 	throw Exception("Cannot Add EmptyObject * to BitArray");
 }
@@ -250,7 +259,7 @@ Object *BitArray::Dup() const
     return New;
 }
 
-Object *BitArray::AddOwned(Object *Item)
+void BitArray::AddOwned(Object *Item)
 {
     throw Exception("Cannot Add EmptyObject * to BitArray");
 }
@@ -285,10 +294,10 @@ FunctionDefList *BitArray::GetFunctions(const char *Type) const
     s += "virtual bool GetItemOwnerShip(Iterator *I) const;";
     s += "virtual Iterator *_CreateIterator() const;";
     s += "virtual EmptyObject *GetAtIterator(Iterator *I) const;";
-    s += "virtual EmptyObject *AddOwned(EmptyObject *Item,size_t Size);";
+    s += "virtual void AddOwned(EmptyObject *Item,size_t Size);";
     s += "virtual EmptyObject *Add(EmptyObject *Item,size_t Size);";
     s += "virtual Object *Dup() const;";
-	s += "virtual Object *AddOwned(Object *Item);";
+	s += "virtual void AddOwned(Object *Item);";
 	s += "virtual Object *Add(Object *Item);";
 	s += "virtual CryFunctionDefList *GetFunctions(const char *Type=0) const;";
     s +="virtual const char *GetProperty(const CryPropertyParser &PropertyName,CryString &Result)const ;";

@@ -97,7 +97,7 @@ bool Container::Test(bool Verbose,Object &Object, bool (CallBack)(bool Verbose,c
             else
             {
                 for(size_t i=0;i<c->Count();i++)
-                    if (!GotoNext(I))    // returns true if success
+                    if (!c->GotoNext(I))    // returns true if success
                     {
                         if (i<c->Count()-1)
                         {
@@ -237,10 +237,10 @@ FunctionDefList *Container::GetFunctions(const char *Type) const
     s += "virtual void Clear() = 0;";
     s += "virtual CryString *GetFunctions();";
     s += "virtual EmptyObject *Add(EmptyObject *Item,size_t Size) = 0;";
-    s += "virtual EmptyObject *AddOwned(EmptyObject *Item,size_t Size) = 0;";
-    s += "virtual Object *Add(Object *Item) = 0;";
-    s += "virtual Object *AddOwned(Object *Item) = 0;";
-    s += "virtual void SetItemOwnerShip(Iterator *I,bool Owned) = 0;";
+	s += "virtual void AddOwned(EmptyObject *Item,size_t Size) = 0;";
+	s += "virtual Object *Add(Object *Item) = 0;";
+	s += "virtual void AddOwned(Object *Item) = 0;";
+	s += "virtual void SetItemOwnerShip(Iterator *I,bool Owned) = 0;";
     s += "virtual bool GetItemOwnerShip(const Iterator *I) const = 0;";
     s += "virtual size_t GetItemSize(Iterator *I) const = 0;";
     s += "virtual bool IsObject(const Iterator *I) const = 0;";

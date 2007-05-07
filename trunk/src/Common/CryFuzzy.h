@@ -63,10 +63,15 @@ virtual Object *Dup()const;
 	Fuzzy(const Fuzzy &c);
     Fuzzy(const Fuzzy *p);
     virtual ~Fuzzy();
-
-    int AddPoint(float x,float y);	// adds a point to the fuzzy table, returns index of point added
-    float Value(float x) const;  // returns a y value for an x into the table
-    virtual int SetValueAt(float x,float y); // Sets a point to the fuzzy table, returns index of point added
+/*! AddPoint will add a point to the Fuzzy Table, if the point already exists, it will average the old point with
+   The new point
+   Returns the index into the table of the point just added (or updated)
+   */
+	int AddPoint(float x,float y);
+	float Value(float x) const;  // returns a y value for an x into the table
+	/*! SetValue will set the value of a point in a table, or add it if it isn't currently in the table
+	returns the index into the table of the point just set or added */
+	virtual int SetValue(float x,float y); 
     float ValueAt(unsigned int idx) const; // returns a y value for the index into the table
     float IndexAt(unsigned int idx )const; // returns a x value for the index into the table
 	float LowestRange()const; // returns the lowest x
@@ -79,6 +84,16 @@ virtual Object *Dup()const;
 
     void AppendFromStream(Stream &Stream);
     int AppendFuzzFromStream(Stream &Stream);
+	Object *Create(const PropertyParser &PropertyName,Object *Parent)
+	{
+		if (PropertyName==CFuzzy)
+			return new Fuzzy();
+		return Array::Create(PropertyName,Parent);
+	}
+	Object *Create(Stream &FromStream)
+	{
+		return Array::Create(FromStream);
+	}
 
 	void SimpleInhibit(float InhibitPercent);
 	void CopyAndInhibit(Fuzzy &Fuzzy);
@@ -113,19 +128,18 @@ virtual Object *Dup()const;
     virtual EmptyObject *LoadItemFrom(Array *Owner,EmptyObject *ToItem,Stream &FromStream);
 
     bool SetProperty(const PropertyParser &PropertyName,const char *PropertyValue);
-    virtual const char *GetProperty(const PropertyParser &PropertyName,String &Result) const;
-    virtual bool HasProperty(const PropertyParser &PropertyName)const;
+	virtual const char *GetProperty(const PropertyParser &PropertyName,String &Result) const;
+	virtual bool HasProperty(const PropertyParser &PropertyName)const;
 	virtual int GetPropertyCount() const;
 	virtual PropertyList* PropertyNames() const;
    virtual void CopyTo(Array &Dest) const { Array::CopyTo(Dest);  } //copies contents of this to Dest
-    virtual void CopyTo(Object &Dest) const { Array::CopyTo(Dest);  }  //copies contents of this to Dest
-    virtual void GetEleType(String &Result) const { Result = "TFuzzyXY"; }
+	virtual void CopyTo(Object &Dest) const { Array::CopyTo(Dest);  }  //copies contents of this to Dest
+	virtual void GetEleType(String &Result) const { Result = "TFuzzyXY"; }
 
 #ifdef VALIDATING
 virtual bool Test(bool Verbose,Object &Object,bool (CallBack)(bool Verbose,const char *Result,bool fail));
 #endif
 	virtual FunctionDefList *GetFunctions(const char *Type=0) const;
-
 };
 } // end namespace Crystal
 

@@ -19,12 +19,12 @@
  ***************************************************************************/
 
 #include <math.h>
+//#include "ClassXML.h"	// temporary
 
 #include "ClassArray.h"
 #include "ClassString.h"
 #include "Utility.h"
 #include <vector>
-
 #ifndef BACKPROP_DEF
 #define BACKPROP_DEF
 
@@ -63,6 +63,10 @@ typedef vector <double>::const_iterator cWeightsI;
 						}
 						for(int i=0;i<SizePS;i++)
 						{
+/*							Weights.push_back(Size);		// useful for setting values to debug with
+							WeightsSave.push_back(Size);
+							dWeights.push_back(Size);
+*/
 							Weights.push_back(RandomDouble(-1,1));
 							WeightsSave.push_back(RandomDouble(-1,1));
 							dWeights.push_back(RandomDouble(-1,1));
@@ -107,6 +111,9 @@ public:
 		PreviousSize = it->LayerSize;
 	}
 	Layers.push_back(Layer(Size,PreviousSize));
+  }
+  ~_BackPropagateNetwork()
+  {
   }
   void Propagate(int _From,int _To,double Gain)
   {
@@ -248,6 +255,7 @@ void RandomWeights()
 	{
 		for(Layer::WeightsI w = start->Weights.begin();w<start->Weights.end();w++)
 		{
+//        	*w = start->LayerSize;	// useful for setting values to debug with
 			*w =RandomDouble(-1,1);
 		}
 	}
@@ -365,7 +373,6 @@ void STTrainNet(int EPochs,int LengthIn,double *SampleIn,int LengthOut,double *S
 	}
 	while (!Stop);
 }
-
 };
 
 #define CBackPropagateNetwork "BackPropagateNetwork"
@@ -380,6 +387,7 @@ typedef _BackPropagateNetwork::Layer::WeightsI	BPWeightsI;
 
 public:
 	BackPropagateNetwork() { nn = new _BackPropagateNetwork(); }
+	~BackPropagateNetwork() { delete nn; }
 	StdFunctionsNoDup(BackPropagateNetwork,Object);
 	PropertyList *PropertyNames() const
 	{
@@ -467,7 +475,6 @@ Object *GetCopyOfPropertyAsObject(const PropertyParser &PropertyName) const
 		for(BPLayerI From = nn->Layers.begin();From < nn->Layers.end();From++,i++)
 			ia->SetValue(i,From->LayerSize);
 		l->AddOwned(ia);
-
 	}
 	// for each layer
 	for(BPLayerI From = nn->Layers.begin();From <nn->Layers.end();From++)
@@ -507,13 +514,14 @@ bool SetPropertyAsObject(Property *Value)
 				// first get the layer definitions
 					IntArray *Sizes = (IntArray*) iLayer->Get();
 					IntArray::Iterator *iSizes = Sizes->CreateIterator();
-					if (iSizes->GotoLastNonObject())
+					if (iSizes->GotoFirstNonObject())
 					do
 					{
 					int size;
 						size = * (int *) iSizes->Get();
 						nn->AddLayer(size);
-					} while(iSizes->GotoPrevNonObject());
+					} while(iSizes->GotoNextNonObject());
+					Sizes->DeleteIterator(iSizes);
 			}
 			// now get the layer weights
 		// for each layer
@@ -521,7 +529,7 @@ bool SetPropertyAsObject(Property *Value)
 		{
 		int LayerLength = From->LayerSize;
 		int LayerSize = From->Weights.end() - From->Weights.begin();
-        	
+
 			if (!iLayer->GotoNextObject(CMyList)) return false;
 			MyList *Weights = (MyList *) iLayer->Get();
 			MyList::Iterator *iWeights = Weights->CreateIterator();
@@ -623,6 +631,7 @@ static void SimpleCallBack(Object *Parent,String &Status)
 {
 BackPropagateNetwork *p = (BackPropagateNetwork*)Parent;
 	p->pCallBack(true,Status.AsPChar(),false);
+	Status = "";
 };
 
 bool Test(bool Verbose,Object &Object,bool (CallBack)(bool Verbose,const char *Result,bool fail))
@@ -669,9 +678,13 @@ char Result[400];
 			//double TargetData[4] = { 0,0,0,1};	// and
 			//double TargetData[4] = {0,1,1,1};		// or
 			//double TargetData[4] = {0,0,0,0};
+return true;
+		if (!Object::Test(Verbose,*this,CallBack))
+			return false;
+// comment out this return to do some training and verifying
+		return true;
 		if ((Verbose) && (!CallBack(Verbose,"\nInitial Training (will take some time)\n",Fail)))
 			return false;
-		Object::Test(Verbose,*this,CallBack);
 		nn->STTrainNet(5000,4,InData,4,TargetData);
 //		nn->printWeights();
 		for(int i=0;i<4;i++)

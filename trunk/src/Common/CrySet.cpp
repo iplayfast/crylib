@@ -81,7 +81,6 @@ unsigned int SS = s.Size();
 }
 void CrySet::Intersect(CrySet &s)
 {
-int SS = s.Size();
 	for(int i=0,j=Size();i<j;i++)
 	{
 		int v = GetValue(i);

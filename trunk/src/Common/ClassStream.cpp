@@ -906,17 +906,16 @@ Object *Stream::Add(Object *Item)    // returns Item
 	Write(s.AsPChar(),s.GetLength());
 	return Item;
 }
-Object *Stream::AddOwned(Object *Item)   // gives ownership to list
+void Stream::AddOwned(Object *Item)   // gives ownership to list
 {
-    delete Add(Item); // So we add the text equivilent and then delete it
-    return 0;
+    delete Add(Item); // So we add the text equivalent and then delete it
 }
 EmptyObject *Stream::Add(EmptyObject *Item,size_t Size)
 {
 	Write((char *)Item,Size);
 	return Item;
 }
-EmptyObject *Stream::AddOwned(EmptyObject *Item,size_t Size)
+void Stream::AddOwned(EmptyObject *Item,size_t Size)
 {
 	Add(Item,Size);
 	delete Item;

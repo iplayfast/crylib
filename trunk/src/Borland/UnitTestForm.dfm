@@ -48,7 +48,9 @@ object Form1: TForm1
       'Strategy Pattern'
       'Observer Pattern'
       'BackProp Nural Net'
-      'BitArray')
+      'BitArray'
+      'Fuzzy Logic'
+      'Test')
     TabOrder = 1
     OnClick = CheckListBox1Click
   end

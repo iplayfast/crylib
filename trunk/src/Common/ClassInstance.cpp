@@ -123,7 +123,7 @@ bool ClassInstance::SetProperty(const PropertyParser &PropertyName,const char *P
 Object *ClassInstance::Create(const PropertyParser &PropertyName,CodeFactory *Parent)
 {
 	return PrimInstance::Create(PropertyName,Parent);
-	if ((strcmp(CClassInstance,PropertyName)==0) && (!Parent->IsA(CClassBuilder)))
+/*	if ((strcmp(CClassInstance,PropertyName)==0) && (!Parent->IsA(CClassBuilder)))
 	{
 		return this;
 	}
@@ -232,63 +232,63 @@ Object *ClassInstance::Create(const PropertyParser &PropertyName,CodeFactory *Pa
 		}
 		SetImp(PropertyName,s);
 		Parent->AppendHead(*GetHead(PropertyName));
-        Parent->AppendImp(*GetImp(PropertyName));
-        return 0;
-    }
+		Parent->AppendImp(*GetImp(PropertyName));
+		return 0;
+	}
 	if (PropertyName==CCopyTo)
-    {
-        String s;
-        if (GetIsPointer())
-        {
-            if (GetCount()>1)
-                s.printf("\n\t\tfor(int i=0;i<%s_LEN;i++)\n\t\t\t*CastDest->%s[i] = *%s[i];",
-                         GetName(),GetName(),GetName());
-            else
-                s.printf("\n\t\t%sCastDest%s%s = %s%s%s;",
-                         (GetIsPointer() || GetIsArrayPointer()) ? "*" : "",
-                         GetIsPointer() ? "->" : ".",GetName(),GetIsArrayPointer() ? "*" : "",GetIsPointer() ? "*" : "", GetName());
-        }
-        else
-        {
-            if (GetCount()>1)
-                s.printf("\n\t\tfor(int i=0;i<%s_LEN;i++)\n\t\t\tCastDest->%s[i] = %s[i];",
-                         GetName(),GetName(),GetName());
-            else
-                s.printf("\n\t\tCastDest->%s = %s;",GetName(),GetName());
-        }
-        SetImp(PropertyName,s.AsPChar());
-        Parent->AppendImp(*GetImp(PropertyName));
-        return 0;
+	{
+		String s;
+		if (GetIsPointer())
+		{
+			if (GetCount()>1)
+				s.printf("\n\t\tfor(int i=0;i<%s_LEN;i++)\n\t\t\t*CastDest->%s[i] = *%s[i];",
+						 GetName(),GetName(),GetName());
+			else
+				s.printf("\n\t\t%sCastDest%s%s = %s%s%s;",
+						 (GetIsPointer() || GetIsArrayPointer()) ? "*" : "",
+						 GetIsPointer() ? "->" : ".",GetName(),GetIsArrayPointer() ? "*" : "",GetIsPointer() ? "*" : "", GetName());
+		}
+		else
+		{
+			if (GetCount()>1)
+				s.printf("\n\t\tfor(int i=0;i<%s_LEN;i++)\n\t\t\tCastDest->%s[i] = %s[i];",
+						 GetName(),GetName(),GetName());
+			else
+				s.printf("\n\t\tCastDest->%s = %s;",GetName(),GetName());
+		}
+		SetImp(PropertyName,s.AsPChar());
+		Parent->AppendImp(*GetImp(PropertyName));
+		return 0;
 	}
 
 
 	if ((strcmp(CGetProperty,PropertyName)==0) && CanBuildProduct(PropertyName))//Can't build if it isn't a property
 	{
 		String s;
-        FunctionDef Func;
-        if (GetCount()>1)
-        {
-            s.printf("void Get%s(int Index,CryString &Result) const;",GetName());
-            Func.Parse(s);
-            s = "\n";
-            s += Func.GetNPDeclaration();
-            SetHead(PropertyName,s.AsPChar());
-            s.Clear();
-            s = Func.GetImplementedDeclaration(Parent->GetName(),true);
-            s.printf("\n{\n#ifdef RangeChecking\n\tif ((Index<0) || (Index>=%s_LEN))\n\t\tthrow CryException(\"Range Error\");\n#endif",
-                     GetName(),GetName());
+		FunctionDef Func;
+		if (GetCount()>1)
+		{
+			s.printf("void Get%s(int Index,CryString &Result) const;",GetName());
+			Func.Parse(s);
+			s = "\n";
+			s += Func.GetNPDeclaration();
+			SetHead(PropertyName,s.AsPChar());
+			s.Clear();
+			s = Func.GetImplementedDeclaration(Parent->GetName(),true);
+			s.printf("\n{\n#ifdef RangeChecking\n\tif ((Index<0) || (Index>=%s_LEN))\n\t\tthrow CryException(\"Range Error\");\n#endif",
+					 GetName(),GetName());
 			if (Type==CString)
-            {
-                s.printf("\n\tResult = %s[Index];",GetName());
-            }
-            else
-            {
-                s.printf("\n\t//Result.Clear()");
-                s.printf("\nCryXML x(\"obj\");");
-                s.printf("\n\tx.LoadFrom(%s[Index]);",GetName());
-                s.printf("\n\tx.SaveTo(Result);");
-            }
-            s.printf("\n}");
+			{
+				s.printf("\n\tResult = %s[Index];",GetName());
+			}
+			else
+			{
+				s.printf("\n\t//Result.Clear()");
+				s.printf("\nCryXML x(\"obj\");");
+				s.printf("\n\tx.LoadFrom(%s[Index]);",GetName());
+				s.printf("\n\tx.SaveTo(Result);");
+			}
+			s.printf("\n}");
 
         }
 
@@ -326,6 +326,7 @@ Object *ClassInstance::Create(const PropertyParser &PropertyName,CodeFactory *Pa
 	//return &GetName();
 	//}
 	return 0;
+*/	
 }
 
 

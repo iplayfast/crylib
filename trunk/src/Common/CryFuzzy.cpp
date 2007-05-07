@@ -153,7 +153,7 @@ TFuzzyXY *t,*n;
             return i;
         }
         else
-        {
+		{
             n = Index(i-1);
         	t->x = n->x;
             t->y = n->y;
@@ -189,7 +189,7 @@ TFuzzyXY *t;
     if (Next>l-1) Next = l-1;
     if (Next==Previous)
   	    return Index(Next)->y;
-    else
+	else
     {
     TFuzzyXY *p,*n;
         p = Index(Previous);
@@ -199,31 +199,31 @@ TFuzzyXY *t;
           return m * (x - p->x) + p->y;
     };
 }
-int Fuzzy::SetValueAt(float x,float y) // Sets a point to the fuzzy table, returns index of point added
+int Fuzzy::SetValue(float x,float y) // Sets a point to the fuzzy table, returns index of point added
 {
 unsigned int i;
 TFuzzyXY *t;
 
-    // if already in list then just set it
+	// if already in list then just set it
 	for (i = 0;i<Count();i++)
-    {
-        t = Index(i);
-  	    if (t->x > x)
-    	    break;
-      	if (t->x==x)
-        {
-    		t->y = y;
-            return i;
-        };
-    };
-    // not in list so add it
-    return AddPoint(x,y);
+	{
+		t = Index(i);
+		if (t->x > x)
+			break;
+		if (t->x==x)
+		{
+			t->y = y;
+			return i;
+		};
+	};
+	// not in list so add it
+	return AddPoint(x,y);
 };
 
  // returns a y value for the index into the table
 float Fuzzy::ValueAt(unsigned int idx)const
 {
-    return Index(idx)->y;
+	return Index(idx)->y;
 }
  // returns a x value for the index into the table
 float Fuzzy::IndexAt(unsigned int idx )const
@@ -261,7 +261,7 @@ float	v,v1,result;
             v1 = 1 / v1;
       	    result = result + v - v1;
         };
-        if (t.Count()>1)
+		if (t.Count()>1)
      		result = result / (t.Count()-1);
     }
     else
@@ -341,7 +341,7 @@ float	x1,x2,y;
         x1 = IndexAt(i);
         x2 = IndexAt(i+1);
         x1 = (x1+x2) /2;
-        SetValueAt(x1,Value(x1));
+        SetValue(x1,Value(x1));
     }
 }
 // write 1 datapoint to the stream
@@ -366,7 +366,7 @@ bool Fuzzy::LoadAsText(int i,String &FromStream)
 {
 float x,y;	// i is ignored as Fuzzy sorts input values and figures out the index itself
 	FromStream.scanf("%f %f ",&x,&y);
-	return SetValueAt(x,y);
+	return SetValue(x,y);
 }
 bool Fuzzy::SaveAsText(int i,String &ToStream) const
 {
@@ -407,7 +407,7 @@ float x,y;
         FromStream.scanf("%f %f ",&x,&y);
         break;
     }
-    return SetValueAt(x,y);
+    return SetValue(x,y);
 }
 
 void Fuzzy::SetValueXY(int i,float x, float y ) //Sets a point in a fuzzy table at index i
@@ -541,7 +541,7 @@ float Fuzzy::Not(float v) const
 Object *Fuzzy::Dup()const // creates a duplicate of this object
 {
 Fuzzy *n = new Fuzzy(this);
-    return (Object *)n;
+	return (Object *)n;
 }
 
 Object *Fuzzy::CreateItemType(const PropertyParser &PropertyName)
@@ -553,21 +553,22 @@ Object *Fuzzy::CreateItemType(const PropertyParser &PropertyName)
 }
 PropertyList *Fuzzy::PropertyNames() const
 {
-    PropertyList *n = Container::PropertyNames();// Skip Array class to avoid Size (Fuzzy takes care of that)
-    return n;
+	PropertyList *n = Container::PropertyNames();// Skip Array class to avoid Size (Fuzzy takes care of that)
+			n->AddPropertyByName("Size",this);
+	return n;
 }
 
 bool Fuzzy::SetProperty(const PropertyParser &PropertyName,const char *PropertyValue)
 {
-    return Array::SetProperty(PropertyName,PropertyValue);
+	return Array::SetProperty(PropertyName,PropertyValue);
 }
 const char *Fuzzy::GetProperty(const PropertyParser &PropertyName,String &Result) const
 {
-    return Array::GetProperty(PropertyName,Result);
+	return Array::GetProperty(PropertyName,Result);
 }
 bool Fuzzy::HasProperty(const PropertyParser &PropertyName)const
 {
-    return Array::HasProperty(PropertyName); // pass it to base class, see if it knows anything about it
+	return Array::HasProperty(PropertyName); // pass it to base class, see if it knows anything about it
 }
 int Fuzzy::GetPropertyCount() const { return Container::GetPropertyCount()  + 1; }    // Value is a property
 
@@ -608,12 +609,12 @@ FunctionDefList *Fuzzy::GetFunctions(const char *Type) const
     s += "virtual bool SaveAsText(int i,CryString &ToStream) const;";
     s += "virtual bool LoadAsText(Iterator *i,CryString &FromStream);";
     s += "virtual bool SaveAsText(Iterator *i,CryString &ToStream) const;";
-    s += "void print(ostream &os);";
+	s += "void print(ostream &os);";
     s += "virtual Object *Dup()const;";
     s += "const char* ClassName() const;";
     s += "virtual const char* ChildClassName() const;";
     s += "virtual Object *CreateItemType(const char *Name);";
-    s += "virtual void SaveItemTo(const CryArray *Owner,EmptyObject *FromItem,CryStream &ToStream) const;";
+	s += "virtual void SaveItemTo(const CryArray *Owner,EmptyObject *FromItem,CryStream &ToStream) const;";
     s += "virtual EmptyObject *LoadItemFrom(CryArray *Owner,EmptyObject *ToItem,CryStream &FromStream);";
     s += "bool SetProperty(const CryPropertyParser &PropertyName,const CryString &PropertyValue);";
     s += "virtual const char *GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const;";
@@ -635,7 +636,59 @@ FunctionDefList *Fuzzy::GetFunctions(const char *Type) const
 #ifdef VALIDATING
 bool Fuzzy::Test(bool Verbose,Object &Object,bool (CallBack)(bool Verbose,const char *Result,bool fail))
 {
-    return Array::Test(Verbose,Object,CallBack);
+Fuzzy f;
+String Result;
+bool fail = false;
+float v1,v2;
+	f.AddPoint(1,10);
+	f.AddPoint(100,1000);
+	fail = f.Value(10)!=100;
+	Result = "Estimate value correct";
+	if (!CallBack(Verbose,Result,fail))
+		return false;
+	v1 = f.ValueAt(0);
+	v2 = f.ValueAt(1);
+	fail = !(v1==10 && v2==1000);
+	Result = "AddPoint and ValueAt values correct";
+	if (!CallBack(Verbose,Result,fail))
+		return false;
+	v1 = f.IndexAt(0);
+	v2 = f.IndexAt(1);
+	fail = !(v1==1 && v2==100);
+	Result = "IndexAt values correct";
+	if (!CallBack(Verbose,Result,fail))
+		return false;
+	f.SetValue(1,5);
+	fail = f.ValueAt(0)!=5;
+	Result = "SetValue values correct";
+	if (!CallBack(Verbose,Result,fail))
+		return false;
+	f.AddPoint(1,15);       	// should average the old value (5) with the new one (15) and get 10
+	fail = f.ValueAt(0)!=10;
+	Result = "AddPoint average of old values correct";
+	if (!CallBack(Verbose,Result,fail))
+		return false;
+
+	v1 = f.LowestRange();
+	fail = v1 !=1;
+	Result = "LowestRange correct";
+	if (!CallBack(Verbose,Result,fail))
+		return false;
+	v2 = f.HighestRange();
+	fail = v2 !=100;
+	Result = "HighestRange correct";
+	if (!CallBack(Verbose,Result,fail))
+		return false;
+	f.SwapXY();
+	fail = !((f.ValueAt(0)==1) && (f.ValueAt(1)==100) && (f.IndexAt(0)==10) && f.IndexAt(1)==1000);
+	Result = "SwapXY correct";
+	if (!CallBack(Verbose,Result,fail))
+		return false;
+
+	f.Clear();
+	for(int i=0;i<10;i++)
+    	f.AddPoint(i*10,i+10+i*2);
+	return Array::Test(Verbose,f,CallBack) && Array::Test(Verbose,Object,CallBack) ;
 }
 #endif
 
