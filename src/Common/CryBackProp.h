@@ -497,7 +497,7 @@ Object *GetCopyOfPropertyAsObject(const PropertyParser &PropertyName) const
 	return p;
 }
 
-bool SetPropertyAsObject(Property *Value)
+bool SetPropertyAsObject(const Property *Value)
 {
 	String Result;
 	if (*Value->GetName()=="Layers")
@@ -508,47 +508,73 @@ bool SetPropertyAsObject(Property *Value)
 		{
 		MyList *layer = (MyList *)o;
 		MyList::Iterator *iLayer = layer->CreateIterator();
-
+		try
+		{
 			if (iLayer->GotoFirstObject(CIntArray))
 			{
 				// first get the layer definitions
 					IntArray *Sizes = (IntArray*) iLayer->Get();
 					IntArray::Iterator *iSizes = Sizes->CreateIterator();
-					if (iSizes->GotoFirstNonObject())
-					do
+					try
 					{
-					int size;
-						size = * (int *) iSizes->Get();
-						nn->AddLayer(size);
-					} while(iSizes->GotoNextNonObject());
-					Sizes->DeleteIterator(iSizes);
+						if (iSizes->GotoFirstNonObject())
+						do
+						{
+						int size;
+							size = * (int *) iSizes->Get();
+							nn->AddLayer(size);
+						} while(iSizes->GotoNextNonObject());
+						Sizes->DeleteIterator(iSizes);
+					}
+					catch(Exception &e)
+					{
+						Sizes->DeleteIterator(iSizes);
+						throw e;
+					}
 			}
 			// now get the layer weights
-		// for each layer
-		for(BPLayerI From = nn->Layers.begin();From <nn->Layers.end();From++)
-		{
-		int LayerLength = From->LayerSize;
-		int LayerSize = From->Weights.end() - From->Weights.begin();
-
-			if (!iLayer->GotoNextObject(CMyList)) return false;
-			MyList *Weights = (MyList *) iLayer->Get();
-			MyList::Iterator *iWeights = Weights->CreateIterator();
-			for(BPWeightsI dw = From->dWeights.begin(),w = From->Weights.begin();w<From->Weights.end();w++,dw++)
+			// for each layer
+			for(BPLayerI From = nn->Layers.begin();From <nn->Layers.end();From++)
 			{
-			double Weight;
-				String *s = (String *) iWeights->Get();
-				s->scanf("%lf ",&Weight);	// set weight[i] first
-				*w = Weight;
-				if (iWeights->GotoNextObject(CString))
+			int LayerLength = From->LayerSize;
+			int LayerSize = From->Weights.end() - From->Weights.begin();
+
+				if (!iLayer->GotoNextObject(CMyList)) return false;
+				MyList *Weights = (MyList *) iLayer->Get();
+				MyList::Iterator *iWeights = Weights->CreateIterator();
+				try
 				{
-					String *s = (String *) iWeights->Get();
-					s->scanf("%lf ",&Weight);	// set dweight[i] next
-					*dw = Weight;
+					for(BPWeightsI dw = From->dWeights.begin(),w = From->Weights.begin();w<From->Weights.end();w++,dw++)
+					{
+					double Weight;
+						String *s = (String *) iWeights->Get();
+						s->scanf("%lf ",&Weight);	// set weight[i] first
+						*w = Weight;
+						if (iWeights->GotoNextObject(CString))
+						{
+							String *s = (String *) iWeights->Get();
+							s->scanf("%lf ",&Weight);	// set dweight[i] next
+							*dw = Weight;
+						}
+						else break;
+						if (!iWeights->GotoNextObject(CString))
+							break;
+					}
+					Weights->DeleteIterator(iWeights);
 				}
-				else break;
-				if (!iWeights->GotoNextObject(CString))
-					break;
+				catch(Exception &e)
+				{
+					Weights->DeleteIterator(iWeights);
+					throw e;
+				}
+
 			}
+			layer->DeleteIterator(iLayer);
+		}
+		catch(Exception &e)
+		{
+			layer->DeleteIterator(iLayer);
+			throw e;
 		}
 		return true;
 		}
@@ -678,11 +704,10 @@ char Result[400];
 			//double TargetData[4] = { 0,0,0,1};	// and
 			//double TargetData[4] = {0,1,1,1};		// or
 			//double TargetData[4] = {0,0,0,0};
-return true;
 		if (!Object::Test(Verbose,*this,CallBack))
 			return false;
 // comment out this return to do some training and verifying
-		return true;
+//		return true;
 		if ((Verbose) && (!CallBack(Verbose,"\nInitial Training (will take some time)\n",Fail)))
 			return false;
 		nn->STTrainNet(5000,4,InData,4,TargetData);

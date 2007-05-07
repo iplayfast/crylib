@@ -80,7 +80,7 @@ FunctionDefList *SimpleArray::GetFunctions(const char *Type) const
 	s +="virtual bool IsA(const char *_ClassName) const;";
 	s +="virtual bool SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue);";
 	s +="virtual bool SetPropertyAsObject(const CryPropertyParser &PropertyName,Object *Value);";
-	s +="virtual bool SetPropertyAsObject(CryProperty *Value);";
+	s +="virtual bool SetPropertyAsObject(const CryProperty *Value);";
 	s +="virtual const char *GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const;";
 	s +="virtual bool HasProperty(const CryPropertyParser &PropertyName)const;";
 	s +="virtual int GetPropertyCount() const;";
@@ -133,7 +133,7 @@ bool SimpleArray::SetPropertyAsObject(const PropertyParser &PropertyName,Object 
 	return false;
 }
 
-bool SimpleArray::SetPropertyAsObject(Property *Value)
+bool SimpleArray::SetPropertyAsObject(const Property *Value)
 {
 	return Container::SetPropertyAsObject(Value);
 }
@@ -283,7 +283,7 @@ StdFunctionsNoDup(CrySimpleArray,CryContainer);
 	virtual void Clear() = 0;
 	virtual bool SetProperty(const CryPropertyParser &PropertyName,const char *PropertyValue);
 	virtual bool SetPropertyAsObject(const CryPropertyParser &PropertyName,Object *Value);
-	virtual bool SetPropertyAsObject(CryProperty *Value);
+	virtual bool SetPropertyAsObject(const CryProperty *Value);
 	virtual const char *GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const;
 	virtual bool HasProperty(const CryPropertyParser &PropertyName)const;
 	virtual int GetPropertyCount() const
@@ -459,7 +459,7 @@ FunctionDefList *Array::GetFunctions(const char *Type) const
     s +="virtual const char *ChildClassName() const;";
 	s +="virtual bool SetProperty(const char *PropertyName,const CryString &PropertyValue);";
     s +="virtual bool SetPropertyAsObject(const char *PropertyName,Object *Value);";
-    s +="virtual bool SetPropertyAsObject(CryProperty *Value);";
+	s +="virtual bool SetPropertyAsObject(const CryProperty *Value);";
     s +="virtual const char *GetProperty(const CryPropertyParser &PropertyName,CryString &Result) const;";
     s +="virtual bool HasProperty(const char *PropertyName)const;";
 	s +="virtual int GetPropertyCount() const;";
@@ -800,7 +800,7 @@ bool Array::SetPropertyAsObject(const PropertyParser &PropertyName,Object *Value
 	return false;
 }
 
-bool Array::SetPropertyAsObject(Property *Value)
+bool Array::SetPropertyAsObject(const Property *Value)
 {
 	return SimpleArray::SetPropertyAsObject(Value);
 }
@@ -1132,7 +1132,7 @@ FunctionDefList *DoubleArray::GetFunctions(const char *Type) const
 	s +="void Clear();";
 	s +="virtual bool SetProperty(const char *PropertyName,const String &PropertyValue);";
 	s +="virtual bool SetPropertyAsObject(const char *PropertyName,Object *Value);";
-	s +="virtual bool SetPropertyAsObject(Property *Value);";
+	s +="virtual bool SetPropertyAsObject(const Property *Value);";
 	s +="virtual const char *GetProperty(const PropertyParser &PropertyName,String &Result) const;";
 	s +="virtual bool HasProperty(const char *PropertyName)const;";
 	s +="virtual int GetPropertyCount() const;";

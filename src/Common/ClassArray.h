@@ -168,7 +168,7 @@ StdFunctionsNoDup(SimpleArray,Container);
 	virtual void Clear() = 0;
 	virtual bool SetProperty(const PropertyParser &PropertyName,const char *PropertyValue);
 	virtual bool SetPropertyAsObject(const PropertyParser &PropertyName,Object *Value);
-	virtual bool SetPropertyAsObject(Property *Value);
+	virtual bool SetPropertyAsObject(const Property *Value);
 	virtual const char *GetProperty(const PropertyParser &PropertyName,String &Result) const;
 	virtual bool HasProperty(const PropertyParser &PropertyName)const;
 	virtual int GetPropertyCount() const
@@ -674,7 +674,7 @@ StdFunctionsNoDup(Array,SimpleArray);
 	// if all is well returns true
 	virtual bool SetProperty(const PropertyParser &PropertyName,const char *PropertyValue);
 	virtual bool SetPropertyAsObject(const PropertyParser &PropertyName,Object *Value);
-	virtual bool SetPropertyAsObject(Property *Value);
+	virtual bool SetPropertyAsObject(const Property *Value);
 	virtual const char *GetProperty(const PropertyParser &PropertyName,String &Result) const;
 	virtual bool HasProperty(const PropertyParser &PropertyName)const;
 	virtual int GetPropertyCount() const
@@ -881,7 +881,7 @@ StdFunctionsNoDup(DoubleArray,SimpleArray);
 	// if all is well returns true
 	virtual bool SetProperty(const PropertyParser &PropertyName,const char *PropertyValue);
 	virtual bool SetPropertyAsObject(const PropertyParser &PropertyName,Object *Value);
-	virtual bool SetPropertyAsObject(Property *Value)
+	virtual bool SetPropertyAsObject(const Property *Value)
 	{
 		return SimpleArray::SetPropertyAsObject(Value);
 	}
