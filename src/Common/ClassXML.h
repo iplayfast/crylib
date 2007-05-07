@@ -64,9 +64,9 @@ In order to be used by XML classes must have at least
    virtual size_t Count() const;
    virtual void Clear();
    virtual EmptyObject *Add(EmptyObject *Item,size_t Size);
-   virtual EmptyObject *AddOwned(EmptyObject *Item,size_t Size);
+   virtual void AddOwned(EmptyObject *Item,size_t Size);
    virtual Object *Add(Object *Item);    // returns Item
-   virtual Object *AddOwned(Object *Item);   // gives ownership to list
+   virtual void AddOwned(Object *Item);   // gives ownership to list
    virtual void SetItemOwnerShip(Iterator *I,bool Owned);
    virtual bool GetItemOwnerShip(Iterator *I) const;
    virtual size_t GetItemSize(Iterator *I) const;

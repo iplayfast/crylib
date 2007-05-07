@@ -233,9 +233,9 @@ struct Context : public Object::Context
 	void GetEleType(String &Result) const;
 	/// Container fucntions
 	virtual Object *Add(Object *Item);    // returns Item
-	virtual Object *AddOwned(Object *Item);   // gives ownership to list
+	virtual void AddOwned(Object *Item);   // gives ownership to list
 	virtual EmptyObject *Add(EmptyObject *Item,size_t Size);
-	virtual EmptyObject *AddOwned(EmptyObject *Item,size_t Size);
+	virtual void AddOwned(EmptyObject *Item,size_t Size);
 
 	virtual void SetItemOwnerShip(Iterator *I,bool Owned);
     virtual bool GetItemOwnerShip(const Iterator *I) const;

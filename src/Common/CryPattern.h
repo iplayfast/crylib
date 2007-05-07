@@ -398,18 +398,18 @@ our things will always be CryObjects
 		{
 			return 0;
 		};
-		virtual EmptyObject *AddOwned(EmptyObject *Item,size_t Size)
+		virtual void AddOwned(EmptyObject *Item,size_t Size)
 		{
-			return 0;
+			return;
 		};
 		virtual Object *Add(Object *Item)
 		{
 			return 0;
 		}
 		;    // returns Item
-		virtual Object *AddOwned(Object *Item)
+		virtual void AddOwned(Object *Item)
 		{
-			return 0;
+			return;
 		}
 		;   // gives ownership to list
 		virtual void SetItemOwnerShip(Iterator *I,bool Owned)
@@ -606,7 +606,7 @@ class FactoryHolder : public Factory
 public:
     int GetMaxCount() const
     {
-        return MaxCount;
+		return MaxCount;
     }
     FactoryHolder()
     {
@@ -642,7 +642,7 @@ public:
 };
 */
 #ifdef VALIDATING
-    class Ingredients : public Object {
+	class Ingredients : public Object {
     public:
 		virtual int Cost()
         {
@@ -678,202 +678,211 @@ public:
     class FetaCheese : public Ingredients {
     public:
         virtual int Cost()
-        {
-            return 40;
-        }
-        virtual const char *Describe() const
-        {
+		{
+			return 40;
+		}
+		virtual const char *Describe() const
+		{
 			return "feta Cheese";
-        }
-    };
-    class MotCheese : public Ingredients {
-    public:
-        virtual int Cost()
-        {
-            return 35;
-        }
-        virtual const char *Describe() const
-        {
-            return "Mot Cheese";
-        }
-    };
+		}
+	};
+	class MotCheese : public Ingredients {
+	public:
+		virtual int Cost()
+		{
+			return 35;
+		}
+		virtual const char *Describe() const
+		{
+			return "Mot Cheese";
+		}
+	};
 
 	class Sause : public Ingredients {
-    public:
-        virtual int Cost()
-        {
-            return 15;
-        }
-        virtual const char *Describe() const
-        {
-            return "Sause";
-        }
-    };
+	public:
+		virtual int Cost()
+		{
+			return 15;
+		}
+		virtual const char *Describe() const
+		{
+			return "Sause";
+		}
+	};
 
 	class ThinCrust: public Ingredients {
-    public:
-        virtual int Cost()
-        {
-            return 25;
-        }
-        virtual const char *Describe() const
-        {
-            return "Thin Crust";
-        }
-    };
-    class ThickCrust: public Ingredients {
-    public:
-        virtual int Cost()
-        {
+	public:
+		virtual int Cost()
+		{
+			return 25;
+		}
+		virtual const char *Describe() const
+		{
+			return "Thin Crust";
+		}
+	};
+	class ThickCrust: public Ingredients {
+	public:
+		virtual int Cost()
+		{
 			return 30;
-        }
-        virtual const char *Describe() const
-        {
-            return "Thick Crust";
-        }
-    };
+		}
+		virtual const char *Describe() const
+		{
+			return "Thick Crust";
+		}
+	};
 
-    class ThickCrustFactory: public Factory {
-    public:
-        virtual Object *Create(const PropertyParser &PropertyName,Object *Parent=0)
-        {
+	class ThickCrustFactory: public Factory {
+		Object *Create(Stream &FromStream);// Not implemented only present to remove warnings
+		Object *Create(const char *FactoryName,const PropertyParser &PropertyName,Object *Parent=0);// Not implemented only present to remove warnings
+
+	public:
+		virtual Object *Create(const PropertyParser &PropertyName,Object *Parent=0)
+		{
 			return new ThickCrust;
-        }
+		}
+	};
 
-    };
+	class ThinCrustFactory: public Factory {
+		Object *Create(Stream &FromStream);// Not implemented only present to remove warnings
+		Object *Create(const char *FactoryName,const PropertyParser &PropertyName,Object *Parent=0);// Not implemented only present to remove warnings
+	public:
+		virtual Object *Create(const PropertyParser &PropertyName,Object *Parent=0)
+		{
+			return new ThinCrust;
+		}
+	};
 
-    class ThinCrustFactory: public Factory {
-    public:
-        virtual Object *Create(const PropertyParser &PropertyName,Object *Parent=0)
-        {
-            return new ThinCrust;
-        }
-    };
-
-    class CrustFactory : public Factory {
-    public:
+	class CrustFactory : public Factory {
+	public:
 		CrustFactory()
-        {
-            AddFactory(new ThinCrustFactory);
-            AddFactory(new ThickCrustFactory);
-        }
-        ~CrustFactory()
-        {}
+		{
+			AddFactory(new ThinCrustFactory);
+			AddFactory(new ThickCrustFactory);
+		}
+		~CrustFactory()
+		{}
 
-    }
-    ;
+	}
+	;
 
 	class PizzaIngredientFactory : public Factory {
 		virtual Object *Create(const char *FactoryName,const PropertyParser &PropertyName,Object *Parent=0);// Not implemented only present to remove warnings
 		virtual Object *Create(Stream &s);// Not implemented only present to remove warnings
-
 	public:
 		virtual Object *Create(const PropertyParser &PropertyName,Object *Parent)=0;
 	};
 
 #define NEWYORK "New York Style\n"
 #define CHICAGO "Chicago Style\n"
-    class NYIngredientFactory : public PizzaIngredientFactory {
-    public:
-        virtual Object *Create(const PropertyParser &PropertyName,Object *Parent)
-        {
-            if (strcmp(PropertyName,"Cheese")==0)
-                return new MotCheese;
-            if (strcmp(PropertyName,"Clams")==0)
-                return new FreshClams;
-            if (strcmp(PropertyName,"Sause")==0)
+	class NYIngredientFactory : public PizzaIngredientFactory {
+		Object *Create(Stream &FromStream);// Not implemented only present to remove warnings
+		Object *Create(const char *FactoryName,const PropertyParser &PropertyName,Object *Parent=0);// Not implemented only present to remove warnings
+		virtual const char *Describe(const char *FactoryName) const;// Not implemented only present to remove warnings
+	public:
+		virtual Object *Create(const PropertyParser &PropertyName,Object *Parent)
+		{
+			if (strcmp(PropertyName,"Cheese")==0)
+				return new MotCheese;
+			if (strcmp(PropertyName,"Clams")==0)
+				return new FreshClams;
+			if (strcmp(PropertyName,"Sause")==0)
 				return new Sause;
-            return 0;
-        };
-        virtual const char *Describe() const
-        {
-            return NEWYORK;
-        }
-        virtual bool CanCreate(const PropertyParser &PropertyName) const
-        {
-            if (strcmp(PropertyName,"Cheese")==0)
-                return true;
-            if (strcmp(PropertyName,"Clams")==0)
-                return true;
-            if (strcmp(PropertyName,"Sause")==0)
-                return true;
-            return false;
-        }
-    };
+			return 0;
+		};
+		virtual const char *Describe() const
+		{
+			return NEWYORK;
+		}
+		virtual bool CanCreate(const PropertyParser &PropertyName) const
+		{
+			if (strcmp(PropertyName,"Cheese")==0)
+				return true;
+			if (strcmp(PropertyName,"Clams")==0)
+				return true;
+			if (strcmp(PropertyName,"Sause")==0)
+				return true;
+			return false;
+		}
+	};
 
 
-    class ChicagoIngredientFactory : public PizzaIngredientFactory {
-    public:
-        virtual Object *Create(const PropertyParser &PropertyName,Object *Parent)
-        {
-            if (strcmp(PropertyName,"Cheese")==0)
-                return new FetaCheese;
-            if (strcmp(PropertyName,"Clams")==0)
+	class ChicagoIngredientFactory : public PizzaIngredientFactory {
+		Object *Create(Stream &FromStream);// Not implemented only present to remove warnings
+		Object *Create(const char *FactoryName,const PropertyParser &PropertyName,Object *Parent=0);// Not implemented only present to remove warnings
+		virtual const char *Describe(const char *FactoryName) const;// Not implemented only present to remove warnings
+	public:
+		virtual Object *Create(const PropertyParser &PropertyName,Object *Parent)
+		{
+			if (strcmp(PropertyName,"Cheese")==0)
+				return new FetaCheese;
+			if (strcmp(PropertyName,"Clams")==0)
 				return new FrozenClams;
-            if (strcmp(PropertyName,"Sause")==0)
-                return new Sause;
-            return 0;
-        };
-        virtual const char *Describe() const
-        {
-            return CHICAGO;
-        }
-        virtual bool CanCreate(const PropertyParser &PropertyName) const
-        {
-            if (strcmp(PropertyName,"Cheese")==0)
-                return true;
-            if (strcmp(PropertyName,"Clams")==0)
-                return true;
-            if (strcmp(PropertyName,"Sause")==0)
-                return true;
-            return false;
-        }
+			if (strcmp(PropertyName,"Sause")==0)
+				return new Sause;
+			return 0;
+		};
+		virtual const char *Describe() const
+		{
+			return CHICAGO;
+		}
+		virtual bool CanCreate(const PropertyParser &PropertyName) const
+		{
+			if (strcmp(PropertyName,"Cheese")==0)
+				return true;
+			if (strcmp(PropertyName,"Clams")==0)
+				return true;
+			if (strcmp(PropertyName,"Sause")==0)
+				return true;
+			return false;
+		}
 
-    };
+	};
 
-    class Pizzaria : public Factory {
-    public:
-        Pizzaria()
-        {
-            AddFactory(new NYIngredientFactory);
-            AddFactory(new ChicagoIngredientFactory);
-            AddFactory(new CrustFactory);
-        }
-        ~Pizzaria()
-        {}
-    }
-    ;
+	class Pizzaria : public Factory {
+	public:
+		Pizzaria()
+		{
+			AddFactory(new NYIngredientFactory);
+			AddFactory(new ChicagoIngredientFactory);
+			AddFactory(new CrustFactory);
+		}
+		~Pizzaria()
+		{}
+	}
+	;
 
-    class TestFactory {
-        void Print(const char *City,const char *I1,const char *I2,const char *I3,const char *I4)
-        {
+	class TestFactory {
+		void Print(const char *City,const char *I1,const char *I2,const char *I3,const char *I4)
+		{
 
-            Pizzaria f;
-            Ingredients *thing1= (Ingredients *)    f.Create(City,I1);
-            Ingredients *thing2= (Ingredients *)    f.Create(City,I2);
-            Ingredients *thing3= (Ingredients *)    f.Create(City,I3);
-            Ingredients *thing4= (Ingredients *)    f.Create(City,I4);
-            printf("Making a %s",City);
-            printf(" pizza with:\n");
-            int cost = 0;
-            if (thing1) {
-                printf("%s\t%d\n",
-                       thing1->Describe(),
-                       thing1->Cost());
-                cost += thing1->Cost();
-            }
-            if (thing2) {
-                printf("%s\t%d\n",
-                       thing2->Describe(),
-                       thing2->Cost());
-                cost += thing2->Cost();
-            }
+			Pizzaria f;
+			Ingredients *thing1= (Ingredients *)    f.Create(City,I1);
+			Ingredients *thing2= (Ingredients *)    f.Create(City,I2);
+			Ingredients *thing3= (Ingredients *)    f.Create(City,I3);
+			Ingredients *thing4= (Ingredients *)    f.Create(City,I4);
+			printf("Making a %s",City);
+			printf(" pizza with:\n");
+			int cost = 0;
+			if (thing1) {
+				printf("%s\t%d\n",
+					   thing1->Describe(),
+					   thing1->Cost());
+				cost += thing1->Cost();
+			}
+			if (thing2) {
+				printf("%s\t%d\n",
+					   thing2->Describe(),
+					   thing2->Cost());
+				cost += thing2->Cost();
+			}
             if (thing3) {
                 printf("%s\t%d\n",thing3->Describe(),thing3->Cost());
                 cost += thing3->Cost();
             }
             if (thing4) {
-                printf("%s\t%d\n",thing4->Describe(),thing4->Cost());
+				printf("%s\t%d\n",thing4->Describe(),thing4->Cost());
                 cost += thing4->Cost();
             }
             int i = 0;

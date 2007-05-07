@@ -470,9 +470,9 @@ FunctionDefList *Array::GetFunctions(const char *Type) const
     s +="virtual bool LoadAsText(Iterator *I,CryString &FromStream);";
     s +="virtual bool SaveAsText(Iterator *I,CryString &ToStream) const;";
     s +="virtual EmptyObject *Add(EmptyObject *Item,size_t Size);";
-    s +="virtual EmptyObject *AddOwned(EmptyObject *Item,size_t Size);";
+    s +="virtual void AddOwned(EmptyObject *Item,size_t Size);";
     s +="virtual Object *Add(Object *Item);";
-    s +="virtual Object *AddOwned(Object *Item);";
+    s +="virtual void AddOwned(Object *Item);";
     s +="virtual bool IsEmpty(const Iterator *I) const;";
     s +="virtual void SetItemOwnerShip(Iterator *I,bool Owned);";
     s +="virtual bool GetItemOwnerShip(const Iterator *I) const;";
@@ -545,11 +545,17 @@ void Array::SetMax(size_t m)
 	if (MaxCount>m)
 		MaxCount = m;
 	for(i=0;i<MaxCount;i++)
+	{
 		NewPtr[i].Item = pPtr[i].Item;
+		NewPtr[i].IsObject = pPtr[i].IsObject;
+		NewPtr[i].Size = pPtr[i].Size;
+		NewPtr[i].IsOwned = pPtr[i].IsOwned;
+		NewPtr[i].IsAutoCreated = pPtr[i].IsAutoCreated;
+	}
 	SimpleArray::SetMax(m);
 	if (CurrentCount>MaxCount)
 		CurrentCount = MaxCount;
-	delete pPtr;
+	delete []pPtr;
 	pPtr = NewPtr;
 }
 
@@ -932,7 +938,7 @@ EmptyObject *IntArray::Add(EmptyObject *Item,size_t Size)
 	throw Exception(this,"EmptyObject *IntArray::Add(EmptyObject *Item,size_t Size) not implemented");
 //	return SimpleArray::Add(Item,Size);
 }
-EmptyObject *IntArray::AddOwned(EmptyObject *Item,size_t Size)
+void IntArray::AddOwned(EmptyObject *Item,size_t Size)
 {
 	throw Exception(this,"EmptyObject *IntArray::AddOwned(EmptyObject *Item,size_t Size) not implemented");
 //	return SimpleArray::Add(Item,sizeof(int));
@@ -942,29 +948,28 @@ Object *IntArray::Add(Object *Item)    // returns Item
 	throw Exception(this,"Object *IntArray::Add(Object *Item)    // returns Item not implemented");
 //	return SimpleArray::Add(Item);
 }
-Object *IntArray::AddOwned(Object *Item)   // gives ownership to list
+void IntArray::AddOwned(Object *Item)   // gives ownership to list
 {
 	throw Exception(this,"Object *IntArray::AddOwned(Object *Item)   // gives ownership to list not implemented");
 //	return SimpleArray::Add(Item);
 }
 EmptyObject *IntArray::Add(EmptyObject *Item,size_t Size,int Index)
 {
-	throw Exception(this,"EmptyObject *IntArray::Add(EmptyObject *Item,size_t Size,int Index) not implemented");
-//	return SimpleArray::Add(Item,sizeof(int),Index);
-}
-EmptyObject *IntArray::AddOwned(EmptyObject *Item,size_t Size,int Index)
-{
+	if (sizeof(int)!=Size)
+		throw Exception(this,"Trying to add non-int to IntArray");
 int v = *(int *)Item;
 	Values[Index]=v;
 	return Item;
-//	throw Exception(this,"EmptyObject *IntArray::AddOwned(EmptyObject *Item,size_t Size,int Index) not implemented");
-//	return SimpleArray::AddOwned(Item,sizeof(int),Index);
+}
+void IntArray::AddOwned(EmptyObject *Item,size_t Size,int Index)
+{
+	delete Add(Item,Size,Index);
 }
 Object *IntArray::Add(Object *Item,int Index)    // returns Item
 {
 	throw Exception(this,"Cannot add Object to IntArray");
 }
-Object *IntArray::AddOwned(Object *Item,int Index)   // gives ownership to list
+void IntArray::AddOwned(Object *Item,int Index)   // gives ownership to list
 {
 	throw Exception(this,"Cannot add Object to IntArray");
 }
@@ -1005,7 +1010,7 @@ void IntArray::CopyTo(Object &Dest) const
 		// Copy this classes variables first
 	IntArray *CastDest = (IntArray *)&Dest;
 		CastDest->SetSize(Size());
-		for(int i = 0;i<Size();i++)
+		for(size_t i = 0;i<Size();i++)
 			CastDest->SetValue(i,GetValue(i));
 		return;
 

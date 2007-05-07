@@ -85,9 +85,9 @@ public:
 	/// return a list of functions contained in this class
 	virtual FunctionDefList *GetFunctions(const char *Type=0) const;
 	virtual EmptyObject *Add(EmptyObject *Item,size_t Size)  = 0;
-	virtual EmptyObject *AddOwned(EmptyObject *Item,size_t Size) = 0;
+	virtual void /*EmptyObject * */AddOwned(EmptyObject *Item,size_t Size) = 0;
 	virtual Object *Add(Object *Item) = 0;    // returns Item
-	virtual Object *AddOwned(Object *Item) = 0;   // gives ownership to list
+	virtual void /*Object * */AddOwned(Object *Item) = 0;   // gives ownership to list
 	virtual void SetItemOwnerShip(Iterator *I,bool Owned) = 0;
 	virtual bool GetItemOwnerShip(const Iterator *I) const = 0;
 	virtual size_t GetItemSize(Iterator *I) const = 0;

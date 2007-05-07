@@ -113,7 +113,10 @@ bool operator !=(const char *s);
 //virtual size_t Write(const char *FromBuffer,size_t Size);
 //virtual size_t Tell() const;
 //virtual bool Eof() const;
-int Compare(MemStream *MemStream);
+virtual int Compare(int CompareType,const Object *Test1,const Object *Test2) const;
+virtual int CompareLogical(int CompareType,const Object *Test) const;
+virtual int Compare(const MemStream *MemStream) const;
+
 //virtual bool Open(const char *Name,const char *Operation,bool ExceptOnError=true);
 //virtual void Flush();
 int vsscanf(const char *format, va_list ap) const;
@@ -188,6 +191,14 @@ void SetDefaultValues();
 class ListFunctionDef : public List
 {
 Container::Iterator *LocIterator;
+
+//these aren't implemented, but can be if needed.
+	void /*EmptyObject */AddOwned(EmptyObject *Item,size_t Size);
+	void AddOwned(Object *Item);   // gives ownership to list
+	EmptyObject *Add(EmptyObject *Item,size_t Size);
+	Object *Add(Object *Item);    // returns Item
+
+
 public:
 StdFunctions(ListFunctionDef,List);
 	ListFunctionDef()
@@ -334,9 +345,9 @@ ListNode *FindNodeValue(CryMemStream &Needle) const;
 const ListNode *FirstNode() const;
 const ListNode *NextNode(const ListNode *n) const;
 EmptyObject *Add(EmptyObject *Item,size_t Size);
-EmptyObject *AddOwned(EmptyObject *Item,size_t Size);
+void AddOwned(EmptyObject *Item,size_t Size);
 CryObject *Add(CryObject *Item);
-CryObject *AddOwned(CryObject *Item);
+void AddOwned(CryObject *Item);
 void SetItemOwnerShip(EmptyObject  *Item,bool Owned);
 bool GetItemOwnerShip(EmptyObject *Item) const;
 bool IsObject(Iterator *I) const;

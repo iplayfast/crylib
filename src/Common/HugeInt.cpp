@@ -322,23 +322,27 @@ String &HugeInt::GetValue(String &Result) const
 }
 HugeInt &HugeInt::SetValue(const char *str)
 {
-    char ch;
-    HugeInt M = 10;
-    ZeroOut();
-    while(*str)
-    {
-        ch = *str - '0';
-        M = *this;
-        Shl1();
-        Shl1();
-        Add(M);
-        Shl1();
-//        Mult(M);	// replace this with Shr1,shr1,add,shr1
-//        M = 10;
-        Add(ch);
-        str++;
-    }
-    return *this;
+	char ch;
+	HugeInt M = 10;
+	ZeroOut();
+	const char *Orgstr = str;
+	while(*str)
+	{
+		if (*str<'0' || *str>'9')
+			throw Exception(this,"Bad format for HugeInt ",Orgstr);
+
+		ch = *str - '0';
+		M = *this;
+		// Mult by 10 = (M*2*2+M)*2
+		Shl1();	// *2
+		Shl1(); // *2
+		Add(M); // add original value
+		Shl1(); // *2
+
+		Add(ch);	// Add new digit
+		str++;
+	}
+	return *this;
 }
 
 HugeInt &HugeInt::Mult(const HugeInt &m)

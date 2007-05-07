@@ -15,6 +15,7 @@
 #include "CrySet.h"
 #include "CryPattern.h"
 #include "BitArray.h"
+#include "ClassXML.h"
 
 using namespace Dialogs;
 using namespace Crystal;
@@ -27,10 +28,12 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 
 bool/* __cdecl */FormCallBack(bool Verbose,const char *Result,bool fail)
 {
+{
 	Crystal::String s;
 	s.printf("%s %s",Result,fail ? "Fail" : "Pass");
 	s.Replace("\n","");
 	Form1->Memo1->Lines->Add(s.AsPChar());
+}
 	Application->ProcessMessages();
 	if (fail)
 	{
@@ -135,6 +138,13 @@ bool Fail=true;
 			{
 			BackPropagateNetwork b;
 				Fail = b.Test(true,b,FormCallBack);
+{
+XML x;
+	x.LoadFrom(b);
+Object *o = x.CreateObjectFromNode(&b);      // loosing memory here!
+delete o;
+}
+				
 			}
 
 //				BPNetContainer bp;
@@ -145,6 +155,18 @@ bool Fail=true;
 			{
 				BitArray a;
 				Fail = a.Test(true,a,FormCallBack);
+			}
+			break;
+		case 10:
+			{
+				Fuzzy f;
+				Fail = f.Test(true,f,FormCallBack);
+			}
+			break;
+		case 11:
+			{
+			MyList a;
+            	a.AddOwned(new Crystal::String("test"));
 			}
 		}
 		CheckListBox1->Checked[i]= Fail;

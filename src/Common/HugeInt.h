@@ -94,7 +94,7 @@ virtual int GetPropertyCount() const;
 virtual PropertyList* PropertyNames() const;
 virtual bool SetProperty(const PropertyParser &PropertyName,const char *PropertyValue);
 // HugeInt functions
-      // returns true if non zero
+	  // returns true if non zero
 virtual bool ZeroOut() { for(unsigned int i=0;i<NumDigits;i++) Number[i] = 0; Flags = ISZERO; FirstDigit = NumDigits-1; return false;}
 virtual bool Shl1();
 virtual bool Shl32();
@@ -142,9 +142,9 @@ virtual HugeInt &operator=(const HugeInt &n) { return SetValue(n); }
 	Flags = n.Flags; FirstDigit = n.FirstDigit; return *this;}
 virtual HugeInt & SetValue(const char *str);
 virtual String &GetValue(String &Result) const;
-virtual HugeInt &Or(HugeInt &n) { for(unsigned int i=0;i<NumDigits;i++) Number[i] |=n.Number[i]; SetFlags(); return *this; }
-virtual HugeInt &And(HugeInt &n) { for(unsigned int i=0;i<NumDigits;i++) Number[i] &=n.Number[i]; SetFlags(); return *this; }
-virtual bool Mask(HugeInt &v,unsigned int Digits) const
+virtual HugeInt &Or(const HugeInt &n) { for(unsigned int i=0;i<NumDigits;i++) Number[i] |=n.Number[i]; SetFlags(); return *this; }
+virtual HugeInt &And(const HugeInt &n) { for(unsigned int i=0;i<NumDigits;i++) Number[i] &=n.Number[i]; SetFlags(); return *this; }
+virtual bool Mask(const HugeInt &v,unsigned int Digits) const
     {
         for(unsigned int i=NumDigits-1;Digits;Digits--,i--)
             if (Number[i] != v.Number[i])
@@ -163,7 +163,7 @@ virtual bool IsOdd() const { return !IsEven(); }
 virtual bool IsZero() const { return Flags & ISZERO; }
 virtual bool IsOne() const { return Flags & ISONE; }
 virtual bool IsTwo() const { return Flags & ISTWO; }
-virtual bool operator>(HugeInt &n) const { return ((FirstDigit<n.FirstDigit) ||
+virtual bool operator>(const HugeInt &n) const { return ((FirstDigit<n.FirstDigit) ||
                                         ((FirstDigit==n.FirstDigit) && Number[FirstDigit]>n.Number[n.FirstDigit]));  }
 virtual bool operator>(unsigned int n)const { for(unsigned int i=0;i<NumDigits-1;i++)
                                             if (Number[i]>0L) return true;
@@ -181,34 +181,34 @@ virtual bool operator==(unsigned int n) const { for(unsigned int i=0;i<NumDigits
 virtual bool operator<=(unsigned int n) const { return !(*this>n); }
 virtual bool operator>=(unsigned int n) const { return !(*this<n); }
 virtual bool operator!=(unsigned int n) const { return !(*this==n); }
-virtual bool operator==(HugeInt &n) const {
-                 for(int i=(int)NumDigits-1;i>=0;i--)
-                        if (Number[i]!=n.Number[i])
-                            return false;
-                 return true;
-                                  }
-virtual bool operator<(HugeInt &n) const {
-                             if (IMZ())
-                             {
-                                if (n.IMZ())
-                                    return GetBottomDigit() < n.GetBottomDigit();
-                                return true;
-                             }
-                             if (n.IMZ())
-                                return false;
-                             unsigned int start = FirstDigit;
-                             if (n.FirstDigit<start)
-                                start = n.FirstDigit;
-                             for(unsigned int i=start;i<NumDigits;i++)
-                             {
-                                if (Number[i]<n.Number[i]) return true;
-                                if (Number[i]>n.Number[i]) return false;
-                             }
-                             return false;
-                            }
-virtual bool operator<=(HugeInt &n) const { return !(*this>n); }
-virtual bool operator>=(HugeInt &n) const { return !(*this<n); }
-virtual bool operator!=(HugeInt &n) const { return !(*this==n); }
+virtual bool operator==(const HugeInt &n) const {
+				 for(int i=(int)NumDigits-1;i>=0;i--)
+						if (Number[i]!=n.Number[i])
+							return false;
+				 return true;
+								  }
+virtual bool operator<(const HugeInt &n) const {
+							 if (IMZ())
+							 {
+								if (n.IMZ())
+									return GetBottomDigit() < n.GetBottomDigit();
+								return true;
+							 }
+							 if (n.IMZ())
+								return false;
+							 unsigned int start = FirstDigit;
+							 if (n.FirstDigit<start)
+								start = n.FirstDigit;
+							 for(unsigned int i=start;i<NumDigits;i++)
+							 {
+								if (Number[i]<n.Number[i]) return true;
+								if (Number[i]>n.Number[i]) return false;
+							 }
+							 return false;
+							}
+virtual bool operator<=(const HugeInt &n) const { return !(*this>n); }
+virtual bool operator>=(const HugeInt &n) const { return !(*this<n); }
+virtual bool operator!=(const HugeInt &n) const { return !(*this==n); }
 virtual HugeInt &Shl(unsigned int n=1);
 virtual HugeInt &Shr(unsigned int n=1);
 virtual HugeInt &Add(const HugeInt &n);

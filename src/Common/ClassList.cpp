@@ -220,9 +220,9 @@ FunctionDefList *List::GetFunctions(const char *Type) const
 	s += "const ListNode *FirstNode() const;";
 	s += "const ListNode *NextNode(const ListNode *n) const;";
 	s += "EmptyObject *Add(EmptyObject *Item,size_t Size);";
-	s += "EmptyObject *AddOwned(EmptyObject *Item,size_t Size);";
+	s += "void AddOwned(EmptyObject *Item,size_t Size);";
 	s += "Object *Add(Object *Item);";
-	s += "Object *AddOwned(Object *Item);";
+	s += "void AddOwned(Object *Item);";
 	s += "void SetItemOwnerShip(EmptyObject  *Item,bool Owned);";
 	s += "bool GetItemOwnerShip(const EmptyObject *Item) const;";
 	s += "bool IsObject(const Iterator *I) const;";
@@ -461,14 +461,13 @@ EmptyObject *List::Add(EmptyObject *_Item,size_t _Size)
 {
 	return Add(_Item,false,false,_Size);
 };
-Object *List::AddOwned(Object *_Item)   // gives ownership to list
+void List::AddOwned(Object *_Item)   // gives ownership to list
 {
 	Add(_Item,true,true);
-	return _Item;
 }
-EmptyObject *List::AddOwned(EmptyObject *_Item,size_t _Size)   // gives ownership to list
+void List::AddOwned(EmptyObject *_Item,size_t _Size)   // gives ownership to list
 {
-	return Add(_Item,false,true,_Size);
+	Add(_Item,false,true,_Size);
 }
 
 bool List::_Remove(EmptyObject *_Item)
@@ -555,11 +554,10 @@ size_t List::Count() const
 	if (Head)
 	{
 	const ListNode *f = Head;
-		i++;
 		while(f)
 		{
-			f = f->Next;
 			i++;
+			f = f->Next;
 		}
 	}
 	return i;

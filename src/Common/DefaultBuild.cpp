@@ -668,7 +668,7 @@ bool BSB_IteratedFunctions::Update(_ClassState &ClassState,_Ele *Ele)
                 s1.printf("%s*%s::AddOwned(%s * Item,size_t Size)", EleType,GetName(),EleType);
                 Body.printf("%s\n{\n\t%s::AddOwned(Item,Size);\n\treturn Item;\n}\n", s1.AsPChar(),InheritType());
                 Declare.printf("\n/*! This function will add an item to the container.\n   The Owned part means that the container is responsible for deleting it and will use delete on whatever is added*/\n");
-                source.printf("virtual %s *AddOwned(%s *Item,size_t Size)",EleType,EleType);
+                source.printf("virtual void AddOwned(%s *Item,size_t Size)",EleType);
                 AddFunction(source);
             }
             ScratchPad1().Replace(source.AsPChar());

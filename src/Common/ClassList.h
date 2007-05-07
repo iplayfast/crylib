@@ -331,17 +331,17 @@ public:
 	{
 		return Add(Item,false,false,Size);
 	}
-	EmptyObject *AddOwned(EmptyObject *Item,size_t Size)
+	void /*EmptyObject */AddOwned(EmptyObject *Item,size_t Size)
 	{
-		return 	Add(Item,false,true,Size);
+		Add(Item,false,true,Size);
 	}
 	Object *Add(Object *Item)    // returns Item
 	{
 		return (Object *) Add(Item,true,false);
 	}
-	Object *AddOwned(Object *Item)   // gives ownership to list
+	void AddOwned(Object *Item)   // gives ownership to list
 	{
-		return (Object *) Add(Item,true,true);
+		Add(Item,true,true);
 	}
 	void SetItemOwnerShip(EmptyObject  *Item,bool Owned)
 	{
@@ -543,9 +543,9 @@ public:
 	const ListNode *LastNode() const;
 	const ListNode *NextNode(const ListNode *n) const;
 	EmptyObject *Add(EmptyObject *Item,size_t Size);
-	EmptyObject *AddOwned(EmptyObject *Item,size_t Size);
+	void AddOwned(EmptyObject *Item,size_t Size);
 	Object *Add(Object *Item);    // returns Item
-	Object *AddOwned(Object *Item);   // gives ownership to list
+	void AddOwned(Object *Item);   // gives ownership to list
 	void SetItemOwnerShip(EmptyObject  *Item,bool Owned);
 	bool GetItemOwnerShip(const EmptyObject *Item) const;
 	bool IsObject(const Iterator *I) const;

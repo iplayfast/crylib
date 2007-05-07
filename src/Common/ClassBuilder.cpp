@@ -71,9 +71,9 @@ class CryContainerNAbstract : public Container
 	{
 	}
 
-	virtual EmptyObject *AddOwned(EmptyObject *Item,size_t Size)
+	virtual void AddOwned(EmptyObject *Item,size_t Size)
 	{
-		return 0;
+		return;
 	}
 	virtual Object *Dup()const
 	{
@@ -83,9 +83,9 @@ class CryContainerNAbstract : public Container
 	{
 		return  0;
 	}
-	virtual Object *AddOwned(Object *Item)
-    {
-        return 0;
+	virtual void AddOwned(Object *Item)
+	{
+        return;
     }
     virtual void SetItemOwnerShip(Iterator *I,bool Owned)
     {}
@@ -231,17 +231,17 @@ class CryStreamNAbstract : public Stream
 	{
 		return 0;
 	}
-	virtual EmptyObject *AddOwned(EmptyObject *Item,size_t Size)
+	virtual void AddOwned(EmptyObject *Item,size_t Size)
 	{
-		return 0;
+		return ;
 	}
 	virtual Object *Add(Object *Item)
 	{
 		return Item;
 	}    // returns Item
-    virtual Object *AddOwned(Object *Item)
-    {
-        return Item;
+	virtual void AddOwned(Object *Item)
+	{
+        return ;
     }   // gives ownership to list
     virtual void SetItemOwnerShip(Iterator *I,bool Owned)
     {} // ignored we always own, as it's a copy
@@ -377,33 +377,33 @@ class CrySimpleArrayNAbstract : public SimpleArray
 	{
 		return 0;
 	}
-	virtual EmptyObject *AddOwned(EmptyObject *Item,size_t Size)
+	virtual void AddOwned(EmptyObject *Item,size_t Size)
 	{
-		return 0;
+		return ;
 	}
 	virtual Object *Add(Object *Item)
 	{
 		return  0;
 	}
-	virtual Object *AddOwned(Object *Item)
-    {
-        return 0;
+	virtual void AddOwned(Object *Item)
+	{
+        return ;
     }
     virtual EmptyObject *Add(EmptyObject *Item,size_t Size,int Index)
 	{
 		return 0;
 	}
-	virtual EmptyObject *AddOwned(EmptyObject *Item,size_t Size,int Index)
+	virtual void AddOwned(EmptyObject *Item,size_t Size,int Index)
 	{
-		return 0;
+		return ;
 	}
 	virtual Object *Add(Object *Item,int Index)
 	{
 		return  0;
 	}
-	virtual Object *AddOwned(Object *Item,int Index)
+	virtual void AddOwned(Object *Item,int Index)
 	{
-		return 0;
+		return ;
 	}
 	void SetSize(size_t _Size)
 	{
@@ -462,17 +462,17 @@ class CryArrayNAbstract : public Array
 	{
 		return 0;
 	}
-	virtual EmptyObject *AddOwned(EmptyObject *Item,size_t Size)
+	virtual void AddOwned(EmptyObject *Item,size_t Size)
 	{
-		return 0;
+		return ;
 	}
 	virtual Object *Add(Object *Item)
 	{
 		return  0;
 	}
-    virtual Object *AddOwned(Object *Item)
-    {
-        return 0;
+	virtual void AddOwned(Object *Item)
+	{
+        return ;
     }
     virtual Object *Dup()const
     {
@@ -510,7 +510,26 @@ class CryArrayNAbstract : public Array
     virtual bool SaveAsText(Iterator *I,String &ToStream) const
     {
         return true;
-    }
+	}
+	virtual EmptyObject *Add(EmptyObject *Item,size_t Size,int Index)
+	{
+		return AddIndex(Item,false,false,Size,Index);
+	}
+
+	virtual void AddOwned(EmptyObject *Item,size_t Size,int Index)
+	{
+		AddIndex(Item,false,true,Size,Index);
+	}
+	virtual Object *Add(Object *Item,int Index)
+	{
+		return 0;
+	}    // returns Item
+	virtual void AddOwned(Object *Item,int Index)
+	{
+    	return;
+	}
+
+
 };
 
 void ClassBuilder::SetDefaultBodies(FunctionDefList *AbstractFunctions) // will setup default bodies of functions

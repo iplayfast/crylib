@@ -109,9 +109,9 @@ public:
 	virtual void Clear();
 
 	virtual EmptyObject *Add(EmptyObject *Item,size_t Size);
-	virtual EmptyObject *AddOwned(EmptyObject *Item,size_t Size);
+	virtual void AddOwned(EmptyObject *Item,size_t Size);
 	virtual Object *Add(Object *Item);
-	virtual Object *AddOwned(Object *Item);
+	virtual void AddOwned(Object *Item);
 }
 ;  // FileStream
 #endif //CFileStream

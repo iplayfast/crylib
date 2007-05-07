@@ -178,6 +178,7 @@ public:
 	const char *GetValue(const PropertyParser &PropertyName,String &Result) const;
 	virtual bool SetProperty(const PropertyParser &PropertyName,const char *PropertyValue);
 	void RenameProperty(const char *OldName,const char *NewName);
+	void RemoveProperty(const char *Name);
 	virtual size_t Size() const;
 	void RemoveNodeValue(const MemStream &Needle);
 //	void RemoveAtIterator(Iterator *LI);
