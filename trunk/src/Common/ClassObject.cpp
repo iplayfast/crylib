@@ -493,7 +493,7 @@ FunctionDefList *Object::GetFunctions(const
 
     s+= "virtual bool SetProperty(const char *PropertyName,const char *PropertyValue) = 0;";
 
-    s+= "virtual bool SetPropertyAsObject(Property *Value);";
+	s+= "virtual bool SetPropertyAsObject(const Property *Value);";
 
     s+= "virtual void SaveTo(Stream &ToStream) const;";
 
@@ -663,7 +663,7 @@ char *Object::GetProperty(const
     throw Exception(this,ExceptionUnknownProperty,"Unknown Property \"%s\"",PropertyName.AsPChar());
 }
 
-bool Object::SetPropertyAsObject(Property *Value)
+bool Object::SetPropertyAsObject(const Property *Value)
 
 {
     String Result;

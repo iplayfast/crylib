@@ -100,7 +100,7 @@ public:
 	{
 		return TArray<int>::SetPropertyAsObject(PropertyName,Value);
 	}
-	virtual bool SetPropertyAsObject(Property *Value)
+	virtual bool SetPropertyAsObject(const Property *Value)
 	{
 		return TArray<int>::SetPropertyAsObject(Value);
 	}

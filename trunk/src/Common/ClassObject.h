@@ -284,7 +284,8 @@ public:
 
 	/// set the value of a property
 	virtual bool SetProperty(const PropertyParser &PropertyName,const char *PropertyValue);
-	virtual bool SetPropertyAsObject(Property *Value);
+	/// set the value of a property from an Property Value, Value is NOT  given to the object and can be deleted after the call.
+	virtual bool SetPropertyAsObject(const Property *Value);
 	/*! save (in xml format) to a stream, stream pays attention to it's mode and will compress the data if mode is SObject, if it's SText, it saves as text.*/
 	virtual void SaveTo(Stream &ToStream) const; // xml save
 	/// load a previously saved (in xml format) stream

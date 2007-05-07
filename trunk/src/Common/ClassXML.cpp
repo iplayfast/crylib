@@ -220,6 +220,7 @@ void XMLNode::SaveTo(Object &ToObject) const
 						{
 							ToObject.SetPropertyAsObject(p);
 						}
+						delete p;
 					}
 					else
 					{
