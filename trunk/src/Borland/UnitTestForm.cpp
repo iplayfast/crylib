@@ -106,7 +106,7 @@ bool Fail=true;
 			break;
 		case 5:
 			{
-			MyList ml;
+			List ml;
 			ml.IsA("");	// initialize ObjectType debug data
 
 			Crystal::String NotOwned = "Item Not Owned";
@@ -165,7 +165,7 @@ delete o;
 			break;
 		case 11:
 			{
-			MyList a;
+			List a;
             	a.AddOwned(new Crystal::String("test"));
 			}
 		}

@@ -49,12 +49,12 @@ namespace Crystal
 using namespace std;
 #ifndef CList
 #define CList "List"
-#define CMyList "MyList"
+#define CList "List"
 
 class PropertyList;
 
 
-class MyList : public Container
+class List : public Container
 {
 //public:
 struct ListNode : public EmptyObject
@@ -63,16 +63,17 @@ struct ListNode : public EmptyObject
 		size_t Size;		// only used if Item is not a CryObject
 		bool IsOwned;
 		bool IsObject;
+		~ListNode() {}
 	};
 public:
-list <ListNode *> Head;
+list <ListNode *> *Head;
 typedef list<ListNode *>::iterator ListNodeI;
 typedef list<ListNode *>::const_iterator cListNodeI;
 
 struct ListIterator : public Iterator
 	{
 		cListNodeI p;
-		ListIterator(const MyList *container) : Iterator(container) { p = container->Head.begin(); GotoFirst(); }
+		ListIterator(const List *container) : Iterator(container) { p = container->Head->begin(); GotoFirst(); }
 		virtual Object *Dup() const
 		{
 			ListIterator *LI = (ListIterator *)GetOrigContainer()->_CreateIterator();
@@ -90,7 +91,7 @@ private:
 		New->Size = Size;
 		New->IsOwned = IsOwned;
 		New->IsObject = IsObject;
-		Head.push_front(New);
+		Head->push_front(New);
 		return Item;
 	}
 	EmptyObject *DupItem(const ListNode *Node) const
@@ -124,24 +125,64 @@ private:
 	inline ListNode *_FirstNode() const
 	{
 	cListNodeI I;
-		I = Head.begin();
+		I = Head->begin();
 		return *I;
 	}
 	ListNode *_LastNode() const
 	{
-		return *Head.end();
+		return *Head->end();
 	}
 	ListNode *_NextNode(const ListNode *n) const;
-	bool _Remove(EmptyObject *Item);	// returns true if Item removed
-	ListNode *_FindNode(const EmptyObject *Needle) const;
-	_IsEmpty() const { return Head.begin()==Head.end(); }
+	bool _Remove(EmptyObject *Item)	// returns true if Item removed
+	{
+	ListNodeI p = Head->begin();
+	cListNodeI e = Head->end();
+	ListNode *ln;
+		while(p!=e)
+		{
+			ln = *p;
+				if (ln->Item==Item)
+				{
+					DeleteItem(ln);
+					Head->erase(p);
+					delete(ln);
+					return true;
+				}
+				p++;
+		}
+		return false;
+
+/*	ListNode *ln = _FindNode(Item);
+			if (ln)
+			{
+				DeleteItem(ln);
+				Head->remove(ln);
+			}
+			else return false;
+			return true;
+*/
+	}
+	ListNode *_FindNode(const EmptyObject *Needle) const
+	{
+	cListNodeI p = Head->begin();
+	cListNodeI e = Head->end();
+	ListNode *ln;
+		while(p!=e)
+		{
+			ln = *p;
+				if (ln->Item==Needle) return ln;
+				p++;
+		}
+		return 0;
+	}
+	_IsEmpty() const { return Head->begin()==Head->end(); }
 protected:
 	void AddListNode (ListNode *Node);
 public:
-	StdFunctions(MyList,Container);
-	MyList() {}
-	MyList(MyList &List);
-	MyList(MyList *List);
+	StdFunctions(List,Container);
+	List() { Head = new list <ListNode *>;}
+	List(List &List);
+	List(List *List);
 	/*! will create an object of the Type named in Type. In container classes where the Type is the contained object, the Parent must be the appropriete container type or a derived class which can create the object (if the default class can't) */
 	static Object *ClassCreate(const PropertyParser &PropertyName,Object *Parent);
 	virtual Object *Create(const PropertyParser &PropertyName,Object *Parent)
@@ -150,7 +191,7 @@ public:
 	}
 	virtual Object *Create(Stream &e) { return Container::Create(e); }
 
-	virtual void GetEleType(String &Result) const { Result = "MyList::ListNode"; }
+	virtual void GetEleType(String &Result) const { Result = "List::ListNode"; }
 	void SaveItemsTo(Stream &ToStream) const;
 	virtual FunctionDefList *GetFunctions(const char *Type=0) const
 	{
@@ -160,9 +201,10 @@ public:
 		FunctionDefList *l = Container::GetFunctions();
 		return l;
 	}
-	virtual ~MyList()
+	virtual ~List()
 	{
 		Clear();
+		delete Head;
 	}
 	virtual const cbyte* GetRaw() const
 	{
@@ -173,13 +215,13 @@ public:
 	virtual void DeleteIterator(Iterator *LI) const { delete LI; }
 	void RemoveAtIterator(Iterator *LI)
 	{
-		ListNodeI p = Head.begin();
+		ListNodeI p = Head->begin();
 		ListIterator *li = (ListIterator *)LI;
-		while(p != Head.end())
+		while(p != Head->end())
 		{
 			if (*li->p == *p)
 			{
-				li->p = Head.erase(p);
+				li->p = Head->erase(p);
 				return;
 			}
 		}
@@ -234,41 +276,40 @@ public:
 	virtual bool GotoFirst(Iterator *LI) const
 	{
 		if (_IsEmpty()) return false;
-		((ListIterator *)LI)->p = Head.begin();
+		((ListIterator *)LI)->p = Head->begin();
 		return true;
 	}
 	virtual bool GotoNext(Iterator *LI) const
 	{
-		if (_IsEmpty() || ((ListIterator *)LI)->p==Head.end()) return false;
+		if (_IsEmpty() || ((ListIterator *)LI)->p==Head->end()) return false;
 		((ListIterator *)LI)->p++;
-		if (((ListIterator *)LI)->p==Head.end()) return false;
+		if (((ListIterator *)LI)->p==Head->end()) return false;
 		return true;
 	}
 
 	virtual bool GotoPrev(Iterator *LI) const
 	{
-		if (_IsEmpty() || ((ListIterator *)LI)->p==Head.begin()) return false;
+		if (_IsEmpty() || ((ListIterator *)LI)->p==Head->begin()) return false;
 		((ListIterator *)LI)->p--;
-		if (((ListIterator *)LI)->p==Head.begin()) return false;
 		return true;
 	}
 
 	virtual bool GotoLast(Iterator *LI) const
 	{
 		if (_IsEmpty()) return false;
-		((ListIterator *)LI)->p = Head.end();
+		((ListIterator *)LI)->p = Head->end();
 		return GotoPrev(LI);
 	}
-	virtual inline size_t Count() const { return Head.size(); }
+	virtual inline size_t Count() const { return Head->size(); }
 	virtual inline bool HasItems() const { return Count()>0; }
 ///copies contents of this to Dest
 	virtual void CopyTo(Object &Dest) const
 	{
-		if (Dest.IsA(CMyList))
+		if (Dest.IsA(CList))
 		{
-		MyList *_Dest = (MyList *) &Dest;
-		cListNodeI B = Head.begin();
-		cListNodeI E = Head.end();
+		List *_Dest = (List *) &Dest;
+		cListNodeI B = Head->begin();
+		cListNodeI E = Head->end();
 		while(B!=E)
 		{
 		const ListNode *p = *B++;
@@ -292,15 +333,78 @@ public:
 	else
 		throw Exception(this,"Copying from List to object that is not Listable");
 	}
+	bool Test(bool Verbose,Object &Object, bool (CallBack)(bool Verbose,const char *Result,bool Fail))
+	{
+	List l;
+
+		l.AddOwned(new String("First"));
+		l.AddOwned(new String("Second"));
+		l.AddOwned(new String("Third"));
+	ListIterator *li = l.CreateIterator();
+	String Result;
+	bool fail;
+
+	try
+	{
+	String *s;
+		li->GotoFirst();
+		s = (String *)li->Get();
+		fail = (*s!="Third");
+		li->GotoNext();
+		s = (String *)li->Get();
+		fail |= (*s!="Second");
+		li->GotoNext();
+		s = (String *)li->Get();
+		fail |= (*s!="First");
+		l.Sort(0);
+		li->GotoFirst();
+		s = (String *)li->Get();
+		fail |= (*s!="Third");
+		li->GotoNext();
+		s = (String *)li->Get();
+		fail |= (*s!="Second");
+		li->GotoNext();
+		s = (String *)li->Get();
+		fail |= (*s!="First");
+		Result = "List sort test ";
+		if (!CallBack(Verbose,Result,fail))
+		{
+			l.DeleteIterator(li);
+			return false;
+		}
+		l.Sort(2);
+		li->GotoFirst();
+		s = (String *)li->Get();
+		fail |= (*s!="First");
+		li->GotoNext();
+		s = (String *)li->Get();
+		fail |= (*s!="Second");
+		li->GotoNext();
+		s = (String *)li->Get();
+		fail = (*s!="Third");
+		Result = "List reverse sort test ";
+		l.DeleteIterator(li);
+		}
+		catch(Exception &e)
+		{
+			l.DeleteIterator(li);
+		}
+		if (!CallBack(Verbose,Result,fail))
+		{
+			return false;
+		}
+		return Container::Test(Verbose,Object,CallBack);
+	}
+
 	virtual void Clear()
 	{
-		ListNodeI I = Head.begin();
-		ListNodeI E = Head.end();
+		ListNodeI I = Head->begin();
+		ListNodeI E = Head->end();
 		while(I!=E)
 		{
 		ListNode *p = *I;
-			Head.pop_front();
-			I = Head.begin();
+//			Head->pop_front();
+//			I = Head->begin();
 			if (p->IsOwned)
 			{
 				if (p->IsObject)
@@ -312,7 +416,9 @@ public:
 					delete p->Item;
 			}
 			delete p;
+			I++;
 		}
+		Head->clear();
 	}
 	const ListNode *FindNode(const EmptyObject *Needle) const;
 	/// find a node who's item has the same "value" property
@@ -415,8 +521,8 @@ public:
 	}
 	EmptyObject *GetItem(int i) const
 	{
-	cListNodeI li = Head.begin();
-		while(i && li!=Head.end())
+	cListNodeI li = Head->begin();
+		while(i && li!=Head->end())
 		{
 			i--;
 			li++;
@@ -429,10 +535,18 @@ public:
 	}
 	virtual bool IsContainer() const { return true; }
 /// throws exception if Item not found
-	void Remove(EmptyObject *Item);
-	void Remove(Object*Item);
+	void Remove(EmptyObject *Item)
+	{
+	if (! _Remove(Item))
+		throw Exception(this,0,(const char *)"Item Not found in list");
+	}
+	void Remove(Object*Item)
+	{
+	if (! _Remove(Item))
+		throw Exception(this,0,Item->ChildClassName(),(const char *)"Not found in list");
+	}
 
-	void Copy(MyList *List);
+	void Copy(List *List);
 	// if this class contains the property name, it will attempt to load it
 	// if all is well returns true
 	//virtual bool SetProperty(CryString *PropertyName,CryString *PropertyValue);
@@ -454,8 +568,8 @@ public:
 	virtual size_t Size() const
 	{
 		size_t Result = sizeof(int);// for storing count
-		cListNodeI B = Head.begin();
-		cListNodeI E = Head.end();
+		cListNodeI B = Head->begin();
+		cListNodeI E = Head->end();
 		while(B!=E)
 		{
 		const ListNode *p = *B++;
@@ -466,11 +580,11 @@ public:
 		}
 		return Result;
 	}
-	void SwapListElements(MyList *ToSwap);
+	void SwapListElements(List *ToSwap);
 
 }
 ;  // CryList
-class List : public Container
+/*class List : public Container
 {
 
 //public:
@@ -575,7 +689,7 @@ public:
 	virtual size_t Size() const;
 	void SwapListElements(List *ToSwap);
 
-}
+}*/
 ;  // CryList
 #endif // TCryList
 }

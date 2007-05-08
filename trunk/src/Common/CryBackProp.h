@@ -468,7 +468,7 @@ bool GetIsPropertyContainer(const PropertyParser &PropertyName) const
 Object *GetCopyOfPropertyAsObject(const PropertyParser &PropertyName) const
 {
 	if (PropertyName!="Layers") return Object::GetCopyOfPropertyAsObject(PropertyName);
-	MyList *l = new MyList();
+	List *l = new List();
 	{    // saves the size of each layer
 	IntArray *ia = new IntArray(nn->Layers.size());
 		int i=0;
@@ -479,7 +479,7 @@ Object *GetCopyOfPropertyAsObject(const PropertyParser &PropertyName) const
 	// for each layer
 	for(BPLayerI From = nn->Layers.begin();From <nn->Layers.end();From++)
 	{
-		MyList *nl = new MyList();	// save the weights
+		List *nl = new List();	// save the weights
 		for(BPWeightsI dw = From->dWeights.begin(),w = From->Weights.begin();w<From->Weights.end();w++,dw++)
 		{
 		String *v = new String();	// save weight[i] first
@@ -504,10 +504,10 @@ bool SetPropertyAsObject(const Property *Value)
 	{
 	bool GettingLayerSetup = true;
 	const Object *o = Value->GetValue();
-		if (o->IsA(CMyList))
+		if (o->IsA(CList))
 		{
-		MyList *layer = (MyList *)o;
-		MyList::Iterator *iLayer = layer->CreateIterator();
+		List *layer = (List *)o;
+		List::Iterator *iLayer = layer->CreateIterator();
 		try
 		{
 			if (iLayer->GotoFirstObject(CIntArray))
@@ -539,9 +539,9 @@ bool SetPropertyAsObject(const Property *Value)
 			int LayerLength = From->LayerSize;
 			int LayerSize = From->Weights.end() - From->Weights.begin();
 
-				if (!iLayer->GotoNextObject(CMyList)) return false;
-				MyList *Weights = (MyList *) iLayer->Get();
-				MyList::Iterator *iWeights = Weights->CreateIterator();
+				if (!iLayer->GotoNextObject(CList)) return false;
+				List *Weights = (List *) iLayer->Get();
+				List::Iterator *iWeights = Weights->CreateIterator();
 				try
 				{
 					for(BPWeightsI dw = From->dWeights.begin(),w = From->Weights.begin();w<From->Weights.end();w++,dw++)

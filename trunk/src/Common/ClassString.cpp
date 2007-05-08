@@ -473,23 +473,33 @@ void String::Sort(int CompareType)
     }
     return;
 }
+
+//* String's compare types are
+// 0 case sensitive compare
+// 1 case insensitive compare
+// 2 case sensitive reverse compare
+// 3 case insensitive reverse compare
 int String::CompareLogical(int CompareType,const Object *Test) const
 {
-    if ((CompareType>1) || (CompareType<0))
-        throw Exception("Unexpected Value for Sorting CryFunctionDef");
+	if ((CompareType>3) || (CompareType<0))
+		throw Exception("Unexpected Value for Sorting CryFunctionDef");
 
-    if (Test->IsA(CString))
-    {
-        String *t = (String *)Test;
-        switch(CompareType)
-        {
-        case 0:
+	if (Test->IsA(CString))
+	{
+		String *t = (String *)Test;
+		switch(CompareType)
+		{
+		case 0:
 			return ::strcmp(t->AsPChar(),this->AsPChar());
 		case 1:
 			return ::strcasecmp(t->AsPChar(),this->AsPChar());
-        }
-    }
-    return 0;
+		case 2:
+			return ::strcmp(this->AsPChar(),t->AsPChar());
+		case 3:
+			return ::strcasecmp(this->AsPChar(),t->AsPChar());
+		}
+	}
+	return 0;
 }
 bool String::LessThen(int CompareType,const Object *Test) const
 {
