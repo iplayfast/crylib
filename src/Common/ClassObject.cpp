@@ -158,11 +158,12 @@ bool Object::Test(bool Verbose,Object &ThisObject, bool (CallBack)(bool Verbose,
             Object *co=0;
             {
                 XML x;
-
-                try
-                {
-                    x.LoadFrom(ThisObject);
-
+//				String s;
+//                	x.SaveTo(s);
+				try
+				{
+					x.LoadFrom(ThisObject);
+//					x.SaveTo(s);
 					if (!CallBack(Verbose,"XML Loaded Object without problems",Fail))
 					{
 						return false;
@@ -824,8 +825,8 @@ Object *Object::ClassCreate(const PropertyParser &PropertyName,Object *Parent)
 		return (Object *)new Property("NoName");
 	if (PropertyName==CList)
 		return (Object *)new List();
-	if (PropertyName==CMyList)
-    	return (Object *)new MyList();
+//	if (PropertyName==CMyList)
+//    	return (Object *)new MyList();
 	if (PropertyName==CPropertyList)
 		return (Object *)new PropertyList();
 	if (PropertyName==CDoubleArray)

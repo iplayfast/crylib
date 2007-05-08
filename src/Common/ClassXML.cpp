@@ -44,7 +44,7 @@ void XMLNode::SaveTo(Stream &ToStream) const
             String Value;
             li->GetValue(Value);
             Value.Replace("&","&amp;");
-            Value.Replace("<","&lt;");
+			Value.Replace("<","&lt;");
             Value.Replace(">","&gt;");
             Value.Replace("\\","\\\\");
             Value.Replace("\"","&quot;");
@@ -94,7 +94,7 @@ void XMLNode::SaveTo(Object &ToObject) const
 		throw Exception(this,ExceptionSaveToDifferentType,"SaveTo Object of different Type");
 	}
 	PropertyList::PropertyIterator * pi = _Attributes->CreateIterator();
-	if (pi->GotoLast())
+	if (pi->GotoFirst())
 	{
 		do
 		{
@@ -110,11 +110,11 @@ void XMLNode::SaveTo(Object &ToObject) const
 
 			}
 		}
-		while (pi->GotoPrev());
+		while (pi->GotoNext());
 	}
 	_Attributes->DeleteIterator(pi);
 	List::ListIterator *li = SubNodes.CreateIterator();
-	if (li->GotoLast())
+	if (li->GotoFirst())
 	{
 		do
 		{
@@ -127,7 +127,7 @@ void XMLNode::SaveTo(Object &ToObject) const
 					String Result;
 //					ToObject.SetProperty(current->Type.AsPChar(),current->_Attributes(Result));
 					PropertyList::PropertyIterator *ai = current->_Attributes->CreateIterator();
-					if (ai->GotoLast())
+					if (ai->GotoFirst())
 					{
 						do
 						{
@@ -136,7 +136,7 @@ void XMLNode::SaveTo(Object &ToObject) const
 							const char *_Value = ai->GetValue(Value);
 							ToObject.SetProperty(Name,Value);
 						}
-						while (ai->GotoPrev());
+						while (ai->GotoNext());
 					}
 					current->_Attributes->DeleteIterator(ai);
 
@@ -147,7 +147,7 @@ void XMLNode::SaveTo(Object &ToObject) const
 					{
 					String Result;
 						PropertyList::PropertyIterator *ai = current->_Attributes->CreateIterator();
-						if (ai->GotoLast())
+						if (ai->GotoFirst())
 						{
 							do
 							{
@@ -188,7 +188,7 @@ void XMLNode::SaveTo(Object &ToObject) const
 								else
 									c->AddOwned((EmptyObject *)Buffer,Size);
 							}
-							while (ai->GotoPrev());
+							while (ai->GotoNext());
 						}
 						current->_Attributes->DeleteIterator(ai);
 					}
@@ -230,7 +230,7 @@ void XMLNode::SaveTo(Object &ToObject) const
 				}
 			}
 		}
-		while (li->GotoPrev());
+		while (li->GotoNext());
 	}
 	SubNodes.DeleteIterator(li);
 }

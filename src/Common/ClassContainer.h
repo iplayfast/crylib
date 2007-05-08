@@ -41,11 +41,11 @@ class Container : public OwnedObject	//abstract
 {
 	bool _IsContainer;
 	// don't allow copyclass
-    Container(Container &NoNO);
+	Container(Container &NoNO);
 public:
 	StdFunctionsAbstract(Container,Object);
-    class Iterator;
-    Container();
+	class Iterator;
+	Container();
     /// will return the original owner of the Iterator
     const Container *GetOwner(Iterator *I) const;
     /// returns true
@@ -127,6 +127,7 @@ class Iterator : public Object//EmptyObject
 		const Container *OrigContainer; /* TODO : Add checks to see if interator is still with original container */
 	public:
 		Iterator(const Container *oc );
+		~Iterator() { }
 		/// creates a duplicate of this object, is defined as pure in order to force derived classes to handle this.
 		virtual Object *Dup() const=0;
 		bool IsContainer() const; // true if item is an object and is a container and is currently set as a container (believes it is a container)

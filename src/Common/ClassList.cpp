@@ -29,17 +29,17 @@ using namespace Crystal;
 // CryList
 ///----------------------------------------------------------------------------
 
-List::ListIterator::ListIterator(const List *container) : Iterator(container)
+/*List::ListIterator::ListIterator(const List *container) : Iterator(container)
 {
-    GotoFirst();
+	GotoFirst();
 }
 
 /// creates a duplicate of this object
 Object *List::ListIterator::Dup() const
 {
 	ListIterator *LI = (ListIterator *)GetOrigContainer()->_CreateIterator();
-    LI->p = p;
-    return LI;
+	LI->p = p;
+	return LI;
 }
 
 List::List()
@@ -110,13 +110,13 @@ void List::SetAtIterator(const Iterator *I,EmptyObject *Item,bool IsObject,bool 
 
 bool List::IsEmpty(const Iterator *I) const
 {
-    ListIterator *pLI = (ListIterator *)I;
-    return (pLI->p==0);// nothing there!
+	ListIterator *pLI = (ListIterator *)I;
+	return (pLI->p==0);// nothing there!
 }
 
 bool List::HasItems() const
 {
-    return (Head!=0);
+	return (Head!=0);
 }
 
 const List::ListNode *List::FirstNode() const
@@ -400,7 +400,7 @@ List::List(List *_List) : Container()
 		else
 			Add(DupItem(p),p->Size);
 		p = p->Next;
-    }
+	}
 }
 
 void List::AddListNode(ListNode *Node)
@@ -503,6 +503,7 @@ ListNode *Prev,*p = Head;
 	}
 	return false;
 }
+
 void List::Remove(EmptyObject *_Item)
 {
 	if (! _Remove(_Item))
@@ -772,7 +773,9 @@ const char *List::GetProperty(const PropertyParser &PropertyName,String &Result)
 	else
 		return Container::GetProperty(PropertyName,Result);
 }
-const char *MyList::GetProperty(const PropertyParser &PropertyName,String &Result) const
+
+*/
+const char *List::GetProperty(const PropertyParser &PropertyName,String &Result) const
 {
 	Result.Clear();
 	if (PropertyName=="Values")   // intercept container's property for our own
@@ -784,19 +787,19 @@ const char *MyList::GetProperty(const PropertyParser &PropertyName,String &Resul
 		return Container::GetProperty(PropertyName,Result);
 }
 	/*! will create an object of the Type named in Type. In container classes where the Type is the contained object, the Parent must be the appropriete container type or a derived class which can create the object (if the default class can't) */
-Object *MyList::ClassCreate(const PropertyParser &PropertyName,Object *Parent)
+Object *List::ClassCreate(const PropertyParser &PropertyName,Object *Parent)
 {
 Object *NewObject;
-	if (PropertyName==CMyList)
-		return new MyList();
+	if (PropertyName==CList)
+		return new List();
 	return Container::ClassCreate(PropertyName,Parent);
 }
 
-PropertyList *List::PropertyNames() const
+/*PropertyList *List::PropertyNames() const
 {
 	PropertyList *n = Container::PropertyNames();
 	return n;
-}
+} */
 
 
 /*
@@ -811,7 +814,7 @@ PropertyList *List::PropertyNames() const
  *
  *     list = listsort(mylist);
  */
-void List::Sort(int CompareType)
+/*void List::Sort(int CompareType)
 {
 	ListNode *p, *q, *e, *tail, *oldhead;
 	int insize, nmerges, psize, qsize, i;
@@ -827,12 +830,12 @@ void List::Sort(int CompareType)
 		Head = NULL;
 		Tail = NULL;
 
-		nmerges = 0;  /* count number of merges we do in this pass */
+		nmerges = 0;  // count number of merges we do in this pass
 
 		while (p)
 		{
-			nmerges++;  /* there exists a merge to be done */
-			/* step `insize' places along from p */
+			nmerges++;  // there exists a merge to be done
+						// step `insize' places along from p
 			q = p;
 			psize = 0;
 			for (i = 0; (i < insize) && q; i++)
@@ -899,6 +902,7 @@ void List::Sort(int CompareType)
 		insize *= 2;
 	}
 }
+*/
 /*
  * This is the actual sort function. Notice that it returns the new
  * head of the list. (It has to, because the head will not
@@ -911,41 +915,36 @@ void List::Sort(int CompareType)
  *
  *     list = listsort(mylist);
  */
-void MyList::Sort(int CompareType)	//  /* TODO : Testing needed */
+void List::Sort(int CompareType)	//  /* TODO : Testing needed */
 {
-cListNodeI p,q,e,tail,oldhead;
-list <ListNode *> NewHead;
-list <ListNode *> NewTail;
-	int insize, nmerges, psize, qsize, i;
 
-	if (Head.begin()==Head.end())
+	if (Head->begin()==Head->end())
 		return;
+cListNodeI p,q,e,tail,oldhead;
+	int insize, nmerges, psize, qsize, i;
+list <ListNode *> *NewHead =  new list <ListNode *>;;
 
 	insize = 1;
 
 	while (1)
 	{
-		p = Head.begin();
-
+		p = Head->begin();
 		nmerges = 0;  /* count number of merges we do in this pass */
-
-		while (p!=Head.end())
+		while (p!=Head->end())
 		{
 			nmerges++;  /* there exists a merge to be done */
 			/* step `insize' places along from p */
 			q = p;
 			psize = 0;
-			for (i = 0; (i < insize) && (q != Head.end()); i++)
+			for (i = 0; (i < insize) && (q != Head->end()); i++)
 			{
 				psize++;
 				q++;
 			}
-
 			// if q hasn't fallen off end, we have two lists to merge
 			qsize = insize;
-
 			// now we have two lists; merge them
-			while ((psize > 0) || (qsize > 0 && q!=Head.end()))
+			while ((psize > 0) || (qsize > 0 && q!=Head->end()))
 			{
 				// decide whether next element of merge comes from p or q
 				if (psize == 0)
@@ -953,7 +952,7 @@ list <ListNode *> NewTail;
 					e = q; q++; qsize--;// p is empty; e must come from q.
 				}
 				else
-				if (qsize == 0 || q==Head.end())
+				if (qsize == 0 || q==Head->end())
 				{
 					e = p; p++; psize--;  // q is empty; e must come from p.
 
@@ -974,36 +973,30 @@ list <ListNode *> NewTail;
 						e = q; q++; qsize--;// First element of q is lower; e must come from q.
 					}
 				}
-
 				// add the next element to the merged list
-				if (NewTail.begin() != NewTail.end())
-					NewTail.push_front(*e);
-				else
-					NewHead.push_front(*e);
-				NewTail.push_front(*e);
+				NewHead->push_back(*e);
 			}
 		// now p has stepped `insize' places along, and q has too
 		p = q;
 		} // while
-
+		{               // swap the sorted list and the original pointer
+		list <ListNode *> *temp = NewHead;
+			NewHead = Head;
+			Head = temp;
+		}
 		// If we have done only one merge, we're finished.
 		if (nmerges <= 1)   // allow for nmerges==0, the empty list case
 		{
-		Head.clear();
-		p = NewTail.begin();
-		while(p!=NewTail.end())
-			Head.push_front(*p++);
-		p = NewHead.begin();
-		while(p!=NewHead.end())
-			Head.push_front(*p++);
+			delete NewHead;
 			return;
 		}
+		NewHead->clear();
 		// Otherwise repeat, merging lists twice the size
 		insize *= 2;
 	}
 }
 
-
+/*
 int List::Compare2(int CompareType,const EmptyObject *First,const EmptyObject *Second) const
 {
 	ListNode *f,*s;
@@ -1031,4 +1024,4 @@ int List::Compare2(int CompareType,const EmptyObject *First,const EmptyObject *S
 		return f->Size - s->Size; // both empty objects
 	}
 }
-
+*/

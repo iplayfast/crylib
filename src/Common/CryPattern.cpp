@@ -347,15 +347,15 @@ void Observable::SetName(const char *_Name)
 
 Observable::~Observable()
 {
-    Iterator *I = _CreateIterator();
-    if (I->GotoFirst())
-    {
-        do
-        {
-            Observer *b = (Observer *)I->Get();
-            UnRegisterObserver(b);
-        }
-        while(I->GotoFirst());// always delete from first of list so iterator is kept in sync
+	Iterator *I = _CreateIterator();
+	if (I->GotoFirst())
+	{
+		do
+		{
+			Observer *b = (Observer *)I->Get();
+			UnRegisterObserver(b);
+		}
+		while(I->GotoFirst());// always delete from first of list so iterator is kept in sync
     }
     DeleteIterator(I);
 }
