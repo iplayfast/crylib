@@ -14,7 +14,7 @@ using namespace Crystal;
 bool HugeInt::Test(bool Verbose,Object &ThisObject,bool  (CallBack)(bool Verbose,const char *Result,bool fail))
 {
 	bool fail = false;
-	if (Object::Test(Verbose,ThisObject,CallBack))
+	if (!Object::Test(Verbose,ThisObject,CallBack))
         return true;
     HugeInt m,n;
     m.Add(0xffffffff);
@@ -542,7 +542,7 @@ bool HugeInt::Mult10()
     Shl1();
     return SetFlags();
 }
-HugeInt &HugeInt::Inc(unsigned int Amount)	//shit need to test
+HugeInt &HugeInt::Inc(unsigned int Amount)	// need to test
 {
     unsigned int cy=Amount,*d1 = &Number[NumDigits-1],temp;
     while(d1>=Number)

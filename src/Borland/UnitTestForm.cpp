@@ -16,6 +16,7 @@
 #include "CryPattern.h"
 #include "BitArray.h"
 #include "ClassXML.h"
+#include "HugeDouble.h"
 
 using namespace Dialogs;
 using namespace Crystal;
@@ -165,8 +166,8 @@ delete o;
 			break;
 		case 11:
 			{
-			List a;
-            	a.AddOwned(new Crystal::String("test"));
+			HugeInt d;
+				Fail = d.Test(true,d,FormCallBack);
 			}
 		}
 		CheckListBox1->Checked[i]= Fail;
