@@ -101,7 +101,7 @@ virtual bool Shl32();
 virtual bool Shr1();
 virtual bool Shr32();
 virtual bool Mult10();
-virtual bool IMZ() const { return (Flags & ISMOSTLYZERO)!=0; }
+inline virtual bool IMZ() const { return (Flags & ISMOSTLYZERO)!=0; }
 virtual unsigned int FirstBit() const;
 virtual HugeInt &Mult(const HugeInt &m);
 virtual unsigned int GetNumDigits() const { return NumDigits; }

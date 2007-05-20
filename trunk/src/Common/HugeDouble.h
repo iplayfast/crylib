@@ -200,6 +200,7 @@ void SetExp(unsigned int m) { Exp = m; }
 HugeDouble() { Exp = 0;}
 HugeDouble(unsigned int n)  {Exp = 0; }
 HugeDouble(const HugeInt &n) { Exp = 0; }
+
 //HugeDouble(unsigned int n) { ZeroOut(); Number[NumDigits-1] = n; SetFlags(n); }
 HugeDouble(const HugeDouble &n) {*this=n; }
 // return true if div by 0
@@ -268,6 +269,27 @@ void Huge2Str(char *b);
 virtual bool Test(bool Verbose,Object &Object,bool  (CallBack)(bool Verbose,const char *Result,bool fail));
 #endif
 
+/*HugeInt &Mult(const HugeInt &m)
+{
+HugeDouble d = m;
+	return Mult(d);
+}
+//virtual bool Div(HugeInt &Dividend,HugeInt &Divisor,HugeInt &Quotient,HugeInt &Remainder) const
+/*virtual bool Div(HugeInt &Divisor,HugeInt &Quotient,HugeInt &Remainder);
+virtual bool Div(HugeInt &Divisor,HugeInt &Result);
+virtual bool Mod(HugeInt &Divisor,HugeInt &Result);
+virtual HugeInt &operator=(const HugeInt &n);
+virtual HugeInt &SetValue(const HugeInt &n);
+virtual bool operator>(const HugeInt &n) const;
+virtual bool operator<(const HugeInt &n);
+virtual bool operator==(const HugeInt &n) const;
+virtual bool operator<(const HugeInt &n) const;
+virtual bool operator<=(const HugeInt &n) const;
+virtual bool operator>=(const HugeInt &n) const;
+virtual bool operator!=(const HugeInt &n) const;
+virtual HugeInt &Add(const HugeInt &n);
+virtual HugeInt &Sub(const HugeInt &n);
+*/
 };
 
 };//namespace Crystal
