@@ -70,7 +70,9 @@ public:
 		if (PropertyName==CCrySet)
 			return new CrySet();
 		else
-			return TArray<int>::Create(PropertyName,Parent);
+		{
+			return SimpleArray::Create(PropertyName,Parent);
+		}
 	}
 	static Object *ClassCreate(const PropertyParser &PropertyName,Object *Parent=0)
 	{

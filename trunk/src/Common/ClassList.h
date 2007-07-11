@@ -437,7 +437,7 @@ public:
 	{
 		return Add(Item,false,false,Size);
 	}
-	void /*EmptyObject */AddOwned(EmptyObject *Item,size_t Size)
+	void AddOwned(EmptyObject *Item,size_t Size)
 	{
 		Add(Item,false,true,Size);
 	}
