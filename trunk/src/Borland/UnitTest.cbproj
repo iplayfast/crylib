@@ -1,0 +1,332 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectGuid>{2f4d396d-093c-4f17-84ca-5c44d507ca50}</ProjectGuid>
+    <ProjectType>CppVCLApplication</ProjectType>
+    <MainSource>UnitTest.cpp</MainSource>
+    <Config Condition="'$(Config)'==''">Debug Build</Config>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Config)'=='Base' or '$(Base)'!=''">
+    <Base>true</Base>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Config)'=='Debug Build' or '$(Cfg_1)'!=''">
+    <Base>true</Base>
+    <Cfg_1>true</Cfg_1>
+    <CfgParent>Base</CfgParent>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Config)'=='Release Build' or '$(Cfg_2)'!=''">
+    <Base>true</Base>
+    <Cfg_2>true</Cfg_2>
+    <CfgParent>Base</CfgParent>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Base)'!=''">
+    <LinkCodeGuard>true</LinkCodeGuard>
+    <OutputExt>exe</OutputExt>
+    <DCC_CBuilderOutput>JPHNE</DCC_CBuilderOutput>
+    <DCC_ObjPath>..\..\FuzzyLogic;..\..\..\Borland Studio Projects\test1;..\Common\zlib;..\crylib\src\Borland;..\crylib\src\Common;..\Common</DCC_ObjPath>
+    <DynamicRTL>true</DynamicRTL>
+    <ILINK_AppType>Windows</ILINK_AppType>
+    <BCC_GenerateWindowsApp>true</BCC_GenerateWindowsApp>
+    <ILINK_ObjectSearchPath>..\..\FuzzyLogic;..\..\..\Borland Studio Projects\test1;..\Common\zlib;..\crylib\src\Borland;..\crylib\src\Common;..\Common</ILINK_ObjectSearchPath>
+    <UsePackages>true</UsePackages>
+    <PackageImports>vcl.bpi;vclx.bpi;dbrtl.bpi;bdertl.bpi;rtl.bpi;vcldb.bpi;adortl.bpi;dbxcds.bpi;dbexpress.bpi;vclib.bpi;ibxpress.bpi;xmlrtl.bpi;vclactnband.bpi;inet.bpi;IntrawebDB_90_100.bpi;Intraweb_90_100.bpi;vclie.bpi;inetdbbde.bpi;inetdbxpress.bpi;IndyCore.bpi;IndySystem.bpi;bcbsmp.bpi;soaprtl.bpi;dsnap.bpi;IndyProtocols.bpi;bcbie.bpi;teeui.bpi;teedb.bpi;tee.bpi;vcldbx.bpi</PackageImports>
+    <DCC_UnitSearchPath>..\..\FuzzyLogic;..\..\..\Borland Studio Projects\test1;..\Common\zlib;..\crylib\src\Borland;..\crylib\src\Common;..\Common;..\..\..\Borland Studio Projects;$(BDS)\lib;$(BDS)\lib\obj</DCC_UnitSearchPath>
+    <BCC_GenerateMultithreaded>true</BCC_GenerateMultithreaded>
+    <IncludePath>..\Common\zlib;..\Common</IncludePath>
+    <BCC_PCHCache>true</BCC_PCHCache>
+    <BCC_IntegerSizedEnums>false</BCC_IntegerSizedEnums>
+    <BCC_IncludePath>..\..\FuzzyLogic;..\..\..\Borland Studio Projects\test1;..\Common;$(BDS)\include;$(BDS)\include\dinkumware;$(BDS)\include\vcl;..\common\zlib</BCC_IncludePath>
+    <DCC_IncludePath>..\..\FuzzyLogic;..\..\..\Borland Studio Projects\test1;..\Common\zlib;..\crylib\src\Borland;..\crylib\src\Common;..\Common;..\..\..\Borland Studio Projects;$(BDS)\lib;$(BDS)\lib\obj</DCC_IncludePath>
+    <AllPackageLibs>rtl.lib;vcl.lib;vclx.lib;xmlrtl.lib;vclactnband.lib;vclie.lib</AllPackageLibs>
+    <BRCC_IncludePath>..\..\FuzzyLogic;..\..\..\Borland Studio Projects\test1;..\Common;$(BDS)\include;$(BDS)\include\dinkumware;$(BDS)\include\vcl;..\common\zlib</BRCC_IncludePath>
+    <TASM_IncludePath>..\..\FuzzyLogic;..\..\..\Borland Studio Projects\test1;..\Common;$(BDS)\include;$(BDS)\include\dinkumware;$(BDS)\include\vcl;..\common\zlib</TASM_IncludePath>
+    <ILINK_LibraryPath>..\..\FuzzyLogic;..\..\..\Borland Studio Projects\test1;..\Common\zlib;..\crylib\src\Borland;..\crylib\src\Common;..\Common;$(BDS)\lib;$(BDS)\lib\obj;$(BDS)\lib\psdk</ILINK_LibraryPath>
+    <BCC_Defines>NO_STRICT;VALIDATING</BCC_Defines>
+    <BRCC_Defines>_RTLDLL;USEPACKAGES;NO_STRICT;VALIDATING</BRCC_Defines>
+    <TASM_Defines>_RTLDLL;USEPACKAGES;NO_STRICT;VALIDATING</TASM_Defines>
+    <Multithreaded>true</Multithreaded>
+    <DCC_ResourcePath>..\..\FuzzyLogic;..\..\..\Borland Studio Projects\test1;..\Common\zlib;..\crylib\src\Borland;..\crylib\src\Common;..\Common</DCC_ResourcePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Cfg_1)'!=''">
+    <DCC_Optimize>false</DCC_Optimize>
+    <DCC_DebugInfoInExe>true</DCC_DebugInfoInExe>
+    <ILINK_FullDebugInfo>true</ILINK_FullDebugInfo>
+    <BCC_InlineFunctionExpansion>false</BCC_InlineFunctionExpansion>
+    <ILINK_DisableIncrementalLinking>true</ILINK_DisableIncrementalLinking>
+    <DCC_Define>DEBUG;$(DCC_Define)</DCC_Define>
+    <BCC_DebugLineNumbers>true</BCC_DebugLineNumbers>
+    <FinalOutputDir>..\..\bin\debug</FinalOutputDir>
+    <IntermediateOutputDir>Debug_Build</IntermediateOutputDir>
+    <BCC_ExtendedErrorInfo>true</BCC_ExtendedErrorInfo>
+    <BCC_AllCodeguardOptions>true</BCC_AllCodeguardOptions>
+    <BCC_wpar>false</BCC_wpar>
+    <TASM_DisplaySourceLines>true</TASM_DisplaySourceLines>
+    <BCC_UserSuppliedOptions> -Jgi</BCC_UserSuppliedOptions>
+    <BCC_StackFrames>true</BCC_StackFrames>
+    <ILINK_MapFileType>DetailedSegments</ILINK_MapFileType>
+    <BCC_DisableOptimizations>true</BCC_DisableOptimizations>
+    <ILINK_LibraryPath>$(BDS)\lib\debug;$(ILINK_LibraryPath)</ILINK_LibraryPath>
+    <BCC_Defines>DEBUG_not;$(BCC_Defines)</BCC_Defines>
+    <ILINK_MapWithMangledNames>true</ILINK_MapWithMangledNames>
+    <TASM_Debugging>Full</TASM_Debugging>
+    <BCC_SourceDebuggingOn>true</BCC_SourceDebuggingOn>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Cfg_2)'!=''">
+    <BCC_OptimizeForSpeed>true</BCC_OptimizeForSpeed>
+    <DCC_DebugInformation>false</DCC_DebugInformation>
+    <FinalOutputDir>..\..\bin\release</FinalOutputDir>
+    <IntermediateOutputDir>Release_Build</IntermediateOutputDir>
+    <ILINK_LibraryPath>$(BDS)\lib\release;$(ILINK_LibraryPath)</ILINK_LibraryPath>
+    <BCC_Defines>NDEBUG;$(BCC_Defines)</BCC_Defines>
+    <TASM_Debugging>None</TASM_Debugging>
+  </PropertyGroup>
+  <ProjectExtensions>
+    <Borland.Personality>CPlusPlusBuilder.Personality</Borland.Personality>
+    <Borland.ProjectType>CppVCLApplication</Borland.ProjectType>
+    <BorlandProject>
+<BorlandProject> <CPlusPlusBuilder.Personality>   <VersionInfo>
+      <VersionInfo Name="IncludeVerInfo">False</VersionInfo>
+      <VersionInfo Name="AutoIncBuild">False</VersionInfo>
+      <VersionInfo Name="MajorVer">1</VersionInfo>
+      <VersionInfo Name="MinorVer">0</VersionInfo>
+      <VersionInfo Name="Release">0</VersionInfo>
+      <VersionInfo Name="Build">0</VersionInfo>
+      <VersionInfo Name="Debug">False</VersionInfo>
+      <VersionInfo Name="PreRelease">False</VersionInfo>
+      <VersionInfo Name="Special">False</VersionInfo>
+      <VersionInfo Name="Private">False</VersionInfo>
+      <VersionInfo Name="DLL">False</VersionInfo>
+      <VersionInfo Name="Locale">1033</VersionInfo>
+      <VersionInfo Name="CodePage">1252</VersionInfo>
+    </VersionInfo>
+    <VersionInfoKeys>
+      <VersionInfoKeys Name="CompanyName"></VersionInfoKeys>
+      <VersionInfoKeys Name="FileDescription"></VersionInfoKeys>
+      <VersionInfoKeys Name="FileVersion">1.0.0.0</VersionInfoKeys>
+      <VersionInfoKeys Name="InternalName"></VersionInfoKeys>
+      <VersionInfoKeys Name="LegalCopyright"></VersionInfoKeys>
+      <VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys>
+      <VersionInfoKeys Name="OriginalFilename"></VersionInfoKeys>
+      <VersionInfoKeys Name="ProductName"></VersionInfoKeys>
+      <VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys>
+      <VersionInfoKeys Name="Comments"></VersionInfoKeys>
+    </VersionInfoKeys>
+    <Debugging>
+      <Debugging Name="DebugSourceDirs"></Debugging>
+    </Debugging>
+    <Parameters>
+      <Parameters Name="RunParams"></Parameters>
+      <Parameters Name="Launcher"></Parameters>
+      <Parameters Name="UseLauncher">False</Parameters>
+      <Parameters Name="DebugCWD"></Parameters>
+      <Parameters Name="HostApplication"></Parameters>
+      <Parameters Name="RemoteHost"></Parameters>
+      <Parameters Name="RemotePath"></Parameters>
+      <Parameters Name="RemoteParams"></Parameters>
+      <Parameters Name="RemoteLauncher"></Parameters>
+      <Parameters Name="UseRemoteLauncher">False</Parameters>
+      <Parameters Name="RemoteCWD"></Parameters>
+      <Parameters Name="RemoteDebug">False</Parameters>
+      <Parameters Name="Debug Symbols Search Path"></Parameters>
+      <Parameters Name="LoadAllSymbols">True</Parameters>
+      <Parameters Name="LoadUnspecifiedSymbols">False</Parameters>
+    </Parameters>
+    <Language>
+      <Language Name="ActiveLang" />
+      <Language Name="ProjectLang">$00000000</Language>
+      <Language Name="RootDir" />
+    </Language>
+    <Excluded_Packages>
+      
+      
+      
+      <Excluded_Packages Name="C:\BDS\4.0\CodeCentral AddIn\CodeCentralIDE100.bpl">CodeCentral Web Service Search Add-in</Excluded_Packages>
+    </Excluded_Packages>
+    <Linker>
+      <Linker Name="LibPrefix"></Linker>
+      <Linker Name="LibSuffix"></Linker>
+      <Linker Name="LibVersion"></Linker>
+    </Linker>
+    <ProjectProperties>
+      <ProjectProperties Name="AutoShowDeps">False</ProjectProperties>
+      <ProjectProperties Name="ManagePaths">True</ProjectProperties>
+      <ProjectProperties Name="VerifyPackages">True</ProjectProperties>
+    </ProjectProperties>
+    <HistoryLists_hlIncludePath>
+      <HistoryLists_hlIncludePath Name="Count">1</HistoryLists_hlIncludePath>
+      <HistoryLists_hlIncludePath Name="Item0">..\Common\zlib;..\Common</HistoryLists_hlIncludePath>
+    </HistoryLists_hlIncludePath>
+    <HistoryLists_hlFinalOutputDir>
+      <HistoryLists_hlFinalOutputDir Name="Count">1</HistoryLists_hlFinalOutputDir>
+      <HistoryLists_hlFinalOutputDir Name="Item0">..\..\bin\debug</HistoryLists_hlFinalOutputDir>
+    </HistoryLists_hlFinalOutputDir>
+    <HistoryLists_hlILINK_LibraryPath>
+      <HistoryLists_hlILINK_LibraryPath Name="Count">1</HistoryLists_hlILINK_LibraryPath>
+      <HistoryLists_hlILINK_LibraryPath Name="Item0">$(BDS)\lib\debug;..\..\FuzzyLogic;..\..\..\Borland Studio Projects\test1;..\Common\zlib;..\crylib\src\Borland;..\crylib\src\Common;..\Common;$(BDS)\lib;$(BDS)\lib\obj;$(BDS)\lib\psdk</HistoryLists_hlILINK_LibraryPath>
+    </HistoryLists_hlILINK_LibraryPath>
+    <HistoryLists_hlIntermediateOutputDir>
+      <HistoryLists_hlIntermediateOutputDir Name="Count">1</HistoryLists_hlIntermediateOutputDir>
+      <HistoryLists_hlIntermediateOutputDir Name="Item0">Debug_Build</HistoryLists_hlIntermediateOutputDir>
+    </HistoryLists_hlIntermediateOutputDir>
+    <Source>
+      <Source Name="MainSource">UnitTest.cpp</Source>
+    </Source>
+  </CPlusPlusBuilder.Personality> </BorlandProject></BorlandProject>
+  </ProjectExtensions>
+  <Import Project="$(MSBuildBinPath)\Borland.Cpp.Targets" />
+  <ItemGroup>
+    <CppCompile Include="..\Common\bignumfactor.cpp">
+      <BuildOrder>2</BuildOrder>
+    </CppCompile>
+    <CppCompile Include="..\Common\BitArray.cpp">
+      <BuildOrder>3</BuildOrder>
+    </CppCompile>
+    <CppCompile Include="..\Common\ClassArray.cpp">
+      <BuildOrder>18</BuildOrder>
+    </CppCompile>
+    <CppCompile Include="..\Common\ClassBuilder.cpp">
+      <BuildOrder>4</BuildOrder>
+    </CppCompile>
+    <CppCompile Include="..\Common\ClassContainer.cpp">
+      <BuildOrder>5</BuildOrder>
+    </CppCompile>
+    <CppCompile Include="..\Common\ClassException.cpp">
+      <BuildOrder>6</BuildOrder>
+    </CppCompile>
+    <CppCompile Include="..\Common\ClassFileStream.cpp">
+      <BuildOrder>7</BuildOrder>
+    </CppCompile>
+    <CppCompile Include="..\Common\ClassFooter.cpp">
+      <BuildOrder>8</BuildOrder>
+    </CppCompile>
+    <CppCompile Include="..\Common\ClassFunction.cpp">
+      <BuildOrder>9</BuildOrder>
+    </CppCompile>
+    <CppCompile Include="..\Common\ClassHeader.cpp">
+      <BuildOrder>10</BuildOrder>
+    </CppCompile>
+    <CppCompile Include="..\Common\ClassInstance.cpp">
+      <BuildOrder>11</BuildOrder>
+    </CppCompile>
+    <CppCompile Include="..\Common\ClassList.cpp">
+      <BuildOrder>12</BuildOrder>
+    </CppCompile>
+    <CppCompile Include="..\Common\ClassMemStream.cpp">
+      <BuildOrder>13</BuildOrder>
+    </CppCompile>
+    <CppCompile Include="..\Common\ClassObject.cpp">
+      <BuildOrder>23</BuildOrder>
+    </CppCompile>
+    <CppCompile Include="..\Common\ClassProperty.cpp">
+      <BuildOrder>14</BuildOrder>
+    </CppCompile>
+    <CppCompile Include="..\Common\ClassStream.cpp">
+      <BuildOrder>15</BuildOrder>
+    </CppCompile>
+    <CppCompile Include="..\Common\ClassString.cpp">
+      <BuildOrder>16</BuildOrder>
+    </CppCompile>
+    <CppCompile Include="..\Common\ClassXML.cpp">
+      <BuildOrder>26</BuildOrder>
+    </CppCompile>
+    <CppCompile Include="..\Common\CodeFactory.cpp">
+      <BuildOrder>17</BuildOrder>
+    </CppCompile>
+    <CppCompile Include="..\Common\CryBackProp.cpp">
+      <BuildOrder>19</BuildOrder>
+    </CppCompile>
+    <CppCompile Include="..\Common\CryFunctionDef.cpp">
+      <BuildOrder>20</BuildOrder>
+    </CppCompile>
+    <CppCompile Include="..\Common\CryFuzzy.cpp">
+      <BuildOrder>21</BuildOrder>
+    </CppCompile>
+    <CppCompile Include="..\Common\CryNN.cpp">
+      <BuildOrder>22</BuildOrder>
+    </CppCompile>
+    <CppCompile Include="..\Common\CryPattern.cpp">
+      <BuildOrder>24</BuildOrder>
+    </CppCompile>
+    <CppCompile Include="..\Common\CrySet.cpp">
+      <BuildOrder>25</BuildOrder>
+    </CppCompile>
+    <CppCompile Include="..\Common\DefaultBuild.cpp">
+      <BuildOrder>27</BuildOrder>
+    </CppCompile>
+    <CppCompile Include="..\Common\Factest.cpp">
+      <BuildOrder>28</BuildOrder>
+    </CppCompile>
+    <CppCompile Include="..\Common\HeadImp.cpp">
+      <BuildOrder>29</BuildOrder>
+    </CppCompile>
+    <CppCompile Include="..\Common\HugeDouble.cpp">
+      <BuildOrder>30</BuildOrder>
+    </CppCompile>
+    <CppCompile Include="..\Common\HugeInt.cpp">
+      <BuildOrder>31</BuildOrder>
+    </CppCompile>
+    <CppCompile Include="..\Common\librarytest.cpp">
+      <BuildOrder>34</BuildOrder>
+    </CppCompile>
+    <CppCompile Include="..\Common\NNPrime.cpp">
+      <BuildOrder>32</BuildOrder>
+    </CppCompile>
+    <CppCompile Include="..\Common\PrimInstance.cpp">
+      <BuildOrder>46</BuildOrder>
+    </CppCompile>
+    <CppCompile Include="..\Common\Utility.cpp">
+      <BuildOrder>33</BuildOrder>
+    </CppCompile>
+    <CppCompile Include="..\Common\zlib\adler32.c">
+      <BuildOrder>35</BuildOrder>
+    </CppCompile>
+    <CppCompile Include="..\Common\zlib\compress.c">
+      <BuildOrder>36</BuildOrder>
+    </CppCompile>
+    <CppCompile Include="..\Common\zlib\crc32.c">
+      <BuildOrder>37</BuildOrder>
+    </CppCompile>
+    <CppCompile Include="..\Common\zlib\deflate.c">
+      <BuildOrder>38</BuildOrder>
+    </CppCompile>
+    <CppCompile Include="..\Common\zlib\gzio.c">
+      <BuildOrder>39</BuildOrder>
+    </CppCompile>
+    <CppCompile Include="..\Common\zlib\inffast.c">
+      <BuildOrder>40</BuildOrder>
+    </CppCompile>
+    <CppCompile Include="..\Common\zlib\inflate.c">
+      <BuildOrder>41</BuildOrder>
+    </CppCompile>
+    <CppCompile Include="..\Common\zlib\inftrees.c">
+      <BuildOrder>42</BuildOrder>
+    </CppCompile>
+    <CppCompile Include="..\Common\zlib\trees.c">
+      <BuildOrder>43</BuildOrder>
+    </CppCompile>
+    <CppCompile Include="..\Common\zlib\uncompr.c">
+      <BuildOrder>44</BuildOrder>
+    </CppCompile>
+    <CppCompile Include="..\Common\zlib\zutil.c">
+      <BuildOrder>45</BuildOrder>
+    </CppCompile>
+    <CppCompile Include="UnitTest.cpp">
+      <BuildOrder>0</BuildOrder>
+    </CppCompile>
+    <CppCompile Include="UnitTestForm.cpp">
+      <Form>Form1</Form>
+      <DependentOn>UnitTestForm.h</DependentOn>
+      <BuildOrder>47</BuildOrder>
+    </CppCompile>
+    <ResFiles Include="UnitTest.res">
+      <BuildOrder>1</BuildOrder>
+    </ResFiles>
+    <FormResources Include="UnitTestForm.dfm" />
+    <BuildConfiguration Include="Debug Build">
+      <Key>Cfg_1</Key>
+    </BuildConfiguration>
+    <BuildConfiguration Include="Release Build">
+      <Key>Cfg_2</Key>
+    </BuildConfiguration>
+  </ItemGroup>
+</Project>
