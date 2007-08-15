@@ -119,7 +119,7 @@ void __fastcall TClassBuilderFrm::FormCreate(TObject *Sender)
 	ClassTypeCB->AddItem(CFuzzy,0);
 	// From BackProp
 //	ClassTypeCB->AddItem("BackPropagateLayer",0);
-	ClassTypeCB->AddItem(CBPNetContainer,0);
+	ClassTypeCB->AddItem(CBackPropagateNetwork,0);
 
 	ClassTypeCB->AddItem(CFunctionDef,0);
 	ClassTypeCB->AddItem(CFunctionDefList,0);
@@ -208,7 +208,7 @@ void __fastcall TClassBuilderFrm::RefreshView(void)
 			TreeView1->Items->AddChild(body,t.AsPChar());
 		}
 	}
-	const TTreeNode *n;
+	TTreeNode *n;
 		n = TreeView1->Items->GetFirstNode();
 		n->Expand(true);
 /*

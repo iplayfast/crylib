@@ -42,6 +42,7 @@ class ClassInstance : public PrimInstance
 public:
 StdFunctionsNoDup(ClassInstance,CodeFactory);
 	ClassInstance(CodeFactory *Parent) : PrimInstance(Parent) { p = 0; HasDefault = false;}
+	~ClassInstance();
 //	ClassInstance(CodeFactory *Parent,const char *ClassType,const char *ClassName,int count,bool IsProperty,bool IsPointer,bool IsArrayPointer,const char *DefaultValue);
     virtual Object *Create(const PropertyParser &PropertyName,CodeFactory *Parent);
     virtual const char *GetType() const;

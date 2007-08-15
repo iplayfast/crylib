@@ -23,7 +23,7 @@
 
 #ifdef __WIN32__
 //windows
-    #include <dos.h>  // for sleep
+	#include <dos.h>  // for sleep
 #endif
 #include <time.h>
 
@@ -32,12 +32,14 @@
 #include "ClassList.h"
 #include "ClassProperty.h"
 #include "ClassException.h"
+#include "Singleton.h"
+
 namespace Crystal
 {
 /*! The strategy pattern defines a family of algorithms, encapsulates each one,
 and makes them interchangable. Strategy lets the algorithm vary independentyly
 from clients that use it. (From Head First Design Patterns O'reilly 2004)
- 
+
 To implement this in C++, we will have two main classes. The StrategyHolder
 and the Strategy. As we don't know the number of Strategies the StrategyHolder
 will need, that number will be passed in on the creation. StrategyHolder will
@@ -899,119 +901,17 @@ public:
             Print(NEWYORK,"Cheese","Thick Crust","Clams","Sause");
             Print(CHICAGO,"Thin Crust","Cheese","Sause",0);
             Print(NEWYORK,"Cheese","Thin Crust","Clams","Sause");
-        }
-    };
+		}
+	};
 
 #endif
 
-/*! This class is a template class in order for different singletons to be defined
-  A singleton class is a class where one (and only one) instance of the class is created
- 
-*/
-
-    template <typename T>
-    class Singleton {
-        static T* Instance;
-        static int Busy;
-        static int References;
-        Singleton(Singleton &t)
-        {}  // can't have copy constructor
-    protected:
-        Singleton()
-        {}  // derived classes can use this
-        virtual ~Singleton()
-        {}
-    public:
-        static T* GetInstance()
-        {
-            Busy++;
-            while (Busy>1) {
-#ifdef __WIN32__
-                _sleep(50);
-#else
-
-                struct timespec timeout,remains;
-                timeout.tv_sec = 0;
-                timeout.tv_nsec =500000000; /* 50 milliseconds */
-                nanosleep(&timeout,&remains);
-#endif
-
-            }
-            // we are sure we are the only thread here now
-            if (Instance == 0)
-                Instance = new T;
-            Busy--;
-            if (Instance==0)
-                throw Exception("Initial Singleton Instance could not be created");
-            References++;
-            return Instance;
-        }
-        void ClearReferences()
-        {
-            References = 0;
-        };
-        void DeleteInstance()
-        {
-            if (References>0)
-                References--;
-            if (References==0) {
-                delete Instance;
-                Instance = 0;
-            }
-        }
-    };
-
-// default initialization
-    template <typename T>
-    T* Singleton<T>::Instance = 0;
-    template <typename T>
-    int Singleton<T>::Busy= 0;
-    template <typename T>
-    int Singleton<T>::References= 0;
-
-#ifdef VALIDATING
-// derived singleton class
-    class MySingleton : public Singleton<MySingleton> {
-        friend class Singleton<MySingleton>;
-    private:
-        MySingleton()
-        {}
-        ;
-        ~MySingleton()
-        {}
-        ;
-    };
-
-    class TestSingleton {
-        MySingleton *First;
-        MySingleton *Second;
-    public:
-        TestSingleton()
-        {
-            First = MySingleton::GetInstance();
-            for (int i=0;i<1000;i++) {
-                Second = MySingleton::GetInstance();
-                if (Second != First)
-                    printf("Error--- two singleton's present");
-            }
-            Second->ClearReferences();
-            First = MySingleton::GetInstance();
-            Second = MySingleton::GetInstance();
-        }
-        ~TestSingleton()
-        {
-            First->DeleteInstance();
-            Second->DeleteInstance();
-        };
-    };
-
-#endif
 
 /*!Command pattern
-Encapsulates a request as an object thereby letting you parameterize clients with different requests, 
+Encapsulates a request as an object thereby letting you parameterize clients with different requests,
 queue or log requests, and support undoable operations
- 
-Implemented in the same manner as StrategyHolderSender with CommandHolder for none ObjectPassing, and CommandHolderSender 
+
+Implemented in the same manner as StrategyHolderSender with CommandHolder for none ObjectPassing, and CommandHolderSender
 for object passing.
 */
 #define CCommandHolder	"CommandHolder"
@@ -1086,7 +986,7 @@ for object passing.
         }
         void UndoStrategy()
         {
-            if (UndoIndex) {
+			if (UndoIndex) {
                 UndoIndex--;
                 Undo->DoStrategy(UndoList[UndoIndex]);
 			} else
@@ -1119,7 +1019,7 @@ for object passing.
 			Undo = new StrategyHolderSender(NumStrategies);
             if (!Undo)
                 throw Exception("Error creating CommandHolderSender");
-            UndoLength = _UndoLength;
+			UndoLength = _UndoLength;
             UndoList = new int[UndoLength];
             if (!UndoList) {
                 delete Undo;
@@ -1152,7 +1052,7 @@ for object passing.
         {
             return StrategyHolderSender::DoStrategy();
         }
-        virtual int DoStrategy(Object *Sender) const
+		virtual int DoStrategy(Object *Sender) const
         {
             return StrategyHolderSender::DoStrategy(Sender);
 		}
@@ -1185,7 +1085,7 @@ for object passing.
 				UndoIndex++;
             } else
                 throw Exception("At end of Redo list");
-        }
+		}
 	};
 
 #ifdef VALIDATING
@@ -1284,7 +1184,7 @@ for object passing.
 
                 ch.DoStrategy(0,&Operand); // add
                 printf("Attempting to Undo\n");
-                ch.UndoStrategy(&Operand); // add
+				ch.UndoStrategy(&Operand); // add
                 printf("Doing some other things\n");
                 ch.DoStrategy(1,&Operand);  // sub
                 ch.DoStrategy(2,&Operand);  // Mult
@@ -1581,7 +1481,7 @@ This has been implmented by allowing different strategys to represent the states
             state.InsertQuarter();
             state.TurnCrank();
             state.EjectQuarter();
-            state.Dispense(&Inventory);
+			state.Dispense(&Inventory);
             state.EjectQuarter();
             state.InsertQuarter();
             state.TurnCrank();

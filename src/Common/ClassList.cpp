@@ -650,40 +650,47 @@ void List::RemoveNodeValue(const MemStream &Needle)   // find a node who's item 
 	}
 	return;
 }
-
+*/
 /// return the index into the list of a value
 int List::FindNodeValue(const MemStream &Needle) const   // find a node who's item has the same "value" property
 {
 int i=0;
-	const ListNode *p = FirstNode();
-	if (p)
+ListIterator *li = CreateIterator();
+
+
+	if (li->GotoFirst())
 	{
 		size_t nl = Needle.GetLength();
 		MemStream *t;
 		do
 		{
-			if (p->IsObject)
+			if (li->IsObject())
 			{
-
-				if (((Object *)p->Item)->IsA(CMemStream))
+				if (((Object *)li->Get())->IsA(CMemStream))
 				{
-					t = (MemStream *) p->Item;
+					t = (MemStream *) li->Get();
 					if ((t->GetLength()==nl) && (*t==Needle))
+					{
+						DeleteIterator(li);
 						return i;
+					}
 				}
 				else
 				{
-					if (0==Compare(0,(Object *)p->Item,&Needle))
+					if (0==Compare(0,(Object *)li->Get(),&Needle))
+					{
+						DeleteIterator(li);
 						return i;
+					}
 				}
 			}
 			i++;
-			p=p->Next;
-		} while(p);
+		} while(li->GotoNext());
 	}
+	DeleteIterator(li);
 	return -1;
 }
-
+/*
 EmptyObject *List::GetItem(int i) const
 {
 	const ListNode *p = FirstNode();

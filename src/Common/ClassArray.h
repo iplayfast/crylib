@@ -21,9 +21,10 @@
 #ifndef _ClassArray_
 #define _ClassArray_
 #include <stdlib.h>
+
 #include "ClassContainer.h"
 #include "ClassException.h"
-#include "ClassString.h"
+//#include "ClassString.h"
 #include "ClassProperty.h"
 
 extern "C" int (Compare) (const void *ele1,const void *ele2);

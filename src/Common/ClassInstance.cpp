@@ -48,6 +48,11 @@ using namespace std;
 	Type = ClassType;
 } */
 
+ClassInstance::~ClassInstance()
+{
+    delete p;
+}
+
 bool ClassInstance::HasProperty(const PropertyParser &PropertyName) const
 {
 	if (PropertyName=="HasDefault")

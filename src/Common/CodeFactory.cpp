@@ -124,7 +124,7 @@ void CodeFactory::SetName(const char *_Name)
 }
 void CodeFactory::AddProduct(const PropertyParser &PropertyName)
 {
-    Products.AddProperty(PropertyName,new HeadImp());
+    Products.AddPropertyOwned(PropertyName,new HeadImp());
 }
 void CodeFactory::AddFactory(CodeFactory *f)
 {

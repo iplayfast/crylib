@@ -23,33 +23,31 @@
 #include "ClassException.h"
 
 using namespace Crystal;
-char *MemStream::gBuffer=NULL; // scrap memory, (volitale)
-int MemStream::gBuffSize=0;
-int MemStream::gBuffCount=0; // number of strings using it
 
 
 
 //-------------------------------------------------------------------
 // CryMemStream
 //-------------------------------------------------------------------
-
+static _SingleBuffer tempBuffer;
+static int gBuffCount=0;	// for reference debugging
 
 MemStream::MemStream(const MemStream *E)
 {
-    gBuffCount++;
-    if (E!=this)
-    {
-        Buffer = new char[E->Length];
-        Length = E->Length;
-        DataLength = E->DataLength;
-        Position = E->Position;
-    }
-    if (Buffer==0)
-        throw Exception("Out of memory creating Memory Stream");
+	gBuffCount++;
+	if (E!=this)
+	{
+		Buffer = new char[E->Length];
+		Length = E->Length;
+		DataLength = E->DataLength;
+		Position = E->Position;
+	}
+	if (Buffer==0)
+		throw Exception("Out of memory creating Memory Stream");
 }
 MemStream::MemStream(const MemStream &E)
 {
-    gBuffCount++;
+	gBuffCount++;
     if (E!=*this)
     {
         Buffer = new char[E.Length];
@@ -366,8 +364,12 @@ FunctionDefList *MemStream::GetFunctions(const char *Type) const
 MemStream::MemStream()
 {
 	gBuffCount++;
-
-	Buffer = new char[101];
+//static int debugcount=0;
+//	debugcount++;
+	Buffer = new char[101];//+debugcount];
+//	if (debugcount+101==4154) {
+//		Buffer[0] = 'a';
+//	}
 	Length = 100;
 	DataLength = 0;
     Position = 0;
@@ -378,25 +380,24 @@ MemStream::MemStream()
 
 MemStream::~MemStream()
 {
-Buffer[0]='a';
     delete [] Buffer;
     Length = 0;
     DataLength = 0;
     Position = 0;
     gBuffCount--;
-    if (gBuffCount==0)
-    {
-        delete [] gBuffer;
-        gBuffSize =0;
-        gBuffer =0;
-    }
+	if (gBuffCount==0)
+	{
+	}
 }
 void MemStream::ReMem(size_t Value)
 {
-    char *OldBuffer = Buffer;
-    Buffer = new char[Value + 1];
-    if (Buffer==0)
-        throw Exception(this,"out of memory");
+	char *OldBuffer = Buffer;
+	Buffer = new char[Value + 1];
+	if (Buffer==0)
+	{
+		Buffer = OldBuffer;
+		throw Exception(this,"out of memory");
+	}
     memcpy(Buffer,OldBuffer,DataLength);
     Buffer[DataLength] = '\0';    // just to make it easier for strings
     delete [] OldBuffer;
@@ -452,30 +453,35 @@ size_t MemStream::printf(const char *format,...)
 }
 int MemStream::vsprintf(const char *format, va_list ap)
 {
-    int size = ::vsnprintf(gBuffer,gBuffSize,format,ap);
-    while(size>=gBuffSize)
-    {
-        delete []gBuffer;
-        if (size<1000)
-            size = 1000;
-        else
-            size *=2;
-        gBuffer = new char[size+1];
-        gBuffSize = size+1;
-        size = ::vsnprintf(gBuffer,gBuffSize,format,ap);
-    }
-    unsigned int newsize = strlen(Buffer)+strlen(gBuffer)+1;
-    if (Length<newsize)
-        this->ReMem(newsize);
-    strcat(Buffer,gBuffer);
-    return DataLength = strlen(Buffer) + 1;	// Memory includes the asciiz in length
+	int size = ::vsnprintf(tempBuffer.gBuffer,tempBuffer.gBuffSize,format,ap);
+	while(size>=tempBuffer.gBuffSize)
+	{
+	int ksize;
+		if (size<1000)
+			ksize = 1000;
+		else
+			ksize = size * 2;
+		if (!tempBuffer.Resize(ksize))
+		{
+			if (!tempBuffer.Resize(size))
+			{
+				throw Exception("Memory error in vsprintf");
+			}
+		}
+	}
+	::vsnprintf(tempBuffer.gBuffer,tempBuffer.gBuffSize,format,ap);
+	unsigned int newsize = strlen(Buffer)+strlen(tempBuffer.gBuffer)+1;
+	if (Length<newsize)
+		this->ReMem(newsize);
+	strcat(Buffer,tempBuffer.gBuffer);
+	return DataLength = strlen(Buffer) + 1;	// Memory includes the asciiz in length
 }
 
 void MemStream::CopyTo(Object &Dest) const
 {
-    if (Dest.IsA(CStream))
-        CopyToStream(*(MemStream *)&Dest);
-    else
+	if (Dest.IsA(CStream))
+		CopyToStream(*(MemStream *)&Dest);
+	else
         Stream::CopyTo(Dest);    // see if any base class can handle it
 }
 
@@ -550,7 +556,7 @@ int MemStream::Seek(int offset,int whence) const
     case SEEK_SET:
         {
             if (offset<0)
-                throw Exception(this,"Seek less then 0");
+				throw Exception(this,"Seek less then 0");
             else if ((size_t) offset >= Length)
                 t->ReMem(offset + 1);
             t->Position = offset;
