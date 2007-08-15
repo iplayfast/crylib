@@ -453,8 +453,13 @@ void XMLNode::LoadFrom(const Object &FromObject)
 	PropertyList *pn = FromObject.PropertyNames(); // creates a list of the property names
 	if (pn->Sortable())       /* TODO : Need to reimplment this for CryPropertyList */
 		pn->Sort(0);
-    PropertyList::PropertyIterator *i = pn->CreateIterator();
-    try
+	LoadFrom(FromObject,pn);
+	delete pn;
+}
+void XMLNode::LoadFrom(const Object &FromObject,PropertyList *pn)
+{
+	PropertyList::PropertyIterator *i = pn->CreateIterator();
+	try
     {
 		String Result;
 //       Type = FromObject.ChildClassName();
@@ -596,12 +601,10 @@ void XMLNode::LoadFrom(const Object &FromObject)
 
 		}
 		pn->DeleteIterator(i);
-		delete(pn);
 	}
 	catch (Exception &e)
 	{
 		pn->DeleteIterator(i);
-		delete pn;
 		throw e;
 	}
 }

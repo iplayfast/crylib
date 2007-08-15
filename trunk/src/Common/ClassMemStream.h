@@ -21,39 +21,66 @@
 #define _ClassMemStream_
 #include <stdarg.h>
 #include "ClassStream.h"
+#include "Singleton.h"
+
 namespace Crystal
 {
 using namespace std;
 
 #ifndef CMemStream
 #define CMemStream "MemStream"
+/// singleton buffer class that is used as a temporary buffer for memory operations
+class _SingleBuffer : public Singleton<_SingleBuffer>
+{
+public:
+	_SingleBuffer() { gBuffer = new char[gBuffSize=100]; }
+	bool Resize(int NewSize)
+	{
+		char *o = gBuffer;
+		gBuffer = new char[NewSize];
+		if (gBuffer)
+		{
+				gBuffSize = NewSize;
+				delete []o;
+				return true;
+		}
+		gBuffer = o;
+		return false;
+	}
+	~_SingleBuffer()
+	{
+		delete []gBuffer;
+		gBuffer = 0;
+    }
+	char *gBuffer;
+	int gBuffSize;
+};
+
+
 /// A stream that is contained within memory
 class MemStream : public Stream
 {
+//static Singleton<_SingleBuffer> tempBuffer;
 class MemStreamIterator : public StreamIterator
-    {
-    public:
-        MemStreamIterator(const Container *container);
-    };
+	{
+	public:
+		MemStreamIterator(const Container *container);
+	};
 
 	char *Buffer;   // where the actual data is held
-    // current position in the stream
-    size_t Position;
-    /// total length of the buffer
-    size_t Length;
-    /// length of the data within the buffer
-    size_t DataLength;
-
-    static char * gBuffer;
-    static int gBuffSize;
-    static int gBuffCount;  // number of references to it
-    void ReMem(size_t Value);
+	// current position in the stream
+	size_t Position;
+	/// total length of the buffer
+	size_t Length;
+	/// length of the data within the buffer
+	size_t DataLength;
+	void ReMem(size_t Value);
 protected:
-    void CheckMem(size_t RequestedSize);
-    void SetPosition(size_t p);
-    size_t GetPosition() const;
-    void LookLikeString() const;    // this is really non const, but it affects no data and is more useful as const
-    void Pos2DataLength();
+	void CheckMem(size_t RequestedSize);
+	void SetPosition(size_t p);
+	size_t GetPosition() const;
+	void LookLikeString() const;    // this is really non const, but it affects no data and is more useful as const
+	void Pos2DataLength();
     void Pos2Asciiz();
 	char *GetBuffer();
 	void Zero();

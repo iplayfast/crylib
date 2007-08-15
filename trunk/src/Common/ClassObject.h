@@ -321,7 +321,15 @@ public:
 	Object &operator =(const Object *From);
 	virtual bool Sortable() const { return false;}
 	virtual void Sort(int CompareType=0) { };
-
+// Visiter design pattern implementation
+	void Accept(Object *Visitor) { Visitor->Visit(this); }
+	void Accept(const Object *Visitor) const { Visitor->Visit(this); }
+	void Accept(Object *Visitor,int GoalID) { Visitor->Visit(this,GoalID); }
+	void Accept(const Object *Visitor,int GoalID)const  { Visitor->Visit(this,GoalID); }
+	void Visit(Object *Sender) { };	// default do nothing
+	void Visit(const Object *Sender) const { }; // default do nothing
+	void Visit(Object *Sender,int GoalID) { };	// default do nothing
+	void Visit(const Object *Sender,int GoalID) const { }; // default do nothing
 #ifdef VALIDATING
 
 	virtual bool Test(bool Verbose,Object &Object,bool  (CallBack)(bool Verbose,const char *Result,bool fail));

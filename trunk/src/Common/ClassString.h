@@ -30,6 +30,7 @@ using namespace std;
 #define strcasecmp stricmp
 #endif
 class List;
+
 /// string handling as though it were a stream
 class String : public MemStream
 {
