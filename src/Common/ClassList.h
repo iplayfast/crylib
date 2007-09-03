@@ -336,7 +336,7 @@ public:
 	else
 		throw Exception(this,"Copying from List to object that is not Listable");
 	}
-	#ifdef VALIDATE
+#ifdef VALIDATING	
 	bool Test(bool Verbose,Object &Object, bool (CallBack)(bool Verbose,const char *Result,bool Fail))
 	{
 	List l;
@@ -399,7 +399,7 @@ public:
 		}
 		return Container::Test(Verbose,Object,CallBack);
 	}
-    #endif
+#endif
 	virtual void Clear()
 	{
 		ListNodeI I = Head->begin();

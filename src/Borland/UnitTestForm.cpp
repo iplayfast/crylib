@@ -111,7 +111,11 @@ bool Fail=true;
 			ml.IsA("");	// initialize ObjectType debug data
 
 			Crystal::String NotOwned = "Item Not Owned";
+			/* TODO -cCodegear bug :
+This should be valid but CodeGear's compiler can't handle it. 
+Uncomment it after the compiler is fixed. 
 				ml.AddOwned((EmptyObject *)(new int(42)),sizeof(int *));
+				*/
 				ml.AddOwned(new Crystal::String("Item 1"));
 				ml.AddOwned(new Crystal::String("Item 2"));
 				ml.AddOwned(new Crystal::String("Item 3"));
