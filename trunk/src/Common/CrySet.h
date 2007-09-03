@@ -71,6 +71,14 @@ public:
 			return new CrySet();
 		else
 		{
+		/* TODO -cCodegear bug :
+			// todo:
+			// this should be
+			// return TArray<int>::Create(PropertyName,Parent);
+			// but CodeGear's compiler can't handle it, so we call the base class of
+			// TArray (which is what would happen anyways, but it should be fixed
+			// once the compiler is fixed.
+			*/
 			return SimpleArray::Create(PropertyName,Parent);
 		}
 	}
