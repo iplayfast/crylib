@@ -427,6 +427,7 @@ bool FileStream::Open(const char *Name,const char *Operation,bool ExceptOnError)
     }
     return true;
 }
+
 void FileStream::Close(bool ExceptOnError)
 {
     if (File)

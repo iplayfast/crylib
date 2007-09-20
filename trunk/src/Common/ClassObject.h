@@ -110,6 +110,7 @@ class FunctionDefList;
 class Container;
 class PropertyParser;
 class PropertyList;
+class HugeInt;
 
 /// this is the base class for any object which will be created or destroyed
 struct EmptyObject
@@ -355,7 +356,6 @@ public:
 	virtual Object *Create(const PropertyParser &PropertyName,Object *Parent);
 	virtual Object *Create(Stream &e) { return Object::Create(e); }
 };
-
 
 }	//namespace Crystal
 

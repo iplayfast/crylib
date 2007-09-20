@@ -18,13 +18,16 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef CHugeInt
-#define CHugeInt "HugeInt"
 #include "ClassObject.h"
 
+#ifndef _ClassHugeInt_
+#define _ClassHugeInt_
 
-namespace Crystal {
-using namespace Crystal;
+namespace Crystal
+{
+using namespace std;
+#ifndef CHugeInt
+#define CHugeInt "HugeInt"
 
 
 
@@ -168,7 +171,7 @@ virtual bool operator>(const HugeInt &n) const { return ((FirstDigit<n.FirstDigi
 virtual bool operator>(unsigned int n)const { for(unsigned int i=0;i<NumDigits-1;i++)
                                             if (Number[i]>0L) return true;
                                        return (Number[NumDigits-1]>n);
-                                      }
+									  }
 virtual bool operator<(unsigned int n) const { for(unsigned int i=0;i<NumDigits-1;i++)
                                             if (Number[i]>0L) return false;
                                          return (Number[NumDigits-1]<n);
@@ -288,11 +291,11 @@ unsigned int TargetDigits[7];//NumBits];
     void CalcTargetDigits();
 public:
 Pool FinalResults;
-    FindFactor()
+	FindFactor()
     {
         exp = 1;
 //        Base = 2;
-        HIBase = 2;
+		HIBase = 2;
         Target.SetValue("188198812920607963838697239461650439807163563379417382700763356422988859715234665485319060606504743045317388011303396716199692321205734031879550656996221305168759307650257059");
         LowerNums.Put(Scrap.Get(),Scrap.Get());// put two 0's in to prime the pump
         TargetDigitsBase = 0;
@@ -302,6 +305,7 @@ Pool FinalResults;
     void SetBase(HugeInt n) { /*Base = n;*/ HIBase = n; }
 };
 
-};
 #endif  //THugeInt
+};
 
+#endif // _ClassHugeInt_
