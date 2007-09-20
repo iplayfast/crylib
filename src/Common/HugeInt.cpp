@@ -1,4 +1,3 @@
-#pragma inline
 #include <stdio.h>
 #include <string.h>
 #include "HugeInt.h"
@@ -8,6 +7,7 @@
 #include "ClassException.h"
 
 using namespace Crystal;
+//#pragma inline
 
 #define SBS 1024
 #ifdef VALIDATING
@@ -15,20 +15,20 @@ bool HugeInt::Test(bool Verbose,Object &ThisObject,bool  (CallBack)(bool Verbose
 {
 	bool fail = false;
 	if (!Object::Test(Verbose,ThisObject,CallBack))
-        return true;
+		return true;
     HugeInt m,n;
     m.Add(0xffffffff);
     m.Inc(1);
     m.Inc(1);
     m.Dec(2);
     n = m;
-    m.Add(m);
+	m.Add(m);
     m.Sub(n);
     if (m!=0xffffffff)
         fail = true;
     if (!CallBack(Verbose,"Carry Tests",fail))
         return true;
-    //    m.Set
+	//    m.Set
     return true;
 }
 #endif
@@ -44,7 +44,7 @@ void HugeInt::SetNumDigits(unsigned int n)
   }
     unsigned *nn = new unsigned [n];
     if (!nn)
-        throw Exception(this,"Out of memory Creating HugeInt");
+		throw Exception(this,"Out of memory Creating HugeInt");
     for (unsigned int i=0;i<n-NumDigits;i++)
         nn[i] = 0;
     for(unsigned int j=0,i=n-NumDigits;i<n;i++,j++)
@@ -60,18 +60,18 @@ void HugeInt::SetNumDigits(unsigned int n)
 
 void HugeInt::CopyTo(Object &Dest) const  //copies contents of this to Dest
 {
-    if (Dest.IsA(CHugeInt))
-    {
-        HugeInt *h = (HugeInt *)&Dest;
-        *h = *this;
-        return;
-    }
-    if (Dest.IsA(CStream))
-    {
-        SaveTo(*(Stream *)&Dest);
-        return;
-    }
-    throw Exception(this,"Can't copy HugeInt to %s",Dest.ChildClassName());
+	if (Dest.IsA(CHugeInt))
+	{
+		HugeInt *h = (HugeInt *)&Dest;
+		*h = *this;
+		return;
+	}
+	if (Dest.IsA(CStream))
+	{
+		SaveTo(*(Stream *)&Dest);
+		return;
+	}
+	throw Exception(this,"Can't copy HugeInt to %s",Dest.ChildClassName());
 }
 
 Object *HugeInt::Dup() const // creates a duplicate of this object
@@ -270,6 +270,7 @@ bool Pool::InPool(HugeInt &Value)
         }
     return false;
 }
+
 
 bool Pool::InPool(HugeInt &Value1,HugeInt &Value2)
 {
