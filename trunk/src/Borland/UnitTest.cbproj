@@ -20,31 +20,31 @@
     <CfgParent>Base</CfgParent>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Base)'!=''">
-    <OutputExt>exe</OutputExt>
     <LinkCodeGuard>true</LinkCodeGuard>
+    <OutputExt>exe</OutputExt>
     <DCC_CBuilderOutput>JPHNE</DCC_CBuilderOutput>
     <DCC_ObjPath>..\..\FuzzyLogic;..\..\..\Borland Studio Projects\test1;..\Common\zlib;..\crylib\src\Borland;..\crylib\src\Common;..\Common</DCC_ObjPath>
     <DynamicRTL>true</DynamicRTL>
     <ILINK_AppType>Windows</ILINK_AppType>
-    <UsePackages>true</UsePackages>
-    <ILINK_ObjectSearchPath>..\..\FuzzyLogic;..\..\..\Borland Studio Projects\test1;..\Common\zlib;..\crylib\src\Borland;..\crylib\src\Common;..\Common</ILINK_ObjectSearchPath>
     <BCC_GenerateWindowsApp>true</BCC_GenerateWindowsApp>
+    <ILINK_ObjectSearchPath>..\..\FuzzyLogic;..\..\..\Borland Studio Projects\test1;..\Common\zlib;..\crylib\src\Borland;..\crylib\src\Common;..\Common</ILINK_ObjectSearchPath>
+    <UsePackages>true</UsePackages>
     <PackageImports>vcl.bpi;vclx.bpi;dbrtl.bpi;bdertl.bpi;rtl.bpi;vcldb.bpi;adortl.bpi;dbxcds.bpi;dbexpress.bpi;vclib.bpi;ibxpress.bpi;xmlrtl.bpi;vclactnband.bpi;inet.bpi;IntrawebDB_90_100.bpi;Intraweb_90_100.bpi;vclie.bpi;inetdbbde.bpi;inetdbxpress.bpi;IndyCore.bpi;IndySystem.bpi;bcbsmp.bpi;soaprtl.bpi;dsnap.bpi;IndyProtocols.bpi;bcbie.bpi;teeui.bpi;teedb.bpi;tee.bpi;vcldbx.bpi</PackageImports>
     <DCC_UnitSearchPath>..\..\FuzzyLogic;..\..\..\Borland Studio Projects\test1;..\Common\zlib;..\crylib\src\Borland;..\crylib\src\Common;..\Common;..\..\..\Borland Studio Projects;$(BDS)\lib;$(BDS)\lib\obj</DCC_UnitSearchPath>
     <BCC_GenerateMultithreaded>true</BCC_GenerateMultithreaded>
-    <BCC_PCHCache>true</BCC_PCHCache>
     <IncludePath>..\Common\zlib;..\Common</IncludePath>
+    <BCC_PCHCache>true</BCC_PCHCache>
     <BCC_IntegerSizedEnums>false</BCC_IntegerSizedEnums>
-    <TASM_IncludePath>..\..\FuzzyLogic;..\..\..\Borland Studio Projects\test1;..\Common;$(BDS)\include;$(BDS)\include\dinkumware;$(BDS)\include\vcl;..\common\zlib</TASM_IncludePath>
-    <BRCC_IncludePath>..\..\FuzzyLogic;..\..\..\Borland Studio Projects\test1;..\Common;$(BDS)\include;$(BDS)\include\dinkumware;$(BDS)\include\vcl;..\common\zlib</BRCC_IncludePath>
-    <AllPackageLibs>rtl.lib;vcl.lib;vclx.lib;xmlrtl.lib;vclactnband.lib;vclie.lib</AllPackageLibs>
-    <DCC_IncludePath>..\..\FuzzyLogic;..\..\..\Borland Studio Projects\test1;..\Common\zlib;..\crylib\src\Borland;..\crylib\src\Common;..\Common;..\..\..\Borland Studio Projects;$(BDS)\lib;$(BDS)\lib\obj</DCC_IncludePath>
     <BCC_IncludePath>..\..\FuzzyLogic;..\..\..\Borland Studio Projects\test1;..\Common;$(BDS)\include;$(BDS)\include\dinkumware;$(BDS)\include\vcl;..\common\zlib</BCC_IncludePath>
+    <DCC_IncludePath>..\..\FuzzyLogic;..\..\..\Borland Studio Projects\test1;..\Common\zlib;..\crylib\src\Borland;..\crylib\src\Common;..\Common;..\..\..\Borland Studio Projects;$(BDS)\lib;$(BDS)\lib\obj</DCC_IncludePath>
+    <AllPackageLibs>rtl.lib;vcl.lib;vclx.lib;xmlrtl.lib;vclactnband.lib;vclie.lib</AllPackageLibs>
+    <BRCC_IncludePath>..\..\FuzzyLogic;..\..\..\Borland Studio Projects\test1;..\Common;$(BDS)\include;$(BDS)\include\dinkumware;$(BDS)\include\vcl;..\common\zlib</BRCC_IncludePath>
+    <TASM_IncludePath>..\..\FuzzyLogic;..\..\..\Borland Studio Projects\test1;..\Common;$(BDS)\include;$(BDS)\include\dinkumware;$(BDS)\include\vcl;..\common\zlib</TASM_IncludePath>
     <ILINK_LibraryPath>..\..\FuzzyLogic;..\..\..\Borland Studio Projects\test1;..\Common\zlib;..\crylib\src\Borland;..\crylib\src\Common;..\Common;$(BDS)\lib;$(BDS)\lib\obj;$(BDS)\lib\psdk</ILINK_LibraryPath>
-    <Multithreaded>true</Multithreaded>
-    <TASM_Defines>_RTLDLL;USEPACKAGES;NO_STRICT;VALIDATING</TASM_Defines>
-    <BRCC_Defines>_RTLDLL;USEPACKAGES;NO_STRICT;VALIDATING</BRCC_Defines>
     <BCC_Defines>NO_STRICT;VALIDATING</BCC_Defines>
+    <BRCC_Defines>_RTLDLL;USEPACKAGES;NO_STRICT;VALIDATING</BRCC_Defines>
+    <TASM_Defines>_RTLDLL;USEPACKAGES;NO_STRICT;VALIDATING</TASM_Defines>
+    <Multithreaded>true</Multithreaded>
     <DCC_ResourcePath>..\..\FuzzyLogic;..\..\..\Borland Studio Projects\test1;..\Common\zlib;..\crylib\src\Borland;..\crylib\src\Common;..\Common</DCC_ResourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Cfg_1)'!=''">
@@ -56,18 +56,18 @@
     <DCC_Define>DEBUG;$(DCC_Define)</DCC_Define>
     <BCC_DebugLineNumbers>true</BCC_DebugLineNumbers>
     <FinalOutputDir>..\..\bin\debug</FinalOutputDir>
-    <BCC_ExtendedErrorInfo>true</BCC_ExtendedErrorInfo>
     <IntermediateOutputDir>Debug_Build</IntermediateOutputDir>
+    <BCC_ExtendedErrorInfo>true</BCC_ExtendedErrorInfo>
     <BCC_AllCodeguardOptions>true</BCC_AllCodeguardOptions>
-    <TASM_DisplaySourceLines>true</TASM_DisplaySourceLines>
     <BCC_wpar>false</BCC_wpar>
-    <BCC_StackFrames>true</BCC_StackFrames>
+    <TASM_DisplaySourceLines>true</TASM_DisplaySourceLines>
     <BCC_UserSuppliedOptions> -Jgi</BCC_UserSuppliedOptions>
+    <BCC_StackFrames>true</BCC_StackFrames>
     <ILINK_MapFileType>DetailedSegments</ILINK_MapFileType>
-    <ILINK_LibraryPath>$(BDS)\lib\debug;$(ILINK_LibraryPath)</ILINK_LibraryPath>
     <BCC_DisableOptimizations>true</BCC_DisableOptimizations>
-    <ILINK_MapWithMangledNames>true</ILINK_MapWithMangledNames>
+    <ILINK_LibraryPath>$(BDS)\lib\debug;$(ILINK_LibraryPath)</ILINK_LibraryPath>
     <BCC_Defines>DEBUG_not;$(BCC_Defines)</BCC_Defines>
+    <ILINK_MapWithMangledNames>true</ILINK_MapWithMangledNames>
     <TASM_Debugging>Full</TASM_Debugging>
     <BCC_SourceDebuggingOn>true</BCC_SourceDebuggingOn>
   </PropertyGroup>
@@ -86,7 +86,8 @@
     <BorlandProject>
 <BorlandProject><CPlusPlusBuilder.Personality><VersionInfo><VersionInfo Name="IncludeVerInfo">False</VersionInfo><VersionInfo Name="AutoIncBuild">False</VersionInfo><VersionInfo Name="MajorVer">1</VersionInfo><VersionInfo Name="MinorVer">0</VersionInfo><VersionInfo Name="Release">0</VersionInfo><VersionInfo Name="Build">0</VersionInfo><VersionInfo Name="Debug">False</VersionInfo><VersionInfo Name="PreRelease">False</VersionInfo><VersionInfo Name="Special">False</VersionInfo><VersionInfo Name="Private">False</VersionInfo><VersionInfo Name="DLL">False</VersionInfo><VersionInfo Name="Locale">1033</VersionInfo><VersionInfo Name="CodePage">1252</VersionInfo></VersionInfo><VersionInfoKeys><VersionInfoKeys Name="CompanyName"></VersionInfoKeys><VersionInfoKeys Name="FileDescription"></VersionInfoKeys><VersionInfoKeys Name="FileVersion">1.0.0.0</VersionInfoKeys><VersionInfoKeys Name="InternalName"></VersionInfoKeys><VersionInfoKeys Name="LegalCopyright"></VersionInfoKeys><VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys><VersionInfoKeys Name="OriginalFilename"></VersionInfoKeys><VersionInfoKeys Name="ProductName"></VersionInfoKeys><VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys><VersionInfoKeys Name="Comments"></VersionInfoKeys></VersionInfoKeys><Debugging><Debugging Name="DebugSourceDirs"></Debugging></Debugging><Parameters><Parameters Name="RunParams"></Parameters><Parameters Name="Launcher"></Parameters><Parameters Name="UseLauncher">False</Parameters><Parameters Name="DebugCWD"></Parameters><Parameters Name="HostApplication"></Parameters><Parameters Name="RemoteHost"></Parameters><Parameters Name="RemotePath"></Parameters><Parameters Name="RemoteParams"></Parameters><Parameters Name="RemoteLauncher"></Parameters><Parameters Name="UseRemoteLauncher">False</Parameters><Parameters Name="RemoteCWD"></Parameters><Parameters Name="RemoteDebug">False</Parameters><Parameters Name="Debug Symbols Search Path"></Parameters><Parameters Name="LoadAllSymbols">True</Parameters><Parameters Name="LoadUnspecifiedSymbols">False</Parameters></Parameters><Language><Language Name="ActiveLang" /><Language Name="ProjectLang">$00000000</Language><Language Name="RootDir" /></Language><Excluded_Packages>
       <Excluded_Packages Name="C:\BDS\4.0\CodeCentral AddIn\CodeCentralIDE100.bpl">CodeCentral Web Service Search Add-in</Excluded_Packages>
-    </Excluded_Packages><Linker><Linker Name="LibPrefix"></Linker><Linker Name="LibSuffix"></Linker><Linker Name="LibVersion"></Linker></Linker><ProjectProperties><ProjectProperties Name="AutoShowDeps">False</ProjectProperties><ProjectProperties Name="ManagePaths">True</ProjectProperties><ProjectProperties Name="VerifyPackages">True</ProjectProperties></ProjectProperties><HistoryLists_hlIncludePath><HistoryLists_hlIncludePath Name="Count">1</HistoryLists_hlIncludePath><HistoryLists_hlIncludePath Name="Item0">..\Common\zlib;..\Common</HistoryLists_hlIncludePath></HistoryLists_hlIncludePath><HistoryLists_hlFinalOutputDir><HistoryLists_hlFinalOutputDir Name="Count">1</HistoryLists_hlFinalOutputDir><HistoryLists_hlFinalOutputDir Name="Item0">..\..\bin\debug</HistoryLists_hlFinalOutputDir></HistoryLists_hlFinalOutputDir><HistoryLists_hlILINK_LibraryPath><HistoryLists_hlILINK_LibraryPath Name="Count">1</HistoryLists_hlILINK_LibraryPath><HistoryLists_hlILINK_LibraryPath Name="Item0">$(BDS)\lib\debug;..\..\FuzzyLogic;..\..\..\Borland Studio Projects\test1;..\Common\zlib;..\crylib\src\Borland;..\crylib\src\Common;..\Common;$(BDS)\lib;$(BDS)\lib\obj;$(BDS)\lib\psdk</HistoryLists_hlILINK_LibraryPath></HistoryLists_hlILINK_LibraryPath><HistoryLists_hlIntermediateOutputDir><HistoryLists_hlIntermediateOutputDir Name="Count">1</HistoryLists_hlIntermediateOutputDir><HistoryLists_hlIntermediateOutputDir Name="Item0">Debug_Build</HistoryLists_hlIntermediateOutputDir></HistoryLists_hlIntermediateOutputDir><Source><Source Name="MainSource">UnitTest.cpp</Source></Source></CPlusPlusBuilder.Personality></BorlandProject></BorlandProject>
+    </Excluded_Packages><Linker><Linker Name="LibPrefix"></Linker><Linker Name="LibSuffix"></Linker><Linker Name="LibVersion"></Linker></Linker><ProjectProperties><ProjectProperties Name="AutoShowDeps">False</ProjectProperties><ProjectProperties Name="ManagePaths">True</ProjectProperties><ProjectProperties Name="VerifyPackages">True</ProjectProperties></ProjectProperties><HistoryLists_hlIncludePath><HistoryLists_hlIncludePath Name="Count">1</HistoryLists_hlIncludePath><HistoryLists_hlIncludePath Name="Item0">..\Common\zlib;..\Common</HistoryLists_hlIncludePath></HistoryLists_hlIncludePath><HistoryLists_hlFinalOutputDir><HistoryLists_hlFinalOutputDir Name="Count">1</HistoryLists_hlFinalOutputDir><HistoryLists_hlFinalOutputDir Name="Item0">..\..\bin\debug</HistoryLists_hlFinalOutputDir></HistoryLists_hlFinalOutputDir><HistoryLists_hlILINK_LibraryPath><HistoryLists_hlILINK_LibraryPath Name="Count">1</HistoryLists_hlILINK_LibraryPath><HistoryLists_hlILINK_LibraryPath Name="Item0">$(BDS)\lib\debug;..\..\FuzzyLogic;..\..\..\Borland Studio Projects\test1;..\Common\zlib;..\crylib\src\Borland;..\crylib\src\Common;..\Common;$(BDS)\lib;$(BDS)\lib\obj;$(BDS)\lib\psdk</HistoryLists_hlILINK_LibraryPath></HistoryLists_hlILINK_LibraryPath><HistoryLists_hlIntermediateOutputDir><HistoryLists_hlIntermediateOutputDir Name="Count">1</HistoryLists_hlIntermediateOutputDir><HistoryLists_hlIntermediateOutputDir Name="Item0">Debug_Build</HistoryLists_hlIntermediateOutputDir></HistoryLists_hlIntermediateOutputDir><Source><Source Name="MainSource">UnitTest.cpp</Source></Source></CPlusPlusBuilder.Personality>  <ModelSupport>True</ModelSupport>
+</BorlandProject></BorlandProject>
   </ProjectExtensions>
   <Import Project="$(MSBuildBinPath)\Borland.Cpp.Targets" />
   <ItemGroup>
@@ -231,11 +232,116 @@
     <CppCompile Include="UnitTestForm.cpp">
       <Form>Form1</Form>
       <DependentOn>UnitTestForm.h</DependentOn>
-      <BuildOrder>47</BuildOrder>
+      <BuildOrder>79</BuildOrder>
     </CppCompile>
     <ResFiles Include="UnitTest.res">
       <BuildOrder>1</BuildOrder>
     </ResFiles>
+    <None Include="..\Common\BitArray.h">
+      <BuildOrder>47</BuildOrder>
+    </None>
+    <None Include="..\Common\ClassArray.h">
+      <BuildOrder>48</BuildOrder>
+    </None>
+    <None Include="..\Common\ClassBuilder.h">
+      <BuildOrder>49</BuildOrder>
+    </None>
+    <None Include="..\Common\ClassContainer.h">
+      <BuildOrder>50</BuildOrder>
+    </None>
+    <None Include="..\Common\ClassException.h">
+      <BuildOrder>51</BuildOrder>
+    </None>
+    <None Include="..\Common\ClassFileStream.h">
+      <BuildOrder>52</BuildOrder>
+    </None>
+    <None Include="..\Common\ClassFooter.h">
+      <BuildOrder>53</BuildOrder>
+    </None>
+    <None Include="..\Common\ClassFunction.h">
+      <BuildOrder>54</BuildOrder>
+    </None>
+    <None Include="..\Common\ClassHeader.h">
+      <BuildOrder>55</BuildOrder>
+    </None>
+    <None Include="..\Common\ClassInstance.h">
+      <BuildOrder>56</BuildOrder>
+    </None>
+    <None Include="..\Common\ClassList.h">
+      <BuildOrder>57</BuildOrder>
+    </None>
+    <None Include="..\Common\ClassMemStream.h">
+      <BuildOrder>58</BuildOrder>
+    </None>
+    <None Include="..\Common\ClassObject.h">
+      <BuildOrder>59</BuildOrder>
+    </None>
+    <None Include="..\Common\ClassProperty.h">
+      <BuildOrder>60</BuildOrder>
+    </None>
+    <None Include="..\Common\ClassStream.h">
+      <BuildOrder>61</BuildOrder>
+    </None>
+    <None Include="..\Common\ClassString.h">
+      <BuildOrder>62</BuildOrder>
+    </None>
+    <None Include="..\Common\ClassXML.h">
+      <BuildOrder>63</BuildOrder>
+    </None>
+    <None Include="..\Common\CodeFactory.h">
+      <BuildOrder>64</BuildOrder>
+    </None>
+    <None Include="..\Common\CryBackProp.h">
+      <BuildOrder>65</BuildOrder>
+    </None>
+    <None Include="..\Common\CryFunctionDef.h">
+      <BuildOrder>66</BuildOrder>
+    </None>
+    <None Include="..\Common\CryFuzzy.h">
+      <BuildOrder>67</BuildOrder>
+    </None>
+    <None Include="..\Common\CryInc.h">
+      <BuildOrder>68</BuildOrder>
+    </None>
+    <None Include="..\Common\CryNN.h">
+      <BuildOrder>69</BuildOrder>
+    </None>
+    <None Include="..\Common\CryPattern.h">
+      <BuildOrder>70</BuildOrder>
+    </None>
+    <None Include="..\Common\CrySet.h">
+      <BuildOrder>71</BuildOrder>
+    </None>
+    <None Include="..\Common\HeadImp.h">
+      <BuildOrder>72</BuildOrder>
+    </None>
+    <None Include="..\Common\HugeDouble.h">
+      <BuildOrder>73</BuildOrder>
+    </None>
+    <None Include="..\Common\HugeInt.h">
+      <BuildOrder>74</BuildOrder>
+    </None>
+    <None Include="..\Common\PrimeTab.h">
+      <BuildOrder>75</BuildOrder>
+    </None>
+    <None Include="..\Common\PrimInstance.h">
+      <BuildOrder>76</BuildOrder>
+    </None>
+    <None Include="..\Common\Singleton.h">
+      <BuildOrder>77</BuildOrder>
+    </None>
+    <None Include="..\Common\Utility.h">
+      <BuildOrder>78</BuildOrder>
+    </None>
+    <None Include="ModelSupport_UnitTest\Class Diagram1.txvcls">
+      <BuildOrder>82</BuildOrder>
+    </None>
+    <None Include="ModelSupport_UnitTest\default.txaPackage">
+      <BuildOrder>80</BuildOrder>
+    </None>
+    <None Include="ModelSupport_UnitTest\default.txvpck">
+      <BuildOrder>81</BuildOrder>
+    </None>
     <FormResources Include="UnitTestForm.dfm" />
     <BuildConfiguration Include="Debug Build">
       <Key>Cfg_1</Key>

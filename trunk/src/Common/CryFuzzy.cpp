@@ -558,8 +558,11 @@ PropertyList *Fuzzy::PropertyNames() const
 	return n;
 }
 
+
 bool Fuzzy::SetProperty(const PropertyParser &PropertyName,const char *PropertyValue)
 {
+	if (PropertyName=="Size")
+		return false;
 	return Array::SetProperty(PropertyName,PropertyValue);
 }
 const char *Fuzzy::GetProperty(const PropertyParser &PropertyName,String &Result) const
@@ -571,6 +574,8 @@ bool Fuzzy::HasProperty(const PropertyParser &PropertyName)const
 	return Array::HasProperty(PropertyName); // pass it to base class, see if it knows anything about it
 }
 int Fuzzy::GetPropertyCount() const { return Container::GetPropertyCount()  + 1; }    // Value is a property
+
+
 
 FunctionDefList *Fuzzy::GetFunctions(const char *Type) const
 {

@@ -86,8 +86,18 @@ void XMLNode::SaveTo(Stream &ToStream) const
 	}
 }
 
+
+/* Should load an xml file into an Object assuming that the Object can contain it.
+First should check that the outer tag matches the ToObject if so, then
+Add any attributes to the outer tag.
+If Subnodes are present and TObject Is a container then
+   Create the type, (with ToObject as parent), then recurse with the created object being the new ToObject
+*/
+
+int gint=0;
 void XMLNode::SaveTo(Object &ToObject) const
 {
+::gint++;
 	if (!ToObject.IsA(Type))
 	{
 		ToObject.IsA(Type);
@@ -119,10 +129,30 @@ void XMLNode::SaveTo(Object &ToObject) const
 		do
 		{
 			XMLNode *current = (XMLNode *) li->Get();
+			Object *o = current->CreateObjectFromNode(&ToObject);
+			if (o->IsA(CProperty))
+			{
+			Property *p = (Property *)o;
+			const char *s = *p->GetName();
+				if (ToObject.HasProperty(s))
+				{
+					ToObject.SetProperty(p);
+					delete o;
+					continue;
+				}
+			}
+			if (ToObject.IsA(CProperty))
+			{
+			Property *p = (Property *)&ToObject;
+				p->SetPropertyOwned(o);
+				continue;
+			}
 			if (ToObject.IsContainer())
 			{
-//				Container *cc = (Container *)&ToObject;
-				if (current->Type=="Property")
+			Container *cc = (Container *)&ToObject;
+				cc->AddOwned(o);
+//				current->SaveTo(*o);
+/*				if (current->Type=="Property")
 				{
 					String Result;
 //					ToObject.SetProperty(current->Type.AsPChar(),current->_Attributes(Result));
@@ -200,10 +230,10 @@ void XMLNode::SaveTo(Object &ToObject) const
 						c->AddOwned(o);
 					}
 				}
+*/
 			}
 			else // The object isn't a container so the property must be one
 			{
-				Object *o = current->CreateObjectFromNode(&ToObject);
 				if (ToObject.IsA(CProperty))
 				{
 				Property *p = (Property *)&ToObject;
@@ -453,76 +483,97 @@ void XMLNode::LoadFrom(const Object &FromObject)
 	PropertyList *pn = FromObject.PropertyNames(); // creates a list of the property names
 	if (pn->Sortable())       /* TODO : Need to reimplment this for CryPropertyList */
 		pn->Sort(0);
-	LoadFrom(FromObject,pn);
+	if (FromObject.IsA(CContainer))
+	{
+	Container * c= (Container *) &FromObject;
+		LoadFrom(*c,pn);
+	}
+	else
+		LoadFrom(FromObject,pn);
 	delete pn;
 }
+
+void XMLNode::LoadFrom(const Container &FromObject,PropertyList *pn)
+{
+String Result;
+Iterator *i = pn->_CreateIterator();
+int index = 0;
+	try
+	{
+		if (i->GotoFirst())
+		{
+			do
+			{
+				XMLNode *n = new XMLNode("data");
+				if (i->IsObject())
+				{
+					n->LoadFrom(*i->GetObject());
+					AddSubNode(n);
+				}
+				else
+				{
+					String e;
+					String t;
+					n->Type = "";
+					t.printf("data ");
+						if (i->IsA(CSimpleArray))
+							e.printf("%d ",index); // we need to include offset into array
+						size_t size = i->GetItemSize();
+						char *c = (char *)i->Get();
+						e.printf("%d ",size);
+						for (size_t ii=0;ii<size;ii++)
+							e.printf("0x%X ",0xff & c[ii]);
+
+					n->AddAttribute(t,e); // add property name and value
+					n->Type = "data";
+					AddSubNode(n);
+				}
+				index++;
+			} while(i->GotoNext());
+		}
+	}
+	catch (Exception &e)
+	{
+		FromObject.DeleteIterator(i);
+		throw e;
+	}
+}
+
 void XMLNode::LoadFrom(const Object &FromObject,PropertyList *pn)
 {
-	PropertyList::PropertyIterator *i = pn->CreateIterator();
+String Result;
+PropertyList::PropertyIterator *i = pn->CreateIterator();
 	try
-    {
-		String Result;
-//       Type = FromObject.ChildClassName();
-        if (i->GotoFirst())
-        {
-            do
-            {
-                const String *item =  i->GetName();
-                const char *c = *item;
-                Result.Clear();
-                //        Result.SeekFromStart(0);
-                const char *v = FromObject.GetProperty(c,Result);
-                if (v==NULL)
-                    v = "";
-                if ((strcmp(v,"*")==0) && Result=="[]") // if result is different then returned then special case
-                {
-                    // a distinction needs to be made here. Is property the container, or FromObject the container?
-                    if (FromObject.GetIsPropertyContainer(c))
+	{
+		if (i->GotoFirst())
+		{
+			do
+			{
+				const String *item =  i->GetName();
+				const char *c = *item;
+				Result.Clear();
+				//        Result.SeekFromStart(0);
+				const char *v = FromObject.GetProperty(c,Result);
+				if (v==NULL)
+					v = "";
+				if ((strcmp(v,"*")==0) && Result=="[]") // if result is different then returned then special case
+				{
+					// a distinction needs to be made here. Is property the container, or FromObject the container?
+					if (FromObject.GetIsPropertyContainer(c))
 					{ // property is the container
-						if (FromObject.IsContainer())
-						{
-						Container *c = (Container *)&FromObject;
-						Iterator *i = c->_CreateIterator();
-							if (i->GotoFirst())
-							{
-								do
-								{
-								Object *o = (Object *)i->Get();
-								if (o->IsA(CXMLNode))
-									SubNodes.AddOwned(o->Dup());
-								else
-								{
-									XMLNode *n = new XMLNode(*item);
-									n->LoadFrom(*o);
-								//			n->Type = c;
-									if (n->Type.Pos(" ")>=0)
-										throw Exception("Can't have space in Type");
-									SubNodes.AddOwned(n);
-							}
-
-								}
-								while(i->GotoNext());
-							}
-							c->DeleteIterator(i);
-						}
+						Object *o = FromObject.GetCopyOfPropertyAsObject(c);
+						//                    n->AddAttribute("Property",c);
+						if (o->IsA(CXMLNode))
+							SubNodes.AddOwned(o);
 						else
 						{
-							Object *o = FromObject.GetCopyOfPropertyAsObject(c);
-							//                    n->AddAttribute("Property",c);
-							if (o->IsA(CXMLNode))
-								SubNodes.AddOwned(o);
-							else
-							{
-								XMLNode *n = new XMLNode(c);
-								n->LoadFrom(*o);
-								delete o;
-							//			n->Type = c;
-								if (n->Type.Pos(" ")>=0)
-									throw Exception("Can't have space in Type");
-								SubNodes.AddOwned(n);
-							}
+							XMLNode *n = new XMLNode(c);
+							n->LoadFrom(*o);
+							delete o;
+							if (n->Type.Pos(" ")>=0)
+								throw Exception("Can't have space in Type");
+							SubNodes.AddOwned(n);
 						}
-
 					}
                     else
                     {

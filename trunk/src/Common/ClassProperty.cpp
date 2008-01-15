@@ -32,13 +32,13 @@ void Property::Init(const char *_Name,const char *_Value)
 {
 	Value = new String(_Value);
 	if (Value==0)
-		throw Exception("Out of memory creating CryProperty");
+		throw Exception(ErrorOutOfMemory,"Out of memory creating CryProperty");
 
 	Name = new String(_Name);
 	if (Name==0)
 	{
 		delete Value;
-		throw Exception("Out of memory creating CryProperty");
+		throw Exception(ErrorOutOfMemory,"Out of memory creating CryProperty");
 	}
 
 }
@@ -52,7 +52,7 @@ Property::Property(const char *_Name)
 	Init(_Name,"");
 }
 
-Property::Property(Property &Copy)
+Property::Property(Property &Copy) : Object()
 {
 	if (&Copy!=this)
 	{
@@ -124,6 +124,8 @@ bool Property::HasProperty(const PropertyParser &PropertyName) const
 	if (PropertyName=="ObjectID")	// properties are normally parts of other objects so ObjectID doesn't make sense when saving or loading these
 		return false;
 #endif
+	if (PropertyName=="_Name")
+		return true;
 	if (*GetName()=="NoName")
 		return true;	// Properties can have any one Property, none has been assigned yet so go for it
 	return (PropertyName==*GetName()) || Object::HasProperty(PropertyName);
@@ -162,13 +164,15 @@ const char *Property::GetProperty(String &Result) const
 		Result = (String *)Value;
 		return Result.AsPChar();
 	}
+	Result = "";
 	Value->SaveTo(Result);
-//	Result = Value->ChildClassName();
 	return Result.AsPChar();
 }
 
 bool Property::GetIsPropertyContainer(const PropertyParser &PropertyName) const
 {
+	if (PropertyName=="_Name")
+		return false;
 	if (PropertyName==*GetName())
 		return Value->IsContainer();
 	else
@@ -177,6 +181,15 @@ bool Property::GetIsPropertyContainer(const PropertyParser &PropertyName) const
 
 const char *Property::GetProperty(const PropertyParser &PropertyName,String &Result) const
 {
+	if (PropertyName=="_Name")
+	{
+		Result = GetName();
+		return Result;
+	}
+	if (Value->HasProperty(PropertyName))	// always let the object give results if able
+	{
+		return Value->GetProperty(PropertyName,Result);
+	}
 	if (PropertyName==*GetName())	// if PropertyName is not the stored one, see if this classes property is what is being requested
 	{
 		if (Value->IsContainer())
@@ -184,7 +197,7 @@ const char *Property::GetProperty(const PropertyParser &PropertyName,String &Res
 		return GetProperty(Result);
 	}
 	else
-	{
+	{	
 		return Object::GetProperty(PropertyName,Result);
 	}
 }
@@ -194,8 +207,23 @@ bool Property::SetProperty(const PropertyParser &PropertyName,const char *Proper
 String v(PropertyValue);
 	return SetProperty(PropertyName,&v);
 }
+void Property::SetPropertyOwned(Object *PropertyValue)
+{
+	delete Value;
+	Value = PropertyValue;
+}
 bool Property::SetProperty(const PropertyParser &PropertyName,const Object* PropertyValue)
 {
+	if (PropertyName=="_Name")	// this one is automatically assigned to be the property name
+	{
+		if (PropertyValue->IsA(CString))
+		{
+			SetName(*(const String *)PropertyValue);
+		}
+		else
+			throw Exception(ErrorGeneral,"Cannot Set Property _Name with %s, Needs to be a String",PropertyValue->ClassName());
+		return true;
+	}
 	if (PropertyName==*GetName())
 	{
 		delete Value;
@@ -211,7 +239,7 @@ bool Property::SetProperty(const PropertyParser &PropertyName,const Object* Prop
 			SetName(PropertyName);
 			delete Value;
 			Value = PropertyValue->Dup();
-		// normally we throw an exception, but CryProperty is a special case, as it's properties are user definable
+// normally we throw an exception, but Property is a special case, as it's properties are user definable
 //			throw CryException(this,ExceptionUnknownProperty,"Unknown Property ",PropertyName.AsPChar());
 			return true;
 		}
@@ -226,6 +254,7 @@ PropertyList *Property::PropertyNames() const
 	PropertyList *n = new PropertyList();
 	if (*GetName()!="")
 	{
+		n->AddProperty("_Name",GetName()->AsPChar());
 		n->AddProperty(GetName()->AsPChar(),GetValue());
 //		delete v;
 	}
@@ -360,7 +389,7 @@ void PropertyList::DeleteIterator(Iterator *LI) const
 }
 size_t PropertyList::Size() const
 {
-PropertyIterator *pi = this->CreateIterator();
+auto_ptr<PropertyIterator> pi(this->CreateIterator());
 size_t size = 0;
 	if (pi->GotoFirst()) {
 	   do
@@ -403,7 +432,7 @@ void PropertyList::RemoveNodeValue(const MemStream &Needle)
 int n = FindNodeValue(Needle);
 	if (n>=0)
 	{
-		PropertyList::PropertyIterator *i = CreateIterator();
+	auto_ptr<PropertyIterator> i(CreateIterator());
 		if (i->GotoFirst())
 		{
 			while(n)
@@ -411,12 +440,10 @@ int n = FindNodeValue(Needle);
 				n--;
 				if (!i->GotoNext())
 				{		// node wasn't found... shouldn't get here
-					DeleteIterator(i);
 					return;
 				}
 			}
 			RemoveAtIterator(i);
-			DeleteIterator(i);
 		}
 	}
 }
@@ -425,7 +452,16 @@ void PropertyList::CopyTo(Object &Dest) const
 	if (Dest.IsA(CPropertyList))
 	{
 		PropertyList *Cast = (PropertyList *)&Dest;
-		List::CopyTo(*Cast);
+		auto_ptr<PropertyIterator> i(CreateIterator());
+		if (i->GotoFirst())
+		{
+			do
+			{
+			Property *p = i->_Get();
+				p = (Property *)p->Dup();
+				Cast->Add(p);
+			} while(i->GotoNext());
+		}
 	}
 	else
 	throw Exception(this,"Copying from PropertyList to object that is not a PropertyList");
@@ -455,7 +491,7 @@ PropertyList::PropertyList() : List()
 // Set the Target Object's properties with values held here
 void PropertyList::Set(Object *Target)
 {
-PropertyIterator *pi = (PropertyList::PropertyIterator *)_CreateIterator();
+auto_ptr<PropertyIterator> pi((PropertyIterator*)_CreateIterator());
 String r;
 	if (pi->GotoFirst())
 	{
@@ -466,7 +502,6 @@ String r;
 			Target->SetProperty(ItemString,*(const String *)pi->GetValue(r));
 		} while(pi->GotoNext());
 	}
-	DeleteIterator(pi);
 }
 /// Get the Source's Properties (loose any currently held)
 void PropertyList::Get(Object *Source)
@@ -476,60 +511,171 @@ void PropertyList::Get(Object *Source)
 	SwapListElements(Properties);
 	delete Properties;
 }
-bool PropertyList::HasProperty(const PropertyParser &PropertyName) const
+
+	/// make sure you delete result after using
+std::auto_ptr<PropertyList::PropertyIterator> PropertyList::GetPropertyPointerIterator(ListIterator *li) const
 {
-PropertyIterator *pi = CreateIterator();
+auto_ptr <PropertyIterator> pi(CreateIterator());
+	if (pi->GotoFirst())
+	{
+		do
+		{
+		Property *p = pi->_Get();
+			if (*p->GetName()==*((String *)li->Get()))	// item in list has matched list it item
+			{
+				if (li->GotoNext())	// more in list it
+				{
+					if (p->GetValue()->IsA(CPropertyList))	// Item is a property list
+					{
+						PropertyList *pl = (PropertyList *)p->GetValue();
+						return pl->GetPropertyPointerIterator(li);	// is if it has it
+					}
+					// name matched but complete list didn't
+					const char *s =*((String *)li->Get());
+					throw Exception(ErrorPropertyNotFound,"property ...][%s] not found",s);
+				}
+				// no more in list we are done!
+				return pi;
+			}
+		} while(pi->GotoNext());
+		const char *s =*((String *)li->Get());
+		throw Exception(ErrorPropertyNotFound,"property [%s] not found",s);
+	}
+	const char *s =*((String *)li->Get());
+	throw Exception(ErrorPropertyNotFound,"property [%s] not found",s);
+}
+
+/// make sure you delete result after using
+std::auto_ptr<PropertyList::PropertyIterator> PropertyList::GetPropertyPointerIterator(const PropertyParser &PropertyName) const
+{
+	if (PropertyName.IsMultiField())
+	{
+	ListIterator *li = PropertyName.CreateIterator();
+		try
+		{
+			li->GotoFirst();
+			auto_ptr <PropertyIterator> pl(GetPropertyPointerIterator(li));
+			PropertyName.DeleteIterator(li);
+			return pl;
+		}
+		catch(Exception &e)
+		{
+			PropertyName.DeleteIterator(li);
+			throw e;
+		}
+	}
+	auto_ptr <PropertyIterator> pi(CreateIterator());
 	if (pi->GotoFirst()) {
 		do
 		{
 		Property *p = pi->_Get();
 			if (*p->GetName()==PropertyName)
 			{
-				DeleteIterator(pi);
-				return true;
+				return pi;
 			}
 		} while(pi->GotoNext());
 	}
-	DeleteIterator(pi);
-	return false;
+	const char *s =PropertyName;
+		throw Exception(ErrorPropertyNotFound,"property %s not found",s);
 }
-void PropertyList::RenameProperty(const char *OldName,const char *NewName)
+
+
+Property *PropertyList::GetPropertyPointer(ListIterator *li) const
 {
-	PropertyIterator *it = CreateIterator();
-	if (it->GotoFirst())
+auto_ptr <PropertyIterator> pi=GetPropertyPointerIterator(li);
+Property *p = pi->_Get();
+	return p;
+}
+
+Property *PropertyList::GetPropertyPointer(const PropertyParser &PropertyName) const
+{
+auto_ptr <PropertyIterator> pi = GetPropertyPointerIterator(PropertyName);
+Property *p = pi->_Get();
+	return p;
+}
+
+void PropertyList::AddPropertyOwned(ListIterator *li,Object *Value)
+{
+PropertyIterator *pi = CreateIterator();
+	try
+	{
+	String *PropertyName = ((String *)li->Get());
+	if (pi->GotoFirst())
 	{
 		do
 		{
-			if (*it->GetName()==OldName)
+		Property *p = pi->_Get();
+			if (*p->GetName()==*PropertyName)	// item in list has matched list it item
 			{
-				it->SetName(NewName);
-				DeleteIterator(it);
-				return;
+				DeleteIterator(pi);	// no matter what we are done with this
+				if (li->GotoNext())	// more in list it
+				{
+					if (p->GetValue()->IsA(CPropertyList))	// Item is a property list
+					{
+						PropertyList *pl = (PropertyList *)p->GetValue();
+						pl->AddPropertyOwned(li,Value);	// is if it has it
+					}
+					else	// not a list so just add it
+					{
+						p->SetValueOwned(Value);
+					}
+					return;
+				}
 			}
-		} while(it->GotoNext());
+		} while(pi->GotoNext());
+		DeleteIterator(pi);
 	}
-	DeleteIterator(it);
-	if (!HasProperty(OldName))
-		throw(Exception("RenameProperty %s not present in PropertyList",OldName));
+	 // Property not in list
+
+	if (li->GotoNext())  // more fields available in PropertyDefinition
+	{
+		// no more in list, add new list
+		PropertyList *pl = new PropertyList();
+		AddProperty(*PropertyName,pl);
+		pl->AddPropertyOwned(li,Value);
+	}
+	else
+	{
+		AddProperty(*PropertyName,Value);	// add the value to this list
+	}
+	return;
+	}
+	catch(Exception &e)
+	{
+		DeleteIterator(pi);
+		throw e;
+	}
+}
+
+bool PropertyList::HasProperty(const PropertyParser &PropertyName) const
+{
+	return _HasProperty(PropertyName)!=0;
+}
+
+Property *PropertyList::_HasProperty(const PropertyParser &PropertyName) const// return Property * or 0
+{
+	try
+	{
+	Property *p = GetPropertyPointer(PropertyName);
+		return p;
+	}
+	catch(Exception &e)
+	{
+		if (e.GetErrno()==ErrorPropertyNotFound)
+			return 0;
+		throw e;
+	}
+}
+
+void PropertyList::RenameProperty(const char *OldName,const char *NewName)
+{
+	Property *p = GetPropertyPointer(OldName);
+	p->SetName(NewName);
 }
 void PropertyList::RemoveProperty(const char *Name)
 {
-	PropertyIterator *it = CreateIterator();
-	if (it->GotoFirst())
-	{
-		do
-		{
-			if (*it->GetName()==Name)
-			{
-				this->RemoveAtIterator(it);
-				DeleteIterator(it);
-				return;
-			}
-		} while(it->GotoNext());
-	}
-	DeleteIterator(it);
-	if (!HasProperty(Name))
-		throw(Exception("RemoveProperty %s not present in PropertyList",Name));
+auto_ptr <PropertyIterator> pi=GetPropertyPointerIterator(Name);
+	RemoveAtIterator(pi);
 }
 
 
@@ -537,10 +683,7 @@ const char *PropertyList::GetProperty(const PropertyParser &PropertyName,String 
 {
 	if (HasProperty(PropertyName))
 	{
-		PropertyList::GetValue(PropertyName,Result);
-		if (Result=="[]") // flag to show property is a container
-			return "*";
-		return Result.AsPChar();
+		return PropertyList::GetValue(PropertyName,Result);
 	}
 	return List::GetProperty(PropertyName,Result);
 }
@@ -554,72 +697,120 @@ bool PropertyList::GetIsPropertyContainer(const PropertyParser &PropertyName) co
 
 Object *PropertyList::GetCopyOfPropertyAsObject(const PropertyParser &PropertyName) const
 {
-PropertyIterator *pi = CreateIterator();
-	if (pi->GotoFirst()) {
-		do
-		{
-		Property *p = pi->_Get();
-			if (*p->GetName()==PropertyName)
-			{
-			const Object *Item = p->GetValue();
-				DeleteIterator(pi);
-				return Item->Dup();
-			}
-		} while(pi->GotoNext());
-	}
-	DeleteIterator(pi);
-	throw(Exception("Property %s not present in PropertyList",PropertyName.AsPChar()));
+	const Object *v = _GetPropertyAsObject(PropertyName);
+	return v->Dup();
+
 }
+
 
 Object *PropertyList::_GetPropertyAsObject(const PropertyParser &PropertyName) const
 {                                       /* TODO : CryList::ListNode and helper functions should be hidden and anything that currently uses them should use common functions */
-PropertyIterator *pi = CreateIterator();
-	if (pi->GotoFirst()) {
-		do
-		{
-		Property *p = pi->_Get();
-			if (*p->GetName()==PropertyName)
-			{
-			Object *Item = p->_GetValue();
-				DeleteIterator(pi);
-				return Item;
-			}
-		} while(pi->GotoNext());
+Property *p = GetPropertyPointer(PropertyName);
+	if (p)
+	{
+	Object *Item = p->_GetValue();
+		return Item;
 	}
-	DeleteIterator(pi);
-	throw(Exception("Property %s not present in PropertyList",PropertyName.AsPChar()));
+	throw(Exception(ErrorPropertyNotFound,"Property %s not present in PropertyList",PropertyName.AsPChar()));
 }
 
 /// add a new property to the list, by giving the name and object that it came from. (Object is asked for Property value)
 void PropertyList::AddPropertyByName(const char *Name,const Object *object)
 {
-String *v = new String();
-	object->GetProperty(Name,*v);
-	AddPropertyOwned(Name,v);
+String *Result = new String();
+const char *c=object->GetProperty(Name,*Result);
+	if ((*c=='*') && (*Result=="[]"))
+	{
+	PropertyList *pl1 = new PropertyList();// values property
+	PropertyList *pl = new PropertyList();	// values[indexed] properties
+	Property *p = new Property(Name);
+		p->SetValueOwned(pl);
+	pl1->AddOwned(p);
+	Container *c = (Container *)object;
+	Iterator *i = c->_CreateIterator();
+	int Index=0;
+		try
+		{
+			if (i->GotoFirst())
+			{
+				do
+				{
+				String *v = new String();
+				c->SaveAsText(i,*v);
+				String NewName;
+					NewName.printf("%s_%d",Name,Index++);
+				Property *p = new Property(*(&NewName),*v);
+					pl->AddOwned(p);
+				} while(i->GotoNext());
+			}
+			c->DeleteIterator(i);
+		}
+		catch(Exception &e)
+		{
+			c->DeleteIterator(i);
+			if (e.GetErrno()!=ErrorPropertyNotFound)
+				throw e;
+
+		}
+		AddPropertyOwned(Name,pl1);
+	}
+	else
+	AddPropertyOwned(Name,Result);
 }
 
 void PropertyList::AddProperty(const char *PropertyName,const char *Value)
 {
 	if (HasProperty(PropertyName))
-		throw(Exception("Property %s already present in PropertyList",PropertyName));
+		throw(Exception(ErrorPropertyAlreadyPresent,"Property %s already present in PropertyList",PropertyName));
 	Property *p = new Property(PropertyName,Value);
 	AddOwned(p);
 }
 void PropertyList::AddProperty(const char *Name,const Object *Value)
 {
 	if (HasProperty(Name))
-		throw(Exception("Property %s already present in PropertyList",Name));
+		throw(Exception(ErrorPropertyAlreadyPresent,"Property %s already present in PropertyList",Name));
 	Property *p = new Property(Name);
 	p->SetValue(Value);
 	AddOwned(p);
 }
 void PropertyList::AddPropertyOwned(const char *Name,Object *Value)
 {
-	if (HasProperty(Name))
-		throw(Exception("Property %s already present in PropertyList",Name));
-	Property *p = new Property(Name);
-	p->SetValueOwned(Value);
-	AddOwned(p);
+const PropertyParser PropertyName(Name);
+	AddPropertyOwned(PropertyName,Value);
+}
+
+void PropertyList::AddPropertyOwned(const PropertyParser &PropertyName,Object *Value)
+{
+//	if (HasProperty(PropertyName))
+//		throw(Exception(ErrorPropertyAlreadyPresent,"Property %s already present in PropertyList",Name));
+Property *p = _HasProperty(PropertyName);
+	if (p)
+	{
+		p->SetValueOwned(Value);
+		return;
+	}
+
+	if (PropertyName.IsMultiField())
+	{
+	ListIterator *li = PropertyName.CreateIterator();
+		try
+		{
+			li->GotoFirst();
+			AddPropertyOwned(li,Value);
+			PropertyName.DeleteIterator(li);
+		}
+		catch(Exception &e)
+		{
+			PropertyName.DeleteIterator(li);
+			throw e;
+		}
+	}
+	else
+	{
+		Property *p = new Property(PropertyName);
+		p->SetValueOwned(Value);
+		AddOwned(p);
+	}
 }
 
 void PropertyList::AddProperty(String *Name,String *Value)
@@ -627,7 +818,7 @@ void PropertyList::AddProperty(String *Name,String *Value)
 	if (HasProperty(Name->AsPChar()))
 	{
 		GetValue(Name->AsPChar(),*Value);
-			throw(Exception("Property %s(%s) already present in PropertyList",Name->AsPChar()),Value->AsPChar());
+			throw(Exception(ErrorPropertyAlreadyPresent,"Property %s(%s) already present in PropertyList",Name->AsPChar()),Value->AsPChar());
 	}
 	Property *p = new Property(*Name,*Value);
 	AddOwned(p);
@@ -644,15 +835,24 @@ void PropertyList::Load(const Object *o)
 {
 List *PropertyNames = o->PropertyNames();
 ListIterator *li= PropertyNames->CreateIterator();
-	if (li->GotoFirst())
+	try
 	{
-		do
+		if (li->GotoFirst())
 		{
-		String v;
-		String *n = (String *)li->Get();
-			o->GetProperty(n->AsPChar(),v);
-			this->AddProperty(n->AsPChar(),v.AsPChar());
-		} while(li->GotoNext());
+			do
+			{
+			String v;
+			String *n = (String *)li->Get();
+				o->GetProperty(n->AsPChar(),v);
+				this->AddProperty(n->AsPChar(),v.AsPChar());
+			} while(li->GotoNext());
+		}
+		DeleteIterator(li);
+	}
+	catch(Exception &e)
+	{
+		DeleteIterator(li);
+		throw e;
 	}
 }
 
@@ -689,22 +889,31 @@ PropertyList *n = new PropertyList();
 
 bool PropertyList::SetProperty(const PropertyParser &PropertyName,const char *PropertyValue)
 {
-PropertyIterator *pi = CreateIterator();
-	if (pi->GotoFirst())
+Property *p;
+	try
 	{
-		do
-		{
-			if (*pi->GetName()==PropertyName)
-			{
-				pi->SetValue(PropertyValue);
-				DeleteIterator(pi);
-				return true;
-			}
-		} while(pi->GotoNext());
+		p = GetPropertyPointer(PropertyName);
+		p->SetValue(PropertyValue);
+		return true;
 	}
-	DeleteIterator(pi);
-	return false;
+	catch(Exception &e)
+	{
+		if (e.GetErrno()==ErrorPropertyNotFound)
+		{
+			String *s = new String;
+				*s = PropertyValue;
+			AddPropertyOwned(PropertyName,s);
+			return true;
+		}
+		throw e;
+	}
 }
+
+void PropertyList::AddProperty(PropertyParser &PropertyName,const String *PropertyValue)
+{
+AddPropertyOwned(PropertyName,PropertyValue->Dup());
+}
+
 /// return a char * of the value for a property
 const char *PropertyList::GetValueAsPChar(const PropertyParser &PropertyName,String &Result) const
 {
@@ -735,6 +944,12 @@ PropertyIterator *pi = CreateIterator();
 		{
 			if (*pi->GetName()==PropertyName)
 			{
+			Property *p = (Property *)pi->GetObject();
+				if (p->GetValue()->IsA(CPropertyList))
+				{
+					Result = "[]";	// mark it's special
+					return "*";
+				}
 				pi->GetValue(Result);
 				DeleteIterator(pi);
 				return Result.AsPChar();
@@ -742,7 +957,7 @@ PropertyIterator *pi = CreateIterator();
 		} while(pi->GotoNext());
 	}
 	DeleteIterator(pi);
-	throw Exception("Property %s Not found",PropertyName.AsPChar());
+	throw Exception(ErrorPropertyNotFound,"Property %s Not found",PropertyName.AsPChar());
 }
 
 void PropertyList::Sort(int CompareType)
@@ -750,38 +965,174 @@ void PropertyList::Sort(int CompareType)
 	List::Sort(CompareType);
 }
 
+bool PropertyList::SetPropertiesFromList(Object *Target)
+{
+bool Result = false;
+auto_ptr <PropertyIterator> i(CreateIterator());
+		if (i->GotoFirst())
+		{
+			do
+			{
+			Property *p = i->_Get();
+				if ((*p->GetName()=="Values") && (p->GetValue()->IsA(CPropertyList)))
+				{
+				PropertyList *pl = (PropertyList *)p->GetValue();
+				auto_ptr<PropertyIterator> i(pl->CreateIterator());
+					if (i->GotoFirst())
+					{
+						do
+						{
+						Property *p = i->_Get();
+							const String *n = p->GetName();
+							String s;
+								s = (String *) n;
+								s.Replace("_","[");
+								s += "]";
+								if (p->GetValue()->IsA(CString))
+								{
+									String *v = (String *)p->GetValue();
+									Result |= Target->SetProperty(s.AsPChar(),v->AsPChar());
+								}
+								else
+								{
+									p->SetName(s);
+									Result |= Target->SetProperty(p);
+								}
+						} while(i->GotoNext());
+					}
+				}
+				else
+					Target->SetProperty(p);
+			} while(i->GotoNext());
+		}
+		return Result;
+}
 
 
 ///----------------------------------------------------------------------------
-// CryPropertyParser
+// PropertyParser
 ///----------------------------------------------------------------------------
+
+
+PropertyParser::PropertyParser(const String *Property) : String(Property)
+{
+	constructParser();
+}
 
 /// this class is used to easily parse out propertyname[Index]
 PropertyParser::PropertyParser(const char *Property) : String(Property)
 {
+	constructParser();
+}
+
+// format can be string[0-9|text][0-9|text]...
+
+void PropertyParser::constructParser()
+{
+const char *Property = *this;
+	Index = -1;
 	int StartBracket = this->Pos("[");
 	if (StartBracket>-1)
 	{
-		int StopBracket = this->Pos("]");
-		if (StopBracket==-1)
-			throw Exception("Bad format of property %s",Property);
-		Index = 0;
-		int start = StartBracket+1;
-		while(start<StopBracket)
+
+		TagString *ts = new TagString(this);
+		ts->Delete(StartBracket,MAXINT);
+		Delete(0,StartBracket);
+		if (ts->Length()>0)
+			Fields.AddOwned(ts);
+		StartBracket = 0;
+
+		while (StartBracket>-1)
 		{
-			Index *=10;
-			Index += Property[start] - '0';
-			start++;
+			int StopBracket = this->Pos("]");
+			if (StopBracket==-1)
+				throw Exception("Bad format of property %s",Property);
+
+			int start = StartBracket+1;
+			if (Property[start]>='0' && Property[start]<='9')
+			{
+			int Index=0;
+				while(start<StopBracket)
+				{
+					Index *=10;
+					Index += Property[start] - '0';
+					start++;
+				}
+				ts->SetTag(Index);
+			}
+			else
+			{
+				ts =new TagString();
+				ts->CopyFromStr(*this,StartBracket+1,StopBracket);
+				Fields.AddOwned(ts);
+			}
+			Delete(StartBracket,StopBracket+1);
+			StartBracket = this->Pos("[");
+			if ((StartBracket==-1) && Length()>0)
+			{
+				ts = new TagString(this);
+				Fields.AddOwned(ts);
+				Delete(0,Length());
+			}
 		}
-		Delete(StartBracket,GetLength());
+	}
+}
+
+bool PropertyParser::operator ==(const char *s) const
+{
+	if (IsMultiField())
+	{
+	bool Result = false;
+	auto_ptr <Iterator> i(Fields.CreateIterator());
+		if (i->GotoFirst())
+		{
+			do
+			{
+				if (i->IsObject())
+				{
+					if (i->GetObject()->IsA(CTagString))
+					{
+					TagString *ss = (TagString *)i->GetObject();
+						Result |= *ss == s;
+					}
+				}
+				else
+				{
+					throw Exception("Corrupted memory? Shouldn't get here!");
+				}
+			} while(i->GotoNext());
+		}
+		return Result;
 	}
 	else
-		Index = -1;
+	{
+	String *ss = (String *)this;
+		return *ss == s;
+	}
 }
+
 int PropertyParser::GetIndex() const
 {
-	return Index;
+	if (IsMultiField())
+	{
+	int Index = 0;
+	auto_ptr <Iterator> i(Fields.CreateIterator());
+		if (i->GotoFirst())
+		{
+			if (i->IsObject())
+			{
+				if (i->GetObject()->IsA(CTagString))
+				{
+					TagString *ss = (TagString *)i->GetObject();
+					Index = ss->GetTag();
+				}
+			}
+		}
+		return Index;	// local var
+	}
+	return Index;	// class's var
 }
+
 const char *PropertyParser::GetPlainProperty() const
 {
 	return AsPChar();

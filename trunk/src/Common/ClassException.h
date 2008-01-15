@@ -27,6 +27,10 @@ using namespace std;
 #ifndef TCryException
 #define TCryException "CryException"
 
+#define ErrorGeneral				0
+#define ErrorPropertyNotFound 		1
+#define ErrorPropertyAlreadyPresent 2
+#define ErrorOutOfMemory			3
 
 /// CryException is a bare bones class that is used for showing failures
 /*!Exceptions are used for failures as opposed to return values. In this way functions are always assumed to
@@ -34,12 +38,13 @@ have worked if they return
 */
 class Exception
 {
-    int _errno;
-    char *Error;
+	int _errno;
+	char *Error;
 public:
-    Exception(const Exception &E);
-    Exception(const char *FormatStr,...);
-    Exception(const Object *Object,const char *FormatStr,...);
+	Exception(const Exception &E);
+	Exception(const char *FormatStr,...);
+	Exception(int ErrorNumber,const char *FormatStr,...);
+	Exception(const Object *Object,const char *FormatStr,...);
     Exception(const Object *Object,const Exception &E);
     //    CryException(const Object *Object,const CryException &E1,const CryException &E2);
     operator const char *() const;

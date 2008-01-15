@@ -1,7 +1,7 @@
 // Singleton Template file
 #ifndef _Singleton_
 #define _Singleton_
-
+#include <time.h>
 
 /*! This class is a template class in order for different singletons to be defined
   A singleton class is a class where one (and only one) instance of the class is created

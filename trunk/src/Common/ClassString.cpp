@@ -373,6 +373,24 @@ const char *String::strstr(const char *s) const
 {
     return (const char *) ::strstr((const char *)GetRaw(),s);
 }
+
+const char *String::CopyFromStr(String &Source,int start,int end)
+{
+	if (end==-1)	// default
+		end = Source.Length();
+	if (start>Source.Length())
+		throw Exception("index out of range");
+
+	Pos2Asciiz();
+	Write((const char *)Source.GetRaw()+start,end-start);
+	SeekFromStart(0);
+	return (const char *)GetRaw();
+}
+const char *String::CopyToStr(String &Dest,int start,int end)
+{
+	return Dest.CopyFromStr(*this,start,end);
+}
+
 int String::strncmp(String &s,size_t n) const
 {
     size_t l = s.Length();
@@ -395,14 +413,14 @@ int String::strcmp(String &s) const
 }
 int String::strcmp(const char *s) const
 {
-    return ::strcmp((const char *)GetRaw(),s);
+	return ::strcmp((const char *)GetRaw(),s);
 }
 const char *String::strcat(String &s)
 {
-    Pos2Asciiz();
-    Write((const char *)s.GetRaw(),s.Length());
-    SeekFromStart(0);
-    return (const char *)GetRaw();
+	Pos2Asciiz();
+	Write((const char *)s.GetRaw(),s.Length());
+	SeekFromStart(0);
+	return (const char *)GetRaw();
 }
 const String *String::GetAddress()
 {
@@ -905,7 +923,7 @@ bool String::HasProperty(const PropertyParser &PropertyName) const
 
 const char *String::GetProperty(const PropertyParser &PropertyName,String &Result) const
 {
-    if (PropertyName=="Value")
+    if ((PropertyName=="Value") || (PropertyName=="Values"))
     {
         return AsPChar();
     }
@@ -1066,11 +1084,10 @@ String &String::ToLower()
     }
     return *this;
 }
-
 bool String::operator ==(const char *s) const
 {
-    int i = Size();
-    int j = strlen(s);
+int i = Size();
+int j = strlen(s);
     if (i!=j)
         return false;
     i = ::strncmp((const char *)GetRaw(),s,i);
@@ -1172,5 +1189,22 @@ List *String::LoadListFromString(const char *Separator,List *ListToLoad) const
 		MyString = ch + seplen;
 	}
 	return l;
+}
+
+bool TagString::HasProperty(const PropertyParser &PropertyName) const
+{
+	 return PropertyName=="Tag" || String::HasProperty(PropertyName);
+}
+
+bool TagString::SetProperty(const PropertyParser &PropertyName,const char *PropertyValue)
+{
+	if (PropertyName=="Tag") { SetTag(atoi(PropertyValue)); return true; }
+	else return String::SetProperty(PropertyName,PropertyValue);
+}
+
+const char *TagString::GetProperty(const PropertyParser &PropertyName,String &Result) const
+{
+	if (PropertyName=="Tag") { Result.printf("%d",Tag); return Result.AsPChar(); } else
+	return String::GetProperty(PropertyName,Result);
 }
 

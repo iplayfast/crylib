@@ -125,9 +125,9 @@ virtual Object *Dup()const;
 // derived class will handle the display in CryStream the objects contained in array (text assumed)
     virtual void SaveItemTo(const Array *Owner,EmptyObject *FromItem,Stream &ToStream) const;
 // derived class will handle the Creation of an Object from the stream
-    virtual EmptyObject *LoadItemFrom(Array *Owner,EmptyObject *ToItem,Stream &FromStream);
+	virtual EmptyObject *LoadItemFrom(Array *Owner,EmptyObject *ToItem,Stream &FromStream);
+	bool SetProperty(const PropertyParser &PropertyName,const char *PropertyValue);
 
-    bool SetProperty(const PropertyParser &PropertyName,const char *PropertyValue);
 	virtual const char *GetProperty(const PropertyParser &PropertyName,String &Result) const;
 	virtual bool HasProperty(const PropertyParser &PropertyName)const;
 	virtual int GetPropertyCount() const;
@@ -135,7 +135,6 @@ virtual Object *Dup()const;
    virtual void CopyTo(Array &Dest) const { Array::CopyTo(Dest);  } //copies contents of this to Dest
 	virtual void CopyTo(Object &Dest) const { Array::CopyTo(Dest);  }  //copies contents of this to Dest
 	virtual void GetEleType(String &Result) const { Result = "TFuzzyXY"; }
-
 #ifdef VALIDATING
 virtual bool Test(bool Verbose,Object &Object,bool (CallBack)(bool Verbose,const char *Result,bool fail));
 #endif

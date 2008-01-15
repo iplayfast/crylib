@@ -26,6 +26,8 @@ namespace Crystal
 using namespace std;
 #ifndef CString
 #define CString  "String"
+#define CTagString "TagString"
+
 #ifdef __BORLANDC__
 #define strcasecmp stricmp
 #endif
@@ -37,7 +39,7 @@ class String : public MemStream
 protected:
     void LookLikeString();
 public:
-    StdFunctions(String,MemStream);
+	StdFunctions(String,MemStream);
 	String();
 	String(const String &a);
 	String(const String *a);
@@ -68,7 +70,7 @@ virtual int GetPropertyCount() const;
     //    virtual const char *ChildClassName() const;
     virtual operator const char *() const;
     /// Simplify whitespace in string
-    String& simplify();
+	String& simplify();
 
     //    virtual Object *Dup() const;
     virtual size_t Read(Stream *ToStream,size_t Size) const;
@@ -109,41 +111,57 @@ virtual int GetPropertyCount() const;
     virtual String &ReplaceAppend(const char *_Search,const char *_Replace,const char *_Append=0);
     virtual String &ExclusiveAppend(const char *_Append);
     /// returns offset from start of string or -1 if not found
-    int SeekTextFromStart(const char *SearchString) const;
+	int SeekTextFromStart(const char *SearchString) const;
     /// returns offset from start of string or -1 if not found
 	int SeekTextFromCurrent(const char *SearchString) const;
 	/// Return a non-const reference to the ith character -i refrences from the tail of the string back
 	char& operator[](int i);
-
-    virtual void Close(bool ExceptOnError=true);
-    virtual bool Convert(int *i) const;
+	virtual const char *CopyToStr(String &Dest,int start=0,int end=-1);
+	virtual const char *CopyFromStr(String &Source,int start=0,int end=-1);
+	virtual void Close(bool ExceptOnError=true);
+	virtual bool Convert(int *i) const;
     virtual bool Convert(char *b,int len) const;
     //    virtual bool Convert(double *d) const;
     String & operator =(const char *text);
-    String & operator = (const String *v);
-    String & operator = (const String &v);
-    void SetValue(const char *_Value);
-    virtual size_t Size() const;
+	String & operator = (const String *v);
+	String & operator = (const String &v);
+	void SetValue(const char *_Value);
+	virtual size_t Size() const;
 	virtual bool HasProperty(const PropertyParser &PropertyName) const;
 	virtual bool SetProperty(const PropertyParser &PropertyName,const char *PropertyValue);
 
-    virtual const char *GetProperty(const PropertyParser &PropertyName,String &Result) const;
+	virtual const char *GetProperty(const PropertyParser &PropertyName,String &Result) const;
 #ifdef VALIDATING
 
-    virtual bool Test(bool Verbose,Object &Object,bool (CallBack)(bool Verbose,const char *Result,bool fail));
+	virtual bool Test(bool Verbose,Object &Object,bool (CallBack)(bool Verbose,const char *Result,bool fail));
 #endif
 
-    List *ListFromString(const char *Separator) const;
-    List *LoadListFromString(const char *Separator,List *ListToLoad) const;
-    /* TODO : Impliment */
-    virtual void Sort(int CompareType=0);
-    virtual int CompareLogical(int CompareType,const Object *Test) const;
-    virtual bool LessThen(int CompareType,const Object *Test) const;
+	List *ListFromString(const char *Separator) const;
+	List *LoadListFromString(const char *Separator,List *ListToLoad) const;
+	/* TODO : Impliment */
+	virtual void Sort(int CompareType=0);
+	virtual int CompareLogical(int CompareType,const Object *Test) const;
+	virtual bool LessThen(int CompareType,const Object *Test) const;
 	virtual bool GreaterThen(int CompareType,const Object *Test)const;
 	virtual bool EqualTo(int CompareType,const Object *Test)const;
 	virtual int HashValue()const;
 }
 ;//String
+
+class TagString : public String
+{
+int Tag;
+public:
+	StdFunctions(TagString,String);
+	TagString() : String() {Tag = 0;}
+	TagString(const String &a): String(a) {Tag = 0;}
+	TagString(const String *a) : String(a) {Tag = 0;}
+	virtual bool HasProperty(const PropertyParser &PropertyName) const;
+	virtual bool SetProperty(const PropertyParser &PropertyName,const char *PropertyValue);
+	virtual const char *GetProperty(const PropertyParser &PropertyName,String &Result) const;
+	void SetTag(int i) { Tag = i; }
+	int GetTag() const { return Tag; }
+};
 #endif	// CString
 }
 #endif //_ClassString_

@@ -138,6 +138,27 @@ StdFunctionsNoDup(SimpleArray,Container);
 		AI->i = CurrentCount-1;
 		return CurrentCount > 0;
 	}
+
+	virtual bool HasFirst(const Iterator *I) const { return Count()>0; }
+	virtual bool HasPrev(const Iterator *I) const
+	{
+		ArrayIterator *AI = (ArrayIterator *)I;
+		if ((AI->i-1<CurrentCount) && (AI->i>0)) return true;
+		else return false;
+	}
+	virtual bool HasNext(const Iterator *I) const
+	{
+		ArrayIterator *AI = (ArrayIterator *)I;
+		if (AI->i<CurrentCount-1)
+		{
+			return true;
+		}
+		else
+			return false;
+	}
+	virtual bool HasLast(const Iterator *I) const { return Count()>0; }
+	virtual bool HasN(const Iterator *I,int n) const { return Count()>n; }
+
 	virtual bool LoadAsText(int i,String &FromStream) = 0;
 	virtual bool SaveAsText(int i,String &ToStream) const = 0;
 
@@ -674,6 +695,7 @@ StdFunctionsNoDup(Array,SimpleArray);
 	// if this class contains the property name, it will attempt to load it
 	// if all is well returns true
 	virtual bool SetProperty(const PropertyParser &PropertyName,const char *PropertyValue);
+	
 	virtual bool SetPropertyAsObject(const PropertyParser &PropertyName,Object *Value);
 	virtual bool SetPropertyAsObject(const Property *Value);
 	virtual const char *GetProperty(const PropertyParser &PropertyName,String &Result) const;

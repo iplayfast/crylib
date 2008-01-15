@@ -58,17 +58,26 @@ public:
 	/// non virtual function
 	Iterator *CreateIterator() const { return _CreateIterator(); }
 	/// Will cleanup any iterator data created with _CreateIterator
-    virtual void DeleteIterator(Iterator *I) const = 0;
-    /// abstract function used by subclasses to go to the first element of a container (list or array doesn't matter)
-    virtual bool GotoFirst(Iterator *I) const = 0;   // returns true if success
-    /// abstract function used by subclasses to go to the Prev element of a container (list or array doesn't matter)
-    virtual bool GotoPrev(Iterator *I) const = 0;   // returns true if success
-    /// abstract function used by subclasses to go to the Next element of a container (list or array doesn't matter)
-    virtual bool GotoNext(Iterator *I) const = 0;    // returns true if success
-    /// abstract function used by subclasses to go to the last element of a container (list or array doesn't matter)
+	virtual void DeleteIterator(Iterator *I) const = 0;
+
+	/// abstract function used by subclasses to go to the first element of a container (list or array doesn't matter)
+	virtual bool GotoFirst(Iterator *I) const = 0;   // returns true if success
+	/// abstract function used by subclasses to go to the Prev element of a container (list or array doesn't matter)
+	virtual bool GotoPrev(Iterator *I) const = 0;   // returns true if success
+	/// abstract function used by subclasses to go to the Next element of a container (list or array doesn't matter)
+	virtual bool GotoNext(Iterator *I) const = 0;    // returns true if success
+	/// abstract function used by subclasses to go to the last element of a container (list or array doesn't matter)
 	virtual bool GotoLast(Iterator *Iterator) const = 0;    // returns true if success
 	virtual bool GotoN(Iterator *Iterator,int n) const; // returns true if success
 	/// abstract function used by subclasses to show if the container has any elements
+
+
+	virtual bool HasFirst(const Iterator *I) const { return Count()>0; }
+	virtual bool HasPrev(const Iterator *I) const = 0;
+	virtual bool HasNext(const Iterator *I) const = 0;
+	virtual bool HasLast(const Iterator *I) const { return Count()>0; }
+	virtual bool HasN(const Iterator *I,int n) const { return Count()>n; }
+
 	virtual bool IsEmpty(const Iterator *I) const = 0;
 	/// will return whatever is located at the Current Iterator
 	virtual EmptyObject *GetAtIterator(const Iterator *I) const = 0;
@@ -143,6 +152,12 @@ class Iterator : public Object//EmptyObject
 		bool GotoNext();
 		bool GotoLast();
 		bool GotoN(int N);
+		bool HasFirst() const  { return OrigContainer->Count()>0; }
+		bool HasPrev() const { return OrigContainer->HasPrev(this); }
+		bool HasNext() const { return OrigContainer->HasNext(this); }
+		bool HasLast() const { return OrigContainer->Count()>0; }
+		bool HasN(int n) const { return OrigContainer->Count()>n; }
+
 		bool GotoFirstObject(const char *Type=CObject);
 		bool GotoPrevObject(const char *Type=CObject);
 		bool GotoNextObject(const char *Type=CObject);

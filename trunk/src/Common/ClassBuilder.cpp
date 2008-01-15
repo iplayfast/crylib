@@ -106,7 +106,7 @@ class CryContainerNAbstract : public Container
         return false;
     }
     virtual bool SaveAsText(Iterator *I,String &ToStream) const
-    {
+	{
         return false;
     }
     virtual void GetEleType(String &Result) const
@@ -142,6 +142,11 @@ class CryContainerNAbstract : public Container
 	{
 		return true;
 	}
+	virtual bool HasFirst(const Iterator *I) const { return false; }
+	virtual bool HasPrev(const Iterator *I) const { return false; }
+	virtual bool HasNext(const Iterator *I) const { return false; }
+	virtual bool HasLast(const Iterator *I) const { return false; }
+	virtual bool HasN(const Iterator *I,int n) const { return false; }
 
 	virtual EmptyObject *GetAtIterator(const Iterator *I) const
 	{
@@ -173,55 +178,61 @@ class CryContainerNAbstract : public Container
 /// Dummy class with stubs for virtual functions
 class CryStreamNAbstract : public Stream
 {
-    virtual void Clear()
-    {}
-    ;
-	virtual void SetAtIterator(const Iterator *I,EmptyObject *Item,bool IsObject,bool IsOwned,size_t Size = 0) 
+	virtual void Clear()
+	{}
+	;
+	virtual void SetAtIterator(const Iterator *I,EmptyObject *Item,bool IsObject,bool IsOwned,size_t Size = 0)
 	{
 	}
 
-    virtual Iterator *_CreateIterator() const
-    {
-        return 0;
-    };
-    virtual void DeleteIterator(Iterator *I) const
-        {  }
-    virtual bool GotoFirst(Iterator *I) const
-    {
-        return false;
-    }
-    virtual bool GotoPrev(Iterator *I) const
-    {
-        return false;
-    }
-    ; // returns true if success
-    virtual bool GotoNext(Iterator *I) const
-    {
-        return false;
-    }
-    ;    // returns true if success
-    virtual bool GotoLast(Iterator *Iterator) const
-    {
-        return false;
-    }
-    ;    // returns true if success
-    virtual bool IsEmpty(const Iterator *I)const
-    {
-        return true;
-    }
+	virtual Iterator *_CreateIterator() const
+	{
+		return 0;
+	};
+	virtual void DeleteIterator(Iterator *I) const
+		{  }
+	virtual bool GotoFirst(Iterator *I) const
+	{
+		return false;
+	}
+	virtual bool GotoPrev(Iterator *I) const
+	{
+		return false;
+	}
+	; // returns true if success
+	virtual bool GotoNext(Iterator *I) const
+	{
+		return false;
+	}
+	;    // returns true if success
+	virtual bool GotoLast(Iterator *Iterator) const
+	{
+		return false;
+	}
+	;    // returns true if success
+	virtual bool HasFirst(const Iterator *I) const { return false; }
+	virtual bool HasPrev(const Iterator *I) const { return false; }
+	virtual bool HasNext(const Iterator *I) const { return false; }
+	virtual bool HasLast(const Iterator *I) const { return false; }
+	virtual bool HasN(const Iterator *I,int n) const { return false; }
 
-    virtual EmptyObject *GetAtIterator(const Iterator *I) const
-    {
-        return 0;
-    }
+	virtual bool IsEmpty(const Iterator *I)const
+	{
+		return true;
+	}
 
-    /// abstract function used by subclasses to remove the item this iterator points at (iterator is still valid)
-    /// if is not owned then is returned, else is deleted and null is returned
+	virtual EmptyObject *GetAtIterator(const Iterator *I) const
+	{
+		return 0;
+	}
+
+	/// abstract function used by subclasses to remove the item this iterator points at (iterator is still valid)
+	/// if is not owned then is returned, else is deleted and null is returned
 	virtual void RemoveAtIterator(Iterator *I)
 	{
-        return;
-    }
-    /// abstract function used by subclasses to count the number of items held by the container
+		return;
+	}
+	/// abstract function used by subclasses to count the number of items held by the container
     virtual size_t Count() const
     {
         return 0;
@@ -245,7 +256,7 @@ class CryStreamNAbstract : public Stream
     }   // gives ownership to list
     virtual void SetItemOwnerShip(Iterator *I,bool Owned)
     {} // ignored we always own, as it's a copy
-    virtual bool GetItemOwnerShip(const Iterator *I) const
+	virtual bool GetItemOwnerShip(const Iterator *I) const
     {
         return true;
     }  // always
@@ -286,7 +297,7 @@ class CryStreamNAbstract : public Stream
     }
     virtual size_t Read(char *ToBuffer,size_t Size) const
     {
-        return 0;
+		return 0;
     }
     virtual size_t Write(const char *FromBuffer,size_t Size)
     {
@@ -327,7 +338,7 @@ class CryStreamNAbstract : public Stream
     virtual void Close(bool ExceptOnError=true)
     {}
     virtual bool IsOpen() const
-    {
+	{
         return true;
     }
     virtual void Flush()
@@ -368,6 +379,11 @@ class CrySimpleArrayNAbstract : public SimpleArray
 	{
 
 	}
+	virtual bool HasFirst(const Iterator *I) const { return false; }
+	virtual bool HasPrev(const Iterator *I) const { return false; }
+	virtual bool HasNext(const Iterator *I) const { return false; }
+	virtual bool HasLast(const Iterator *I) const { return false; }
+	virtual bool HasN(const Iterator *I,int n) const { return false; }
 
 	virtual bool IsObject(const Iterator *I) const
     {
@@ -409,7 +425,7 @@ class CrySimpleArrayNAbstract : public SimpleArray
 	{
 	}
     virtual bool LoadAsText(int i,String &FromStream)
-    {
+	{
         return false;
     };
     virtual bool SaveAsText(int i,String &ToStream) const
@@ -491,8 +507,14 @@ class CryArrayNAbstract : public Array
     virtual EmptyObject *LoadItemFrom(Array *Owner,EmptyObject *ToItem,Stream &FromStream)
     {
         return 0;
-    };
-    virtual bool LoadAsText(int i,String &FromStream)
+	};
+	virtual bool HasFirst(const Iterator *I) const { return false; }
+	virtual bool HasPrev(const Iterator *I) const { return false; }
+	virtual bool HasNext(const Iterator *I) const { return false; }
+	virtual bool HasLast(const Iterator *I) const { return false; }
+	virtual bool HasN(const Iterator *I,int n) const { return false; }
+
+	virtual bool LoadAsText(int i,String &FromStream)
     {
         return false;
     };

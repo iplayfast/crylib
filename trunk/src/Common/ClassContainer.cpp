@@ -144,8 +144,25 @@ bool Container::SetProperty(const PropertyParser &PropertyName,const char *Prope
     if (PropertyName=="Values")
     {
         String Temp;
-        Temp = PropertyValue;
-        Iterator *i = _CreateIterator();
+		Temp = PropertyValue;
+		int Index = PropertyName.GetIndex();
+		if (Index>-1)
+		{
+			Iterator *i = _CreateIterator();    //shit
+			try
+			{
+				i->GotoN(Index);
+				result = LoadAsText(i,Temp);
+				DeleteIterator(i);
+			}
+			catch(Exception &e)
+			{
+				DeleteIterator(i);
+				throw e;
+			}
+			return result;
+		}
+		Iterator *i = _CreateIterator();
 		if (i->GotoFirst())
 		{
 			do
@@ -155,14 +172,14 @@ bool Container::SetProperty(const PropertyParser &PropertyName,const char *Prope
 			while(i->GotoNext());
 		}
 		DeleteIterator(i);
-    }
-    else
-        return Object::SetProperty(PropertyName,PropertyValue);
-    return result;
+	}
+	else
+		return Object::SetProperty(PropertyName,PropertyValue);
+	return result;
 }
 Object *Container::GetCopyOfPropertyAsObject(const PropertyParser &PropertyName) const
 {
-    return Object::GetCopyOfPropertyAsObject(PropertyName);
+	return Object::GetCopyOfPropertyAsObject(PropertyName);
 }
 
 const char *Container::GetProperty(const PropertyParser &PropertyName,String &Result) const
