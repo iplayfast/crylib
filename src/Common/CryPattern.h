@@ -541,6 +541,19 @@ our things will always be CryObjects
 			fi->Index = MaxCount-1;
 			return MaxCount > 0;
 		}   // returns true if success
+
+		virtual bool HasFirst(const Iterator *I) const { return MaxCount>0; }
+		virtual bool HasPrev(const Iterator *I) const
+			{	FactoryIterator *fi = (FactoryIterator *)I;  return MaxCount > (fi->Index-1); }
+		virtual bool HasNext(const Iterator *I) const
+		{
+			FactoryIterator *fi = (FactoryIterator *)I;
+			return (fi->Index<MaxCount-1);
+		}
+		virtual bool HasLast(const Iterator *I) const { return Count()>0; }
+		virtual bool HasN(const Iterator *I,int n) const { return Count()>n; }
+
+
 		/// abstract function used by subclasses to get a pointer to the first element of a container (list or array doesn't matter)
 		virtual bool IsEmpty(const Iterator *I) const
 		{

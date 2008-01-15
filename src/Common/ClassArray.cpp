@@ -815,16 +815,15 @@ bool Array::SetProperty(const PropertyParser &PropertyName,const char *PropertyV
 		this->SetSize(s);
 		return true;
 	}
-	if (PropertyName=="Values")
+/*	if (PropertyName=="Values")
 	{
 		if (strlen(PropertyValue)==0)
 			throw Exception(this,"Cannot Set Value to no value");
 		//        this->SaveItemTo(this,NULL,PropertyValue);
 		return true;
 	}
-	if (Container::SetProperty(PropertyName,PropertyValue))
-		return true;
-	return false;
+*/
+	return Container::SetProperty(PropertyName,PropertyValue);
 }
 
 

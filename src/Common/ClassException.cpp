@@ -30,28 +30,39 @@ using namespace std;
 // CryException
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
+Exception::Exception(int ErrorNumber,const char *FormatStr,...)
+{
+	char Buffer[1024];
+	va_list argptr;
+	va_start(argptr,FormatStr);
+	int size = ::vsnprintf(Buffer,1024,FormatStr,argptr);
+	_errno = ErrorNumber;
+	Error = new char[size + 1];
+	strncpy(Error,Buffer,size);
+	Error[size] = '\0';
+}
 
 Exception::Exception(const char *FormatStr,...)
 {
-    char Buffer[1024];
-    va_list argptr;
-    va_start(argptr,FormatStr);
-    int size = ::vsnprintf(Buffer,1024,FormatStr,argptr);
-    errno = 0;
-    Error = new char[size + 1];
-    strncpy(Error,Buffer,size);
-    Error[size] = '\0';
+	char Buffer[1024];
+	va_list argptr;
+	va_start(argptr,FormatStr);
+	int size = ::vsnprintf(Buffer,1024,FormatStr,argptr);
+	_errno = 0;
+	Error = new char[size + 1];
+	strncpy(Error,Buffer,size);
+	Error[size] = '\0';
 }
 
 Exception::Exception(const Object *Object,const char *FormatStr,...)
 {
-    char Buffer[1024];
-    va_list argptr;
-    va_start(argptr,FormatStr);
-    vsprintf(Buffer,FormatStr,argptr);
-    const char *n = Object->ChildClassName();
-    Error = new char[strlen(n) + strlen(Buffer)+5];
-    errno = -1;
+	char Buffer[1024];
+	va_list argptr;
+	va_start(argptr,FormatStr);
+	vsprintf(Buffer,FormatStr,argptr);
+	const char *n = Object->ChildClassName();
+	Error = new char[strlen(n) + strlen(Buffer)+5];
+    _errno = -1;
     strcpy(Error,"In ");
     strcat(Error,n);
     strcat(Error," ");
@@ -62,7 +73,7 @@ Exception::Exception(const Object *Object,const char *FormatStr,...)
 Exception::Exception(const Exception &E)
 {
     Error = new char[strlen(E)+1];
-    errno = E.GetErrno();
+    _errno = E.GetErrno();
     strcpy(Error,E);
 }
 Exception::~Exception()
@@ -90,27 +101,27 @@ int Exception::GetErrno() const
     Error = new char[strlen(E1) + strlen(E2) + 1];
     strcpy(Error,E1);
     strcat(Error,E2);
-    errno = E1.errno;
-    if (E2.errno!=-1)
-        errno = E2.errno;
+    _errno = E1._errno;
+    if (E2._errno!=-1)
+        _errno = E2._errno;
 } */
 Exception::Exception(const Object *Object,const Exception &E)
 {
     Error = new char[strlen(E)+1];
-    errno = E.GetErrno();
+    _errno = E.GetErrno();
     strcpy(Error,E);
 }
 
 Exception::Exception(const Object *Object,int ErrorNumber,const char *FormatStr,...)
 {
-    errno = ErrorNumber;
+    _errno = ErrorNumber;
     char Buffer[1024];
     va_list argptr;
     va_start(argptr,FormatStr);
     vsprintf(Buffer,FormatStr,argptr);
     const char *n = Object->ChildClassName();
     Error = new char[strlen(n) + strlen(Buffer)+5];
-    errno = -1;
+    _errno = -1;
     strcpy(Error,"In ");
     strcat(Error,n);
     strcat(Error," ");
@@ -122,7 +133,7 @@ Exception::Exception(const Object *Object,int ErrorNumber,const char *FormatStr,
 Exception::Exception(const Object *Object,const char *sError,const long value)
 {
     char sv[40];
-    errno = -1;
+    _errno = -1;
     sprintf(sv,"%ld",value);
     Error = new char[strlen(sError) + strlen(sv) + 1];
     strcpy(Error,sError);
@@ -131,7 +142,7 @@ Exception::Exception(const Object *Object,const char *sError,const long value)
 Exception::Exception(const Object *Object,const char *sError1,const long value,const char *sError2)
 {
     char sv[40];
-    errno = -1;
+	_errno = -1;
     sprintf(sv,"%ld",value);
     Error = new char[strlen(sError1) + strlen(sv) + strlen(sError2) + 1];
     strcpy(Error,sError1);

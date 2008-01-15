@@ -28,7 +28,7 @@
 #define FILEDEL	"/"
 #endif
 
-//#define DEBUG
+#define DEBUG
 
 extern "C" bool CallBack(const char *Result,bool fail);
 
@@ -111,6 +111,7 @@ class Container;
 class PropertyParser;
 class PropertyList;
 class HugeInt;
+class XML;
 
 /// this is the base class for any object which will be created or destroyed
 struct EmptyObject
@@ -184,7 +185,7 @@ public:
             struct _cCharp      InIsa;
             struct _bool        OutIsa;
         };
-        /* IO has an input and an output context */
+		/* IO has an input and an output context */
         struct IO
         {
             UContext In;
@@ -249,6 +250,7 @@ public:
 	/// returns bool value of EqualTo as determined by CompareLogical
 	virtual bool EqualTo(int CompareType,const Object *Test) const;
 
+	virtual XML *SaveAsXML() const;
 	/*! IsContainer is true when the object in question can contain
 	 accessable instances of data or objects
 	 ie streams are not containers, but lists and arrays are
@@ -285,6 +287,7 @@ public:
 
 	/// set the value of a property
 	virtual bool SetProperty(const PropertyParser &PropertyName,const char *PropertyValue);
+    virtual bool SetProperty(const Property *p);
 	/// set the value of a property from an Property Value, Value is NOT  given to the object and can be deleted after the call.
 	virtual bool SetPropertyAsObject(const Property *Value);
 	/*! save (in xml format) to a stream, stream pays attention to it's mode and will compress the data if mode is SObject, if it's SText, it saves as text.*/
@@ -351,6 +354,8 @@ public:
 	OwnedObject() { Owner =0; }
 	void SetOwner(Object *_Owner) { Owner = _Owner; }
 	Object *GetOwner() const { return Owner; }
+	virtual XML *SaveAsXML() const { return Object::SaveAsXML(); }
+
 /*! will create an object of the Type named in Type. In container classes where the Type is the contained object, the
 	Parent must be the appropriete container type or a derived class which can create the object (if the default class can't) */
 	virtual Object *Create(const PropertyParser &PropertyName,Object *Parent);

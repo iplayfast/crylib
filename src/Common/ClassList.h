@@ -91,7 +91,7 @@ private:
 		New->Size = Size;
 		New->IsOwned = IsOwned;
 		New->IsObject = IsObject;
-		Head->push_front(New);
+		Head->push_back(New);
 		return Item;
 	}
 	EmptyObject *DupItem(const ListNode *Node) const
@@ -175,7 +175,7 @@ private:
 		}
 		return 0;
 	}
-	_IsEmpty() const { return Head->begin()==Head->end(); }
+	bool _IsEmpty() const { return Head->begin()==Head->end(); }
 protected:
 	void AddListNode (ListNode *Node);
 public:
@@ -213,6 +213,22 @@ public:
 	virtual Iterator *_CreateIterator() const { return new ListIterator(this); }
 	ListIterator *CreateIterator() const { return (ListIterator *)_CreateIterator(); }
 	virtual void DeleteIterator(Iterator *LI) const { delete LI; }
+	void RemoveAtIterator(auto_ptr <ListIterator> li)
+	{
+		ListNodeI p = Head->begin();
+		while(p != Head->end())
+		{
+			if (*li->p == *p)
+			{
+			ListNode *ln = *p;
+				DeleteItem(ln);
+				li->p = Head->erase(p);
+				delete ln;
+				return;
+			}
+		}
+	}
+
 	void RemoveAtIterator(Iterator *LI)
 	{
 		ListNodeI p = Head->begin();
@@ -303,6 +319,17 @@ public:
 		((ListIterator *)LI)->p = Head->end();
 		return GotoPrev(LI);
 	}
+
+	virtual bool HasFirst(const Iterator *LI) const { return !_IsEmpty(); }
+	virtual bool HasPrev(const Iterator *LI) const {  if (_IsEmpty() || ((ListIterator *)LI)->p==Head->begin()) return false;
+												else return true; }
+
+	virtual bool HasNext(const Iterator *LI) const {  if (_IsEmpty() || ((ListIterator *)LI)->p==Head->end()) return false;
+												else return true; }
+	virtual bool HasLast(const Iterator *I) const { return !_IsEmpty(); }
+	virtual bool HasN(const Iterator *LI,int n) const { return Count()>n; }
+
+
 	virtual inline size_t Count() const { return Head->size(); }
 	virtual inline bool HasItems() const { return Count()>0; }
 ///copies contents of this to Dest
@@ -336,7 +363,7 @@ public:
 	else
 		throw Exception(this,"Copying from List to object that is not Listable");
 	}
-#ifdef VALIDATING	
+#ifdef VALIDATING
 	bool Test(bool Verbose,Object &Object, bool (CallBack)(bool Verbose,const char *Result,bool Fail))
 	{
 	List l;

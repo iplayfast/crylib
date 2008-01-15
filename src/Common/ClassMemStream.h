@@ -165,6 +165,13 @@ public:
     virtual bool GotoNext(Iterator *I) const;    // returns true if success
     virtual bool GotoLast(Iterator *Iterator) const;    // returns true if success
 
+	virtual bool HasFirst(const Iterator *I) const { return Length>0; }
+	virtual bool HasPrev(const Iterator *I) const  { return Position>0; }
+	virtual bool HasNext(const Iterator *I) const  { return Position < Length; }
+	virtual bool HasLast(const Iterator *I) const { return Length>0; }
+	virtual bool HasN(const Iterator *I,int n) const { return Length>n; }
+
+
     virtual bool IsEmpty(const Iterator *I) const
     {
         return GetLength()==0;

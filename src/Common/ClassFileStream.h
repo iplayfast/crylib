@@ -33,73 +33,79 @@ class FileStreamIterator : public StreamIterator
     {
         size_t Size;  // size of stream items
     public:
-        FileStreamIterator(const FileStream *Container);
-        ~FileStreamIterator();
-        void SetSize(size_t _Size);
-        size_t GetSize();
-    };
-    FILE *File;
+		FileStreamIterator(const FileStream *Container);
+		~FileStreamIterator();
+		void SetSize(size_t _Size);
+		size_t GetSize();
+	};
+	FILE *File;
 
-    bool UpdateOpen;    // r+ open needs seek before input -> output or output->input
-    bool LastAccessOutput;
-    bool LastAccessInput;
-    bool StdStream; // if true this class only redirects, It doesn't open or close
-    char StdType;
-    FileStream(FileStream &nono);
+	bool UpdateOpen;    // r+ open needs seek before input -> output or output->input
+	bool LastAccessOutput;
+	bool LastAccessInput;
+	bool StdStream; // if true this class only redirects, It doesn't open or close
+	char StdType;
+	FileStream(FileStream &nono);
 public:
-    StdFunctionsNoDup(FileStream,Stream);
-    virtual Object *Dup() const; // creates a duplicate of this object
-    virtual const cbyte* GetRaw() const;
+	StdFunctionsNoDup(FileStream,Stream);
+	virtual Object *Dup() const; // creates a duplicate of this object
+	virtual const cbyte* GetRaw() const;
 	virtual FunctionDefList *GetFunctions(const char *Type=0) const;
 
-    //    const char* ClassName() const;
+	//    const char* ClassName() const;
 
-    //    virtual const char *ChildClassName() const;
+	//    virtual const char *ChildClassName() const;
 	virtual size_t Size() const;
 	virtual int Seek(int offset,int whence) const;
-    virtual int SeekFromStart(int Offset=0) const;
-    virtual int SeekFromCurrent(int Offset) const;
-    virtual int SeekFromEnd(int Offset=0) const;
-    //virtual void CopyTo(Object *Dest) const;
-    //virtual void CopyTo(CryStream *Dest) const;
-    //virtual void CopyTo(CryFileStream *Dest) const;   //copies contents of this to Dest
-    //    virtual Object *Dup() const; // creates a duplicate of this object
+	virtual int SeekFromStart(int Offset=0) const;
+	virtual int SeekFromCurrent(int Offset) const;
+	virtual int SeekFromEnd(int Offset=0) const;
+	//virtual void CopyTo(Object *Dest) const;
+	//virtual void CopyTo(CryStream *Dest) const;
+	//virtual void CopyTo(CryFileStream *Dest) const;   //copies contents of this to Dest
+	//    virtual Object *Dup() const; // creates a duplicate of this object
 
-    // read until terminator or Size (inclusive)
-    virtual size_t ReadTI(char *ToBuffer,size_t Size) const;
-    // write until terminator or size (inclusive)
-    virtual size_t WriteTI(const char *FromBuffer,size_t Size);
-    // read until terminator or Size (inclusive)
-    virtual size_t ReadTI(Stream *ToBuffer,size_t Size) const;
-    // write until terminator or size (inclusive)
-    virtual size_t WriteTI(Stream *FromBuffer,size_t Size);
-    //    virtual bool IsAbstract() const;
-    virtual size_t Read(char *ToBuffer,size_t Size) const;
-    virtual size_t Write(const char *FromBuffer,size_t Size);
-    virtual bool Eof() const;
-    virtual size_t Read(Stream *ToStream,size_t Size) const;
+	// read until terminator or Size (inclusive)
+	virtual size_t ReadTI(char *ToBuffer,size_t Size) const;
+	// write until terminator or size (inclusive)
+	virtual size_t WriteTI(const char *FromBuffer,size_t Size);
+	// read until terminator or Size (inclusive)
+	virtual size_t ReadTI(Stream *ToBuffer,size_t Size) const;
+	// write until terminator or size (inclusive)
+	virtual size_t WriteTI(Stream *FromBuffer,size_t Size);
+	//    virtual bool IsAbstract() const;
+	virtual size_t Read(char *ToBuffer,size_t Size) const;
+	virtual size_t Write(const char *FromBuffer,size_t Size);
+	virtual bool Eof() const;
+	virtual size_t Read(Stream *ToStream,size_t Size) const;
 	virtual size_t Write(const Stream *FromStream,size_t Size);
-    virtual size_t Read(Stream *ToStream) const;
-    virtual size_t Write(const Stream *FromStream);
-    virtual bool IsOpen() const;
-    virtual size_t Tell() const;
-    virtual bool Open(const char *Name,const char *Operation,bool ExceptOnError=true);
-    virtual void Close(bool ExceptOnError=true);
-    virtual void Flush();
-    virtual bool ReOpen(const char *FileName,const char *Mode,bool ExceptOnError=true);
-    virtual int scanf(const char *format,...) const;
-    virtual size_t printf(const char *format,...);
+	virtual size_t Read(Stream *ToStream) const;
+	virtual size_t Write(const Stream *FromStream);
+	virtual bool IsOpen() const;
+	virtual size_t Tell() const;
+	virtual bool Open(const char *Name,const char *Operation,bool ExceptOnError=true);
+	virtual void Close(bool ExceptOnError=true);
+	virtual void Flush();
+	virtual bool ReOpen(const char *FileName,const char *Mode,bool ExceptOnError=true);
+	virtual int scanf(const char *format,...) const;
+	virtual size_t printf(const char *format,...);
 	FileStream();
-    virtual ~FileStream();
-    // Container functions
+	virtual ~FileStream();
+	// Container functions
 	virtual Iterator *_CreateIterator() const;
 	Iterator *CreateIterator() const { return _CreateIterator(); }
 	virtual void DeleteIterator(Iterator *I) const;
 	virtual bool IsEmpty(const Iterator *I) const;
-    virtual bool GotoFirst(Iterator *I) const;
-    virtual bool GotoPrev(Iterator *I) const; // returns true if success
-    virtual bool GotoNext(Iterator *I) const;    // returns true if success
-    virtual bool GotoLast(Iterator *Iterator) const;    // returns true if success
+	virtual bool GotoFirst(Iterator *I) const;
+	virtual bool GotoPrev(Iterator *I) const; // returns true if success
+	virtual bool GotoNext(Iterator *I) const;    // returns true if success
+	virtual bool GotoLast(Iterator *Iterator) const;    // returns true if success
+	virtual bool HasFirst(const Iterator *I) const { return Count()>0; }
+	virtual bool HasPrev(const Iterator *I) const { return Tell()>0; }
+	virtual bool HasNext(const Iterator *I) const { return Size()>Tell(); }
+	virtual bool HasLast(const Iterator *I) const { return Count()>0; }
+	virtual bool HasN(const Iterator *I,int n) const { return Count()>n; }
+
 	virtual EmptyObject *GetAtIterator(const Iterator *I) const;
 	virtual void SetAtIterator(const Iterator *I,EmptyObject *Item,bool IsObject,bool IsOwned,size_t Size = 0);
 

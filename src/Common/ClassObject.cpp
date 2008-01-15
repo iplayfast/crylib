@@ -408,23 +408,43 @@ int Object::GetPropertyCount() const
 #endif
 }
 
+bool Object::SetProperty(const Property *p)
+{
+const char *n = *p->GetName();
+const Object *v = p->GetValue();
+#ifdef DEBUG
+	strncpy((char *)this->ObjectType,ChildClassName(),29);
+#endif
+	if (v->IsA(CString))
+	{
+	String *s = (String *)v;
+		return SetProperty(n,*s);
+	}
+	if (v->IsA(CPropertyList))
+	{
+	PropertyList *p = (PropertyList*)v;
+		return p->SetPropertiesFromList(this);
+	}
+	throw Exception("Can't add property of type %s",v->ClassName());
+}
+
 bool Object::SetProperty(const
 
-                            PropertyParser &PropertyName,const
-                            char *PropertyValue)
+							PropertyParser &PropertyName,const
+							char *PropertyValue)
 {
 #ifdef DEBUG
 
-    if (PropertyName=="ObjectID")
-    {
-        String s;
-        s = PropertyValue;
-        s.scanf("%d",&ObjectID);
-        return true;
-    }
+	if (PropertyName=="ObjectID")
+	{
+		String s;
+		s = PropertyValue;
+		s.scanf("%d",&ObjectID);
+		return true;
+	}
 
 #endif
-    return false;
+	return false;
 }
 
 
@@ -682,6 +702,10 @@ Object::Object()
 #ifdef DEBUG
     ObjectID = ::ObjectID;
 	::ObjectID++;
+/*	if (ObjectID==146)		// use this to debug an errant object
+	{
+		strncpy(ObjectType,"bad",29);
+	}*/
 	strncpy(ObjectType,"Unknown",29);
 #endif
 }
@@ -689,12 +713,18 @@ Object::Object()
 const
 char* Object::ClassName() const
 {
+#ifdef DEBUG
+	strncpy((char *)this->ObjectType,ChildClassName(),29);
+#endif
 	return CObject;
 }
 
 const
 char* Object::ChildClassName() const
 {
+#ifdef DEBUG
+	strncpy((char *)this->ObjectType,ChildClassName(),29);
+#endif
 	return CObject;
 }
 
@@ -713,24 +743,24 @@ bool Object::IsA(const
 // returns true if handled
 bool Object::Event(EObject EventNumber,Context::IO &Context)
 {
-    switch (EventNumber)
-    {
+	switch (EventNumber)
+	{
 
 EFirst:
-            return false;
+			return false;
 
 ESaveObject:
-            Context.In.InSave.ToStream->SetMode(SObject);
-            SaveTo(*Context.In.InSave.ToStream);    // ToStream as Object
-            break;
+			Context.In.InSave.ToStream->SetMode(SObject);
+			SaveTo(*Context.In.InSave.ToStream);    // ToStream as Object
+			break;
 
 ELoadObject:
-            Context.In.InLoad.FromStream->SetMode(SObject);
-            LoadFrom(*Context.In.InLoad.FromStream);    // FromStream as Object
-            break;
+			Context.In.InLoad.FromStream->SetMode(SObject);
+			LoadFrom(*Context.In.InLoad.FromStream);    // FromStream as Object
+			break;
 
 ESaveStream:
-            Context.In.InSave.ToStream->SetMode(SText);
+			Context.In.InSave.ToStream->SetMode(SText);
             SaveTo(*Context.In.InSave.ToStream);    // ToStream as Object
             break;
 
@@ -890,6 +920,12 @@ Object *Object::ClassCreate(const PropertyParser &PropertyName,Object *Parent)
 }
 
 
+XML *Object::SaveAsXML() const
+{
+	XML *xml = new XML();
+	xml->LoadFrom(*this);
+	return xml;
+}
 
 void Object::SaveTo(Stream &ToStream) const
 
@@ -960,11 +996,11 @@ Object *Object::Create(Stream &FromStream)
 {
     XML xml;
 
-    switch (FromStream.GetMode())
-    {
-        case
+	switch (FromStream.GetMode())
+	{
+		case
 
-                SObject:
+				SObject:
             // zlib compression of xml class
 			{
 				int l;

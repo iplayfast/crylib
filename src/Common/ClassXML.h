@@ -92,7 +92,7 @@ List SubNodes;
 bool GettingName;
 	/*! Load this node from an object */
 	virtual void LoadFrom(const Object &FromObject,PropertyList *pn);
-
+	virtual void LoadFrom(const Container &FromObject,PropertyList *pn);
 public:
 StdFunctionsNoDup(XMLNode,List);
     XMLNode(const char *_Name="")

@@ -53,25 +53,27 @@ public:
 	void SetValue(const char *_Value);
 	void SetValue(const Object *_Value);
 	void SetValueOwned(Object *_Value);
-    void SetName(const char *_Name);
-    void SetNameValue(const char *_Name,const char *_Value)
-    {
+
+	void SetName(const char *_Name);
+	void SetNameValue(const char *_Name,const char *_Value)
+	{
 		SetValue(_Value);
-        SetName(_Name);
+		SetName(_Name);
 	}
 	const Object *GetValue() const;
 	const char *GetValue(String &Result) const;	// return string value or Object name if not CryString
 	Object*_GetValue() const;
-    virtual const char *GetProperty(const PropertyParser &PropertyName,String &Result) const;
+	virtual const char *GetProperty(const PropertyParser &PropertyName,String &Result) const;
 	virtual const char *GetProperty(String &Result) const;
 	bool GetIsPropertyContainer(const PropertyParser &PropertyName) const;
 	Object *GetCopyOfPropertyAsObject(const	PropertyParser &PropertyName) const;
 
 	virtual const cbyte* GetRaw() const;
-    //    virtual const char *ChildClassName() const;
+	//    virtual const char *ChildClassName() const;
 	virtual bool HasProperty(const PropertyParser &PropertyName) const;
 	virtual bool SetProperty(const PropertyParser &PropertyName,const char *PropertyValue);
-    virtual bool SetProperty(const PropertyParser &PropertyName,const Object *PropertyValue);
+	virtual bool SetProperty(const PropertyParser &PropertyName,const Object *PropertyValue);
+	virtual void SetPropertyOwned(Object *PropertyValue);
 	//virtual bool SetProperty(const char*PropertyName,const CryString &PropertyValue);
 	virtual PropertyList* PropertyNames() const;
 //    virtual bool IsAbstract() const;
@@ -86,17 +88,27 @@ public:
 class PropertyParser : public String
 {
 	int Index;	// if -1 then there is no []
+	List Fields;
 	PropertyParser() : String("")
 	{
 		Index = -1;
 	}
+	void constructParser();
 public:
 	StdFunctions(PropertyParser,String);
 	PropertyParser(const char *Property);
+	PropertyParser(const String *Property);
+	~PropertyParser(){
+	}
+    bool operator ==(const char *s) const ;
+
 	int GetIndex() const;
 	const char *GetPlainProperty() const;
 	void GetPlainProperty(String &Result) const;
 	void Get(String &Result) const;
+	bool IsMultiField() const { return Fields.HasItems(); }
+	List::ListIterator *CreateIterator() const { return Fields.CreateIterator(); }
+	void DeleteIterator(List::ListIterator *it) const { Fields.DeleteIterator(it); }
 };
 
 
@@ -107,7 +119,6 @@ doing comparisons with other objects properties or to set an object's properties
 */
 class PropertyList : protected List
 {
-	PropertyList(PropertyList &nope); // avoid copying
 public:
 	struct PropertyIterator : public List::ListIterator
 	{
@@ -121,7 +132,7 @@ public:
 		bool GotoNext();
 		bool GotoLast();
 		size_t GetItemSize();
-		Property *_Get() { return (Property *)Get(); }
+		Property *_Get() {		return (Property *)Get();		}
 		const String *GetName();
 		const char *GetValue(String &r);
 
@@ -129,10 +140,27 @@ public:
 		void SetValue(const char *Value);
 	};
 
+private:
+	PropertyList(PropertyList &nope); // avoid copying
+	virtual std::auto_ptr<PropertyIterator> GetPropertyPointerIterator(ListIterator *li) const;	/// make sure you delete result after using
+	virtual std::auto_ptr<PropertyIterator> GetPropertyPointerIterator(const PropertyParser &PropertyName) const;/// make sure you delete result after using
+
+	virtual Property *GetPropertyPointer(ListIterator *li) const;
+	virtual Property *GetPropertyPointer(const PropertyParser &PropertyName) const;
+	virtual void AddPropertyOwned(ListIterator *li,Object *Value);
+	virtual Property *_HasProperty(const PropertyParser &PropertyName) const;// return Property * or 0
+
+public:
+	(operator Object *)() { return this; }
+	(operator Object &)() { return *this; }
 //	CryList *GetNames() const { return Names; }
 	StdFunctions(PropertyList,List);
 	virtual ~PropertyList();
 	PropertyList();
+	// Even though property list is a container it is not treaded as such
+	// because the properties cannot be indexed
+	virtual bool IsContainer() const { return true; }
+
 	virtual Iterator *_CreateIterator() const;
 	PropertyIterator *CreateIterator() const;
 //	virtual PropertyIterator *_CreateIterator() const;
@@ -141,20 +169,39 @@ public:
 //	CryContainer::Iterator * CreateNameIterator() const;
 //	void DeleteNameIterator(Iterator *I) const;
 	/// return the results of the last operation
-	virtual PropertyList* PropertyNames() const;
-	PropertyList *Boolean(const Object *O2,BOperation B);
+	virtual PropertyList *PropertyNames() const;
+	virtual PropertyList *Boolean(const Object *O2,BOperation B);
+	virtual void Clear() { List::Clear(); }
 	void Load(const Object *o);
 	void Set(Object *Source);
+	bool SetPropertiesFromList(Object *Target);
+
+	void AddOwned(Property *Item)   // gives ownership to list
+	{
+		List::AddOwned(Item);
+	}
 	/// Get the currently held properties that are also in Target, and set them from TheseValues
 	void Get(Object *Target);
+	void AddOwned(Object *Item)   // We only can add Properties
+	{
+		if (Item->IsA(CProperty))
+			AddOwned((Property *)Item);
+		else
+			throw Exception("Must add Properties only");
+	}
+
 	/// add a new property and value to the list
 	void AddProperty(const char *Name,const char *value);
 	/// add a new property to the list (property is owned by list);
 	void AddProperty(const char *Name,const Object *Value);
-	/// add a new property to the list (property is owned by list, Value is owned by Property);
+	/// add a new property to the list (property is owned by list, Value ownership is transfered);
 	void AddPropertyOwned(const char *Name,Object *Value);
+	void AddPropertyOwned(const PropertyParser &PropertyName,Object *Value);
+
 	/// add a new property to the list (property is owned by list);
 	void AddProperty(String *Name,String *Value);
+	// Add a new property tot he list, (property is owned by list);
+	void AddProperty(PropertyParser &PropertyName,const String *PropertyValue);
 	/// add a new property to the list, by giving the name and object that it came from. (Object is asked for Property value)
 	void AddPropertyByName(const char *Name,const Object *object);
 	virtual Object *_GetPropertyAsObject(const PropertyParser &PropertyName) const;
@@ -168,6 +215,7 @@ public:
 	{
 		return true;
 	}
+	void RemoveAtIterator(std::auto_ptr<PropertyIterator> LI) { List::RemoveAtIterator(LI); }
 
 	virtual const char *GetProperty(const PropertyParser &PropertyName,String &Result) const;
 	/*! will return whether or not the property named in PropertyName is a container */
@@ -191,5 +239,28 @@ public:
 	virtual void Sort(int CompareType=0);
 };
 
+class MetaPropertyList : public Object
+{
+const PropertyList *pl;
+public:
+	MetaPropertyList(const PropertyList *a) { pl = a; }
+	operator const PropertyList *() { return pl; }
+	operator const PropertyList &() { return *pl; }
+	virtual PropertyList* PropertyNames() const { return ((List *)pl)->PropertyNames(); }
+	const char *GetProperty(const PropertyParser &PropertyName,String &Result) const
+		{ return ((List *)pl)->GetProperty(PropertyName,Result); }
+	bool GetIsPropertyContainer(const PropertyParser &PropertyName) const
+		{ return ((List *)pl)->GetIsPropertyContainer(PropertyName); }
+	virtual bool HasProperty(const PropertyParser &PropertyName) const
+		{ return ((List *)pl)->HasProperty(PropertyName); }
+	virtual bool CanHaveProperty(const PropertyParser &PropertyName) const
+		{ return ((List *)pl)->CanHaveProperty(PropertyName); }
+	virtual Object *_GetPropertyAsObject(const PropertyParser &PropertyName) const
+		{ return ((List *)pl)->_GetPropertyAsObject(PropertyName); }
+	virtual Object *GetCopyOfPropertyAsObject(const PropertyParser &PropertyName) const
+		{ return ((List *)pl)->GetCopyOfPropertyAsObject(PropertyName); }
+ 	virtual bool IsContainer() const { return true; }
+
+};
 #endif // TCryProperty
 }
