@@ -46,13 +46,13 @@ public:
 	StdFunctionsAbstract(Container,Object);
 	class Iterator;
 	Container();
-    /// will return the original owner of the Iterator
-    const Container *GetOwner(Iterator *I) const;
-    /// returns true
-    virtual bool IsContainer() const;
+	/// will return the original owner of the Iterator
+	const Container *GetOwner(Iterator *I) const;
+	/// returns true
+	virtual bool IsContainer() const;
 	virtual void SetIsContainer(bool Enabled);
-    /// will return the type of contained type used by the container. eg  CryStream::ListNode
-    virtual void GetEleType(String &Result) const = 0;
+	/// will return the type of contained type used by the container. eg  CryStream::ListNode
+	virtual void GetEleType(String &Result) const = 0;
 	/// Create an Iterator class which can be used for travesing the container
 	virtual Iterator *_CreateIterator() const = 0;
 	/// non virtual function
@@ -107,8 +107,6 @@ public:
 	/// returns true if all contained things where iterated through, FunctionToCall returns false if iteration should stop
 	//    bool IterateThroughAll(ClassCall *FunctionToCall);
 	virtual bool IteratedFunction(EmptyObject *Control,EmptyObject *Item);
-	virtual bool SetProperty(const PropertyParser &PropertyName,const char *PropertyValue);
-	virtual const char *GetProperty(const PropertyParser &PropertyName,String &Result) const;
 	virtual Object *GetCopyOfPropertyAsObject(const PropertyParser &PropertyName) const;
 	virtual bool HasProperty(const PropertyParser &PropertyName) const;
 	virtual int GetPropertyCount() const;
@@ -123,6 +121,11 @@ public:
 	virtual bool LessThen(int CompareType,const Object *Test) const;
 	virtual bool GreaterThen(int CompareType,const Object *Test) const;
 	virtual bool EqualTo(int CompareType,const Object *Test) const;
+	bool SetProperty(const PropertyParser &PropertyName,const char *PropertyValue);
+	bool SetProperty(const char *PropertyName,const char *PropertyValue);
+	const char *GetProperty(const PropertyParser &PropertyName,String &Result) const;
+
+
 #ifdef VALIDATING
 
 	virtual bool Test(bool Verbose,Object &Object,bool  (CallBack)(bool Verbose,const char *Result,bool fail));

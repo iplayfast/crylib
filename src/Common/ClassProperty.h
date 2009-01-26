@@ -70,6 +70,7 @@ public:
 
 	virtual const cbyte* GetRaw() const;
 	//    virtual const char *ChildClassName() const;
+	virtual bool HasProperty(const char *_PropertyName) const;
 	virtual bool HasProperty(const PropertyParser &PropertyName) const;
 	virtual bool SetProperty(const PropertyParser &PropertyName,const char *PropertyValue);
 	virtual bool SetProperty(const PropertyParser &PropertyName,const Object *PropertyValue);
@@ -98,6 +99,7 @@ public:
 	StdFunctions(PropertyParser,String);
 	PropertyParser(const char *Property);
 	PropertyParser(const String *Property);
+
 	~PropertyParser(){
 	}
     bool operator ==(const char *s) const ;
@@ -142,8 +144,8 @@ public:
 
 private:
 	PropertyList(PropertyList &nope); // avoid copying
-	virtual std::auto_ptr<PropertyIterator> GetPropertyPointerIterator(ListIterator *li) const;	/// make sure you delete result after using
-	virtual std::auto_ptr<PropertyIterator> GetPropertyPointerIterator(const PropertyParser &PropertyName) const;/// make sure you delete result after using
+	virtual PropertyIterator* GetPropertyPointerIterator(ListIterator *li) const;	/// make sure you delete result after using
+	virtual PropertyIterator* GetPropertyPointerIterator(const PropertyParser &PropertyName) const;/// make sure you delete result after using
 
 	virtual Property *GetPropertyPointer(ListIterator *li) const;
 	virtual Property *GetPropertyPointer(const PropertyParser &PropertyName) const;
@@ -208,6 +210,7 @@ public:
 	virtual Object *GetCopyOfPropertyAsObject(const PropertyParser &PropertyName) const;
 	/// check for a propertyname in the list
 	virtual bool HasProperty(const PropertyParser &PropertyName) const;
+	virtual bool HasProperty(const char *PropertyName) const;
 	virtual int Compare(int CompareType,const Object *Test1,const Object *Test2) const;
 
 	/*! returns true if the class in question can have the property */
@@ -215,7 +218,7 @@ public:
 	{
 		return true;
 	}
-	void RemoveAtIterator(std::auto_ptr<PropertyIterator> LI) { List::RemoveAtIterator(LI); }
+	void RemoveAtIterator(PropertyIterator *LI) { List::RemoveAtIterator(LI); }
 
 	virtual const char *GetProperty(const PropertyParser &PropertyName,String &Result) const;
 	/*! will return whether or not the property named in PropertyName is a container */

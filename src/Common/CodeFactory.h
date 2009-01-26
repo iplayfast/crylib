@@ -70,7 +70,8 @@ StdFunctionsIsAbstractFalse();
     virtual Object *Create(const PropertyParser &PropertyName,Object *Parent);
     const char *GetName() const;
     void SetName(const char *_Name);
-    void AddProduct(const PropertyParser &PropertyName);
+    void AddProductC(const char *PropertyName) { AddProduct(PropertyParser(PropertyName)); }
+	void AddProduct(const PropertyParser &PropertyName);
     void AddFactory(CodeFactory *f);
     bool CanBuildProduct(const PropertyParser &PropertyName);
     void Clear(const PropertyParser &PropertyName);
@@ -85,7 +86,9 @@ StdFunctionsIsAbstractFalse();
 
     const String *GetHead(const PropertyParser &PropertyName) const;
     const String *GetImp(const PropertyParser &PropertyName) const;
-    void SetHeadImp(const PropertyParser &PropertyName,const char *s);
+	const String *GetHeadC(const char *PropertyName) const { return GetHead(PropertyParser(PropertyName)); }
+	const String *GetImpC(const char *PropertyName) const { return GetImp(PropertyParser(PropertyName)); }
+	void SetHeadImp(const PropertyParser &PropertyName,const char *s);
 	int GetPropertyCount() const;
 		/// will return a property represented as an object, useful for classes which contain properties that are dynamically allocated, as a property that is dynamic is a CryObject and therefore callable
 	virtual Object *GetCopyOfPropertyAsObject(const PropertyParser &PropertyName) const;

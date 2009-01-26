@@ -89,9 +89,20 @@ const char *HugeInt::GetProperty(const PropertyParser &PropertyName,String &Resu
 	}
 	return Object::GetProperty(PropertyName,Result);
 }
+
+const char *HugeInt::GetProperty(const char *PropertyName,String &Result) const
+	{
+		return GetProperty(PropertyParser(PropertyName),Result);
+	}
+
 bool HugeInt::HasProperty(const PropertyParser &PropertyName)const
 {
 	return (PropertyName=="Value") || Object::HasProperty(PropertyName);
+}
+
+bool HugeInt::HasProperty(const char *PropertyName)const
+{
+	return HasProperty(PropertyParser(PropertyName));
 }
 
 PropertyList *HugeInt::PropertyNames() const
@@ -112,6 +123,11 @@ bool HugeInt::SetProperty(const PropertyParser &PropertyName,const char *Propert
 		return true;
 	}
 	return Object::SetProperty(PropertyName,PropertyValue);
+}
+
+bool HugeInt::SetProperty(const char *PropertyName,const char *PropertyValue)
+{
+	return SetProperty(PropertyParser(PropertyName),PropertyValue);
 }
 void FindFactor::Step()
 {

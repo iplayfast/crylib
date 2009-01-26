@@ -118,6 +118,23 @@ struct EmptyObject
 	{}
 ;
 
+template <class T>
+class _Tupple
+{
+T  First;
+T  Second;
+public:
+	_Tupple(T &f,T &s) { First = f; Second = s; }
+	_Tupple(_Tupple &t) { First = t.First; Second = t.Second; }
+	bool Set(T &f,T &s) { if (f==First) { Second = s; return true; } return false; }
+	T GetFirst() { return First; }
+	T GetSecond() { return Second; }
+	void SetFirst(T &f) { First =f; }
+	void SetSecond(T &s) { Second = s; }
+
+};
+
+
 
 /// All classes within this library are derived from Object.
 /*!	Through the use of virtual functions, Object can save/load streams
@@ -179,7 +196,7 @@ public:
             struct _InTo      InSave;
             struct _InLoad      InLoad;
             struct _Object   InCopyTo;
-            struct _int         OutSize;
+			struct _int         OutSize;
             struct _Object   OutDup;
             struct _cCharp      OutClassName;
             struct _cCharp      InIsa;
@@ -268,7 +285,8 @@ public:
 	/*! will return a const char * and a Result showing the property's value, usually the const char * will point to the first character of the Result, however in the case of a property that is an array, the const char * will point to a "*", and the result will return a "[]"
 	in this case you will need to use GetPropertyAsCryProperty
 	*/
-	const char *GetProperty(const char *PropertyName,String &Result) const;
+	virtual const char *GetProperty(const char *PropertyName,String &Result) const;
+
 
 	/*! will return a const char * and a Result showing the property's value, usually the const char * will point to the first character of the Result, however in the case of a property that is an array, the const char * will point to a "*", and the result will return a "[]"
 	in this case you will need to use GetPropertyAsCryProperty
@@ -286,8 +304,9 @@ public:
 	virtual PropertyList* PropertyNames() const;
 
 	/// set the value of a property
+	virtual bool SetProperty(const char *pn,const char *PropertyValue);
 	virtual bool SetProperty(const PropertyParser &PropertyName,const char *PropertyValue);
-    virtual bool SetProperty(const Property *p);
+	virtual bool SetProperty(const Property *p);
 	/// set the value of a property from an Property Value, Value is NOT  given to the object and can be deleted after the call.
 	virtual bool SetPropertyAsObject(const Property *Value);
 	/*! save (in xml format) to a stream, stream pays attention to it's mode and will compress the data if mode is SObject, if it's SText, it saves as text.*/

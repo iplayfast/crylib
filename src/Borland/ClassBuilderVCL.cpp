@@ -3,9 +3,9 @@
 #include <vcl.h>
 #pragma hdrstop
 //---------------------------------------------------------------------------
-USEFORM("labelEditfrm.cpp", LabelEdit); /* TFrame: File Type */
-USEFORM("ClassBuilderUnit.cpp", ClassBuilderFrm);
 USEFORM("CheckLabel.cpp", CheckedLabel); /* TFrame: File Type */
+USEFORM("ClassBuilderUnit.cpp", ClassBuilderFrm);
+USEFORM("labelEditfrm.cpp", LabelEdit); /* TFrame: File Type */
 //---------------------------------------------------------------------------
 WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {

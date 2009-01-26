@@ -37,7 +37,7 @@ using namespace std;
 ClassFooterFactory::ClassFooterFactory(CodeFactory *Parent) : CodeFactory(Parent,CClassFooterFactory)
 {
     SetSortValue(MAXINT-200);
-    AddProduct(CClassFooterFactory);
+    AddProductC(CClassFooterFactory);
 }
 
 Object *ClassFooterFactory::Create(const PropertyParser &PropertyName,CodeFactory *Parent)

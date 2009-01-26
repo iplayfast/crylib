@@ -23,7 +23,7 @@
 #include "ClassMemStream.h"
 #include "ClassException.h"
 #include "ClassString.h"
-#include <list>
+
 
 /*namespace Crystal
 {
@@ -59,27 +59,29 @@ class List : public Container
 //public:
 struct ListNode : public EmptyObject
 	{
+		ListNode *Next;
 		EmptyObject *Item;
 		size_t Size;		// only used if Item is not a CryObject
 		bool IsOwned;
 		bool IsObject;
 		~ListNode() {}
 	};
+ListNode *Head;
+ListNode *Tail;
 public:
-list <ListNode *> *Head;
-typedef list<ListNode *>::iterator ListNodeI;
-typedef list<ListNode *>::const_iterator cListNodeI;
 
 struct ListIterator : public Iterator
 	{
-		cListNodeI p;
-		ListIterator(const List *container) : Iterator(container) { p = container->Head->begin(); GotoFirst(); }
+
+		ListNode *p;
+		ListIterator(const List *container) : Iterator(container) { p = container->_FirstNode(); GotoFirst(); }
 		virtual Object *Dup() const
 		{
 			ListIterator *LI = (ListIterator *)GetOrigContainer()->_CreateIterator();
 			LI->p = p;
 			return LI;
 		}
+		bool Valid() { return p!=0; }
 	};
 private:
 	EmptyObject *Add(EmptyObject *Item,bool IsObject,bool IsOwned,size_t Size = 0)
@@ -91,7 +93,10 @@ private:
 		New->Size = Size;
 		New->IsOwned = IsOwned;
 		New->IsObject = IsObject;
-		Head->push_back(New);
+		New->Next = Head;
+		if (Head==0)
+			Tail = New;
+		Head = New;
 		return Item;
 	}
 	EmptyObject *DupItem(const ListNode *Node) const
@@ -121,66 +126,63 @@ private:
 			}
 		}
 	}
-
+public:
 	inline ListNode *_FirstNode() const
 	{
-	cListNodeI I;
-		I = Head->begin();
-		return *I;
+	return Head;
 	}
 	ListNode *_LastNode() const
 	{
-		return *Head->end();
+		return Tail;
 	}
-	ListNode *_NextNode(const ListNode *n) const;
-	bool _Remove(EmptyObject *Item)	// returns true if Item removed
+	ListNode *_NextNode(const ListNode *n) const
 	{
-	ListNodeI p = Head->begin();
-	cListNodeI e = Head->end();
+		return n->Next;
+	}
+private:
+	bool _Remove(EmptyObject *Item);	// returns true if Item removed
+/*	{
+	ListNode *p = Head;
+	ListNode *e = Tail;
 	ListNode *ln;
-		while(p!=e)
+	ListNode *Prev = 0;
+		while(p)
 		{
-			ln = *p;
+			ln = p;
 				if (ln->Item==Item)
 				{
 					DeleteItem(ln);
-					Head->erase(p);
+					if (Prev)
+						Prev->Next = ln->Next;
+					else
+					{
+						Head = ln->Next;
+
+					}
+					ln->Next = 0;
 					delete(ln);
 					return true;
 				}
-				p++;
+				p = p->Next;
 		}
 		return false;
-
-/*	ListNode *ln = _FindNode(Item);
-			if (ln)
-			{
-				DeleteItem(ln);
-				Head->remove(ln);
-			}
-			else return false;
-			return true;
-*/
-	}
-	ListNode *_FindNode(const EmptyObject *Needle) const
-	{
-	cListNodeI p = Head->begin();
-	cListNodeI e = Head->end();
-	ListNode *ln;
-		while(p!=e)
+	}*/
+	ListNode *_FindNode(const EmptyObject *Needle) const;
+/*	{
+	ListNode *p = Head;
+		while(p)
 		{
-			ln = *p;
-				if (ln->Item==Needle) return ln;
-				p++;
+				if (p->Item==Needle) return p;
+				p = p->Next;
 		}
 		return 0;
-	}
-	bool _IsEmpty() const { return Head->begin()==Head->end(); }
+	}*/
+	bool _IsEmpty() const { return Head==0; }
 protected:
 	void AddListNode (ListNode *Node);
 public:
 	StdFunctions(List,Container);
-	List() { Head = new list <ListNode *>;}
+	List() { Head = Tail = 0; }
 	List(List &List);
 	List(List *List);
 	/*! will create an object of the Type named in Type. In container classes where the Type is the contained object, the Parent must be the appropriete container type or a derived class which can create the object (if the default class can't) */
@@ -213,16 +215,28 @@ public:
 	virtual Iterator *_CreateIterator() const { return new ListIterator(this); }
 	ListIterator *CreateIterator() const { return (ListIterator *)_CreateIterator(); }
 	virtual void DeleteIterator(Iterator *LI) const { delete LI; }
-	void RemoveAtIterator(auto_ptr <ListIterator> li)
+	void RemoveAtIterator(ListIterator *li)
 	{
-		ListNodeI p = Head->begin();
-		while(p != Head->end())
+		ListNode *p = Head;
+		ListNode *Prev = 0;
+		if (li->p==Head)
 		{
-			if (*li->p == *p)
+			Head = Head->Next;
+			ListNode *ln = p;
+			DeleteItem(ln);
+			delete ln;
+			return;
+		}
+		Prev = p;
+		p = p->Next;
+		while(p)
+		{
+			if (li->p == p)
 			{
-			ListNode *ln = *p;
+			ListNode *ln = p;
 				DeleteItem(ln);
-				li->p = Head->erase(p);
+				Prev->Next = p->Next;
+				li->p->Next = 0;
 				delete ln;
 				return;
 			}
@@ -231,19 +245,8 @@ public:
 
 	void RemoveAtIterator(Iterator *LI)
 	{
-		ListNodeI p = Head->begin();
 		ListIterator *li = (ListIterator *)LI;
-		while(p != Head->end())
-		{
-			if (*li->p == *p)
-			{
-			ListNode *ln = *p;
-				DeleteItem(ln);
-				li->p = Head->erase(p);
-				delete ln;
-				return;
-			}
-		}
+		RemoveAtIterator(li);
 	}
 	virtual bool Sortable()const { return true; }
 	virtual void Sort(int CompareType=0);
@@ -276,61 +279,79 @@ public:
 	virtual EmptyObject* GetAtIterator(const Iterator *I) const
 	{
 		ListIterator *pLI = (ListIterator *)I;
-		ListNode *n = *pLI->p;
+		ListNode *n = pLI->p;
 		return n->Item;
 	}
 	virtual void SetAtIterator(const Iterator *I,EmptyObject *Item,bool IsObject,bool IsOwned,size_t Size = 0)
 	{
 		ListIterator *pLI = (ListIterator *)I;
-		if (pLI->p==0)	// nothing there!
+		if (pLI->Valid())	// nothing there!
 			throw Exception("Attempt to SetAtIterator where Iterator is pointing to nothing");
-		DeleteItem(*(pLI->p)); // only deletes if owned
-		(*pLI->p)->IsObject = IsObject;
-		(*pLI->p)->IsOwned = IsOwned;
-		(*pLI->p)->Size = Size;
-		(*pLI->p)->Item = Item;
+		DeleteItem(pLI->p); // only deletes if owned
+		pLI->p->IsObject = IsObject;
+		pLI->p->IsOwned = IsOwned;
+		pLI->p->Size = Size;
+		pLI->p->Item = Item;
 	}
 
 	virtual bool IsEmpty(const Iterator *I) const { return _IsEmpty(); };
-	virtual bool GotoFirst(Iterator *LI) const
+	virtual bool GotoFirst(Iterator *I) const
 	{
 		if (_IsEmpty()) return false;
-		((ListIterator *)LI)->p = Head->begin();
+		ListIterator *pLI = (ListIterator *)I;
+		pLI->p = Head;
 		return true;
 	}
 	virtual bool GotoNext(Iterator *LI) const
 	{
-		if (_IsEmpty() || ((ListIterator *)LI)->p==Head->end()) return false;
-		((ListIterator *)LI)->p++;
-		if (((ListIterator *)LI)->p==Head->end()) return false;
-		return true;
+		if (_IsEmpty()) return false;
+		ListIterator *pLI = (ListIterator *)LI;
+		if (pLI->p && pLI->p->Next)
+		{
+			pLI->p = pLI->p->Next;
+			return true;
+		}
+		return false;
 	}
 
 	virtual bool GotoPrev(Iterator *LI) const
 	{
-		if (_IsEmpty() || ((ListIterator *)LI)->p==Head->begin()) return false;
-		((ListIterator *)LI)->p--;
-		return true;
+		if (_IsEmpty()) return false;
+		ListIterator *pLI = (ListIterator *)LI;
+		if (pLI->p == Head) return false;
+		ListNode *l = Head;
+		while((l->Next != pLI->p) && l)
+			l = l->Next;
+		if (l)
+		{
+			pLI->p = l;
+			return true;
+		}
+		return false;
 	}
 
 	virtual bool GotoLast(Iterator *LI) const
 	{
 		if (_IsEmpty()) return false;
-		((ListIterator *)LI)->p = Head->end();
-		return GotoPrev(LI);
+		((ListIterator *)LI)->p = Tail;
+		return true;
 	}
 
 	virtual bool HasFirst(const Iterator *LI) const { return !_IsEmpty(); }
-	virtual bool HasPrev(const Iterator *LI) const {  if (_IsEmpty() || ((ListIterator *)LI)->p==Head->begin()) return false;
-												else return true; }
+	virtual bool HasPrev(const Iterator *LI) const
+	{
+		if (_IsEmpty() || ((ListIterator *)LI)->p==Head) return false;
+		else return true;
+	}
 
-	virtual bool HasNext(const Iterator *LI) const {  if (_IsEmpty() || ((ListIterator *)LI)->p==Head->end()) return false;
-												else return true; }
+	virtual bool HasNext(const Iterator *LI) const
+	{  if (_IsEmpty() || ((ListIterator *)LI)->p==Tail) return false;
+			else return true; }
 	virtual bool HasLast(const Iterator *I) const { return !_IsEmpty(); }
 	virtual bool HasN(const Iterator *LI,int n) const { return Count()>n; }
 
 
-	virtual inline size_t Count() const { return Head->size(); }
+	virtual inline size_t Count() const;
 	virtual inline bool HasItems() const { return Count()>0; }
 ///copies contents of this to Dest
 	virtual void CopyTo(Object &Dest) const
@@ -338,24 +359,22 @@ public:
 		if (Dest.IsA(CList))
 		{
 		List *_Dest = (List *) &Dest;
-		cListNodeI B = Head->begin();
-		cListNodeI E = Head->end();
-		while(B!=E)
+		ListNode *B = Head;
+		while(B)
 		{
-		const ListNode *p = *B++;
-					if (p->IsOwned)
+					if (B->IsOwned)
 					{
-						if (p->IsObject)
-							_Dest->AddOwned((Object *)(DupItem(p)));
+						if (B->IsObject)
+							_Dest->AddOwned((Object *)(DupItem(B)));
 						else
-							_Dest->AddOwned(DupItem(p),p->Size);
+							_Dest->AddOwned(DupItem(B),B->Size);
 					}
 					else
 					{
-						if (p->IsObject)
-							_Dest->Add((Object *)p->Item );
+						if (B->IsObject)
+							_Dest->Add((Object *)B->Item );
 						else
-							_Dest->Add(p->Item,p->Size);
+							_Dest->Add(B->Item,B->Size);
 					}
 		}
 		return;
@@ -429,27 +448,25 @@ public:
 #endif
 	virtual void Clear()
 	{
-		ListNodeI I = Head->begin();
-		ListNodeI E = Head->end();
-		while(I!=E)
+		ListNode *I,*p = Head;
+		I = p;
+		while(p)
 		{
-		ListNode *p = *I;
-//			Head->pop_front();
-//			I = Head->begin();
 			if (p->IsOwned)
 			{
 				if (p->IsObject)
 				{
-					Object *I = (Object *)p->Item;
-					delete I;
+					Object *Ii = (Object *)p->Item;
+					delete Ii;
 				}
 				else
 					delete p->Item;
 			}
-			delete p;
-			I++;
+			p = p->Next;
+			I->Next = 0;
+			delete I;
 		}
-		Head->clear();
+		Head = Tail = 0;
 	}
 	const ListNode *FindNode(const EmptyObject *Needle) const;
 	/// find a node who's item has the same "value" property
@@ -496,27 +513,27 @@ public:
 	bool IsObject(const Iterator *I) const
 	{
 		ListIterator *li = (ListIterator *)I;
-		return (*li->p)->IsObject;
+		return li->p->IsObject;
 	}
 	size_t GetItemSize(Iterator *I) const
 	{
 		ListIterator *li = (ListIterator *)I;
-		return (*li->p)->Size;
+		return li->p->Size;
 	}
 	bool SaveAsText(Iterator *I,String &ToStream) const
 	{
 		ToStream.Clear();
 		ListIterator *li = (ListIterator *)I;
 		if (_IsEmpty()) return false;
-		if ((*li->p)->IsObject) {
-		Object *t = (Object *)(*li->p)->Item;
+		if (li->p->IsObject) {
+		Object *t = (Object *)li->p->Item;
 			t->SaveTo(ToStream);
 		}
 		else
 		{
-			unsigned char *c = (unsigned char *)(*li->p)->Item;
-			ToStream.printf("%d ",(*li->p)->Size);
-			for(size_t i=0;i<(*li->p)->Size;i++)
+			unsigned char *c = (unsigned char *)li->p->Item;
+			ToStream.printf("%d ",li->p->Size);
+			for(size_t i=0;i<li->p->Size;i++)
 				ToStream.printf("%d ",c[i]);
 		}
 		return true;
@@ -538,13 +555,13 @@ public:
 	virtual void SetItemOwnerShip(Iterator  *I,bool Owned)
 	{
 		ListIterator *li = (ListIterator *)I;
-		(*li->p)->IsOwned = Owned;
+		li->p->IsOwned = Owned;
 	}
 
 	virtual bool GetItemOwnerShip(const Iterator *I) const
 	{
 		ListIterator *li = (ListIterator *)I;
-		return (*li->p)->IsOwned;
+		return li->p->IsOwned;
 	}
 	bool InList(Object *Needle) const
 	{
@@ -552,15 +569,15 @@ public:
 	}
 	EmptyObject *GetItem(int i) const
 	{
-	cListNodeI li = Head->begin();
-		while(i && li!=Head->end())
+	ListNode *li = Head;
+		while(i && li)
 		{
 			i--;
-			li++;
+			li = li->Next;
 		}
-		if (i==0)
+		if ((i==0) && (li))
 		{
-			return (*li)->Item;
+			return li->Item;
 		}
 		return 0;
 	}
@@ -582,6 +599,7 @@ public:
 	// if all is well returns true
 	//virtual bool SetProperty(CryString *PropertyName,CryString *PropertyValue);
 	virtual const char *GetProperty(const PropertyParser &PropertyName,String &Result) const;
+	virtual const char *GetProperty(const char *PropertyName,String &Result) const;
 
 	virtual bool HasProperty(const PropertyParser &PropertyName) const
 	{
@@ -596,21 +614,21 @@ public:
 		PropertyList *n = Container::PropertyNames();
 		return n;
 	}
-	virtual size_t Size() const
-	{
+	virtual size_t Size() const;
+/*	{
 		size_t Result = sizeof(int);// for storing count
-		cListNodeI B = Head->begin();
-		cListNodeI E = Head->end();
-		while(B!=E)
+		ListNode *B = Head;
+		while(B)
 		{
-		const ListNode *p = *B++;
+		const ListNode *p = B;
+				B = B->Next;
 				if (p->IsObject)
 					Result += ((Object *)p->Item)->Size();
 				else
 					Result += p->Size;
 		}
 		return Result;
-	}
+	}*/
 	void SwapListElements(List *ToSwap);
 
 }

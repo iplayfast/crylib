@@ -92,10 +92,13 @@ StdFunctionsNoDup(HugeInt,Object);
 virtual void CopyTo(Object &Dest) const;  //copies contents of this to Dest
 virtual Object *Dup() const; // creates a duplicate of this object
 virtual const char *GetProperty(const PropertyParser &PropertyName,String &Result) const;
+virtual const char *GetProperty(const char *PropertyName,String &Result) const;
 virtual bool HasProperty(const PropertyParser &PropertyName)const;
+virtual bool HasProperty(const char *PropertyName)const;
 virtual int GetPropertyCount() const;
 virtual PropertyList* PropertyNames() const;
 virtual bool SetProperty(const PropertyParser &PropertyName,const char *PropertyValue);
+virtual bool SetProperty(const char *PropertyName,const char *PropertyValue);
 // HugeInt functions
 	  // returns true if non zero
 virtual bool ZeroOut() { for(unsigned int i=0;i<NumDigits;i++) Number[i] = 0; Flags = ISZERO; FirstDigit = NumDigits-1; return false;}

@@ -76,6 +76,12 @@ Property::~Property()
 	Name = 0;
 }
 
+bool Property::HasProperty(const char *_PropertyName) const
+{
+PropertyParser pp(_PropertyName);
+	return HasProperty(pp);
+}
+
 void Property::SetValue(const char *_Value)
 {
 	delete Value;
@@ -193,7 +199,10 @@ const char *Property::GetProperty(const PropertyParser &PropertyName,String &Res
 	if (PropertyName==*GetName())	// if PropertyName is not the stored one, see if this classes property is what is being requested
 	{
 		if (Value->IsContainer())
-			return Value->GetProperty("Values",Result);
+		{
+		PropertyParser p("Values");
+			return Value->GetProperty(p,Result);
+		}
 		return GetProperty(Result);
 	}
 	else
@@ -266,11 +275,13 @@ void Property::CopyTo(Object &Dest) const   //copies contents of this to Dest
 	if (Dest.IsA(CProperty))
 	{
 	Property *Cast = (Property *)&Dest;
-		Cast->SetProperty(Name->AsPChar(),Value);
+	PropertyParser p(Name->AsPChar());
+		Cast->SetProperty(p,Value);
 	}
 	String r;
-	GetProperty(Name->AsPChar(),r);
-	Dest.SetProperty(Name->AsPChar(),r);
+	PropertyParser p(Name->AsPChar());
+	GetProperty(p,r);
+	Dest.SetProperty(p,r);
 }
 
 const String *Property::GetName() const
@@ -315,6 +326,7 @@ PropertyList *l =(PropertyList *)this->GetOrigContainer();
 
 	PropertyIterator *New = l->CreateIterator();
 	CopyTo(*New);
+	l->DeleteIterator(New);
 	return New;
 }
 
@@ -389,7 +401,7 @@ void PropertyList::DeleteIterator(Iterator *LI) const
 }
 size_t PropertyList::Size() const
 {
-auto_ptr<PropertyIterator> pi(this->CreateIterator());
+PropertyIterator *pi = CreateIterator();
 size_t size = 0;
 	if (pi->GotoFirst()) {
 	   do
@@ -397,6 +409,7 @@ size_t size = 0;
 			size += pi->Size();
 	   } while(pi->GotoNext());
 	}
+	DeleteIterator(pi);
 	return size;
 }
 int PropertyList::Compare(int CompareType,const Object *Test1,const Object *Test2) const
@@ -432,7 +445,7 @@ void PropertyList::RemoveNodeValue(const MemStream &Needle)
 int n = FindNodeValue(Needle);
 	if (n>=0)
 	{
-	auto_ptr<PropertyIterator> i(CreateIterator());
+	PropertyIterator *i = CreateIterator();
 		if (i->GotoFirst())
 		{
 			while(n)
@@ -445,6 +458,7 @@ int n = FindNodeValue(Needle);
 			}
 			RemoveAtIterator(i);
 		}
+		DeleteIterator(i);
 	}
 }
 void PropertyList::CopyTo(Object &Dest) const
@@ -452,7 +466,7 @@ void PropertyList::CopyTo(Object &Dest) const
 	if (Dest.IsA(CPropertyList))
 	{
 		PropertyList *Cast = (PropertyList *)&Dest;
-		auto_ptr<PropertyIterator> i(CreateIterator());
+		PropertyIterator *i = CreateIterator();
 		if (i->GotoFirst())
 		{
 			do
@@ -462,6 +476,7 @@ void PropertyList::CopyTo(Object &Dest) const
 				Cast->Add(p);
 			} while(i->GotoNext());
 		}
+		DeleteIterator(i);
 	}
 	else
 	throw Exception(this,"Copying from PropertyList to object that is not a PropertyList");
@@ -491,7 +506,7 @@ PropertyList::PropertyList() : List()
 // Set the Target Object's properties with values held here
 void PropertyList::Set(Object *Target)
 {
-auto_ptr<PropertyIterator> pi((PropertyIterator*)_CreateIterator());
+PropertyIterator *pi = this->CreateIterator();
 String r;
 	if (pi->GotoFirst())
 	{
@@ -502,6 +517,7 @@ String r;
 			Target->SetProperty(ItemString,*(const String *)pi->GetValue(r));
 		} while(pi->GotoNext());
 	}
+	DeleteIterator(pi);
 }
 /// Get the Source's Properties (loose any currently held)
 void PropertyList::Get(Object *Source)
@@ -511,11 +527,10 @@ void PropertyList::Get(Object *Source)
 	SwapListElements(Properties);
 	delete Properties;
 }
-
 	/// make sure you delete result after using
-std::auto_ptr<PropertyList::PropertyIterator> PropertyList::GetPropertyPointerIterator(ListIterator *li) const
+PropertyList::PropertyIterator * PropertyList::GetPropertyPointerIterator(ListIterator *li) const
 {
-auto_ptr <PropertyIterator> pi(CreateIterator());
+PropertyIterator *pi = CreateIterator();
 	if (pi->GotoFirst())
 	{
 		do
@@ -546,7 +561,7 @@ auto_ptr <PropertyIterator> pi(CreateIterator());
 }
 
 /// make sure you delete result after using
-std::auto_ptr<PropertyList::PropertyIterator> PropertyList::GetPropertyPointerIterator(const PropertyParser &PropertyName) const
+PropertyList::PropertyIterator * PropertyList::GetPropertyPointerIterator(const PropertyParser &PropertyName) const
 {
 	if (PropertyName.IsMultiField())
 	{
@@ -554,7 +569,7 @@ std::auto_ptr<PropertyList::PropertyIterator> PropertyList::GetPropertyPointerIt
 		try
 		{
 			li->GotoFirst();
-			auto_ptr <PropertyIterator> pl(GetPropertyPointerIterator(li));
+			PropertyList::PropertyIterator * pl = GetPropertyPointerIterator(li);
 			PropertyName.DeleteIterator(li);
 			return pl;
 		}
@@ -564,7 +579,7 @@ std::auto_ptr<PropertyList::PropertyIterator> PropertyList::GetPropertyPointerIt
 			throw e;
 		}
 	}
-	auto_ptr <PropertyIterator> pi(CreateIterator());
+	PropertyList::PropertyIterator * pi = CreateIterator();
 	if (pi->GotoFirst()) {
 		do
 		{
@@ -575,6 +590,7 @@ std::auto_ptr<PropertyList::PropertyIterator> PropertyList::GetPropertyPointerIt
 			}
 		} while(pi->GotoNext());
 	}
+	DeleteIterator(pi);
 	const char *s =PropertyName;
 		throw Exception(ErrorPropertyNotFound,"property %s not found",s);
 }
@@ -582,15 +598,17 @@ std::auto_ptr<PropertyList::PropertyIterator> PropertyList::GetPropertyPointerIt
 
 Property *PropertyList::GetPropertyPointer(ListIterator *li) const
 {
-auto_ptr <PropertyIterator> pi=GetPropertyPointerIterator(li);
+PropertyList::PropertyIterator * pi=GetPropertyPointerIterator(li);
 Property *p = pi->_Get();
+	DeleteIterator(pi);
 	return p;
 }
 
 Property *PropertyList::GetPropertyPointer(const PropertyParser &PropertyName) const
 {
-auto_ptr <PropertyIterator> pi = GetPropertyPointerIterator(PropertyName);
+PropertyList::PropertyIterator * pi = GetPropertyPointerIterator(PropertyName);
 Property *p = pi->_Get();
+	DeleteIterator(pi);
 	return p;
 }
 
@@ -646,6 +664,11 @@ PropertyIterator *pi = CreateIterator();
 		throw e;
 	}
 }
+bool PropertyList::HasProperty(const char *PropertyName) const
+{
+PropertyParser pp(PropertyName);
+	return _HasProperty(pp)!=0;
+}
 
 bool PropertyList::HasProperty(const PropertyParser &PropertyName) const
 {
@@ -669,13 +692,16 @@ Property *PropertyList::_HasProperty(const PropertyParser &PropertyName) const//
 
 void PropertyList::RenameProperty(const char *OldName,const char *NewName)
 {
-	Property *p = GetPropertyPointer(OldName);
+	PropertyParser pp(OldName);
+	Property *p = GetPropertyPointer(pp);
 	p->SetName(NewName);
 }
 void PropertyList::RemoveProperty(const char *Name)
 {
-auto_ptr <PropertyIterator> pi=GetPropertyPointerIterator(Name);
+PropertyParser pp(Name);
+PropertyList::PropertyIterator *pi=GetPropertyPointerIterator(pp);
 	RemoveAtIterator(pi);
+    	DeleteIterator(pi);
 }
 
 
@@ -815,9 +841,10 @@ Property *p = _HasProperty(PropertyName);
 
 void PropertyList::AddProperty(String *Name,String *Value)
 {
-	if (HasProperty(Name->AsPChar()))
+PropertyParser pp(Name->AsPChar());
+	if (HasProperty(pp))
 	{
-		GetValue(Name->AsPChar(),*Value);
+		GetValue(pp,*Value);
 			throw(Exception(ErrorPropertyAlreadyPresent,"Property %s(%s) already present in PropertyList",Name->AsPChar()),Value->AsPChar());
 	}
 	Property *p = new Property(*Name,*Value);
@@ -867,7 +894,7 @@ PropertyList *n = new PropertyList();
 		do
 		{
 
-			if (O2->HasProperty(pi->GetName()->AsPChar()))
+			if (O2->HasProperty(PropertyParser(pi->GetName()->AsPChar())))
 			{	// And (Same properties from both, with same value or "")
 			String v,r;
 				O2->GetProperty(pi->GetName()->AsPChar(),v);
@@ -968,7 +995,7 @@ void PropertyList::Sort(int CompareType)
 bool PropertyList::SetPropertiesFromList(Object *Target)
 {
 bool Result = false;
-auto_ptr <PropertyIterator> i(CreateIterator());
+PropertyIterator *i = CreateIterator();
 		if (i->GotoFirst())
 		{
 			do
@@ -977,7 +1004,7 @@ auto_ptr <PropertyIterator> i(CreateIterator());
 				if ((*p->GetName()=="Values") && (p->GetValue()->IsA(CPropertyList)))
 				{
 				PropertyList *pl = (PropertyList *)p->GetValue();
-				auto_ptr<PropertyIterator> i(pl->CreateIterator());
+				PropertyIterator *i = pl->CreateIterator();
 					if (i->GotoFirst())
 					{
 						do
@@ -1000,6 +1027,7 @@ auto_ptr <PropertyIterator> i(CreateIterator());
 								}
 						} while(i->GotoNext());
 					}
+                    pl->DeleteIterator(i);
 				}
 				else
 					Target->SetProperty(p);
@@ -1024,6 +1052,7 @@ PropertyParser::PropertyParser(const char *Property) : String(Property)
 {
 	constructParser();
 }
+
 
 // format can be string[0-9|text][0-9|text]...
 
@@ -1083,7 +1112,7 @@ bool PropertyParser::operator ==(const char *s) const
 	if (IsMultiField())
 	{
 	bool Result = false;
-	auto_ptr <Iterator> i(Fields.CreateIterator());
+	Iterator *i = Fields.CreateIterator();
 		if (i->GotoFirst())
 		{
 			do
@@ -1102,6 +1131,7 @@ bool PropertyParser::operator ==(const char *s) const
 				}
 			} while(i->GotoNext());
 		}
+		Fields.DeleteIterator(i);
 		return Result;
 	}
 	else
@@ -1116,7 +1146,7 @@ int PropertyParser::GetIndex() const
 	if (IsMultiField())
 	{
 	int Index = 0;
-	auto_ptr <Iterator> i(Fields.CreateIterator());
+	Iterator *i = Fields.CreateIterator();
 		if (i->GotoFirst())
 		{
 			if (i->IsObject())
@@ -1128,6 +1158,7 @@ int PropertyParser::GetIndex() const
 				}
 			}
 		}
+		Fields.DeleteIterator(i);
 		return Index;	// local var
 	}
 	return Index;	// class's var

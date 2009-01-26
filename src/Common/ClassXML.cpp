@@ -112,7 +112,7 @@ void XMLNode::SaveTo(Object &ToObject) const
 			const char *c = pi->GetName()->AsPChar();
 
 //        if (ToObject.HasProperty(p->GetName()))
-			if (ToObject.CanHaveProperty(c))
+			if (ToObject.CanHaveProperty(PropertyParser(c)))
 			{
 				String Result;
 				pi->GetValue(Result);
@@ -134,7 +134,7 @@ void XMLNode::SaveTo(Object &ToObject) const
 			{
 			Property *p = (Property *)o;
 			const char *s = *p->GetName();
-				if (ToObject.HasProperty(s))
+				if (ToObject.HasProperty(PropertyParser(s)))
 				{
 					ToObject.SetProperty(p);
 					delete o;
@@ -246,7 +246,7 @@ void XMLNode::SaveTo(Object &ToObject) const
 					{
 					Property *p =(Property *)o;
 					const char *c= *p->GetName();
-						if (ToObject.CanHaveProperty(c))
+						if (ToObject.CanHaveProperty(PropertyParser(c)))
 						{
 							ToObject.SetPropertyAsObject(p);
 						}
@@ -558,10 +558,11 @@ PropertyList::PropertyIterator *i = pn->CreateIterator();
 					v = "";
 				if ((strcmp(v,"*")==0) && Result=="[]") // if result is different then returned then special case
 				{
+				PropertyParser pp(c);
 					// a distinction needs to be made here. Is property the container, or FromObject the container?
-					if (FromObject.GetIsPropertyContainer(c))
+					if (FromObject.GetIsPropertyContainer(pp))
 					{ // property is the container
-						Object *o = FromObject.GetCopyOfPropertyAsObject(c);
+						Object *o = FromObject.GetCopyOfPropertyAsObject(pp);
 						//                    n->AddAttribute("Property",c);
 						if (o->IsA(CXMLNode))
 							SubNodes.AddOwned(o);
@@ -677,7 +678,7 @@ Object *XMLNode::CreateObjectFromNode(Object *Parent)
     else
         f = Create(PropertyName,Parent);  // let virtual function handle derived classes
     if (f==0)
-        f = Parent->Create(c,Parent);
+        f = Parent->Create(PropertyParser(c),Parent);
     if (f==0)
         throw Exception("Class %s failed construction", c);
     SaveTo(*f);

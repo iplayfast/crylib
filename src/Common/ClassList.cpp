@@ -651,6 +651,23 @@ void List::RemoveNodeValue(const MemStream &Needle)   // find a node who's item 
 	return;
 }
 */
+
+size_t List::Count() const
+{
+	size_t i = 0;
+	if (Head)
+	{
+	const ListNode *f = Head;
+		while(f)
+		{
+			i++;
+			f = f->Next;
+		}
+	}
+	return i;
+}
+
+
 /// return the index into the list of a value
 int List::FindNodeValue(const MemStream &Needle) const   // find a node who's item has the same "value" property
 {
@@ -740,7 +757,7 @@ void List::CopyTo(Object &Dest) const //copies contents of this to Dest
 	else
 		throw Exception(this,"Copying from List to object that is not Listable");
 }
-
+*/
 size_t List::Size() const
 {
 	size_t Result = sizeof(int);// for storing count
@@ -758,7 +775,7 @@ size_t List::Size() const
 	}
 	return Result;
 }
-
+/*
 int List::GetPropertyCount() const
 {
 	return Container::GetPropertyCount() + 1;
@@ -782,6 +799,12 @@ const char *List::GetProperty(const PropertyParser &PropertyName,String &Result)
 }
 
 */
+
+const char *List::GetProperty(const char *PropertyName,String &Result) const
+{
+	PropertyParser pp(PropertyName);
+	return GetProperty(pp,Result);
+}
 const char *List::GetProperty(const PropertyParser &PropertyName,String &Result) const
 {
 	Result.Clear();
@@ -801,6 +824,35 @@ Object *NewObject;
 		return new List();
 	return Container::ClassCreate(PropertyName,Parent);
 }
+
+bool List::_Remove(EmptyObject *Item)	// returns true if Item removed
+{
+ListNode *p = Head;
+//ListNode *e = Tail;
+ListNode *ln;
+ListNode *Prev = 0;
+	while(p)
+	{
+		ln = p;
+			if (ln->Item==Item)
+			{
+				DeleteItem(ln);
+				if (Prev)
+					Prev->Next = ln->Next;
+				else
+				{
+					Head = ln->Next;
+
+				}
+				ln->Next = 0;
+				delete(ln);
+				return true;
+			}
+			p = p->Next;
+	}
+	return false;
+};
+
 
 /*PropertyList *List::PropertyNames() const
 {
@@ -925,33 +977,34 @@ Object *NewObject;
 void List::Sort(int CompareType)	//  /* TODO : Testing needed */
 {
 
-	if (Head->begin()==Head->end())
+	if (Head==Tail)
 		return;
-cListNodeI p,q,e,tail,oldhead;
+
+ListNode *p,*q,*e,*tail,*oldhead;
 	int insize, nmerges, psize, qsize, i;
-list <ListNode *> *NewHead =  new list <ListNode *>;;
+ListNode *NewHead=0;
 
 	insize = 1;
 
 	while (1)
 	{
-		p = Head->begin();
+		p = Head;
 		nmerges = 0;  /* count number of merges we do in this pass */
-		while (p!=Head->end())
+		while (p->Next)
 		{
 			nmerges++;  /* there exists a merge to be done */
 			/* step `insize' places along from p */
 			q = p;
 			psize = 0;
-			for (i = 0; (i < insize) && (q != Head->end()); i++)
+			for (i = 0; (i < insize) && (q != Tail); i++)
 			{
 				psize++;
-				q++;
+				q = q->Next;
 			}
 			// if q hasn't fallen off end, we have two lists to merge
 			qsize = insize;
 			// now we have two lists; merge them
-			while ((psize > 0) || (qsize > 0 && q!=Head->end()))
+			while ((psize > 0) || (qsize > 0 && q!=Tail))
 			{
 				// decide whether next element of merge comes from p or q
 				if (psize == 0)
@@ -959,7 +1012,7 @@ list <ListNode *> *NewHead =  new list <ListNode *>;;
 					e = q; q++; qsize--;// p is empty; e must come from q.
 				}
 				else
-				if (qsize == 0 || q==Head->end())
+				if (qsize == 0 || q==Tail)
 				{
 					e = p; p++; psize--;  // q is empty; e must come from p.
 
@@ -967,10 +1020,10 @@ list <ListNode *> *NewHead =  new list <ListNode *>;;
 				else
 				{
 				int cr;
-					if ((*p)->IsObject && (*q)->IsObject)
-						cr = Compare(CompareType,(Object *)(*p)->Item,(Object *)(*q)->Item);
+					if (p->IsObject && q->IsObject)
+						cr = Compare(CompareType,(Object *)p->Item,(Object *)q->Item);
 					else
-						cr = Compare2(CompareType,(*p)->Item,(*q)->Item);
+						cr = Compare2(CompareType,p->Item,q->Item);
 					if (cr <= 0)
 					{
 						e = p; p++; psize--;// First element of p is lower (or same) e must come from p.
@@ -981,26 +1034,28 @@ list <ListNode *> *NewHead =  new list <ListNode *>;;
 					}
 				}
 				// add the next element to the merged list
-				NewHead->push_back(*e);
+				e->Next = NewHead;
+				NewHead = e;
 			}
 		// now p has stepped `insize' places along, and q has too
 		p = q;
 		} // while
 		{               // swap the sorted list and the original pointer
-		list <ListNode *> *temp = NewHead;
-			NewHead = Head;
-			Head = temp;
+			Head = NewHead;
 		}
 		// If we have done only one merge, we're finished.
 		if (nmerges <= 1)   // allow for nmerges==0, the empty list case
 		{
-			delete NewHead;
-			return;
+			break;
 		}
-		NewHead->clear();
+		NewHead = 0;
 		// Otherwise repeat, merging lists twice the size
 		insize *= 2;
 	}
+	p = Head;
+	while(p->Next!=0)
+		p = p->Next;
+	Tail = p;
 }
 
 /*
