@@ -294,6 +294,11 @@ size_t String::WriteNStr(const char *StrBuffer)
 	printf("%d %s",strlen(StrBuffer),StrBuffer);
 	return Length() - l + 1;
 }
+bool String::SetProperty(const char *pn,const char *PropertyValue)
+{
+	return SetProperty(PropertyParser(pn),PropertyValue);
+}
+
 bool String::SetProperty(const PropertyParser &PropertyName,const char *PropertyValue)
 {
 	if (PropertyName=="Value")
@@ -921,6 +926,12 @@ bool String::HasProperty(const PropertyParser &PropertyName) const
     return ::strcmp(PropertyName,"Value")==0 ||MemStream::HasProperty(PropertyName);
 }
 
+const char *String::GetPropertyC(const char *pn,String &Result) const
+{
+	PropertyParser pp(pn);
+	return GetProperty(pp,Result);
+}
+
 const char *String::GetProperty(const PropertyParser &PropertyName,String &Result) const
 {
     if ((PropertyName=="Value") || (PropertyName=="Values"))
@@ -1195,6 +1206,7 @@ bool TagString::HasProperty(const PropertyParser &PropertyName) const
 {
 	 return PropertyName=="Tag" || String::HasProperty(PropertyName);
 }
+
 
 bool TagString::SetProperty(const PropertyParser &PropertyName,const char *PropertyValue)
 {

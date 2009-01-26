@@ -84,22 +84,25 @@ TSimplePlotLineForm *SimplePlotLine = new TSimplePlotLineForm(this);
 void __fastcall TMainFrm::wxButton4Click(wxCommandEvent &Event)
 {
  auto_ptr<TSimplePlotLineForm> SimplePlotLine( new TSimplePlotLineForm(this) );
-try
-{
-//TSimplePlotLineForm *SimplePlotLine = new TSimplePlotLineForm(this);
+	 while(1)
+	 {
+		try
+		{
 			SimplePlotLine->ImportPlot();
-//			wxArrayString Emotions;
-//			Emotions.Add("Pleasure");
+			if (!SimplePlotLine->ImportWorked)
+				return;
 			SimplePlotLine->LoadEmotions(Emotions->GetStrings());
-	SimplePlotLine->ShowModal();
-//	delete SimplePlotLine;
-}
-catch(Exception &e)
-{
-const char *ch = e;
-	wxMessageDialog dialog(this,_T(ch),_T("Error"),wxOK);
-	dialog.ShowModal(); // commented out because of wxWidgets bug
-}
+		}
+		catch(Exception &e)
+		{
+		const char *ch = e;
+			wxMessageDialog dialog(this,_T(ch),_T("Error"),wxOK);
+			dialog.ShowModal(); // commented out because of wxWidgets bug
+		}
+		SimplePlotLine->ShowModal();
+		return;
+
+	}
 }
 //---------------------------------------------------------------------------
 

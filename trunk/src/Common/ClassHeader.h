@@ -34,7 +34,8 @@ class ClassHeaderFactory : public CodeFactory
 public:
 StdFunctionsNoDup(ClassHeaderFactory,CodeFactory);
     ClassHeaderFactory(CodeFactory *Parent);
-    virtual Object *Create(const PropertyParser &PropertyName,CodeFactory *Parent);
+    virtual Object *CreateC(const char *PropertyName,CodeFactory *Parent) { return Create(PropertyParser(PropertyName),Parent); }
+	virtual Object *Create(const PropertyParser &PropertyName,CodeFactory *Parent);
     virtual bool Present(const Object *Name);// can be either a function def or variable name
 	virtual Object *Create(const PropertyParser &PropertyName,Object *Parent);
     virtual Object *Create(Stream &FromStream)

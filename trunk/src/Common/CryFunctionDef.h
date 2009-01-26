@@ -27,18 +27,18 @@ StdFunctions(BuilderFunctionDef,String);
 
 // --- Inhertied properties ---
 	const char * GetValue(String &Result) const
-		{ return GetProperty("Value",Result);}
+		{ return GetProperty(PropertyParser("Value"),Result);}
 	void SetValue(const char * _Value)
-		{ SetProperty("Value", _Value);}
+		{ SetProperty(PropertyParser("Value"), _Value);}
 
 
 // --- Local properties ---
 	const char *GetReturn(String &Result) const
-		{ return GetProperty("Return",Result);}
+		{ return GetPropertyC("Return",Result);}
 	void SetReturn(String _Return)
 		{ SetProperty("Return", _Return);}
 	const char *GetParam(String &Result) const
-		{ return GetProperty("Param",Result);}
+		{ return GetPropertyC("Param",Result);}
 	void SetParam(String _Param)
 		{ SetProperty("Param", _Param);}
 

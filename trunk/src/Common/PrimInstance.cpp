@@ -36,12 +36,12 @@ using namespace std;
 PrimInstance::PrimInstance(CodeFactory *Parent) : CodeFactory(Parent,CPrimInstance)
 {
 	eType = Unknown;
-	AddProduct(CCountDefine);
-	AddProduct(CPrimInstance);
-	AddProduct(CDeclaration);
-	AddProduct(CConstructor);
-	AddProduct(CDestructor);
-	AddProduct(CCopyTo);
+	AddProductC(CCountDefine);
+	AddProductC(CPrimInstance);
+	AddProductC(CDeclaration);
+	AddProductC(CConstructor);
+	AddProductC(CDestructor);
+	AddProductC(CCopyTo);
 }
 PrimInstance::PrimInstance(CodeFactory *Parent,const char *PrimType,const char *PrimName,const char *_DefaultValue, int _Count,bool IsProperty,bool IsPointer,bool IsArrayPointer) : CodeFactory(Parent,CPrimInstance)
 {
@@ -58,16 +58,16 @@ PrimInstance::PrimInstance(CodeFactory *Parent,const char *PrimType,const char *
 	SetCount();
 	SetDefaultValue(_DefaultValue);
 	SetIsProperty(IsProperty);
-	AddProduct(CCountDefine);
-	AddProduct(CPrimInstance);
-	AddProduct(CDeclaration);
-	AddProduct(CConstructor);
-	AddProduct(CDestructor);
-	AddProduct(CCopyTo);
+	AddProductC(CCountDefine);
+	AddProductC(CPrimInstance);
+	AddProductC(CDeclaration);
+	AddProductC(CConstructor);
+	AddProductC(CDestructor);
+	AddProductC(CCopyTo);
 	if (IsProperty)
 	{
-		AddProduct(CGetProperty);
-		AddProduct(CSetProperty);
+		AddProductC(CGetProperty);
+		AddProductC(CSetProperty);
 	}
 }
 void PrimInstance::SetDefaultValue(const char *_DefaultValue)

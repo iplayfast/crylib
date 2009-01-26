@@ -109,7 +109,8 @@ bool ClassInstance::SetProperty(const PropertyParser &PropertyName,const char *P
 	}
 	if (PropertyName=="Type")
 	{
-		p = Object::Create(PropertyValue,0);
+	PropertyParser pv(PropertyValue);
+		p = Object::Create(pv,0);
 		Type = PropertyValue;
 		PrimInstance::SetType("class");
 		return true;
@@ -341,7 +342,10 @@ const char *ClassInstance::Code_AssignDefaultValue(String &Result) const
 {
 	String Default;
 	if (HasDefault)
-		GetProperty("Default",Default);
+	{
+	PropertyParser p("Default");
+		GetProperty(p,Default);
+	}
 	Result = "";
 	if (p->IsA(CString))
 		Result.printf(" = \"%s\"",Default.AsPChar());

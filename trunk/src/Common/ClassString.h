@@ -20,6 +20,8 @@
 #ifndef _ClassString_
 #define _ClassString_
 #include "ClassMemStream.h"
+
+
 //#include "ClassList.h"
 namespace Crystal
 {
@@ -32,7 +34,7 @@ using namespace std;
 #define strcasecmp stricmp
 #endif
 class List;
-
+class PropertyParser;
 /// string handling as though it were a stream
 class String : public MemStream
 {
@@ -128,8 +130,9 @@ virtual int GetPropertyCount() const;
 	void SetValue(const char *_Value);
 	virtual size_t Size() const;
 	virtual bool HasProperty(const PropertyParser &PropertyName) const;
+	virtual bool SetProperty(const char *pn,const char *PropertyValue);
 	virtual bool SetProperty(const PropertyParser &PropertyName,const char *PropertyValue);
-
+	virtual const char *GetPropertyC(const char *pn,String &Result) const;
 	virtual const char *GetProperty(const PropertyParser &PropertyName,String &Result) const;
 #ifdef VALIDATING
 

@@ -42,11 +42,11 @@ using namespace std;
 ClassHeaderFactory::ClassHeaderFactory(CodeFactory *Parent) : CodeFactory(Parent,CClassHeaderFactory)
 {
 	SetSortValue(0X0001000);
-	AddProduct(CClassHeaderFactory);
-	AddProduct(CConstructorStart);
-	AddProduct(CConstructorEnd);
-	AddProduct(CDestructorStart);
-	AddProduct(CDestructorEnd);
+	AddProductC(CClassHeaderFactory);
+	AddProductC(CConstructorStart);
+	AddProductC(CConstructorEnd);
+	AddProductC(CDestructorStart);
+	AddProductC(CDestructorEnd);
 	AddFactory(new ClassFooterFactory(this));
 }
 
@@ -81,27 +81,27 @@ Object *ClassHeaderFactory::Create(const PropertyParser &PropertyName,CodeFactor
 				SetHead(PropertyName,s);
 				Parent->AppendHead(*GetHead(PropertyName));
 				Parent->AppendHeadImp("\n\n//Array Length defines");
-				Create(CCountDefine,Parent);
+				CreateC(CCountDefine,Parent);
 				Parent->AppendHeadImp("\n\n//Local Variables Declaration");
-				Create(CDeclaration,Parent);
+				CreateC(CDeclaration,Parent);
 		Parent->AppendHead("\n\npublic:");
 				Parent->AppendHeadImp("\n\n//Constructor/Destructor Functions");
-				Create(CConstructorStart,Parent);
-				Create(CConstructor,Parent);
-				Create(CConstructorEnd,Parent);
-				Create(CDestructorStart,Parent);
-				Create(CDestructor,Parent);
-				Create(CDestructorEnd,Parent);
+				CreateC(CConstructorStart,Parent);
+				CreateC(CConstructor,Parent);
+				CreateC(CConstructorEnd,Parent);
+				CreateC(CDestructorStart,Parent);
+				CreateC(CDestructor,Parent);
+				CreateC(CDestructorEnd,Parent);
 				Parent->AppendHeadImp("\n\n//Inherited Functions");
-				Create(CInheritedFactory,Parent);
+				CreateC(CInheritedFactory,Parent);
 		s = "";
 		s.printf("\n\n//Common functions Macro\n//Creates Dup, ClassName,ChildClassName,IsAbstract and IsA() Functions\n\tStdFunctions(%s,%s);", cbParent->GetName(), cbParent->GetInheritType());
 		Parent->AppendHead(s.AsPChar());
 				Parent->AppendHeadImp("\n\n//Property Access Functions");
-				Create(CSetProperty,Parent);
-				Create(CGetProperty,Parent);
+				CreateC(CSetProperty,Parent);
+				CreateC(CGetProperty,Parent);
 				Parent->AppendHeadImp("\n\n//Class Footer");
-				Create(CClassFooterFactory,Parent);
+				CreateC(CClassFooterFactory,Parent);
 			}
 			return this;
 		}

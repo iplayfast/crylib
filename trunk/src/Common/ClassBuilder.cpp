@@ -556,8 +556,8 @@ class CryArrayNAbstract : public Array
 
 void ClassBuilder::SetDefaultBodies(FunctionDefList *AbstractFunctions) // will setup default bodies of functions
 {
-    HeaderFactory *hf = (HeaderFactory *) Create(CHeaderFactory,this);
-	ClassHeaderFactory *cf = (ClassHeaderFactory *)Create(CClassHeaderFactory,hf);
+	HeaderFactory *hf = (HeaderFactory *) Create(PropertyParser(CHeaderFactory),this);
+	ClassHeaderFactory *cf = (ClassHeaderFactory *)Create(PropertyParser(CClassHeaderFactory),hf);
 	if (hf && AbstractFunctions)
 	{
 		List::Iterator *i = AbstractFunctions->_CreateIterator();
@@ -573,8 +573,8 @@ void ClassBuilder::SetDefaultBodies(FunctionDefList *AbstractFunctions) // will 
 					if (/*s->IsPure && */(!s->IsComment) && !cf->Present(s))
 					{
 						String Declare = s->GetNPDeclaration();
-						InheritedFactory *If = (InheritedFactory *)Create(CInheritedFactory,hf);
-						If->SetProperty("Function",Declare);
+						InheritedFactory *If = (InheritedFactory *)Create(PropertyParser(CInheritedFactory),hf);
+						If->SetProperty(PropertyParser("Function"),Declare);
 					}
 				}
 				catch(Exception &e)
@@ -648,7 +648,7 @@ void ClassBuilder::SetDefaultBodies(FunctionDefList *AbstractFunctions) // will 
 ClassBuilder::ClassBuilder() : CodeFactory(0,"ClassBuilder")
 {
 	p = 0;
-	AddProduct("Source");
+	AddProductC("Source");
 }
 
 Object *ClassBuilder::ClassCreate(const PropertyParser &PropertyName,Object *Parent)
@@ -711,7 +711,7 @@ void ClassBuilder::SetBaseClass(const char *Type,bool AddStubs,bool AddVirtuals,
 				else throw Exception("unknown Template Type");
 		}
 		else
-			p1 = Object::Create(Type,0);
+			p1 = Object::Create(PropertyParser(Type),0);
         _IsAbstract = false;
     }
     catch(Exception &e)
@@ -816,18 +816,18 @@ void ClassBuilder::AddClassInstance(const char *ClassType,const char *ClassName,
 				ClassInstance *i = new ClassInstance(chf);
 				try
 				{
-				i->SetProperty("Type",ClassType);
-				i->SetProperty("Name",ClassName);
+				i->SetProperty(PropertyParser("Type"),ClassType);
+				i->SetProperty(PropertyParser("Name"),ClassName);
 				n.Clear();
 				n.printf("%d",count);
-				i->SetProperty("Count",n);
-				i->SetProperty("IsProperty",IsProperty ? "Yes" : "No");
-				i->SetProperty("IsPointer",IsPointer ? "Yes" : "No");
-				i->SetProperty("IsArrayPointer",IsArrayPointer ? "Yes" : "No");
+				i->SetProperty(PropertyParser("Count"),n);
+				i->SetProperty(PropertyParser("IsProperty"),IsProperty ? "Yes" : "No");
+				i->SetProperty(PropertyParser("IsPointer"),IsPointer ? "Yes" : "No");
+				i->SetProperty(PropertyParser("IsArrayPointer"),IsArrayPointer ? "Yes" : "No");
 				if (HasDefault)
 				{
-					i->SetProperty("HasDefault","Yes");
-					i->SetProperty("DefaultValue",DefaultValue);
+					i->SetProperty(PropertyParser("HasDefault"),"Yes");
+					i->SetProperty(PropertyParser("DefaultValue"),DefaultValue);
 				}
 				chf->AddFactory(i);
 				}
@@ -981,7 +981,7 @@ bool ClassBuilder::HasProperty(const PropertyParser &PropertyName) const
 
 void ClassBuilder::Build()
 {
-	Create("Header",this);
+	Create(PropertyParser("Header"),this);
 }
 void ClassBuilder::AssignInheritedElements()
 {
@@ -1035,12 +1035,12 @@ const char *ClassBuilder::GetInheritType()
 }
 void ClassBuilder::SaveHeaderBody(Stream &ToStreamHeader,Stream &ToStreamBody)
 {
-    Clear("Source");
+    Clear(PropertyParser("Source"));
     Build();
     ToStreamHeader.Clear();
     ToStreamBody.Clear();
-    ToStreamHeader.Write(GetHead("Source"));
-    ToStreamBody.Write(GetImp("Source"));
+	ToStreamHeader.Write(GetHeadC("Source"));
+	ToStreamBody.Write(GetImpC("Source"));
 }
 
 void ClassBuilder::SaveSource()	// will save the source under Filename.h and Filename.cpp and Filename.xml
@@ -1076,10 +1076,10 @@ String fn = Filename;
     FileStream body;
     body.Open(fn,"w",true);
 
-    Clear("Source");
+    Clear(PropertyParser("Source"));
     Build();
-    header.Write(GetHead("Source"));
-    body.Write(GetImp("Source"));
+	header.Write(GetHeadC("Source"));
+	body.Write(GetImpC("Source"));
 
     header.Close(true);
     body.Close(true);
@@ -1116,7 +1116,7 @@ void ClassBuilder::LoadSource()
 ContainerFactory::ContainerFactory(CodeFactory *Parent,Container *c) : CodeFactory(Parent,"ContainerFactory")
 {
     c->GetEleType(ElementType);
-    this->AddProduct("Container");
+    this->AddProductC("Container");
 }
 
 
@@ -1128,7 +1128,7 @@ PropertyFactory::PropertyFactory(CodeFactory *Parent,const String *n,const Strin
 	SetSortValue(0X00090000);
     SetName(*n);
     Value = *v;
-    AddProduct("Property");
+    AddProductC("Property");
 }
 bool PropertyFactory::IsA(const char *ClassName) const    // can the object map to a ClassName
 {
@@ -1150,7 +1150,7 @@ const String *PropertyFactory::GetPropertyValue()
 HeaderFactory::HeaderFactory(CodeFactory *Parent,FunctionDefList *AbstractFunctions) : CodeFactory(Parent,"HeaderFactory")
 {
 	SetSortValue(0);
-    AddProduct("Header");
+    AddProductC("Header");
     AddFactory(new IncludesFactory(this));
     AddFactory(new ClassHeaderFactory(this));
     AddFactory(new FooterFactory(this));
@@ -1192,18 +1192,18 @@ Object *HeaderFactory::Create(const PropertyParser &PropertyName,CodeFactory *Pa
         s.printf("// Crystal Software (Canada) Inc.\n");
         s.printf("//****************************************************\n");
         SetHeadImp(PropertyName,s);
-        Parent->AppendHead(*GetHead(PropertyName));
-        Parent->AppendImp(*GetImp(PropertyName));
+		Parent->AppendHead(*GetHeadC(PropertyName));
+        Parent->AppendImp(*GetImpC(PropertyName));
         Parent->AppendHeadImp("\n//Includes\n");
 
-        Create("Includes",Parent);
+        Create(PropertyParser("Includes"),Parent);
         Parent->AppendHeadImp("\n//Class Header\n");
 
-		Create(CClassHeaderFactory,Parent);
+		Create(PropertyParser(CClassHeaderFactory),Parent);
 
         Parent->AppendHeadImp("\n//Footer\n");
 
-        Create("Footer",Parent);
+        Create(PropertyParser("Footer"),Parent);
         return this;
     }
     return CodeFactory::Create(PropertyName,Parent);
@@ -1217,7 +1217,7 @@ Object *HeaderFactory::Create(const PropertyParser &PropertyName,CodeFactory *Pa
 FooterFactory::FooterFactory(CodeFactory *Parent) : CodeFactory(Parent,"FooterFactory")
 {
 	SetSortValue(MAXINT-100);
-	AddProduct(CFooter);
+	AddProductC(CFooter);
 }
 
 Object *FooterFactory::Create(const PropertyParser &PropertyName,CodeFactory *Parent)
@@ -1233,8 +1233,8 @@ Object *FooterFactory::Create(const PropertyParser &PropertyName,CodeFactory *Pa
             s.Clear();
             s.printf("\n// %s\n",Name);
             SetImp(PropertyName,s.AsPChar());
-            Parent->AppendHead(*GetHead(PropertyName));
-            Parent->AppendImp(*GetImp(PropertyName));
+			Parent->AppendHead(*GetHeadC(PropertyName));
+            Parent->AppendImp(*GetImpC(PropertyName));
         }
         return this;
     }
@@ -1246,7 +1246,7 @@ Object *FooterFactory::Create(const PropertyParser &PropertyName,CodeFactory *Pa
 IncludesFactory::IncludesFactory(CodeFactory *Parent) : CodeFactory(Parent,"IncludesFactory")
 {
 	SetSortValue(0X0001000);
-    AddProduct("Includes");
+    AddProductC("Includes");
 }
 
 void IncludesFactory::AddInclude(const Object *p,const char *Type,String &CurrentIncludes,const char *File)
@@ -1327,7 +1327,7 @@ Object *IncludesFactory::Create(const PropertyParser &PropertyName,CodeFactory *
 		s.printf("//standard files\n#include\t<string.h>\n#include\t<stdlib.h>\n");
 		s.printf("//Crystal files\n");
 
-	Create(p,"Includes",s);
+	Create(p,PropertyParser("Includes"),s);
 
 		Parent->AppendHeadImp("\n//Class Instance Includes");
 
@@ -1340,7 +1340,7 @@ Object *IncludesFactory::Create(const PropertyParser &PropertyName,CodeFactory *
 				if (f->IsA(CClassInstance))
 				{
 					ClassInstance *c = (ClassInstance *)f;
-					Create(c->Getp(),"Includes",s);
+					Create(c->Getp(),PropertyParser("Includes"),s);
 				}
 			}
 			while(a.GotoNext());
@@ -1359,8 +1359,8 @@ Object *IncludesFactory::Create(const PropertyParser &PropertyName,CodeFactory *
 		}
 		s.printf("#include \"%s.h\"\n#include \"ClassProperty.h\"\n#include \"ClassXML.h\"\t//Needed for SetDefaultValues\n\nusing namespace Crystal;\n",FileName.AsPChar());
 		SetImp(PropertyName,s);
-		Parent->AppendHead(*GetHead(PropertyName));
-		Parent->AppendImp(*GetImp(PropertyName));
+		Parent->AppendHead(*GetHeadC(PropertyName));
+		Parent->AppendImp(*GetImpC(PropertyName));
 		return this;
 	}
 	return CodeFactory::Create(PropertyName,Parent);
@@ -1373,7 +1373,7 @@ InheritedFactory::InheritedFactory(CodeFactory *Parent,FunctionDef &_Func) : Cod
 {
     Func = new FunctionDef(_Func);
     SetSortValue(0X00120000);
-    AddProduct(CInheritedFactory);
+    AddProductC(CInheritedFactory);
 }
 	/// will return a property represented as an object, useful for classes which contain properties that are dynamically allocated, as a property that is dynamic is a Object and therefore callable
 Object *InheritedFactory::GetCopyOfPropertyAsObject(const PropertyParser &PropertyName) const
@@ -1466,7 +1466,7 @@ Object *InheritedFactory::Create(const PropertyParser &PropertyName,CodeFactory 
 		return this;
 	}
 
-	if (CanBuildProduct(CCopyToEnd) && (PropertyName==CCopyToEnd))
+	if (CanBuildProduct(PropertyParser(CCopyToEnd)) && (PropertyName==CCopyToEnd))
 	{
 		if (!Parent->IsA(CClassBuilder))
 			throw Exception("Bad Parent at end of copyto function");
@@ -1786,9 +1786,9 @@ else
 		fd.GetNPDeclaration(Tester);
 		if (Header == Tester)
 		{
-			if (!CanBuildProduct(CCopyToEnd))
+			if (!CanBuildProduct(PropertyParser(CCopyToEnd)))
 			{
-				AddProduct(CCopyToEnd);
+				AddProductC(CCopyToEnd);
 			}
 
 			Clear(PropertyName);
@@ -1830,8 +1830,8 @@ else
 			SetImp(PropertyName,Implementation);
 			Parent->AppendHead(*GetHead(PropertyName));
 			Parent->AppendImp(*GetImp(PropertyName));
-			GetParent()->Create(CCopyTo,Parent);
-			GetParent()->Create(CCopyToEnd,Parent);
+			GetParent()->Create(PropertyParser(CCopyTo),Parent);
+			GetParent()->Create(PropertyParser(CCopyToEnd),Parent);
 			return 0;
 		}
 		SetHead(PropertyName,Func->GetNPDeclaration());

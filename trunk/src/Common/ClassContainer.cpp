@@ -138,12 +138,16 @@ bool Container::Test(bool Verbose,Object &Object, bool (CallBack)(bool Verbose,c
 }
 #endif
 
+bool Container::SetProperty(const char *PropertyName,const char *PropertyValue)
+{
+	return SetProperty(PropertyParser(PropertyName),PropertyValue);
+}
 bool Container::SetProperty(const PropertyParser &PropertyName,const char *PropertyValue)
 {
-    bool result = false;
-    if (PropertyName=="Values")
-    {
-        String Temp;
+	bool result = false;
+	if (PropertyName=="Values")
+	{
+		String Temp;
 		Temp = PropertyValue;
 		int Index = PropertyName.GetIndex();
 		if (Index>-1)
@@ -191,7 +195,7 @@ const char *Container::GetProperty(const PropertyParser &PropertyName,String &Re
 	}
 
 	if (PropertyName=="*Values")	// this is handled on an individual basis instead of passing the array flag back because strings are also containers, and as such would be huge lists of single letters.
-    {
+	{
 		Result.Clear();
 		String Temp;
 		Iterator *i = _CreateIterator();
@@ -206,13 +210,13 @@ const char *Container::GetProperty(const PropertyParser &PropertyName,String &Re
 			while(GotoNext(i));
 		}
 		DeleteIterator(i);
-        return Result.AsPChar();
+		return Result.AsPChar();
 	}
-    return Object::GetProperty(PropertyName,Result);
+	return Object::GetProperty(PropertyName,Result);
 }
 bool Container::HasProperty(const PropertyParser &PropertyName) const
 {
-    if (PropertyName=="Values")
+	if (PropertyName=="Values")
 		return true;
 	if (PropertyName=="*Values")
 		return true;

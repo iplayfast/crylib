@@ -418,7 +418,8 @@ const Object *v = p->GetValue();
 	if (v->IsA(CString))
 	{
 	String *s = (String *)v;
-		return SetProperty(n,*s);
+	PropertyParser a(n);
+		return SetProperty(a,*s);
 	}
 	if (v->IsA(CPropertyList))
 	{
@@ -428,10 +429,13 @@ const Object *v = p->GetValue();
 	throw Exception("Can't add property of type %s",v->ClassName());
 }
 
-bool Object::SetProperty(const
+bool Object::SetProperty(const char *pn,const char *PropertyValue)
+{
+	return SetProperty(PropertyParser(pn),PropertyValue);
+}
 
-							PropertyParser &PropertyName,const
-							char *PropertyValue)
+
+bool Object::SetProperty(const PropertyParser &PropertyName,const char *PropertyValue)
 {
 #ifdef DEBUG
 
@@ -657,38 +661,36 @@ Object *Object::_GetPropertyAsObject(const
         throw Exception(this,ExceptionUnknownProperty,"Unknown Property \"%s\"",PropertyName.AsPChar());
 }
 
-const
-char *Object::GetProperty(const
-                             char *PropertyName,String &Result) const
+
+const char *Object::GetProperty(const char *PropertyName,String &Result) const
 {
-    PropertyParser pp(PropertyName);
-    return GetProperty(pp,Result);
+	PropertyParser pp(PropertyName);
+	return GetProperty(pp,Result);
 
 }
 
-const
-char *Object::GetProperty(const
-                             PropertyParser &PropertyName,String &Result) const
+const char *Object::GetProperty(const PropertyParser &PropertyName,String &Result) const
 {
 #ifdef DEBUG
 
-    if (PropertyName=="ObjectID")
-    {
-        Result.printf("%d",ObjectID);
+	if (PropertyName=="ObjectID")
+	{
+		Result.printf("%d",ObjectID);
 
-        return (const
-                char *)Result;
-    }
+		return (const
+				char *)Result;
+	}
 
 #endif
-    throw Exception(this,ExceptionUnknownProperty,"Unknown Property \"%s\"",PropertyName.AsPChar());
+	throw Exception(this,ExceptionUnknownProperty,"Unknown Property \"%s\"",PropertyName.AsPChar());
 }
 
 bool Object::SetPropertyAsObject(const Property *Value)
 
 {
-    String Result;
-    return SetProperty(Value->GetName()->AsPChar(),Value->GetValue(Result));
+	String Result;
+	PropertyParser a(Value->GetName()->AsPChar());
+	return SetProperty(a,Value->GetValue(Result));
 }
 
 /*Object *Object::Dup() const
@@ -1051,7 +1053,8 @@ Property *Object::GetPropertyAsCryProperty(const
 			// usually s and *c will be the same, but in this case it indicates an array
 			s.Clear();
 			s.printf("*%s",PropertyName.AsPChar());   // this get's overridden, but is used to show the property name
-			GetProperty(s.AsPChar(),Result);
+			PropertyParser a(s.AsPChar());
+			GetProperty(a,Result);
 		}
 
 		o->SetValue(Result.AsPChar());

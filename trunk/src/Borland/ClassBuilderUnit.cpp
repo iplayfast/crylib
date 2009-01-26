@@ -39,13 +39,18 @@ void __fastcall TClassBuilderFrm::SetBaseClassBTClick(TObject *Sender)
 {
 	try
 	{
-		Crystal::String a(ClassTypeCB->Items->Strings[ClassTypeCB->ItemIndex].c_str());
+
+		AnsiString as = ClassTypeCB->Items->Strings[ClassTypeCB->ItemIndex];
+		Crystal::String a(as.c_str());
+
 		delete ANewClass;
 		ANewClass = new ClassBuilder();
-		ANewClass->SetProperty("TemplateType",TemplateType->Text.c_str());
-		ANewClass->SetBaseClass(a,IncludeStubs->Checked,true,NameED->Edit1->Text.c_str());
+		as = TemplateType->Text;
+		const PropertyParser pp("TemplateType");
+		ANewClass->SetProperty(pp,as.c_str());
+		as = NameED->Edit1->Text;
+		ANewClass->SetBaseClass(a,IncludeStubs->Checked,true,as.c_str());
 		//        ANewClass->SetName(NameField->getText().text());
-
 		AddVariables->Enabled = true;
 		RemoveVariable->Enabled = true;
 		ClassBuilderFrm->Caption = "ClassBuilder" + NameED->Edit1->Text;
@@ -305,20 +310,24 @@ void __fastcall TClassBuilderFrm::AddVariableClick(TObject *Sender)
 {
 char Type[200];
 char Name[200];
-
-	strncpy(Name,VariableName->Edit1->Text.c_str(),199);
+AnsiString as = VariableName->Edit1->Text;
+	strncpy(Name,as.c_str(),199);
 
 bool AddingClass = (RadioGroup1->ItemIndex==0);
 	if (AddingClass)
-		strncpy(Type,ClassType2CB->Items->Strings[ClassType2CB->ItemIndex].c_str(),199);
+		as = ClassType2CB->Items->Strings[ClassType2CB->ItemIndex];
 	else
-		strncpy(Type,VariableTypeCB->Items->Strings[VariableTypeCB->ItemIndex].c_str(),199);
+		as = VariableTypeCB->Items->Strings[VariableTypeCB->ItemIndex];
+	strncpy(Type,as.c_str(),199);
 
 
 	try
 	{
 
-		if (AddingClass) 
+		if (AddingClass)
+		{
+			as = DefaultValue->Edit1->Text;
+
 			ANewClass->AddClassInstance(
 				Type,
 				Name,
@@ -327,7 +336,8 @@ bool AddingClass = (RadioGroup1->ItemIndex==0);
 				TypePointer->Checked,
 				PointerToArray->Checked,
 				DefaultValue->CheckBox1->Checked,
-				DefaultValue->CheckBox1->Checked ? DefaultValue->Edit1->Text.c_str() : "");
+				DefaultValue->CheckBox1->Checked ? as.c_str() : "");
+		}
 		else
 			ANewClass->AddPrimInstance(Type,Name,
 				Name,ArrayCount->Position,
@@ -361,10 +371,16 @@ void __fastcall TClassBuilderFrm::UpdateStatus(TObject *Sender)
 	}
 
 	Crystal::String Comment = "// ";
-	Crystal::String Type = VariableTypeCB->Items->Strings[VariableTypeCB->ItemIndex].c_str();
-	Crystal::String Name = VariableName->Edit1->Text.c_str();
+	AnsiString as;
+	as = VariableTypeCB->Items->Strings[VariableTypeCB->ItemIndex];
+	Crystal::String Type = as.c_str();
+	as = VariableName->Edit1->Text;
+	Crystal::String Name = as.c_str();
 	if (RadioGroup1->ItemIndex==0)
-		Type = 	ClassType2CB->Items->Strings[ClassType2CB->ItemIndex].c_str();
+	{
+		as = ClassType2CB->Items->Strings[ClassType2CB->ItemIndex];
+		Type = 	as.c_str();
+	}
 	Crystal::String Array = "";
 	if (ArrayCount->Position>1)
 		Array.printf("[%s_LEN]",(const char *) Name);
@@ -423,7 +439,8 @@ void __fastcall TClassBuilderFrm::MenuItem_OpenClick(TObject *Sender)
 		if(OpenDialog1->Execute())
 		{
 			Crystal::String file;
-			file = OpenDialog1->FileName.c_str();
+			AnsiString as = OpenDialog1->FileName;
+			file = as.c_str();
 			Crystal::String cfile(file);
 			cfile.Replace(".xml","");
 			delete ANewClass;
@@ -477,9 +494,11 @@ void __fastcall TClassBuilderFrm::MenuItem_SaveAsClick(TObject *Sender)
 		if(!SaveDialog1->Execute())
 			return;
 		//setCurrentPattern(savedialog.getCurrentPattern());
-		Crystal::String file; file = SaveDialog1->FileName.c_str();
+		Crystal::String file;
+		AnsiString as = SaveDialog1->FileName;
+		file = as.c_str();
 		if (access(file,0)==0) {
-			if (Application->MessageBox("Overwrite Document?","File Exists",MB_YESNO)==IDNO)
+			if (Application->MessageBox(L"Overwrite Document?",L"File Exists",MB_YESNO)==IDNO)
 				return;
 		}
 		if (file[-3]=='.')
