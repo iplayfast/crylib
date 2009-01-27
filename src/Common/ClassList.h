@@ -446,12 +446,15 @@ public:
 		return Container::Test(Verbose,Object,CallBack);
 	}
 #endif
+int gint;
 	virtual void Clear()
 	{
+		gint = 0;
 		ListNode *I,*p = Head;
 		I = p;
 		while(p)
 		{
+		gint++;
 			if (p->IsOwned)
 			{
 				if (p->IsObject)
@@ -462,6 +465,7 @@ public:
 				else
 					delete p->Item;
 			}
+			I = p;
 			p = p->Next;
 			I->Next = 0;
 			delete I;

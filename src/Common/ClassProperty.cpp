@@ -528,7 +528,7 @@ void PropertyList::Get(Object *Source)
 	delete Properties;
 }
 	/// make sure you delete result after using
-PropertyList::PropertyIterator * PropertyList::GetPropertyPointerIterator(ListIterator *li) const
+PropertyList::PropertyIterator * PropertyList::GetPropertyPointerIterator(ListIterator *li,bool ExceptOnNotFound) const
 {
 PropertyIterator *pi = CreateIterator();
 	if (pi->GotoFirst())
@@ -543,9 +543,11 @@ PropertyIterator *pi = CreateIterator();
 					if (p->GetValue()->IsA(CPropertyList))	// Item is a property list
 					{
 						PropertyList *pl = (PropertyList *)p->GetValue();
-						return pl->GetPropertyPointerIterator(li);	// is if it has it
+						return pl->GetPropertyPointerIterator(li,false);	// is if it has it
 					}
 					// name matched but complete list didn't
+					if (!ExceptOnNotFound)
+						return 0;
 					const char *s =*((String *)li->Get());
 					throw Exception(ErrorPropertyNotFound,"property ...][%s] not found",s);
 				}
@@ -553,15 +555,20 @@ PropertyIterator *pi = CreateIterator();
 				return pi;
 			}
 		} while(pi->GotoNext());
+		if (!ExceptOnNotFound)
+			return 0;
+
 		const char *s =*((String *)li->Get());
 		throw Exception(ErrorPropertyNotFound,"property [%s] not found",s);
 	}
+	if (!ExceptOnNotFound)
+		return 0;
 	const char *s =*((String *)li->Get());
 	throw Exception(ErrorPropertyNotFound,"property [%s] not found",s);
 }
 
 /// make sure you delete result after using
-PropertyList::PropertyIterator * PropertyList::GetPropertyPointerIterator(const PropertyParser &PropertyName) const
+PropertyList::PropertyIterator * PropertyList::GetPropertyPointerIterator(const PropertyParser &PropertyName,bool ExceptOnNotFound) const
 {
 	if (PropertyName.IsMultiField())
 	{
@@ -569,7 +576,7 @@ PropertyList::PropertyIterator * PropertyList::GetPropertyPointerIterator(const 
 		try
 		{
 			li->GotoFirst();
-			PropertyList::PropertyIterator * pl = GetPropertyPointerIterator(li);
+			PropertyList::PropertyIterator * pl = GetPropertyPointerIterator(li,ExceptOnNotFound);
 			PropertyName.DeleteIterator(li);
 			return pl;
 		}
@@ -591,22 +598,27 @@ PropertyList::PropertyIterator * PropertyList::GetPropertyPointerIterator(const 
 		} while(pi->GotoNext());
 	}
 	DeleteIterator(pi);
+	if (!ExceptOnNotFound)
+    	return 0;
 	const char *s =PropertyName;
 		throw Exception(ErrorPropertyNotFound,"property %s not found",s);
 }
 
 
-Property *PropertyList::GetPropertyPointer(ListIterator *li) const
+Property *PropertyList::GetPropertyPointer(ListIterator *li,bool ExceptOnNotFound) const
 {
-PropertyList::PropertyIterator * pi=GetPropertyPointerIterator(li);
+PropertyList::PropertyIterator * pi=GetPropertyPointerIterator(li,ExceptOnNotFound);
+	if (!pi)
+    	return 0;
 Property *p = pi->_Get();
 	DeleteIterator(pi);
 	return p;
 }
 
-Property *PropertyList::GetPropertyPointer(const PropertyParser &PropertyName) const
+Property *PropertyList::GetPropertyPointer(const PropertyParser &PropertyName,bool ExceptOnNotFound) const
 {
-PropertyList::PropertyIterator * pi = GetPropertyPointerIterator(PropertyName);
+PropertyList::PropertyIterator * pi = GetPropertyPointerIterator(PropertyName,ExceptOnNotFound);
+	if (!pi) return 0;
 Property *p = pi->_Get();
 	DeleteIterator(pi);
 	return p;
@@ -679,7 +691,7 @@ Property *PropertyList::_HasProperty(const PropertyParser &PropertyName) const//
 {
 	try
 	{
-	Property *p = GetPropertyPointer(PropertyName);
+	Property *p = GetPropertyPointer(PropertyName,false);
 		return p;
 	}
 	catch(Exception &e)
@@ -693,13 +705,13 @@ Property *PropertyList::_HasProperty(const PropertyParser &PropertyName) const//
 void PropertyList::RenameProperty(const char *OldName,const char *NewName)
 {
 	PropertyParser pp(OldName);
-	Property *p = GetPropertyPointer(pp);
+	Property *p = GetPropertyPointer(pp,true);
 	p->SetName(NewName);
 }
 void PropertyList::RemoveProperty(const char *Name)
 {
 PropertyParser pp(Name);
-PropertyList::PropertyIterator *pi=GetPropertyPointerIterator(pp);
+PropertyList::PropertyIterator *pi=GetPropertyPointerIterator(pp,true);
 	RemoveAtIterator(pi);
     	DeleteIterator(pi);
 }
@@ -731,13 +743,9 @@ Object *PropertyList::GetCopyOfPropertyAsObject(const PropertyParser &PropertyNa
 
 Object *PropertyList::_GetPropertyAsObject(const PropertyParser &PropertyName) const
 {                                       /* TODO : CryList::ListNode and helper functions should be hidden and anything that currently uses them should use common functions */
-Property *p = GetPropertyPointer(PropertyName);
-	if (p)
-	{
+Property *p = GetPropertyPointer(PropertyName,true);
 	Object *Item = p->_GetValue();
 		return Item;
-	}
-	throw(Exception(ErrorPropertyNotFound,"Property %s not present in PropertyList",PropertyName.AsPChar()));
 }
 
 /// add a new property to the list, by giving the name and object that it came from. (Object is asked for Property value)
@@ -919,7 +927,7 @@ bool PropertyList::SetProperty(const PropertyParser &PropertyName,const char *Pr
 Property *p;
 	try
 	{
-		p = GetPropertyPointer(PropertyName);
+		p = GetPropertyPointer(PropertyName,true);
 		p->SetValue(PropertyValue);
 		return true;
 	}
