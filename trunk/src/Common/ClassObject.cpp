@@ -716,7 +716,7 @@ const
 char* Object::ClassName() const
 {
 #ifdef DEBUG
-	strncpy((char *)this->ObjectType,ChildClassName(),29);
+	strncpy((char *)this->ObjectType,CObject,29);
 #endif
 	return CObject;
 }
@@ -725,7 +725,7 @@ const
 char* Object::ChildClassName() const
 {
 #ifdef DEBUG
-	strncpy((char *)this->ObjectType,ChildClassName(),29);
+	strncpy((char *)this->ObjectType,CObject,29);
 #endif
 	return CObject;
 }

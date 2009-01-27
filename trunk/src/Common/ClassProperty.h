@@ -144,11 +144,11 @@ public:
 
 private:
 	PropertyList(PropertyList &nope); // avoid copying
-	virtual PropertyIterator* GetPropertyPointerIterator(ListIterator *li) const;	/// make sure you delete result after using
-	virtual PropertyIterator* GetPropertyPointerIterator(const PropertyParser &PropertyName) const;/// make sure you delete result after using
+	virtual PropertyIterator* GetPropertyPointerIterator(ListIterator *li,bool ExceptOnNotFound) const;	/// make sure you delete result after using
+	virtual PropertyIterator* GetPropertyPointerIterator(const PropertyParser &PropertyName,bool ExceptOnNotFound) const;/// make sure you delete result after using
 
-	virtual Property *GetPropertyPointer(ListIterator *li) const;
-	virtual Property *GetPropertyPointer(const PropertyParser &PropertyName) const;
+	virtual Property *GetPropertyPointer(ListIterator *li,bool ExceptOnNotFound) const;
+	virtual Property *GetPropertyPointer(const PropertyParser &PropertyName,bool ExceptOnNotFound) const;
 	virtual void AddPropertyOwned(ListIterator *li,Object *Value);
 	virtual Property *_HasProperty(const PropertyParser &PropertyName) const;// return Property * or 0
 
