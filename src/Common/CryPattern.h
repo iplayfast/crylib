@@ -34,6 +34,8 @@
 #include "ClassException.h"
 #include "Singleton.h"
 
+
+
 namespace Crystal
 {
 /*! The strategy pattern defines a family of algorithms, encapsulates each one,
@@ -749,9 +751,6 @@ public:
 	};
 
 	class ThickCrustFactory: public Factory {
-		Object *Create(Stream &FromStream);// Not implemented only present to remove warnings
-		Object *Create(const char *FactoryName,const PropertyParser &PropertyName,Object *Parent=0);// Not implemented only present to remove warnings
-
 	public:
 		virtual Object *Create(const PropertyParser &PropertyName,Object *Parent=0)
 		{
@@ -760,8 +759,6 @@ public:
 	};
 
 	class ThinCrustFactory: public Factory {
-		Object *Create(Stream &FromStream);// Not implemented only present to remove warnings
-		Object *Create(const char *FactoryName,const PropertyParser &PropertyName,Object *Parent=0);// Not implemented only present to remove warnings
 	public:
 		virtual Object *Create(const PropertyParser &PropertyName,Object *Parent=0)
 		{
@@ -783,8 +780,6 @@ public:
 	;
 
 	class PizzaIngredientFactory : public Factory {
-		virtual Object *Create(const char *FactoryName,const PropertyParser &PropertyName,Object *Parent=0);// Not implemented only present to remove warnings
-		virtual Object *Create(Stream &s);// Not implemented only present to remove warnings
 	public:
 		virtual Object *Create(const PropertyParser &PropertyName,Object *Parent)=0;
 	};
@@ -792,9 +787,6 @@ public:
 #define NEWYORK "New York Style\n"
 #define CHICAGO "Chicago Style\n"
 	class NYIngredientFactory : public PizzaIngredientFactory {
-		Object *Create(Stream &FromStream);// Not implemented only present to remove warnings
-		Object *Create(const char *FactoryName,const PropertyParser &PropertyName,Object *Parent=0);// Not implemented only present to remove warnings
-		virtual const char *Describe(const char *FactoryName) const;// Not implemented only present to remove warnings
 	public:
 		virtual Object *Create(const PropertyParser &PropertyName,Object *Parent)
 		{
@@ -824,9 +816,6 @@ public:
 
 
 	class ChicagoIngredientFactory : public PizzaIngredientFactory {
-		Object *Create(Stream &FromStream);// Not implemented only present to remove warnings
-		Object *Create(const char *FactoryName,const PropertyParser &PropertyName,Object *Parent=0);// Not implemented only present to remove warnings
-		virtual const char *Describe(const char *FactoryName) const;// Not implemented only present to remove warnings
 	public:
 		virtual Object *Create(const PropertyParser &PropertyName,Object *Parent)
 		{
@@ -873,10 +862,16 @@ public:
 		{
 
 			Pizzaria f;
-			Ingredients *thing1= (Ingredients *)    f.Create(City,I1);
-			Ingredients *thing2= (Ingredients *)    f.Create(City,I2);
-			Ingredients *thing3= (Ingredients *)    f.Create(City,I3);
-			Ingredients *thing4= (Ingredients *)    f.Create(City,I4);
+
+			PropertyParser pp(City);
+			PropertyParser ppI1(I1);
+			Ingredients *thing1= (Ingredients *)    f.Create(pp,ppI1);
+			PropertyParser ppI2(I2);
+			Ingredients *thing2= (Ingredients *)    f.Create(City,ppI2);
+			PropertyParser ppI3(I3);
+			Ingredients *thing3= (Ingredients *)    f.Create(City,ppI3);
+			PropertyParser ppI4(I4);
+			Ingredients *thing4= (Ingredients *)    f.Create(City,ppI4);
 			printf("Making a %s",City);
 			printf(" pizza with:\n");
 			int cost = 0;
@@ -1104,23 +1099,23 @@ for object passing.
 #ifdef VALIDATING
 
 	class TestCommand {
-        CommandHolderSender ch;
-    public:
-        static int TestValue;
+		CommandHolderSender ch;
+	public:
+		static int TestValue;
 
-        class CryInt : public Object {
-            int i;
-        public:
-            CryInt()
-            {
-                i = 0;
-            }
-            void Show()
-            {
-                printf("%d\n");
-            }
-            void Set(int j)
-            {
+		class CryInt : public Object {
+			int i;
+		public:
+			CryInt()
+			{
+				i = 0;
+			}
+			void Show()
+			{
+				printf("%d\n");
+			}
+			void Set(int j)
+			{
 				i = j;
 			}
 			int Get()
@@ -1130,7 +1125,6 @@ for object passing.
 		};
 
 		class Add : public Strategy {
-				virtual int DoStrategy() const; // Not Implemented, just present to remove warnings
 		public:
 			virtual int DoStrategy(Object *Sender) const
 			{
@@ -1141,7 +1135,6 @@ for object passing.
 		};
 
 		class Sub : public Strategy {
-				virtual int DoStrategy() const;// Not Implemented, just present to remove warnings
 		public:
 			virtual int DoStrategy(Object *Sender) const
 			{
@@ -1151,7 +1144,6 @@ for object passing.
 			}
 		};
 		class Mult : public Strategy {
-				virtual int DoStrategy() const;// Not Implemented, just present to remove warnings
 		public:
 			virtual int DoStrategy(Object *Sender) const
 			{
@@ -1161,7 +1153,6 @@ for object passing.
 			}
 		};
 		class Div : public Strategy {
-				virtual int DoStrategy() const;// Not Implemented, just present to remove warnings
 		public:
 			virtual int DoStrategy(Object *Sender) const
 			{
@@ -1354,6 +1345,7 @@ This has been implmented by allowing different strategys to represent the states
 			};
 			_GumBallState(int NumStates=0) : State(NumStates)
 			{}
+
 			virtual int InsertQuarter() const
 			{
 				printf("Don't want quarter right now\n");
@@ -1382,12 +1374,6 @@ This has been implmented by allowing different strategys to represent the states
 		};
 
 		class GumBallState : public _GumBallState {
-		// these functions are not implemented and are only present to remove warnings
-			virtual int InsertQuarter() const;
-			virtual int EjectQuarter() const;
-			virtual int TurnCrank() const;
-			virtual int Dispense(int *Inventory) const;
-			virtual int FillMachine() const;
 
 		public:
 			enum GumBallStates {
