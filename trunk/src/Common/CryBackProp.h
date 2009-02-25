@@ -402,6 +402,11 @@ public:
 		result->AddPropertyByName("Layers",this);
 		return result;
 	}
+void SetCallBack(	void (*CallBack)(Object *Parent,String &Status))
+{
+	if (nn)
+    	nn->CallBack = CallBack;
+}
 const char *GetProperty(const PropertyParser &PropertyName,String &Result) const
 {
 	if (PropertyName=="LockLevel")

@@ -33,20 +33,24 @@ void LoadSomePrimes()
 {
 FileStream f;
 String s;
-    f.Open("primes.txt","r");
-    f.SetTerminator('\n');
+	f.Open("primes.txt","r");
+	f.SetTerminator('\n');
 int i=0;
-    for(i=0;i<1000;i++)
-        SomePrimes[i] =(long) primeTab[i];
-    while(!f.Eof())
-    {
-        f.ReadTI(&s,(size_t)1000);
-        if (s[s.Length()-1]=='\n')
-            s.Delete(s.Length()-1,1);
-        const char *ch = s;
-        SomePrimes[i++].SetValue(ch);
-    }
-    SomePrimesCount = i;
+	for(i=0;i<1000;i++)
+		SomePrimes[i] =(long) primeTab[i];
+	while(!f.Eof())
+	{
+		f.ReadTI(&s,(size_t)1000);
+		if (s[s.Length()-1]=='\n')
+			s.Delete(s.Length()-1,1);
+		const char *ch = s;
+		SomePrimes[i++].SetValue(ch);
+	}
+	SomePrimesCount = i;
+}
+void CallBack(Object *Parent,String &Status)
+{
+	printf("%s\n",Status.AsPChar());
 }
 
 #pragma argsused
@@ -61,7 +65,7 @@ HugeInt n,d;
   printf("%s\n==========\n",d.GetAsStr());
 
   n.Mult(d);
-  printf("\n%s ",n.GetAsStr());
+  printf("\n%s ",n.GetAsStr(16));
 }
 
 	LoadSomePrimes();
@@ -72,7 +76,8 @@ BackPropagateNetwork bp;
     bp.SetAlpha(0.9);
     bp.SetEta(0.25);
     bp.SetGain(1);
-    bp.RandomWeights();
+	bp.RandomWeights();
+	bp.SetCallBack(CallBack);
     for(int i=0;i<SomePrimesCount;i++)
         for(int j=0;j<SomePrimesCount;j++)
         {

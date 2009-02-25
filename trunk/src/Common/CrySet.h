@@ -118,7 +118,8 @@ public:
 	{
 		if (PropertyName=="Size")
 		{
-			return TArray<int>::GetProperty("CurrentCount",Result);
+		PropertyParser pp("CurrentCount");
+			return TArray<int>::GetProperty(pp,Result);
 		}
 		return TArray<int>::GetProperty(PropertyName,Result);
 	}

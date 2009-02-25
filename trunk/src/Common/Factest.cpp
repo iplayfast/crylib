@@ -324,7 +324,7 @@ int i,j,k;
 //
 //
 
-int main(int argv,char *argc[])
+int main2(int argv,char *argc[])
 {
 	Setup();
 bool (*Digit)();

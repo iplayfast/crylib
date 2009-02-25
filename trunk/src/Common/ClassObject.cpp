@@ -33,7 +33,7 @@
 #include "CryBackProp.h"
 #include "BitArray.h"
 #include "HugeInt.h"
-#include "zlib.h"
+#include "zlib/zlib.h"
 #include "CryPattern.h"
 #include "ClassFunction.h"
 #include "ClassProperty.h"

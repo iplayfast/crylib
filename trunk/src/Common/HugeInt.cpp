@@ -387,23 +387,26 @@ HugeInt &HugeInt::Mult(const HugeInt &m)
         Shl1();
         return *this;
     }
-    ZeroOut();
+	ZeroOut();
 HugeInt nm = m;
-    while(m.Number[m.NumDigits-1]==0)
-    {
-      nm.Shr32();
-      t.Shl32();
-    }
-//    for(i=(m.FirstDigit)*32 ;i<NumBits;i++) // the first bit of the the multipliers first digit,
-    for(i=nm.FirstBit();i<NumBits;i++) // the first bit of the the multipliers first digit,
-    {
-      if (nm.IsOdd())   // 1 * N = N
-          Add(t);     // flags are set here as well
 
-      if (!nm.Shr1())    // is m == 0
-          return *this; // yes
-      t.Shl1();
-    }
+	while(nm.Number[nm.NumDigits-1]==0)
+	{
+	  nm.Shr32();
+	  t.Shl32();
+	}
+
+//    for(i=(m.FirstDigit)*32 ;i<NumBits;i++) // the first bit of the the multipliers first digit,
+	for(i=nm.FirstBit();i<NumBits;i++) // the first bit of the the multipliers first digit,
+	{
+	  if (nm.IsOdd())   // 1 * N = N
+		  Add(t);     // flags are set here as well
+
+	  if (!nm.Shr1())    // is m == 0
+		  return *this; // yes
+	  t.Shl1();
+
+	}
     SetFlags(); // should never get here
     return *this;
 }
@@ -421,7 +424,7 @@ bool HugeInt::Shl1()
     }
     EndDigit = &Number[NumDigits-1];
     Digit = &Number[FirstDigit];
-    if (Digit==EndDigit)
+ //   if (Digit==EndDigit)
     {
         if ((*Digit & HighDigitBit)!=0)
         {
@@ -636,28 +639,28 @@ HugeInt &HugeInt::Add(const HugeInt &n)
 #endif
 
     if (&n==this)
-    {
-        HugeInt m = n;
-        return Add(m);
-    }
+	{
+		Shl1();
+		return *this;
+	}
 
-    // Insure there is space for the result
-    {
-    unsigned int MaxDigitNeeded = n.NumDigits;
-      if (n.Number[0]!=0) MaxDigitNeeded++;
-      if (NumDigits >= MaxDigitNeeded)
-      {
-         MaxDigitNeeded = NumDigits;
-        if (Number[0]!=0) MaxDigitNeeded++;
-      }
-      if (NumDigits<MaxDigitNeeded)
-        SetNumDigits(MaxDigitNeeded);
-    }
+	// Insure there is space for the result
+	{
+	unsigned int MaxDigitNeeded = n.NumDigits;
+	  if (n.Number[0]!=0) MaxDigitNeeded++;
+	  if (NumDigits >= MaxDigitNeeded)
+	  {
+		 MaxDigitNeeded = NumDigits;
+		if (Number[0]!=0) MaxDigitNeeded++;
+	  }
+	  if (NumDigits<MaxDigitNeeded)
+		SetNumDigits(MaxDigitNeeded);
+	}
 
-    unsigned int cy=0,
-                *Stop,
-                *d1 = &Number[NumDigits-1],*d2 = &n.Number[n.NumDigits-1],temp;
-    unsigned int FirstDigitM1; // last digit to add (first from the left)
+	unsigned int cy=0,
+				*Stop,
+				*d1 = &Number[NumDigits-1],*d2 = &n.Number[n.NumDigits-1],temp;
+	unsigned int FirstDigitM1; // last digit to add (first from the left)
 
     FirstDigitM1 = FirstDigit-1;  // first digit must be at least one, (because otherwise it would have been expanded above)
     if (n.FirstDigit<FirstDigit)
@@ -926,25 +929,54 @@ const char *HugeInt::GetAsStr(unsigned int Base) const
             *s = '0';
         }
         return s;
+	}
+	if (Base==16)
+	{
+	int ni = NumDigits-1;
+	unsigned int mask,shiftcount,v;
+		while(ni)
+		{
+			mask = 0x0f;
+			shiftcount = 0;
+
+			while(mask)
+			{
+				v = Number[ni];
+				v &= mask;
+				v >>=shiftcount;
+				*s = '0' + v;
+				if (*s>'9')      	*s = *s - '9' + 'A' - 1;
+				s--;
+				shiftcount +=4;
+				mask <<=4;
+			}
+			ni--;
+		}
+		if (*s=='\0')
+		{
+			s--;
+			*s = '0';
+		}
+		return s;
     }
-    char FinalOut[1024];
-    FinalOut[0] = '\0';
-    while(!Dividend.IsZero())
-    {
-        char buff[80];
-        Divisor = Base;
-        Div(Dividend,Divisor,Quotient,Remainder);
-        strcat(FinalOut,Remainder.GetAsStr());
-        strcat(FinalOut,",");
-        Dividend = Quotient;
-    }
-    {
-        StrBuffer[0] = '\0';
-        char *ch = &FinalOut[strlen(FinalOut)-1];
-        while(ch>FinalOut)
-        {
-            *ch = '\0';
-            while((ch>FinalOut) && (*ch!=','))
+	char FinalOut[1024];
+	FinalOut[0] = '\0';
+	while(!Dividend.IsZero())
+	{
+		char buff[80];
+		Divisor = Base;
+		Div(Dividend,Divisor,Quotient,Remainder);
+		strcat(FinalOut,Remainder.GetAsStr());
+		strcat(FinalOut,",");
+		Dividend = Quotient;
+	}
+	{
+		StrBuffer[0] = '\0';
+		char *ch = &FinalOut[strlen(FinalOut)-1];
+		while(ch>FinalOut)
+		{
+			*ch = '\0';
+			while((ch>FinalOut) && (*ch!=','))
                 ch--;
             if (ch==FinalOut)
                 strcat(StrBuffer,",");

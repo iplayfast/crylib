@@ -77,10 +77,10 @@ bool SetFlags(int N)
 bool SetFlags()
 	{
 		Flags = 0L;
-		for(FirstDigit=0;FirstDigit<(NumDigits-1);FirstDigit++)
+		for(FirstDigit=0;FirstDigit<(NumDigits-1);FirstDigit++) // check all digits for nonezero
 			if (Number[FirstDigit]!=0L) return true;
 		if (FirstDigit==NumDigits-1)
-			return SetFlags(Number[NumDigits-1]);
+			return SetFlags(Number[NumDigits-1]);	// check last (lowest) digit and set flags
     return false;
 	}
 void SetLastDigitFlags() { SetFlags(Number[NumDigits-1]); }

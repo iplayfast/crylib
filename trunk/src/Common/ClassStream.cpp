@@ -22,7 +22,7 @@
 #include "ClassException.h"
 #include "ClassFunction.h"
 #include "ClassProperty.h"
-#include "zlib.h"
+#include "zlib/zlib.h"
 using namespace Crystal;
 
 //-------------------------------------------------------------------
