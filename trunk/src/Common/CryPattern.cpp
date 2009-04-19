@@ -759,7 +759,6 @@ Object *OFactory::Create(const char *FactoryName,const PropertyParser &PropertyN
 /// returns a Object or 0
 Object *Factory::Create(const char *FactoryName,const PropertyParser &PropertyName,Object *Parent)
 {
-    Object *Return;
     if (PropertyName=="")
         return 0;  // Create nothing
     /// first try the different held factories to see if their description matches the Factory Name we are looking for

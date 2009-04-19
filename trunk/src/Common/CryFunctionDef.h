@@ -27,9 +27,13 @@ StdFunctions(BuilderFunctionDef,String);
 
 // --- Inhertied properties ---
 	const char * GetValue(String &Result) const
-		{ return GetProperty(PropertyParser("Value"),Result);}
+                {
+            PropertyParser pp("Value");
+            return GetProperty(pp,Result);}
 	void SetValue(const char * _Value)
-		{ SetProperty(PropertyParser("Value"), _Value);}
+                {
+            PropertyParser pp("Value");
+            SetProperty(pp,_Value);}
 
 
 // --- Local properties ---

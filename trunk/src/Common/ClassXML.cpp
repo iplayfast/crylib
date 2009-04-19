@@ -110,9 +110,9 @@ void XMLNode::SaveTo(Object &ToObject) const
 		{
 
 			const char *c = pi->GetName()->AsPChar();
-
+                        PropertyParser pp(c);
 //        if (ToObject.HasProperty(p->GetName()))
-			if (ToObject.CanHaveProperty(PropertyParser(c)))
+                        if (ToObject.CanHaveProperty(pp))
 			{
 				String Result;
 				pi->GetValue(Result);
@@ -134,7 +134,8 @@ void XMLNode::SaveTo(Object &ToObject) const
 			{
 			Property *p = (Property *)o;
 			const char *s = *p->GetName();
-				if (ToObject.HasProperty(PropertyParser(s)))
+                        PropertyParser pp(s);
+                                if (ToObject.HasProperty(pp))
 				{
 					ToObject.SetProperty(p);
 					delete o;
@@ -246,7 +247,8 @@ void XMLNode::SaveTo(Object &ToObject) const
 					{
 					Property *p =(Property *)o;
 					const char *c= *p->GetName();
-						if (ToObject.CanHaveProperty(PropertyParser(c)))
+                                        PropertyParser pp(c);
+                                                if (ToObject.CanHaveProperty(pp))
 						{
 							ToObject.SetPropertyAsObject(p);
 						}
@@ -272,7 +274,6 @@ void XMLNode::LoadFrom(const Stream &FromStream)
     bool GettingAttributeValue = false,FoundLetter = false,AtStart = true,Escaped = false,AddChar;
 
 #ifdef DEBUGGING
-	bool AtEnd = false,Done = false;
 	String v;
 #endif
 	char Buff[2];
@@ -678,7 +679,10 @@ Object *XMLNode::CreateObjectFromNode(Object *Parent)
     else
         f = Create(PropertyName,Parent);  // let virtual function handle derived classes
     if (f==0)
-        f = Parent->Create(PropertyParser(c),Parent);
+    {
+        PropertyParser pp(c);
+        f = Parent->Create(pp,Parent);
+    }
     if (f==0)
         throw Exception("Class %s failed construction", c);
     SaveTo(*f);

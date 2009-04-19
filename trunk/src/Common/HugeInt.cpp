@@ -91,9 +91,10 @@ const char *HugeInt::GetProperty(const PropertyParser &PropertyName,String &Resu
 }
 
 const char *HugeInt::GetProperty(const char *PropertyName,String &Result) const
-	{
-		return GetProperty(PropertyParser(PropertyName),Result);
-	}
+{
+        PropertyParser pp(PropertyName);
+                return GetProperty(pp,Result);
+}
 
 bool HugeInt::HasProperty(const PropertyParser &PropertyName)const
 {
@@ -102,7 +103,8 @@ bool HugeInt::HasProperty(const PropertyParser &PropertyName)const
 
 bool HugeInt::HasProperty(const char *PropertyName)const
 {
-	return HasProperty(PropertyParser(PropertyName));
+    PropertyParser pp(PropertyName);
+        return HasProperty(pp);
 }
 
 PropertyList *HugeInt::PropertyNames() const
@@ -127,7 +129,8 @@ bool HugeInt::SetProperty(const PropertyParser &PropertyName,const char *Propert
 
 bool HugeInt::SetProperty(const char *PropertyName,const char *PropertyValue)
 {
-	return SetProperty(PropertyParser(PropertyName),PropertyValue);
+    PropertyParser pp(PropertyName);
+        return SetProperty(pp,PropertyValue);
 }
 void FindFactor::Step()
 {
@@ -834,8 +837,7 @@ unsigned int HugeInt::FirstBit() const
 
 bool HugeInt::Div(HugeInt &Dividend, HugeInt &Divisor,HugeInt &Quotient,HugeInt &Remainder) const
 {
-    unsigned int num_bits,q,bit;
-    unsigned int i;
+
     HugeInt d;
     Quotient.ZeroOut();
     Remainder.ZeroOut();
@@ -963,7 +965,7 @@ const char *HugeInt::GetAsStr(unsigned int Base) const
 	FinalOut[0] = '\0';
 	while(!Dividend.IsZero())
 	{
-		char buff[80];
+
 		Divisor = Base;
 		Div(Dividend,Divisor,Quotient,Remainder);
 		strcat(FinalOut,Remainder.GetAsStr());
@@ -1072,7 +1074,6 @@ void HugeInt::GetDigits(unsigned int start,unsigned int end,HugeInt Base,unsigne
 
 bool Primes::Div(HugeInt &i)
 {
-    unsigned int j;
     HugeInt Quot,Rem;
     HugeInt *pp = _Primes[0];
     HugeInt Div2;

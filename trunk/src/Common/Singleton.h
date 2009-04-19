@@ -27,7 +27,7 @@ namespace Crystal
 		{
 			Busy++;
 			while (Busy>1) {
-#ifdef __WIN32__
+#ifdef __borland__
 				_sleep(50);
 #else
 

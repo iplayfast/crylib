@@ -637,6 +637,11 @@ bool Stream::Event(EObject EventNumber,Context::UIO &Context)
         return true;
     case ELast:
         return Object::Event(Object::ELast,Context.ObjectContext);
+     case ELoadItemType:
+     case ELoadItem:    // unfinished
+        return true;
+
+
     }
     if (EventNumber < EFirst)
     {

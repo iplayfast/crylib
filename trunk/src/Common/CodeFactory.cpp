@@ -204,7 +204,8 @@ void CodeFactory::SetImp(const PropertyParser &PropertyName,const char *NewImp)
 }
 void CodeFactory::AppendHead(const char *Value)
 {
-	HeadImp *hp = (HeadImp *)Products._GetPropertyAsObject(PropertyParser("Source"));
+    PropertyParser pp("Source");
+        HeadImp *hp = (HeadImp *)Products._GetPropertyAsObject(pp);
 	if (hp) {
 		String s;
 		s = *hp->GetHead();
@@ -215,7 +216,8 @@ void CodeFactory::AppendHead(const char *Value)
 }
 void CodeFactory::AppendImp(const char *Value)
 {
-	HeadImp *hp = (HeadImp *)Products._GetPropertyAsObject(PropertyParser("Source"));
+    PropertyParser pp("Source");
+        HeadImp *hp = (HeadImp *)Products._GetPropertyAsObject(pp);
 	if (hp) {
 		String s;
 		s = *hp->GetImp();
@@ -298,7 +300,8 @@ Object *CodeFactory::_GetPropertyAsObject(const PropertyParser &PropertyName) co
 bool  CodeFactory::SetProperty(const PropertyParser &PropertyName,const char *PropertyValue)
 {
 	if (PropertyName=="Products") {
-		AddProduct(PropertyParser(PropertyValue));
+            PropertyParser pp(PropertyValue);
+                AddProduct(pp);
 		return true;
 	}
 	if (PropertyName=="Name") {
@@ -313,9 +316,10 @@ bool  CodeFactory::SetProperty(const PropertyParser &PropertyName,const char *Pr
 		SetIsProperty(strcasecmp(PropertyValue,"Yes")==0);
 		if (_IsProperty)
 		{
-			AddProduct(PropertyParser(CGetProperty));
-			AddProduct(PropertyParser(CSetProperty));
-		}
+                    PropertyParser pp(CGetProperty);
+                    PropertyParser ps(CSetProperty);
+                        AddProduct(pp);
+                        AddProduct(ps);		}
 		return true;
 	}
 	return Factory::SetProperty(PropertyName,PropertyValue);

@@ -901,8 +901,8 @@ PropertyList *n = new PropertyList();
 	{
 		do
 		{
-
-			if (O2->HasProperty(PropertyParser(pi->GetName()->AsPChar())))
+                PropertyParser pp(pi->GetName()->AsPChar());
+                        if (O2->HasProperty(pp))
 			{	// And (Same properties from both, with same value or "")
 			String v,r;
 				O2->GetProperty(pi->GetName()->AsPChar(),v);

@@ -273,7 +273,7 @@ virtual bool Test(bool Verbose,Object &Object,bool  (CallBack)(bool Verbose,cons
 {
 HugeDouble d = m;
 	return Mult(d);
-}
+}*/
 //virtual bool Div(HugeInt &Dividend,HugeInt &Divisor,HugeInt &Quotient,HugeInt &Remainder) const
 /*virtual bool Div(HugeInt &Divisor,HugeInt &Quotient,HugeInt &Remainder);
 virtual bool Div(HugeInt &Divisor,HugeInt &Result);

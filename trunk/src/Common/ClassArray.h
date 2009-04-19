@@ -157,7 +157,7 @@ StdFunctionsNoDup(SimpleArray,Container);
 			return false;
 	}
 	virtual bool HasLast(const Iterator *I) const { return Count()>0; }
-	virtual bool HasN(const Iterator *I,int n) const { return Count()>n; }
+        virtual bool HasN(const Iterator *I,unsigned int n) const { return Count()>n; }
 
 	virtual bool LoadAsText(int i,String &FromStream) = 0;
 	virtual bool SaveAsText(int i,String &ToStream) const = 0;
@@ -452,7 +452,7 @@ public:
 	{
 		return Values[i];
 	}
-	void SetValue(int i,T v)
+        void SetValue(unsigned int i,T v)
 	{
 		if (i>=CurrentCount) {
 			if(i>=MaxCount)
