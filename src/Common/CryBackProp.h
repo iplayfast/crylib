@@ -142,7 +142,6 @@ public:
 
 	void BackPropagate(int _From,int _To,double Gain)
 	{
-		int  i,j;
 		double Out, Err;
 		if (_From <1)
 			return;	// can't do this
@@ -263,13 +262,13 @@ void RandomWeights()
 
 void SaveWeights()
 {
-	int l,i,j;
+        int i,j;
 	LayerI start = Layers.begin();
 	int PreviousLayerSize = start->LayerSize;
 		start++;
 	LayerI end = Layers.end();
 
-	double *w,*ws;
+
 	while(start < end)
 	{
 		Layer::WeightsI w = start->Weights.begin();
@@ -284,13 +283,12 @@ void SaveWeights()
 
 void RestoreWeights()
 {
-	int l,i,j;
+        int i,j;
 	LayerI start = Layers.begin();
 	int PreviousLayerSize = start->LayerSize;
 		start++;
 	LayerI end = Layers.end();
 
-	double *w,*ws;
 	while(start < end)
 	{
 		Layer::WeightsI w = start->Weights.begin();

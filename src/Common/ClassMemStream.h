@@ -169,7 +169,7 @@ public:
 	virtual bool HasPrev(const Iterator *I) const  { return Position>0; }
 	virtual bool HasNext(const Iterator *I) const  { return Position < Length; }
 	virtual bool HasLast(const Iterator *I) const { return Length>0; }
-	virtual bool HasN(const Iterator *I,int n) const { return Length>n; }
+        virtual bool HasN(const Iterator *I,unsigned int n) const { return Length>n; }
 
 
     virtual bool IsEmpty(const Iterator *I) const

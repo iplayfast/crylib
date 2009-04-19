@@ -140,7 +140,8 @@ bool Container::Test(bool Verbose,Object &Object, bool (CallBack)(bool Verbose,c
 
 bool Container::SetProperty(const char *PropertyName,const char *PropertyValue)
 {
-	return SetProperty(PropertyParser(PropertyName),PropertyValue);
+    PropertyParser pp(PropertyName);
+        return SetProperty(pp,PropertyValue);
 }
 bool Container::SetProperty(const PropertyParser &PropertyName,const char *PropertyValue)
 {
@@ -388,7 +389,7 @@ bool Container::Iterator::IsContainer() const
 	{
 		Object *o = (Object *) OrigContainer->GetAtIterator(this);
 #ifdef DEBUG
-		const char *type = o->ChildClassName();
+//		const char *type = o->ChildClassName();
 #endif
 // even though it's a container type, it may not currently be a container (eg string defaults to being a non-container)
 		return (o && o->IsA(CContainer) && o->IsContainer());

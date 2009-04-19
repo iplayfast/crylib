@@ -289,8 +289,8 @@ float	v,v1,result;
 // remove values that would normally fall within the range of factor
 void Fuzzy::Normalize(float factor)
 {
-unsigned int i,j;
-float	r,va,v,s1,s2,factor2;
+unsigned int i;
+float	va,v,s1,s2,factor2;
 
   i = 1;
   factor2 = factor * 2;
@@ -335,7 +335,7 @@ TFuzzyXY *n,*p;
 void Fuzzy::IncreaseSamples()
 {
 unsigned int i;
-float	x1,x2,y;
+float	x1,x2;
 	for(i=0;i<Count()-1;i+=2)
     {
         x1 = IndexAt(i);
@@ -347,7 +347,6 @@ float	x1,x2,y;
 // write 1 datapoint to the stream
 void Fuzzy::SaveFuzzToStream(int i,Stream *ToStream) const
 {
-int l;
 float x,y;
    	x = Index(i)->x;
    	y = Index(i)->y;
@@ -380,7 +379,7 @@ float x,y;
 
 void Fuzzy::AppendFromStream(Stream &FromStream)
 {
-int l,i,c;
+int l,i;
     switch(FromStream.GetMode())
     {
       case SObject:

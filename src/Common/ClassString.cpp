@@ -296,7 +296,8 @@ size_t String::WriteNStr(const char *StrBuffer)
 }
 bool String::SetProperty(const char *pn,const char *PropertyValue)
 {
-	return SetProperty(PropertyParser(pn),PropertyValue);
+    PropertyParser pp(pn);
+        return SetProperty(pp,PropertyValue);
 }
 
 bool String::SetProperty(const PropertyParser &PropertyName,const char *PropertyValue)
@@ -382,8 +383,8 @@ const char *String::strstr(const char *s) const
 const char *String::CopyFromStr(String &Source,int start,int end)
 {
 	if (end==-1)	// default
-		end = Source.Length();
-	if (start>Source.Length())
+                end = (int) Source.Length();
+        if ((unsigned int) start>Source.Length())
 		throw Exception("index out of range");
 
 	Pos2Asciiz();

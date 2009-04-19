@@ -553,7 +553,7 @@ our things will always be CryObjects
 			return (fi->Index<MaxCount-1);
 		}
 		virtual bool HasLast(const Iterator *I) const { return Count()>0; }
-		virtual bool HasN(const Iterator *I,int n) const { return Count()>n; }
+                virtual bool HasN(const Iterator *I,unsigned int n) const { return Count()>n; }
 
 
 		/// abstract function used by subclasses to get a pointer to the first element of a container (list or array doesn't matter)

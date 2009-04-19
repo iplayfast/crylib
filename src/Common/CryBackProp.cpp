@@ -36,7 +36,6 @@ bool BackPropagateNetwork::SetPropertyAsObject(const Property *Value)
 	String Result;
 	if (*Value->GetName()=="Layers")
 	{
-	bool GettingLayerSetup = true;
 	const Object *o = Value->GetValue();
 		if (o->IsA(CList))
 		{
@@ -70,8 +69,8 @@ bool BackPropagateNetwork::SetPropertyAsObject(const Property *Value)
 			// for each layer
 			for(BPLayerI From = nn->Layers.begin();From <nn->Layers.end();From++)
 			{
-			int LayerLength = From->LayerSize;
-			int LayerSize = From->Weights.end() - From->Weights.begin();
+//			int LayerLength = From->LayerSize;
+//                        int LayerSize = From->Weights.end() - From->Weights.begin();
 
 				if (!iLayer->GotoNextObject(CList)) return false;
 				List *Weights = (List *) iLayer->Get();
@@ -113,7 +112,10 @@ bool BackPropagateNetwork::SetPropertyAsObject(const Property *Value)
 		return true;
 		}
 	}
-	return SetProperty(PropertyParser(Value->GetName()->AsPChar()),Value->GetValue(Result));
+        {
+             PropertyParser pp(Value->GetName()->AsPChar());
+                return SetProperty(pp,Value->GetValue(Result));
+         }
 }
 
 bool BackPropagateNetwork::SetProperty(const PropertyParser &PropertyName,const char *PropertyValue)

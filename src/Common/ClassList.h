@@ -348,10 +348,10 @@ public:
 	{  if (_IsEmpty() || ((ListIterator *)LI)->p==Tail) return false;
 			else return true; }
 	virtual bool HasLast(const Iterator *I) const { return !_IsEmpty(); }
-	virtual bool HasN(const Iterator *LI,int n) const { return Count()>n; }
+        virtual bool HasN(const Iterator *LI,unsigned int n) const { return Count()>n; }
 
 
-	virtual inline size_t Count() const;
+        virtual size_t Count() const;
 	virtual inline bool HasItems() const { return Count()>0; }
 ///copies contents of this to Dest
 	virtual void CopyTo(Object &Dest) const

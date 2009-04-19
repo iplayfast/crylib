@@ -75,8 +75,8 @@ public:
 	virtual bool HasFirst(const Iterator *I) const { return Count()>0; }
 	virtual bool HasPrev(const Iterator *I) const = 0;
 	virtual bool HasNext(const Iterator *I) const = 0;
-	virtual bool HasLast(const Iterator *I) const { return Count()>0; }
-	virtual bool HasN(const Iterator *I,int n) const { return Count()>n; }
+        virtual bool HasLast(const Iterator *I) const { return Count()>0; }
+        virtual bool HasN(const Iterator *I,unsigned int n) const { return Count()>n; }
 
 	virtual bool IsEmpty(const Iterator *I) const = 0;
 	/// will return whatever is located at the Current Iterator
@@ -87,7 +87,7 @@ public:
 	/// abstract function used by subclasses to remove the item this iterator points at (iterator is still valid)
 	virtual void RemoveAtIterator(Iterator *I) = 0;
 	/// abstract function used by subclasses to count the number of items held by the container
-	virtual size_t Count() const = 0;
+        virtual size_t Count() const = 0;
 	//virtual bool CanDup() const { return false; }	// Containers might contain things that can't be duped, so we must assume they can't
 	/// abstract function used by subclasses to clear whatever is contained within the containers
 	virtual void Clear() = 0;
@@ -159,7 +159,7 @@ class Iterator : public Object//EmptyObject
 		bool HasPrev() const { return OrigContainer->HasPrev(this); }
 		bool HasNext() const { return OrigContainer->HasNext(this); }
 		bool HasLast() const { return OrigContainer->Count()>0; }
-		bool HasN(int n) const { return OrigContainer->Count()>n; }
+                bool HasN(unsigned int n) const { return OrigContainer->Count()>n; }
 
 		bool GotoFirstObject(const char *Type=CObject);
 		bool GotoPrevObject(const char *Type=CObject);

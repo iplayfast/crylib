@@ -431,7 +431,8 @@ const Object *v = p->GetValue();
 
 bool Object::SetProperty(const char *pn,const char *PropertyValue)
 {
-	return SetProperty(PropertyParser(pn),PropertyValue);
+ PropertyParser pp(pn);
+        return SetProperty(pp,PropertyValue);
 }
 
 
@@ -748,53 +749,53 @@ bool Object::Event(EObject EventNumber,Context::IO &Context)
 	switch (EventNumber)
 	{
 
-EFirst:
+        case EFirst:
 			return false;
 
-ESaveObject:
+        case ESaveObject:
 			Context.In.InSave.ToStream->SetMode(SObject);
 			SaveTo(*Context.In.InSave.ToStream);    // ToStream as Object
 			break;
 
-ELoadObject:
+        case ELoadObject:
 			Context.In.InLoad.FromStream->SetMode(SObject);
 			LoadFrom(*Context.In.InLoad.FromStream);    // FromStream as Object
 			break;
 
-ESaveStream:
+        case ESaveStream:
 			Context.In.InSave.ToStream->SetMode(SText);
             SaveTo(*Context.In.InSave.ToStream);    // ToStream as Object
             break;
 
-ELoadStream:
+        case ELoadStream:
             Context.In.InLoad.FromStream->SetMode(SText);
             LoadFrom(*Context.In.InLoad.FromStream);    // FromStream as Object
             break;
 
-ECopyTo:
+        case ECopyTo:
             CopyTo(*Context.In.InCopyTo._Object);  //copies contents of this to Dest
             break;
 
-EDup:
+        case EDup:
             Context.Out.OutDup._Object = Dup();
             break;
 
-ESize:
+        case ESize:
             Context.Out.OutSize.Result = Size();
             break;
 
-EClassName:
+        case EClassName:
             Context.Out.OutClassName.Text = ChildClassName();
             break;
 
-EIsA:
+        case EIsA:
             Context.Out.OutIsa.Result = IsA(Context.In.InIsa.Text);
             break;
 
-EEvent:
+        case EEvent:
             return false;
 
-ELast:
+        case ELast:
             return false;
     }
 

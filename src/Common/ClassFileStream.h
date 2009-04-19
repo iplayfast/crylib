@@ -104,7 +104,7 @@ public:
 	virtual bool HasPrev(const Iterator *I) const { return Tell()>0; }
 	virtual bool HasNext(const Iterator *I) const { return Size()>Tell(); }
 	virtual bool HasLast(const Iterator *I) const { return Count()>0; }
-	virtual bool HasN(const Iterator *I,int n) const { return Count()>n; }
+        virtual bool HasN(const Iterator *I,unsigned int n) const { return Count()>n; }
 
 	virtual EmptyObject *GetAtIterator(const Iterator *I) const;
 	virtual void SetAtIterator(const Iterator *I,EmptyObject *Item,bool IsObject,bool IsOwned,size_t Size = 0);
