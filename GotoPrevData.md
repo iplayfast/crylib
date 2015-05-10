@@ -1,0 +1,12 @@
+GotoPrevData
+
+# Introduction #
+
+For use in [container classes](Containers.md).
+
+
+# Details #
+
+An Iterator that is associated with a container will be moved to the previous non-object in the container.
+
+Will return true if successfull.
